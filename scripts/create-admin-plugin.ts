@@ -1,6 +1,9 @@
 import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
+console.log('⚠️ This function is still under construction...')
+process.exit(1)
+
 const examplePage = `
 import type { LoaderFunctionArgs MetaFunction } from 'react-router'
 import { Outlet } from 'react-router'

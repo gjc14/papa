@@ -54,48 +54,71 @@ export default function ExamplePluginWebPage() {
 }
 `
 
-const examplePapaConfig = `
+const exampleRouteConfig = `
 /**
- * This file is optional for a web only plugin.
+ * This is an example of a plugin route config, you could define your routes with \`prefix\`, \`layout\`, \`index\`, and \`route\`.
+ * @see https://reactrouter.com/start/framework/routing
  */
-import type { PapaConfig } from '../utils/get-plugin-configs.server'
+import {
+	index,
+	layout,
+	prefix,
+	type RouteConfig,
+} from '@react-router/dev/routes'
 
-const config = (): PapaConfig => {
-    return {
-        pluginName: 'Example Web Plugin',
-    }
+const systemRoutes = [
+	...prefix('/example', [
+		layout('./plugins/example/layout.tsx', [index('./plugins/example/index/route.tsx')]),
+	]),
+] satisfies RouteConfig
+
+export const example = () => {
+	return systemRoutes
 }
-
-export default config
 `
 
-const filePathExample = join(
+const filePathExampleIndex = join(
 	process.cwd(),
-	'app/routes/plugins/example-web.plugin/_web.plugin-example/route.tsx',
+	'app/plugins/example/index/route.tsx',
 )
 
-const filePathExampleWebConfig = join(
+const filePathExampleLayout = join(
 	process.cwd(),
-	'app/routes/plugins/example-web.plugin/papa.config.ts',
+	'app/plugins/example/layout.tsx',
+)
+
+const filePathExampleWebRouteConfig = join(
+	process.cwd(),
+	'app/plugins/example/routes.ts',
 )
 
 try {
-	await mkdir(
-		join(
-			process.cwd(),
-			'app/routes/plugins/example-web.plugin/_web.plugin-example',
-		),
-		{ recursive: true },
-	)
+	await mkdir(join(process.cwd(), 'app/plugins/example'), { recursive: true })
+	await mkdir(join(process.cwd(), 'app/plugins/example/index'), {
+		recursive: true,
+	})
+	await mkdir(join(process.cwd(), 'app/plugins/example/components'), {
+		recursive: true,
+	})
+	await mkdir(join(process.cwd(), 'app/plugins/example/libs'), {
+		recursive: true,
+	})
 
-	await writeFile(filePathExample, examplePage.trim())
-	await writeFile(filePathExampleWebConfig, examplePapaConfig.trim())
+	await writeFile(filePathExampleIndex, examplePage.trim())
+	await writeFile(
+		filePathExampleLayout,
+		`// This is an example of a plugin layout`,
+	)
+	await writeFile(filePathExampleWebRouteConfig, exampleRouteConfig.trim())
 	console.log(
-		`Example web page and config created successfully in routes folder ${
-			filePathExample.split('app/routes')[1]
-		} and ${filePathExampleWebConfig.split('app/routes')[1]}
+		`
+        * * *
+
+        In \`/app/routes.ts\` please import and add \`...example()\` to \`export default array\`.
         
-        Navigate to '/plugin-example' to see this route in action
+        * * *
+        
+        Then navigate to '/example' to see this route in action!
         `.replace(/^ {8}/gm, ''),
 	)
 } catch (err) {

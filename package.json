@@ -10,8 +10,8 @@
 		"typecheck": "react-router typegen && tsc",
 		"lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
 		"init": " tsx scripts/init.ts && npm run db:push && tsx scripts/init-admin.ts && npm run dev",
+		"create-plugin": "tsx scripts/create-plugin.ts",
 		"create-plugin:admin": "tsx scripts/create-admin-plugin.ts",
-		"create-plugin:web": "tsx scripts/create-web-plugin.ts",
 		"format": "prettier --write .",
 		"db:push": "npx drizzle-kit push",
 		"auth:generate": "npx @better-auth/cli@latest generate --config app/lib/auth/auth.server.ts --output app/lib/db/schema/auth.ts"
