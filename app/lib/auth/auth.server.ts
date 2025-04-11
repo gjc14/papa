@@ -3,7 +3,11 @@
  */
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { admin as adminPlugin, magicLink } from 'better-auth/plugins'
+import {
+	admin as adminPlugin,
+	magicLink,
+	organization,
+} from 'better-auth/plugins'
 
 import { db } from '~/lib/db/db.server'
 
@@ -46,6 +50,24 @@ export const auth = betterAuth({
 					}),
 				]
 			: []),
+		organization({
+			async sendInvitationEmail({
+				email,
+				inviter: { user, role },
+				organization: { name, logo },
+			}) {
+				// await sendInvitationEmail()
+			},
+			teams: {
+				enabled: true,
+				maximumTeams: async ({ organizationId, session }, request) => {
+					// Check plan
+					return 2
+				},
+				allowRemovingAllTeams: false,
+			},
+			membershipLimit: 1000 * 1000,
+		}),
 	],
 	advanced: {
 		cookiePrefix: 'papa',
