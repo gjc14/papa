@@ -11,13 +11,11 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3 } from '~/lib/db/db.server'
 
 export const getUploadUrl = async ({
-	bucket = 'papa',
 	key,
 	size,
 	type,
 	checksum,
 }: {
-	bucket?: string
 	key: string
 	size: number
 	type: string
@@ -30,7 +28,7 @@ export const getUploadUrl = async ({
 		const presignedUrl = await getSignedUrl(
 			S3,
 			new PutObjectCommand({
-				Bucket: bucket,
+				Bucket: process.env.BUCKET_NAME ?? 'papa',
 				Key: key,
 				ContentLength: size,
 				ContentType: type,
@@ -49,7 +47,7 @@ export const getFileUrl = async (key: string) => {
 
 	try {
 		const command = new GetObjectCommand({
-			Bucket: 'papa',
+			Bucket: process.env.BUCKET_NAME ?? 'papa',
 			Key: key,
 		})
 		const presignedUrl = await getSignedUrl(S3, command, { expiresIn: 300 })
@@ -69,7 +67,7 @@ export const deleteFile = async (key: string) => {
 
 	await S3.send(
 		new DeleteObjectCommand({
-			Bucket: 'papa',
+			Bucket: process.env.BUCKET_NAME ?? 'papa',
 			Key: key,
 		}),
 	)

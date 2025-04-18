@@ -51,11 +51,11 @@ export const S3 =
 if (S3) {
 	S3.send(new ListBucketsCommand({})).then(result => {
 		const isPapaExists = !!result.Buckets?.find(
-			bucket => bucket.Name === 'papa',
+			bucket => bucket.Name === (process.env.BUCKET_NAME ?? 'papa'),
 		)
 		if (!isPapaExists) {
 			console.warn(
-				'Bucket papa not found, please create it. Refer to ./README.md',
+				`Bucket ${process.env.BUCKET_NAME ?? 'papa'} not found, please create it. Refer to ./README.md`,
 			)
 		}
 	})

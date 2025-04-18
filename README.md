@@ -47,9 +47,9 @@
 1. Navigate to `Cloudflare dashboard > R2 Object Storage`
 2. `API > Manage API Tokens`: Click **Create API Token** button, and set
    Permissions to Admin Read & Write and TTL to Forever
-3. Click **Create bucket** button, name it `papa` (buckets are default to
-   private)
-4. In `papa` bucket, navigate to `Settings > Edit CORS policy`, set as following
+3. Click **Create bucket** button, name it `papa` or whatever you want (buckets
+   are default to private), then provide the name to `BUCKET_NAME` in `.env`
+4. In your bucket, navigate to `Settings > Edit CORS policy`, set as following
 
 ```json
 [
@@ -103,9 +103,10 @@ cd papa && mv .env.example .env
 8. `RESEND_API_KEY`: Send emails via Resend.
 9. (optional) `GOOGLE_GENERATIVE_AI_API_KEY`, `OPENAI_API_KEY`,
    `ANTHROPIC_API_KEY`: For use of Generative AI in `/admin/api/ai`
-10. `OBJECT_STORAGE_ACCESS_KEY_ID`, `OBJECT_STORAGE_SECRET_ACCESS_KEY`,
-    `OBJECT_STORAGE_ACCOUNT_ID`: Where you save your objects, accept S3
-    compatible services. Using in route `/admin/assets/resource`
+10. `BUCKET_NAME`,`OBJECT_STORAGE_ACCESS_KEY_ID`,
+    `OBJECT_STORAGE_SECRET_ACCESS_KEY`, `OBJECT_STORAGE_ACCOUNT_ID`: Where you
+    save your objects, accept S3 compatible services. Using in route
+    `/admin/assets/resource`
 
 ### 2. Install and push database schema
 
