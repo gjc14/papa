@@ -11,8 +11,8 @@ export default function Papa() {
 export function ErrorBoundary() {
 	const error = useRouteError()
 
-	// throw new Response()
 	if (isRouteErrorResponse(error)) {
+		// Catches: throw new Response()
 		console.error('Error response:', error.data)
 		return (
 			<main className="w-screen h-screen flex flex-col items-center justify-center">
@@ -44,7 +44,8 @@ export function ErrorBoundary() {
 			</main>
 		)
 	} else if (error instanceof Error) {
-		// throw new Error('message')
+		// Catches: throw new Error('message')
+		console.error('Error:', error.message)
 		return (
 			<main className="w-full min-h-screen h-auto flex flex-col items-center justify-center gap-9">
 				<div>
@@ -64,6 +65,7 @@ export function ErrorBoundary() {
 			</main>
 		)
 	}
+	console.error('Unknown error:', error)
 
 	return (
 		<main className="w-full min-h-screen h-auto flex flex-col items-center justify-center gap-9">

@@ -11,6 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 	if (session) {
 		return redirect('/admin')
 	}
+	return null
 }
 
 export default function AdminAuth() {
