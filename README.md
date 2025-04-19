@@ -44,22 +44,13 @@
 
 ### Set up [Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/)
 
-1. Navigate to `Cloudflare dashboard > R2 Object Storage`
-2. `API > Manage API Tokens`: Click **Create API Token** button, and set
-   Permissions to Admin Read & Write and TTL to Forever
-3. Click **Create bucket** button, name it `papa` or whatever you want (buckets
-   are default to private), then provide the name to `BUCKET_NAME` in `.env`
-4. In your bucket, navigate to `Settings > Edit CORS policy`, set as following
-
-```json
-[
-	{
-		"AllowedOrigins": ["http://localhost:5173", "https://your-own-domain.com"],
-		"AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
-		"AllowedHeaders": ["*"]
-	}
-]
-```
+1. Navigate to `Cloudflare dashboard > R2 Object Storage`.
+2. `{} API > Manage API Tokens`: Click **Create API Token** button, and set
+   Permissions to Admin Read & Write and TTL to Forever.
+3. Paste it into `.env` as `OBJECT_STORAGE_ACCESS_KEY_ID`,
+   `OBJECT_STORAGE_SECRET_ACCESS_KEY`, and `OBJECT_STORAGE_ACCOUNT_ID`.
+4. In `.env` please configure your desired `BUCKET_NAME`, papa will create a
+   bucket with this given name.
 
 ### Set up [AWS S3](https://aws.amazon.com/s3/)
 

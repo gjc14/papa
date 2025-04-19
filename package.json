@@ -9,7 +9,7 @@
 		"start": "react-router-serve build/server/index.js",
 		"typecheck": "react-router typegen && tsc",
 		"lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-		"init": " tsx scripts/init.ts && npm run db:push && tsx scripts/init-admin.ts && npm run dev",
+		"init": " tsx scripts/init.ts && npm run db:push && tsx scripts/init-admin.ts && tsx scripts/init-object-storage.ts && npm run dev",
 		"create-plugin:admin": "tsx scripts/create-admin-plugin.ts",
 		"create-plugin:web": "tsx scripts/create-web-plugin.ts",
 		"format": "prettier --write .",
