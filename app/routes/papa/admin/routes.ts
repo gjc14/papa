@@ -39,6 +39,13 @@ const systemRoutes = [
 			route('resource', './routes/papa/admin/seo/resource.ts'),
 		]),
 
+		// Campaign
+		...prefix('campaign', [
+			index('./routes/papa/admin/campaign/index/route.tsx'),
+			route('resource', './routes/papa/admin/campaign/resource.ts'),
+			route(':id', './routes/papa/admin/campaign/edit/route.tsx'),
+		]),
+
 		// Account
 		route('account', './routes/papa/admin/account/layout.tsx', [
 			index('./routes/papa/admin/account/index/route.tsx'),

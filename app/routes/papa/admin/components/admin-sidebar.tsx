@@ -43,6 +43,7 @@ const MainNavItems: PapaAdminMenuItem[] = [
 	},
 	{ iconName: 'text-search', title: 'SEO', url: '/admin/seo' },
 	{ iconName: 'cloud', title: 'Assets', url: '/admin/assets' },
+	{ iconName: 'at-sign', title: 'Email Campaign', url: '/admin/campaign' },
 ]
 
 const SecondaryNavItems: NavSecondaryItem[] = [
