@@ -181,11 +181,7 @@ html {
 /* tailwind typography */
 @layer components {
 	.prose-article {
-		@apply prose prose-blockquote:-ml-3.5 prose-blockquote:pl-3 dark:prose-invert md:prose-blockquote:-ml-5 md:prose-blockquote:pl-5 leading-loose tracking-wide;
-	}
-
-	.prose-article p {
-		@apply text-base md:text-lg;
+		@apply prose prose-blockquote:-ml-2 prose-blockquote:pl-2 dark:prose-invert md:prose-blockquote:-ml-5 md:prose-blockquote:pl-5 leading-loose tracking-wide;
 	}
 
 	.prose-article pre {
@@ -193,6 +189,18 @@ html {
 	}
 
 	.prose-article p code {
-		@apply bg-muted rounded-lg px-2 py-1;
+		@apply rounded-none bg-zinc-200 px-1 py-0.75 dark:bg-zinc-800;
+	}
+
+	.prose-article blockquote > p::before,
+	.prose-article blockquote > p::after {
+		content: none;
+		display: none;
+	}
+
+	.prose-article p code::before,
+	.prose-article p code::after {
+		content: none;
+		display: none;
 	}
 }
