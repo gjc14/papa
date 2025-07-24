@@ -1,19 +1,13 @@
-import 'highlight.js/styles/base16/atelier-dune.min.css'
-
 import type { Route } from './+types/route'
-import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router'
 
-import { common, createLowlight } from 'lowlight'
+import { ArrowLeft, HeartCrack } from 'lucide-react'
 
 import { Post } from '../components/post'
-import { hilightInnerHTML } from './highlight-inner-html'
-
-// export type PostLoaderType = Awaited<ReturnType<typeof loader>>
 
 export default function BlogPost({ matches, params }: Route.ComponentProps) {
 	const { posts } = matches[2].data
-	const lowlight = createLowlight(common)
-	const languages = lowlight.listLanguages()
+	const { search } = useLocation()
 
 	const currentPostIndex = posts.findIndex(
 		post => post.slug === params.postSlug,
@@ -23,22 +17,20 @@ export default function BlogPost({ matches, params }: Route.ComponentProps) {
 		currentPostIndex < posts.length - 1 ? posts[currentPostIndex + 1] : null
 	const prevPost = currentPostIndex > 0 ? posts[currentPostIndex - 1] : null
 
-	useEffect(() => {
-		document.querySelectorAll('pre code').forEach(block => {
-			hilightInnerHTML(block, lowlight, languages)
-		})
-	}, [currentPost])
-
 	if (!currentPost) {
 		return (
-			<div className="min-h-svh w-full max-w-prose px-5 xl:px-0">
-				<h1 className="text-3xl font-bold">Post not found</h1>
+			<div className="mx-auto flex flex-1 flex-col items-center justify-center space-y-6">
+				<HeartCrack className="size-36" />
+				<h1>Post Not found</h1>
 			</div>
 		)
 	}
 
 	return (
-		<div className="min-h-svh w-full max-w-prose px-5 xl:px-0">
+		<div className="mx-auto w-full max-w-prose px-3">
+			<Link to={'..' + search} className="inline-flex">
+				<ArrowLeft className="cursor-pointer" />
+			</Link>
 			<Post post={currentPost} next={nextPost} prev={prevPost} />
 		</div>
 	)

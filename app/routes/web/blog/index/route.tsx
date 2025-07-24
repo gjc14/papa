@@ -15,11 +15,12 @@ export default function Index({ matches }: Route.ComponentProps) {
 		<span className="space-x-1">
 			category:{' '}
 			{categoriesFilter.map(cat => (
-				<Link key={cat.id} to={`/blog?category=${cat.slug}`}>
-					<Badge className="bg-brand text-brand-foreground rounded-full">
-						{cat.name}
-					</Badge>
-				</Link>
+				<Badge
+					key={cat.id}
+					className="border-primary bg-brand text-brand-foreground rounded-full"
+				>
+					{cat.name}
+				</Badge>
 			))}
 		</span>
 	) : undefined
@@ -28,11 +29,12 @@ export default function Index({ matches }: Route.ComponentProps) {
 		<span className="space-x-1">
 			tag:{' '}
 			{tagsFilter.map(tag => (
-				<Link key={tag.id} to={`/blog?tag=${tag.slug}`}>
-					<Badge className="bg-brand text-brand-foreground rounded-full">
-						{tag.name}
-					</Badge>
-				</Link>
+				<Badge
+					key={tag.id}
+					className="border-primary bg-brand text-brand-foreground rounded-full"
+				>
+					{tag.name}
+				</Badge>
 			))}
 		</span>
 	) : undefined
@@ -42,13 +44,14 @@ export default function Index({ matches }: Route.ComponentProps) {
 	if (categoryFilters && tagFilters) {
 		description = (
 			<>
-				Filtered by {categoryFilters} | {tagFilters}
+				{categoryFilters}
+				{tagFilters}
 			</>
 		)
 	} else if (categoryFilters) {
-		description = <>Filter by {categoryFilters}</>
+		description = <>{categoryFilters}</>
 	} else if (tagFilters) {
-		description = <>Filter by {tagFilters}</>
+		description = <>{tagFilters}</>
 	}
 
 	return (

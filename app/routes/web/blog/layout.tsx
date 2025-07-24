@@ -85,13 +85,11 @@ clientLoader.hydrate = true
 
 export default function Blog() {
 	return (
-		<>
+		<main className="flex min-h-svh w-full flex-1 flex-col">
 			<Nav />
-			<MainWrapper>
-				<Outlet />
-				<CTA />
-				<Footer />
-			</MainWrapper>
-		</>
+			<Outlet />
+			<CTA />
+			<Footer />
+		</main>
 	)
 }
