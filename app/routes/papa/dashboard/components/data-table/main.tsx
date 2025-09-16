@@ -155,42 +155,44 @@ export function DataTable<TData, TValue>({
 	)
 
 	return (
-		<section className="relative flex flex-col gap-3">
-			<div className="flex gap-2">
-				{children && children(table)}
+		<section className="relative flex flex-1 flex-col gap-2">
+			{(children || !hideColumnFilter) && (
+				<div className="flex gap-2">
+					{children && children(table)}
 
-				{!hideColumnFilter && (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" className="ml-auto">
-								<EyeOff />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							{table
-								.getAllColumns()
-								.filter(column => column.getCanHide())
-								.map(column => {
-									return (
-										<DropdownMenuCheckboxItem
-											key={column.id}
-											className="capitalize"
-											checked={column.getIsVisible()}
-											onCheckedChange={value =>
-												column.toggleVisibility(!!value)
-											}
-											onSelect={e => e.preventDefault()}
-										>
-											{typeof column.columnDef.header === 'string'
-												? column.columnDef.header
-												: column.id}
-										</DropdownMenuCheckboxItem>
-									)
-								})}
-						</DropdownMenuContent>
-					</DropdownMenu>
-				)}
-			</div>
+					{!hideColumnFilter && (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="outline" className="ml-auto">
+									<EyeOff />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								{table
+									.getAllColumns()
+									.filter(column => column.getCanHide())
+									.map(column => {
+										return (
+											<DropdownMenuCheckboxItem
+												key={column.id}
+												className="capitalize"
+												checked={column.getIsVisible()}
+												onCheckedChange={value =>
+													column.toggleVisibility(!!value)
+												}
+												onSelect={e => e.preventDefault()}
+											>
+												{typeof column.columnDef.header === 'string'
+													? column.columnDef.header
+													: column.id}
+											</DropdownMenuCheckboxItem>
+										)
+									})}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					)}
+				</div>
+			)}
 			<Table aria-label="table">
 				<TableHeader aria-label="table-header">
 					{/* <div className="z-10 absolute grow flex justify-center border rounded-xl px-2 py-1 mx-auto left-[50%] top-0 translate-x-[-50%] backdrop-blur-xs">
@@ -255,7 +257,7 @@ export function DataTable<TData, TValue>({
 					)}
 				</TableBody>
 			</Table>
-			<div className="flex items-center justify-between space-x-2 pt-4">
+			<div className="flex items-center justify-between space-x-2">
 				{selectable && (
 					<div className="text-muted-foreground flex-1 pl-2.5 text-sm">
 						{table.getFilteredSelectedRowModel().rows.length} of{' '}
