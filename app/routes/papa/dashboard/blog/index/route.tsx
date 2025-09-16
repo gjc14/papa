@@ -1,6 +1,6 @@
 import type { Route } from './+types/route'
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useFetcher } from 'react-router'
+import { data, Link, useFetcher } from 'react-router'
 
 import { type ColumnDef } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
@@ -10,7 +10,6 @@ import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import type { PostWithRelations } from '~/lib/db/post.server'
-import { getPosts } from '~/lib/db/post.server'
 import {
 	DashboardActions,
 	DashboardHeader,
@@ -23,28 +22,52 @@ import {
 } from '~/routes/papa/dashboard/components/data-table'
 
 import { SimpleSortHeader } from '../../components/data-table/simple-sort-header'
+import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
 
 export const meta = () => {
 	return [{ name: 'title', content: 'Dashboard Blog' }]
 }
 
-export const loader = async () => {
-	try {
-		process.env.NODE_ENV === 'development' && console.time('getPosts')
-		const postsData = await getPosts({ status: 'ALL' })
-		process.env.NODE_ENV === 'development' && console.timeEnd('getPosts')
+/**
+ * @see file [web blog index route.tsx](../../../../web/blog/index/route.tsx)
+ */
+export const loader = async ({ request }: Route.LoaderArgs) => {
+	const url = new URL(request.url)
+	const { searchParams } = url
+	const categories = searchParams.get('category')?.split(',')
+	const tags = searchParams.get('tag')?.split(',')
+	const q = searchParams.get('q') || undefined
 
-		return {
-			posts: postsData.posts,
-		}
-	} catch (error) {
-		console.error(error)
-		return { posts: [] }
+	const cacheKey = searchParams.toString()
+	const now = Date.now()
+	const entry = postsServerMemoryCache.get(cacheKey)
+
+	// cache hit
+	if (entry && entry.data && entry.expiresAt > now) {
+		return data(entry.data, { headers })
 	}
+
+	// inflight dedupe
+	if (entry?.promise) {
+		const payload = await entry.promise
+		return data(payload, { headers })
+	}
+
+	// cache miss
+	const promise = fetchPosts(url, categories, tags, q)
+	postsServerMemoryCache.set(cacheKey, { expiresAt: 0, promise })
+
+	const payload = await promise
+	postsServerMemoryCache.set(cacheKey, {
+		data: payload,
+		expiresAt: Date.now() + TTL,
+	})
+
+	return data(payload, { headers })
 }
 
 export default function DashboardPost({ loaderData }: Route.ComponentProps) {
-	const { posts } = loaderData
+	const { posts, categoriesFilter, tagsFilter } = loaderData
 
 	const [rowSelection, setRowSelection] = useState({})
 	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
