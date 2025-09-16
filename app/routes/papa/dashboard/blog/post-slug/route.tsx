@@ -1,11 +1,12 @@
 import type { Route } from './+types/route'
 import { useEffect } from 'react'
-import { useFetcher, useNavigate } from 'react-router'
+import { useFetcher, useNavigate, useNavigation } from 'react-router'
 
 import { useAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { HeartCrack } from 'lucide-react'
 
+import { Loading } from '~/components/loading'
 import { useIsMobile } from '~/hooks/use-mobile'
 import { getPostBySlug } from '~/lib/db/post.server'
 import { generateSlug } from '~/lib/utils/seo'
@@ -59,6 +60,9 @@ export default function DashboardSlugPost({
 	const isMobile = useIsMobile()
 	const fetcher = useFetcher<typeof action>()
 	const navigate = useNavigate()
+	const navigation = useNavigation()
+
+	const isNavigating = navigation.state === 'loading'
 
 	const isSubmitting = fetcher.state === 'submitting'
 	const method = fetcher.formMethod
@@ -113,6 +117,14 @@ export default function DashboardSlugPost({
 			}
 		}
 	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
+
+	if (isNavigating) {
+		return (
+			<div className="mx-auto flex h-full flex-1 flex-col items-center justify-center space-y-6">
+				<Loading />
+			</div>
+		)
+	}
 
 	if (!post) {
 		return (
