@@ -49,7 +49,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
-	const { meta, posts, categoriesFilter, tagsFilter } = loaderData
+	const { meta, posts, categoriesFilter, tagsFilter, q } = loaderData
 
 	const isCategoryFiltering = categoriesFilter && categoriesFilter.length > 0
 	const isTagFiltering = tagsFilter && tagsFilter.length > 0
@@ -101,7 +101,12 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 		<>
 			<h1 className="visually-hidden">{meta?.seo.metaTitle}</h1>
 
-			<PostCollection title={'Blog.'} posts={posts} description={description} />
+			<PostCollection
+				title={'Blog.'}
+				posts={posts}
+				description={description}
+				q={q}
+			/>
 		</>
 	)
 }

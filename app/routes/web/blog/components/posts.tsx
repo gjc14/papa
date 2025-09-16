@@ -1,21 +1,34 @@
-import { Link, useFetcher, useLocation, useNavigate } from 'react-router'
+import { useEffect, useMemo } from 'react'
+import {
+	Form,
+	Link,
+	useFetcher,
+	useLocation,
+	useNavigate,
+	useNavigation,
+	useSubmit,
+} from 'react-router'
 
 import { AvatarImage } from '@radix-ui/react-avatar'
+import debounce from 'lodash/debounce'
 import { CircleCheckIcon, XCircle } from 'lucide-react'
 import { motion } from 'motion/react'
 
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
 import { Badge } from '~/components/ui/badge'
+import { InputSearch } from '~/components/ui/input-search'
 import type { PostWithRelations } from '~/lib/db/post.server'
 
 export const PostCollection = ({
 	title,
 	posts,
 	description,
+	q,
 }: {
 	title: string
 	posts: PostWithRelations[]
 	description?: React.ReactNode
+	q?: string
 }) => {
 	return (
 		<div className="mx-auto mt-6 mb-20 flex w-full max-w-2xl flex-col gap-8 px-3 md:px-9">
@@ -58,6 +71,8 @@ export const PostCollection = ({
 				)}
 			</div>
 
+			<Search q={q} />
+
 			<section className="flex flex-col space-y-3">
 				{posts.map(post => (
 					<Post key={post.id} post={post} />
@@ -79,7 +94,7 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 			onMouseEnter={() => fetcher.load(url)}
 			className="group hover:bg-accent cursor-pointer py-4 md:py-5"
 		>
-			<div className="flex flex-col px-5 md:px-6">
+			<div className="flex flex-col px-4 md:px-6">
 				<div className="mb-3 flex gap-1.5">
 					{post.categories.map(category => (
 						<Badge
@@ -123,5 +138,55 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 				</div>
 			</div>
 		</div>
+	)
+}
+
+const Search = ({ q }: { q?: string }) => {
+	const submit = useSubmit()
+	const navigation = useNavigation()
+
+	const searching =
+		navigation.location &&
+		new URLSearchParams(navigation.location.search).has('q')
+
+	// Sync search input with URL param
+	useEffect(() => {
+		const searchField = document.getElementById('q')
+		if (searchField instanceof HTMLInputElement) {
+			searchField.value = q || ''
+		}
+	}, [q])
+
+	const debouncedSearch = useMemo(
+		() =>
+			debounce((form: HTMLFormElement) => {
+				submit(form)
+			}, 600),
+		[submit],
+	)
+
+	useEffect(() => {
+		return () => {
+			debouncedSearch.cancel()
+		}
+	}, [debouncedSearch])
+
+	return (
+		<Form
+			id="search-form"
+			role="search"
+			onChange={event => {
+				debouncedSearch(event.currentTarget)
+			}}
+			className="relative px-5 md:px-6"
+		>
+			<InputSearch
+				isLoading={searching}
+				aria-label="Search posts"
+				defaultValue={q || ''}
+				id="q"
+				name="q"
+			/>
+		</Form>
 	)
 }
