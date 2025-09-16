@@ -98,7 +98,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 					const { post } = await deletePost(jsonData.id)
 					return {
 						msg: `Post ${post.title} deleted successfully`,
-						data: post,
 					} satisfies ActionResponse
 				} else {
 					throw new Error('Invalid arguments')

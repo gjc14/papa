@@ -6,8 +6,8 @@ import type { Category, Tag } from '~/lib/db/schema'
 
 import { areDifferentPosts } from './utils'
 
-export const serverPostAtom = atom<PostWithRelations>() // only for comparison
-export const postAtom = atom<PostWithRelations>() // actually used
+export const serverPostAtom = atom<PostWithRelations | null>() // only for comparison
+export const postAtom = atom<PostWithRelations | null>() // actually used
 export const tagsAtom = atom<Tag[]>([])
 export const categoriesAtom = atom<Category[]>([])
 export const editorAtom = atom<Editor | null>(null)

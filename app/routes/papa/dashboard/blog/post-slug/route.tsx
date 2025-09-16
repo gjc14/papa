@@ -1,16 +1,16 @@
+import type { Route } from './+types/route'
 import { useEffect } from 'react'
-import { useFetcher, useNavigate, useNavigation } from 'react-router'
+import { useFetcher, useNavigate } from 'react-router'
 
 import { useAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { HeartCrack } from 'lucide-react'
 
-import { Loading } from '~/components/loading'
 import { useIsMobile } from '~/hooks/use-mobile'
+import { getPostBySlug } from '~/lib/db/post.server'
 import { generateSlug } from '~/lib/utils/seo'
 import { Post } from '~/routes/web/blog/components/post'
 
-import type { Route } from '../+types/layout'
 import { ContentEditor } from '../components/editor'
 import { Toolbar } from '../components/editor/editor-toolbar'
 import { PostDeleteAlert } from '../components/post/delete-alert'
@@ -18,66 +18,76 @@ import { LocalStorageCheck } from '../components/post/local-storage-check'
 import { PostSettings } from '../components/post/post-settings'
 import { PostResetAlert } from '../components/post/reset-alert'
 import {
-	categoriesAtom,
 	editorAtom,
 	hasChangesAtom,
 	isDeletingAtom,
 	isSavingAtom,
 	postAtom,
 	serverPostAtom,
-	tagsAtom,
 } from '../context'
 import type { action } from '../resource'
 import { FloatingToolbar } from './floating-toolbar'
 import { generateNewPost } from './utils'
 
+export const loader = async ({ params }: Route.LoaderArgs) => {
+	const isCreate = params.postSlug === 'new'
+	if (isCreate) {
+		return { post: { post: null } }
+	}
+
+	// Get post data from database
+	process.env.NODE_ENV === 'development' && console.time('getPostBySlug')
+	const post = await getPostBySlug(params.postSlug, 'EDIT')
+	process.env.NODE_ENV === 'development' && console.timeEnd('getPostBySlug')
+
+	return { post }
+}
+
 export default function DashboardSlugPost({
+	loaderData,
 	matches,
 	params,
 }: Route.ComponentProps) {
+	const { post: sPost } = loaderData
+
 	const adminMatch = matches[1]
 	const { admin } = adminMatch.data
 
 	const isCreate = params.postSlug === 'new'
-	const blogMatch = matches[2]
-	const { tags, categories, posts } = blogMatch.data
-	const currentPost = isCreate
-		? generateNewPost(admin)
-		: posts.find(p => p.slug === params.postSlug)
+	const currentPost = isCreate ? generateNewPost(admin) : sPost.post
 
 	const isMobile = useIsMobile()
 	const fetcher = useFetcher<typeof action>()
 	const navigate = useNavigate()
 
 	const isSubmitting = fetcher.state === 'submitting'
-
 	const method = fetcher.formMethod
+
 	const isSaving = isSubmitting && (method === 'PUT' || method === 'POST')
 	const isDeleting = isSubmitting && method === 'DELETE'
 
 	useHydrateAtoms([
 		[serverPostAtom, currentPost],
 		[postAtom, currentPost],
-		[tagsAtom, tags],
-		[categoriesAtom, categories],
-
 		[isSavingAtom, isSaving],
 		[isDeletingAtom, isDeleting],
 	])
 
-	const [editor] = useAtom(editorAtom)
-
-	const [post, setPost] = useAtom(postAtom)
 	const [, setServerPost] = useAtom(serverPostAtom)
-	const [hasChanges] = useAtom(hasChangesAtom)
+	const [post, setPost] = useAtom(postAtom)
 	const [, setIsSaving] = useAtom(isSavingAtom)
 	const [, setIsDeleting] = useAtom(isDeletingAtom)
 
-	useEffect(() => {
-		setPost(currentPost)
-		setServerPost(currentPost)
-	}, [params.postSlug, setPost])
+	const [editor] = useAtom(editorAtom)
+	const [hasChanges] = useAtom(hasChangesAtom)
 
+	// When route changes, update post atoms
+	useEffect(() => {
+		setServerPost(currentPost)
+		setPost(currentPost)
+	}, [params.postSlug])
+
+	// When saving/deleting state changes, update atoms
 	useEffect(() => {
 		setIsSaving(isSaving)
 		setIsDeleting(isDeleting)
@@ -94,12 +104,15 @@ export default function DashboardSlugPost({
 			) {
 				const data = fetcher.data.data
 				if (data) {
+					// Update atoms with returned data
+					setServerPost(data)
+					setPost(data)
 					data.slug !== post?.slug && navigate('/dashboard/blog/' + data.slug)
 					window.localStorage.removeItem(`dirty-post-${post?.id}`)
 				}
 			}
 		}
-	}, [fetcher.state, fetcher.formMethod, isSubmitting])
+	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
 
 	if (!post) {
 		return (
