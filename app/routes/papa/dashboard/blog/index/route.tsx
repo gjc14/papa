@@ -10,6 +10,7 @@ import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import type { PostWithRelations } from '~/lib/db/post.server'
+import { getPosts } from '~/lib/db/post.server'
 import {
 	DashboardActions,
 	DashboardHeader,
@@ -23,9 +24,27 @@ import {
 
 import { SimpleSortHeader } from '../../components/data-table/simple-sort-header'
 
-export default function DashboardPost({ matches }: Route.ComponentProps) {
-	const match = matches[2]
-	const { posts, tags, categories } = match.data
+export const meta = () => {
+	return [{ name: 'title', content: 'Dashboard Blog' }]
+}
+
+export const loader = async () => {
+	try {
+		process.env.NODE_ENV === 'development' && console.time('getPosts')
+		const postsData = await getPosts({ status: 'ALL' })
+		process.env.NODE_ENV === 'development' && console.timeEnd('getPosts')
+
+		return {
+			posts: postsData.posts,
+		}
+	} catch (error) {
+		console.error(error)
+		return { posts: [] }
+	}
+}
+
+export default function DashboardPost({ loaderData }: Route.ComponentProps) {
+	const { posts } = loaderData
 
 	const [rowSelection, setRowSelection] = useState({})
 	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())

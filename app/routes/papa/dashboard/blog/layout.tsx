@@ -1,55 +1,26 @@
 import type { Route } from './+types/layout'
+import { useEffect } from 'react'
 import { Outlet, useNavigation } from 'react-router'
 
-import { Provider } from 'jotai'
+import { Provider, useAtom } from 'jotai'
 
 import { Loading } from '~/components/loading'
-import { getPosts } from '~/lib/db/post.server'
+import type { Category, Tag } from '~/lib/db/schema'
 import { getCategories, getTags } from '~/lib/db/taxonomy.server'
 
-import { getCache, setCache } from './layout-cache'
+import { categoriesAtom, tagsAtom } from './context'
 
 export const loader = async () => {
-	try {
-		console.time('blog-loader')
-		const [postsData, tagsData, categoriesData] = await Promise.all([
-			getPosts({ status: 'ALL' }),
-			getTags(),
-			getCategories(),
-		])
-		console.timeEnd('blog-loader')
-		return {
-			posts: postsData.posts,
-			tags: tagsData.tags,
-			categories: categoriesData.categories,
-		}
-	} catch (error) {
-		console.error(error)
-		return { posts: [], categories: [], tags: [] }
-	}
+	const tagsPromise = getTags()
+	const categoriesPromise = getCategories()
+	return { tagsPromise, categoriesPromise }
 }
 
-export const clientLoader = async ({
-	serverLoader,
-}: Route.ClientLoaderArgs) => {
-	const cache = getCache()
-	if (cache) {
-		process.env.NODE_ENV === 'development' && console.log('Cache hit')
-		return cache
-	}
-
-	process.env.NODE_ENV === 'development' && console.log('Cache miss')
-
-	const data = await serverLoader()
-	setCache(data)
-	return data
-}
-
-clientLoader.hydrate = true
-
-export default function DashboardBlog() {
+export default function DashboardBlog({ loaderData }: Route.ComponentProps) {
+	const { tagsPromise, categoriesPromise } = loaderData
 	const navigation = useNavigation()
 	const isNavigating = navigation.state === 'loading'
+
 	if (isNavigating) {
 		return (
 			<div className="mx-auto flex h-full flex-1 flex-col items-center justify-center space-y-6">
@@ -60,7 +31,41 @@ export default function DashboardBlog() {
 
 	return (
 		<Provider>
+			<TaxonomiesLoader
+				tagsPromise={tagsPromise}
+				categoriesPromise={categoriesPromise}
+			/>
 			<Outlet />
 		</Provider>
 	)
+}
+
+function TaxonomiesLoader({
+	tagsPromise,
+	categoriesPromise,
+}: {
+	tagsPromise: Promise<{ tags: Tag[] }>
+	categoriesPromise: Promise<{ categories: Category[] }>
+}) {
+	const [, setTags] = useAtom(tagsAtom)
+	const [, setCategories] = useAtom(categoriesAtom)
+
+	useEffect(() => {
+		// Set taxonomies when promises resolve
+		const loadTaxonomies = async () => {
+			try {
+				const { tags } = await tagsPromise
+				const { categories } = await categoriesPromise
+
+				setTags(tags)
+				setCategories(categories)
+			} catch (error) {
+				console.error('Failed to load taxonomies:', error)
+			}
+		}
+
+		loadTaxonomies()
+	}, [tagsPromise, categoriesPromise])
+
+	return null
 }
