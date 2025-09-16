@@ -19,6 +19,7 @@ import { DataTable } from '~/routes/papa/dashboard/components/data-table'
 import { categoriesAtom, tagsAtom } from '../context'
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
 import { columns } from './colums'
+import { Filter } from './filters'
 import { Search } from './search'
 
 export const meta = () => {
@@ -68,14 +69,10 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 
 	const navigation = useNavigation()
 
-	const searching =
-		navigation.location &&
-		new URLSearchParams(navigation.location.search).has('q')
+	const params = new URLSearchParams(navigation.location?.search || '')
+	const searching = ['q', 'tag', 'category'].some(k => params.has(k))
 
 	const isNavigating = navigation.state === 'loading' && !searching
-
-	const [tags] = useAtom(tagsAtom)
-	const [category] = useAtom(categoriesAtom)
 
 	const [rowSelection, setRowSelection] = useState({})
 	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
@@ -103,13 +100,18 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 			<DashboardHeader>
 				<DashboardTitle title="Posts"></DashboardTitle>
 				<DashboardActions>
-					<Search q={q} searching={searching} />
-					<Link to="/dashboard/blog/new">
-						<Button size={'sm'}>
+					<Filter
+						q={q}
+						tagsFilter={tagsFilter}
+						categoryFilter={categoriesFilter}
+						searching={searching}
+					/>
+					<Button size={'sm'} asChild>
+						<Link to="/dashboard/blog/new">
 							<PlusCircle size={16} />
 							<p className="text-xs">Create new post</p>
-						</Button>
-					</Link>
+						</Link>
+					</Button>
 				</DashboardActions>
 			</DashboardHeader>
 			<DashboardContent>
