@@ -1,10 +1,9 @@
 import type { Route } from './+types/layout'
 import { useEffect } from 'react'
-import { Outlet, useNavigation } from 'react-router'
+import { Outlet } from 'react-router'
 
 import { Provider, useAtom } from 'jotai'
 
-import { Loading } from '~/components/loading'
 import type { Category, Tag } from '~/lib/db/schema'
 import { getCategories, getTags } from '~/lib/db/taxonomy.server'
 
@@ -18,16 +17,6 @@ export const loader = async () => {
 
 export default function DashboardBlog({ loaderData }: Route.ComponentProps) {
 	const { tagsPromise, categoriesPromise } = loaderData
-	const navigation = useNavigation()
-	const isNavigating = navigation.state === 'loading'
-
-	if (isNavigating) {
-		return (
-			<div className="mx-auto flex h-full flex-1 flex-col items-center justify-center space-y-6">
-				<Loading />
-			</div>
-		)
-	}
 
 	return (
 		<Provider>
