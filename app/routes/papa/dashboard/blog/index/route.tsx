@@ -1,17 +1,28 @@
 import type { Route } from './+types/route'
 import { useEffect, useMemo, useState } from 'react'
-import { data, Link, useFetcher } from 'react-router'
+import {
+	data,
+	Form,
+	Link,
+	useFetcher,
+	useNavigation,
+	useSubmit,
+} from 'react-router'
 
 import { type ColumnDef } from '@tanstack/react-table'
+import { useAtom } from 'jotai'
+import debounce from 'lodash/debounce'
 import { PlusCircle } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { Input } from '~/components/ui/input'
+import { InputSearch } from '~/components/ui/input-search'
+import { Loading } from '~/components/loading'
 import type { PostWithRelations } from '~/lib/db/post.server'
 import {
 	DashboardActions,
+	DashboardContent,
 	DashboardHeader,
 	DashboardSectionWrapper,
 	DashboardTitle,
@@ -22,6 +33,7 @@ import {
 } from '~/routes/papa/dashboard/components/data-table'
 
 import { SimpleSortHeader } from '../../components/data-table/simple-sort-header'
+import { categoriesAtom, tagsAtom } from '../context'
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
 
 export const meta = () => {
@@ -67,7 +79,18 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 }
 
 export default function DashboardPost({ loaderData }: Route.ComponentProps) {
-	const { posts, categoriesFilter, tagsFilter } = loaderData
+	const { posts, categoriesFilter, tagsFilter, q } = loaderData
+
+	const navigation = useNavigation()
+
+	const searching =
+		navigation.location &&
+		new URLSearchParams(navigation.location.search).has('q')
+
+	const isNavigating = navigation.state === 'loading' && !searching
+
+	const [tags] = useAtom(tagsAtom)
+	const [category] = useAtom(categoriesAtom)
 
 	const [rowSelection, setRowSelection] = useState({})
 	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
@@ -78,18 +101,24 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 
 	const tableData = useMemo(() => {
 		return posts.map(p => {
-			return {
-				...p,
-				setRowsDeleting,
-			}
+			return { ...p, setRowsDeleting }
 		})
 	}, [posts])
 
+	if (isNavigating) {
+		return (
+			<div className="mx-auto flex h-full flex-1 flex-col items-center justify-center space-y-6">
+				<Loading />
+			</div>
+		)
+	}
+
 	return (
-		<DashboardSectionWrapper>
+		<DashboardSectionWrapper className="gap-2">
 			<DashboardHeader>
 				<DashboardTitle title="Posts"></DashboardTitle>
 				<DashboardActions>
+					<Search q={q} searching={searching} />
 					<Link to="/dashboard/blog/new">
 						<Button size={'sm'}>
 							<PlusCircle size={16} />
@@ -98,31 +127,67 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 					</Link>
 				</DashboardActions>
 			</DashboardHeader>
-			<DataTable
-				columns={columns}
-				data={tableData}
-				hideColumnFilter
-				rowSelection={rowSelection}
-				setRowSelection={setRowSelection}
-				rowGroupStyle={[
-					{
-						rowIds: rowsDeleting,
-						className: 'opacity-50 pointer-events-none',
-					},
-				]}
-			>
-				{table => (
-					<Input
-						placeholder="Filter title..."
-						value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
-						onChange={event =>
-							table.getColumn('title')?.setFilterValue(event.target.value)
-						}
-						className="max-w-sm"
-					/>
-				)}
-			</DataTable>
+			<DashboardContent>
+				<DataTable
+					columns={columns}
+					data={tableData}
+					hideColumnFilter
+					rowSelection={rowSelection}
+					setRowSelection={setRowSelection}
+					rowGroupStyle={[
+						{
+							rowIds: rowsDeleting,
+							className: 'opacity-50 pointer-events-none',
+						},
+					]}
+				/>
+			</DashboardContent>
 		</DashboardSectionWrapper>
+	)
+}
+
+const Search = ({ q, searching }: { q?: string; searching?: boolean }) => {
+	const submit = useSubmit()
+
+	// Sync search input with URL param
+	useEffect(() => {
+		const searchField = document.getElementById('q')
+		if (searchField instanceof HTMLInputElement) {
+			searchField.value = q || ''
+		}
+	}, [q])
+
+	const debouncedSearch = useMemo(
+		() =>
+			debounce((form: HTMLFormElement) => {
+				submit(form)
+			}, 600),
+		[submit],
+	)
+
+	useEffect(() => {
+		return () => {
+			debouncedSearch.cancel()
+		}
+	}, [debouncedSearch])
+
+	return (
+		<Form
+			id="search-form"
+			role="search"
+			onChange={event => {
+				debouncedSearch(event.currentTarget)
+			}}
+			className="relative"
+		>
+			<InputSearch
+				isLoading={searching}
+				aria-label="Search posts"
+				defaultValue={q || ''}
+				id="q"
+				name="q"
+			/>
+		</Form>
 	)
 }
 
