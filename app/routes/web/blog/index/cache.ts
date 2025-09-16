@@ -34,7 +34,7 @@ export async function fetchPosts(
 	})
 	cleanupExpiredEntries()
 
-	return { meta, posts, categoriesFilter, tagsFilter }
+	return { meta, posts, categoriesFilter, tagsFilter, q }
 }
 
 function cleanupExpiredEntries() {
