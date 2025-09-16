@@ -65,7 +65,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 }
 
 export default function DashboardPost({ loaderData }: Route.ComponentProps) {
-	const { posts, categoriesFilter, tagsFilter, q } = loaderData
+	const { posts, categoryFilter, tagFilter, q } = loaderData
 
 	const navigation = useNavigation()
 
@@ -102,8 +102,8 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 				<DashboardActions>
 					<Filter
 						q={q}
-						tagsFilter={tagsFilter}
-						categoryFilter={categoriesFilter}
+						tagFilter={tagFilter}
+						categoryFilter={categoryFilter}
 						searching={searching}
 					/>
 					<Button size={'sm'} asChild>

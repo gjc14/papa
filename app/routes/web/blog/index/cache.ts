@@ -26,7 +26,7 @@ export async function fetchPosts(
 	const { seo } = await getSEO(url.pathname)
 	const meta = seo ? createMeta(seo, url) : null
 
-	const { posts, categoriesFilter, tagsFilter } = await getPosts({
+	const { posts, categoryFilter, tagFilter } = await getPosts({
 		status: 'PUBLISHED',
 		categories,
 		tags,
@@ -34,7 +34,7 @@ export async function fetchPosts(
 	})
 	cleanupExpiredEntries()
 
-	return { meta, posts, categoriesFilter, tagsFilter, q }
+	return { meta, posts, categoryFilter, tagFilter, q }
 }
 
 function cleanupExpiredEntries() {

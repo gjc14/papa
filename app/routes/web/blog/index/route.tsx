@@ -49,15 +49,15 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
-	const { meta, posts, categoriesFilter, tagsFilter, q } = loaderData
+	const { meta, posts, categoryFilter, tagFilter, q } = loaderData
 
-	const isCategoryFiltering = categoriesFilter && categoriesFilter.length > 0
-	const isTagFiltering = tagsFilter && tagsFilter.length > 0
+	const isCategoryFiltering = categoryFilter && categoryFilter.length > 0
+	const isTagFiltering = tagFilter && tagFilter.length > 0
 
 	const categoryFilters = isCategoryFiltering ? (
 		<span className="space-x-1">
 			category:{' '}
-			{categoriesFilter.map(cat => (
+			{categoryFilter.map(cat => (
 				<Badge
 					key={cat.id}
 					className="border-primary bg-brand text-brand-foreground rounded-full"
@@ -71,7 +71,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 	const tagFilters = isTagFiltering ? (
 		<span className="space-x-1">
 			tag:{' '}
-			{tagsFilter.map(tag => (
+			{tagFilter.map(tag => (
 				<Badge
 					key={tag.id}
 					className="border-primary bg-brand text-brand-foreground rounded-full"

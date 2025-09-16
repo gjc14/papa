@@ -38,8 +38,8 @@ export const getPosts = async (
 	} = {},
 ): Promise<{
 	posts: PostWithRelations[]
-	categoriesFilter?: Category[]
-	tagsFilter?: Tag[]
+	categoryFilter?: Category[]
+	tagFilter?: Tag[]
 }> => {
 	const {
 		status = 'PUBLISHED',
@@ -127,8 +127,8 @@ export const getPosts = async (
 		posts: convertDateFields(
 			snakeToCamel(postData.rows),
 		) as PostWithRelations[],
-		tagsFilter: tagsData.rows as Tag[],
-		categoriesFilter: categoriesData.rows as Category[],
+		tagFilter: tagsData.rows as Tag[],
+		categoryFilter: categoriesData.rows as Category[],
 	}
 }
 
