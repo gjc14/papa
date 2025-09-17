@@ -54,6 +54,7 @@
 		"@tiptap/core": "^3.0.7",
 		"@tiptap/extension-code-block-lowlight": "^3.0.7",
 		"@tiptap/extension-color": "^3.0.7",
+		"@tiptap/extension-file-handler": "^3.4.3",
 		"@tiptap/extension-highlight": "^3.0.7",
 		"@tiptap/extension-image": "^3.0.7",
 		"@tiptap/extension-list": "^3.0.7",
