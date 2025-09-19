@@ -95,7 +95,7 @@ export const FileCard = ({
 
 		onUpdate?.(fileMetadataUpdated)
 		fetcher.submit(JSON.stringify(fileMetadataUpdated), {
-			action: '/dashboard/assets/resource',
+			action: assetResourceRoute,
 			method: 'PUT',
 			encType: 'application/json',
 		})

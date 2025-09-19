@@ -27,6 +27,7 @@ import { generateSeoDescription, generateSlug } from '~/lib/utils/seo'
 import type { loader } from '~/routes/papa/dashboard/assets/resource'
 
 import { FileGrid } from '../../../assets/components/file-grid'
+import { assetResourceRoute } from '../../../assets/utils'
 import { editorAtom, postAtom } from '../../context'
 import { TinyLinkButton } from './tiny-link-button'
 
@@ -44,7 +45,7 @@ export const PostMetaPart = () => {
 
 	useEffect(() => {
 		if (fileLoadedRef.current) return
-		fetcher.load('/dashboard/assets/resource')
+		fetcher.load(assetResourceRoute)
 	}, [])
 
 	useEffect(() => {
