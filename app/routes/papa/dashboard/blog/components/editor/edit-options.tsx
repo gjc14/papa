@@ -326,7 +326,7 @@ const UndoRedoOptions: EditOptionProps[] = [
 ]
 
 // LinkUnlink Image Video
-const createLinkOption = (href?: string) => ({
+const createLinkUnlinkOption = (href?: string) => ({
 	name: 'Link/Unlink',
 	shortcut: 'ctrl+k',
 	icon: Link,
@@ -359,5 +359,5 @@ export {
 	RemoveFormattingOption,
 	SubSuperScriptOptions,
 	UndoRedoOptions,
-	createLinkOption,
+	createLinkUnlinkOption,
 }

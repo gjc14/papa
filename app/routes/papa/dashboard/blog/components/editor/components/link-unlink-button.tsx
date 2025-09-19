@@ -17,7 +17,7 @@ import {
 import { Skeleton } from '~/components/ui/skeleton'
 
 import { editorAtom } from '../../../context'
-import { createLinkOption } from '../edit-options'
+import { createLinkUnlinkOption } from '../edit-options'
 import { TooltipWrapper } from './tooltip-wrapper'
 
 export const isLinkUnlinkOpenAtom = atom(false)
@@ -42,8 +42,8 @@ export const LinkUnlinkButtons = () => {
 			if (!editor) return
 
 			return {
-				isActive: createLinkOption().isActive(editor),
-				canRun: createLinkOption(linkInput).canRun(editor),
+				isActive: createLinkUnlinkOption().isActive(editor),
+				canRun: createLinkUnlinkOption(linkInput).canRun(editor),
 			}
 		},
 	})
@@ -64,12 +64,6 @@ export const LinkUnlinkButtons = () => {
 			enableOnFormTags: true,
 		},
 	)
-
-	const onOpen = () => {
-		if (!editor) return
-		const { href } = editor.getAttributes('link')
-		setLinkInput(href || '')
-	}
 
 	const setLink = () => {
 		try {
@@ -110,15 +104,22 @@ export const LinkUnlinkButtons = () => {
 	if (!editor) return <Skeleton className="size-8" />
 
 	return (
-		<Popover open={isLinkUnlinkOpen} onOpenChange={setIsLinkUnlinkOpen}>
+		<Popover
+			open={isLinkUnlinkOpen}
+			onOpenChange={open => {
+				setIsLinkUnlinkOpen(open)
+				if (!editor) return
+				const { href } = editor.getAttributes('link')
+				setLinkInput(href || '')
+			}}
+		>
 			<TooltipWrapper tooltip="Link / Unlink" shortcut={LINK_UNKINK_SHORTCUT}>
 				<PopoverTrigger asChild>
 					<Button
 						size={'icon'}
 						variant={'ghost'}
-						className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+						className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
 						disabled={!canRun}
-						onClick={onOpen}
 					>
 						<Link size={14} />
 					</Button>
