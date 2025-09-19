@@ -31,9 +31,15 @@ export const formatShortcutKey = (
 	isMac: boolean,
 	capitalize: boolean = true,
 ) => {
+	const lowerKey = key.toLowerCase()
+
 	if (isMac) {
-		const lowerKey = key.toLowerCase()
 		return MAC_SYMBOLS[lowerKey] || (capitalize ? cap(key) : key)
+	}
+
+	// Handle 'mod' key for non-Mac platforms (mod = ctrl on Windows/Linux)
+	if (lowerKey === 'mod') {
+		return capitalize ? 'Ctrl' : 'ctrl'
 	}
 
 	return capitalize ? cap(key) : key

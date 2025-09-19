@@ -22,9 +22,8 @@ import { TooltipWrapper } from './tooltip-wrapper'
 
 export const isLinkUnlinkOpenAtom = atom(false)
 
-export const LINK_UNKINK_SHORTCUT = 'mod+k'
-
 export const LinkUnlinkButtons = () => {
+	const LINK_UNKINK_SHORTCUT = createLinkUnlinkOption().shortcut
 	const [linkInput, setLinkInput] = useState('')
 
 	useHydrateAtoms([[isLinkUnlinkOpenAtom, false]])

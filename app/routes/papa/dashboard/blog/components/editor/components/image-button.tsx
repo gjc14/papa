@@ -25,9 +25,8 @@ import { TooltipWrapper } from './tooltip-wrapper'
 
 export const isImageSelectorOpenAtom = atom(false)
 
-export const IMAGE_SHORTCUT = 'mod+shift+i'
-
 export const ImageButton = () => {
+	const IMAGE_SHORTCUT = createImageOption({ src: '' }).shortcut
 	const [srcInput, setSrcInput] = useState('')
 	const [altInput, setAltInput] = useState('')
 	const [titleInput, setTitleInput] = useState('')
