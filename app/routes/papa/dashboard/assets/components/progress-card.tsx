@@ -77,7 +77,7 @@ export const ProgressCard = ({
 
 								{/* Error message */}
 								{error && (
-									<p className="text-sm font-medium text-red-500 dark:text-red-600">
+									<p className="text-destructive mt-1 text-sm/tight font-medium">
 										{error}
 									</p>
 								)}
@@ -133,7 +133,7 @@ export const ProgressCard = ({
 											showPercent={false}
 											strokeWidth={15}
 											gaugePrimaryColor="rgb(79 70 229)"
-											gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
+											gaugeSecondaryColor="rgba(200, 200, 200, 1)"
 										/>
 									</div>
 								)}
