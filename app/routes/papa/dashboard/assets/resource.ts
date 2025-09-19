@@ -21,6 +21,7 @@ const fileMetadataInsertUpdateSchema = createInsertSchema(fileTable)
 	.extend({
 		createdAt: z.coerce.date(),
 		updatedAt: z.coerce.date(),
+		deletedAt: z.coerce.date().nullable(),
 	})
 
 export const action = async ({ request }: ActionFunctionArgs) => {

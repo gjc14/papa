@@ -17,6 +17,7 @@ export type PresignRequest = z.infer<typeof presignUrlRequestSchema>
 const fileMetadataSchama = createSelectSchema(file).extend({
 	createdAt: z.coerce.date(),
 	updatedAt: z.coerce.date(),
+	deletedAt: z.coerce.date().nullable(),
 })
 
 // Response schemas
