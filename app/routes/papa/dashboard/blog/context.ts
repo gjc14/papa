@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 
 import type { PostWithRelations } from '~/lib/db/post.server'
 import type { Category, Tag } from '~/lib/db/schema'
+import type { loader } from '~/routes/papa/dashboard/assets/resource'
 
 import { areDifferentPosts } from './utils'
 
@@ -12,6 +13,10 @@ export const tagsAtom = atom<Tag[]>([])
 export const categoriesAtom = atom<Category[]>([])
 export const editorAtom = atom<Editor | null>(null)
 export const editorContentAtom = atom<string | null>(null)
+
+type AssetLoaderData = Awaited<ReturnType<typeof loader>>
+
+export const assetsAtom = atom<AssetLoaderData | null>(null)
 
 export const isSettingsOpenAtom = atom(false)
 
