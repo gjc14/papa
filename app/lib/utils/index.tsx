@@ -26,3 +26,26 @@ export const isValidEmail = (email: string) => {
 	const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 	return emailRegex.test(email)
 }
+
+export function isValidUrl(string: string, allowedProtocols?: string[]) {
+	let url
+
+	try {
+		url = new URL(string)
+	} catch (_) {
+		return false
+	}
+
+	// Default allowed protocols if none specified
+	const defaultProtocols = [
+		'http:',
+		'https:',
+		'mailto:',
+		'tel:',
+		'sms:',
+		'ftp:',
+	]
+	const protocols = allowedProtocols || defaultProtocols
+
+	return protocols.includes(url.protocol)
+}
