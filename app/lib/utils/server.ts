@@ -18,24 +18,24 @@ export const handleError = (
 ) => {
 	const { errorMessage } = options
 	if (error instanceof z.ZodError) {
-		console.error(error.message)
+		console.error('handleError:', error.message)
 		return {
 			err: 'Internal error: Invalid arguments',
 		}
 	}
 	if (error instanceof DatabaseError) {
-		console.error(error)
+		console.error('handleError:', error)
 		return {
 			err: capitalize(error.message) || error.detail || 'Database error',
 		}
 	}
 	if (error instanceof Error) {
-		console.error(error.message)
+		console.error('handleError:', error.message)
 		return {
 			err: error.message,
 		}
 	}
-	console.error(error)
+	console.error('handleError:', error)
 	return {
 		err: errorMessage ?? 'Internal error: Unknown error',
 	}
