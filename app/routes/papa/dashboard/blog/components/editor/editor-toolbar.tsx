@@ -4,6 +4,7 @@ import tailwindColors from 'tailwindcss/colors.js'
 import { TooltipProvider } from '~/components/ui/tooltip'
 
 import { ColorDropdownMenu } from './components/color-dropdown'
+import { ImageButton } from './components/image-button'
 import { LinkUnlinkButtons } from './components/link-unlink-button'
 import { MoreDropdownMenu } from './components/more-dropdown'
 import { SelectDropdownMenu } from './components/select-dropdown'
@@ -112,6 +113,7 @@ export function Toolbar({
 
 					{/* link, image, video */}
 					<LinkUnlinkButtons />
+					<ImageButton />
 
 					<Separator />
 

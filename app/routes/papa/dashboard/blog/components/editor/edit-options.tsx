@@ -1,3 +1,4 @@
+import type { SetImageOptions } from '@tiptap/extension-image'
 import { Editor } from '@tiptap/react'
 import {
 	AlignCenter,
@@ -14,6 +15,7 @@ import {
 	Heading4,
 	Heading5,
 	Highlighter,
+	Image,
 	Italic,
 	Link,
 	List,
@@ -346,6 +348,16 @@ const createLinkUnlinkOption = (href?: string) => ({
 			.run(),
 })
 
+const createImageOption = (props: SetImageOptions) => ({
+	name: 'Image',
+	shortcut: 'ctrl+shift+i',
+	icon: Image,
+	isActive: (editor: Editor) => editor.isActive('image'),
+	run: (editor: Editor) => editor.chain().focus().setImage(props).run(),
+	canRun: (editor: Editor) =>
+		editor.can().chain().focus().setImage(props).run(),
+})
+
 export {
 	AdvancedParagraphOptions,
 	AlignOptions,
@@ -360,4 +372,5 @@ export {
 	SubSuperScriptOptions,
 	UndoRedoOptions,
 	createLinkUnlinkOption,
+	createImageOption,
 }
