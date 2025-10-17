@@ -7,10 +7,10 @@
 	],
 	"exclude": ["**/routes.ts"],
 	"compilerOptions": {
-		"lib": ["DOM", "DOM.Iterable", "ES2022"],
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"types": ["@react-router/node", "vite/client"],
-		"target": "ES2022",
-		"module": "ES2022",
+		"target": "ESNext",
+		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"jsx": "react-jsx",
 		"rootDirs": [".", "./.react-router/types"],

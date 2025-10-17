@@ -18,12 +18,19 @@ type StoreConfig = {
 	name: string
 	/** Absolute path for the store @default "/store" */
 	storeFrontPath: string
+	/**
+	 * BCP 47 language tag for the store @default "en-US"
+	 * @see https://datatracker.ietf.org/doc/html/rfc5646
+	 * @see https://developer.mozilla.org/en-US/docs/Glossary/BCP_47_language_tag
+	 */
+	language: string
 }
 
 export const storeConfigAtom = atom<StoreConfig>({
 	id: -1,
 	name: 'Store',
 	storeFrontPath: '/store',
+	language: 'en-US',
 })
 
 export const productAtom = atom<Awaited<ReturnType<typeof getProduct>>>(null)

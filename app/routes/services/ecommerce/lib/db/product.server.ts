@@ -31,6 +31,8 @@ export type ProductListing = Pick<
 		| 'image'
 		| 'price'
 		| 'salePrice'
+		| 'scale'
+		| 'currency'
 		| 'sku'
 		| 'manageStock'
 		| 'stockStatus'
@@ -60,20 +62,19 @@ type GetProductsParamsBase = {
 }
 
 type PriceFields = {
-	price?: number
-	salePrice?: number | null
+	price: bigint
+	salePrice: bigint | null
 }
 
-function convertPriceFromDb<T extends PriceFields>(data: T): T {
-	// TODO: Pass in scale factor if needed in the future
+function convertPriceStringToBigInt<T extends PriceFields>(data: T): T {
 	const result = { ...data }
 
-	if (typeof result.price === 'number') {
-		result.price = result.price / 100
+	if (typeof result.price === 'string') {
+		result.price = BigInt(result.price)
 	}
 
-	if (typeof result.salePrice === 'number') {
-		result.salePrice = result.salePrice / 100
+	if (typeof result.salePrice === 'string') {
+		result.salePrice = BigInt(result.salePrice)
 	}
 
 	return result
@@ -118,8 +119,10 @@ export async function getProducts({
 				THEN json_build_object(
 					'id', po.id,
 					'image', po.image,
-					'price', po.price,
-					'sale_price', po.sale_price,
+					'price', po.price::text,
+					'sale_price', po.sale_price::text,
+					'scale', po.scale,
+					'currency', po.currency,
 					'sku', po.sku,
 					'manage_stock', po.manage_stock,
 					'stock_status', po.stock_status
@@ -195,7 +198,7 @@ export async function getProducts({
 
 	return validProducts.map(p => ({
 		...p,
-		option: convertPriceFromDb(p.option),
+		option: convertPriceStringToBigInt(p.option),
 	}))
 }
 
@@ -246,7 +249,9 @@ export const getProduct = async ({
 			p.*,
 			CASE 
                 WHEN po.id IS NOT NULL 
-                THEN row_to_json(po.*) 
+                THEN
+					(row_to_json(po.*)::jsonb - 'price' - 'sale_price')
+					|| jsonb_build_object('price', po.price::text, 'sale_price', po.sale_price::text)
                 ELSE NULL 
             END AS option,
 			COALESCE(
@@ -285,7 +290,13 @@ export const getProduct = async ({
 							'option_id', pv.option_id,
 							'combination', pv.combination,
 							'order', pv.order,
-							'option', row_to_json(po.*)
+							'option', CASE
+							 	WHEN po.id IS NOT NULL 
+								THEN
+									(row_to_json(po.*)::jsonb - 'price' - 'sale_price')
+									|| jsonb_build_object('price', po.price::text, 'sale_price', po.sale_price::text)
+								ELSE NULL
+							END
 						) ORDER BY pv.order ASC
 					)
 					FROM ${productVariant} pv
@@ -369,7 +380,11 @@ export const getProduct = async ({
 
 		return {
 			...product,
-			option: convertPriceFromDb(product.option),
+			option: convertPriceStringToBigInt(product.option),
+			variants: product.variants.map(variant => ({
+				...variant,
+				option: convertPriceStringToBigInt(variant.option),
+			})),
 		}
 	}
 
@@ -401,8 +416,10 @@ export const getCrossSellProducts = async (
 				THEN json_build_object(
 					'id', po.id,
 					'image', po.image,
-					'price', po.price,
-					'sale_price', po.sale_price,
+					'price', po.price::text,
+					'sale_price', po.sale_price::text,
+					'scale', po.scale,
+					'currency', po.currency,
 					'sku', po.sku,
 					'manage_stock', po.manage_stock,
 					'stock_status', po.stock_status
@@ -422,7 +439,7 @@ export const getCrossSellProducts = async (
 
 	return converted.map(p => ({
 		...p,
-		option: convertPriceFromDb(p.option),
+		option: convertPriceStringToBigInt(p.option),
 	}))
 }
 
@@ -442,8 +459,10 @@ export const getUpsellProducts = async (
 				THEN json_build_object(
 					'id', po.id,
 					'image', po.image,
-					'price', po.price,
-					'sale_price', po.sale_price,
+					'price', po.price::text,
+					'sale_price', po.sale_price::text,
+					'scale', po.scale,
+					'currency', po.currency,
 					'sku', po.sku,
 					'manage_stock', po.manage_stock,
 					'stock_status', po.stock_status
@@ -463,6 +482,6 @@ export const getUpsellProducts = async (
 
 	return converted.map(p => ({
 		...p,
-		option: convertPriceFromDb(p.option),
+		option: convertPriceStringToBigInt(p.option),
 	}))
 }

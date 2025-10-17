@@ -10,13 +10,47 @@ import {
 // ========================================
 
 /**
+ * Format price for display, returns 0 when scale > 100
+ */
+function formatPrice(price: bigint, scale: number): string {
+	if (scale < 0) throw new Error('Scale must be non-negative')
+	if (price < 0n) return '-' + formatPrice(-price, scale)
+
+	const str = price.toString()
+
+	if (scale === 0) return str
+
+	if (str.length <= scale) {
+		const zeros = '0'.repeat(scale - str.length)
+		return `0.${zeros}${str}`
+	}
+
+	const intPart = str.slice(0, -scale)
+	const decPart = str.slice(-scale)
+	return `${intPart}.${decPart}`
+}
+
+/**
  * Get the lowest price from a list of variants
  */
 const getLowestPrice = (variants: NonNullable<Product>['variants']) => {
-	return Math.min(
-		...variants.map(
-			variant => variant.option.salePrice || variant.option.price,
+	const prices = variants.map(variant => ({
+		price: formatPrice(
+			variant.option.salePrice || variant.option.price,
+			variant.option.scale,
 		),
+		currency: variant.option.currency,
+		scale: variant.option.scale,
+	}))
+
+	if (prices.length === 0) {
+		return { price: '0', currency: '', scale: 0 }
+	}
+
+	return prices.reduce((min, current) =>
+		BigInt(current.price.split('.')[0]) < BigInt(min.price.split('.')[0])
+			? current
+			: min,
 	)
 }
 
@@ -34,12 +68,25 @@ const getDisplayPrice = (props: {
 
 	if (hasVariants) {
 		const selectedVariant = getSelectedVariant(props)
-		const filteredVariants = getFilteredVariants(props)
 		return selectedVariant
-			? selectedVariant.option.salePrice || selectedVariant.option.price
-			: getLowestPrice(filteredVariants)
+			? {
+					price: formatPrice(
+						selectedVariant.option.salePrice || selectedVariant.option.price,
+						selectedVariant.option.scale,
+					),
+					currency: selectedVariant.option.currency,
+					scale: selectedVariant.option.scale,
+				}
+			: getLowestPrice(getFilteredVariants(props))
 	}
-	return props.product.option.salePrice || props.product.option.price
+	return {
+		price: formatPrice(
+			props.product.option.salePrice || props.product.option.price,
+			props.product.option.scale,
+		),
+		currency: props.product.option.currency,
+		scale: props.product.option.scale,
+	}
 }
 
 /**
@@ -78,9 +125,27 @@ const getDisplayOriginalPrice = (props: {
 
 	if (hasVariants) {
 		const selectedVariant = getSelectedVariant(props)
-		return selectedVariant ? selectedVariant.option.price : undefined
+		return selectedVariant
+			? {
+					price: formatPrice(
+						selectedVariant.option.price,
+						selectedVariant.option.scale,
+					),
+					currency: selectedVariant.option.currency,
+					scale: selectedVariant.option.scale,
+				}
+			: undefined
 	}
 	return props.product.option.price
+		? {
+				price: formatPrice(
+					props.product.option.price,
+					props.product.option.scale,
+				),
+				currency: props.product.option.currency,
+				scale: props.product.option.scale,
+			}
+		: undefined
 }
 
 const getPricing = (props: {
@@ -94,4 +159,10 @@ const getPricing = (props: {
 	}
 }
 
-export { getPricing, getDisplayPrice, getHasDiscount, getDisplayOriginalPrice }
+export {
+	formatPrice,
+	getDisplayOriginalPrice,
+	getDisplayPrice,
+	getHasDiscount,
+	getPricing,
+}

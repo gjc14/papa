@@ -32,6 +32,7 @@
 
 import { relations } from 'drizzle-orm'
 import {
+	bigint,
 	check,
 	index,
 	integer,
@@ -143,12 +144,24 @@ export const productOption = pgTable(
 		imageAlt: varchar('image_alt'),
 		imageTitle: varchar('image_title'),
 
-		/** Please save $19.99 as 1999; $18.99 as 1899 */
-		price: integer('price').notNull().default(0),
-		salePrice: integer('sale_price').default(0),
-		// TODO: add currency / scale / taxStatus / taxClass
+		// Please save $19.99 as 1999 + scale 2; $18.999 as 18999 + scale 3
+		price: bigint('price', { mode: 'bigint' })
+			.notNull()
+			.default(sql`'0'::bigint`),
+		salePrice: bigint('sale_price', { mode: 'bigint' }).default(
+			sql`'0'::bigint`,
+		),
 		saleStartsAt: timestamp('sale_starts_at', { withTimezone: true }),
 		saleEndsAt: timestamp('sale_ends_at', { withTimezone: true }),
+		currency: varchar('currency', { length: 6 }).notNull().default('USD'),
+		scale: integer('scale').notNull().default(2),
+
+		// TODO: add taxStatus / taxClass
+
+		// Quantity limits
+		minQtyAllowed: integer('min_qty_allowed').notNull().default(1),
+		maxQtyAllowed: integer('max_qty_allowed'),
+		step: integer('step').notNull().default(1), // quantity step increment
 
 		// downloadable toggle
 		downloadable: integer('downloadable').notNull().default(0),
@@ -185,6 +198,9 @@ export const productOption = pgTable(
 		note: text('note'),
 	},
 	t => [
+		// scale must be >= 0
+		check('price_scale_non_negative', sql`${t.scale} >= 0`),
+
 		// If downloadable = 1 then downloadFiles must be present (simple check)
 		check(
 			'downloadable_requires_files',

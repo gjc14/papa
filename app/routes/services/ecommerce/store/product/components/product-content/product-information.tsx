@@ -12,6 +12,7 @@ import { getHasVariants, getSelectedVariant } from '../../utils/variants'
 
 export const ProductInformation = () => {
 	const {
+		storeConfig,
 		product,
 		selectedAttributes,
 		setSelectedAttributes,
@@ -46,6 +47,13 @@ export const ProductInformation = () => {
 		})
 	}
 
+	const fmt = new Intl.NumberFormat(storeConfig.language, {
+		style: 'currency',
+		currency: displayPrice.currency,
+		minimumFractionDigits: selectedOption.scale,
+		maximumFractionDigits: selectedOption.scale,
+	})
+
 	return (
 		<>
 			{/* Basic Info */}
@@ -58,11 +66,14 @@ export const ProductInformation = () => {
 				</div>
 				<div className="my-8 flex items-baseline gap-3">
 					<span className="text-3xl font-light">
-						{hasVariants && !selectedVariant && 'From '}${displayPrice}
+						{hasVariants && !selectedVariant && 'From '}
+						{fmt.format(displayPrice.price as Intl.StringNumericLiteral)}
 					</span>
 					{hasDiscount && displayOriginalPrice && (
 						<span className="text-muted-foreground text-xl line-through">
-							${displayOriginalPrice}
+							{fmt.format(
+								displayOriginalPrice.price as Intl.StringNumericLiteral,
+							)}
 						</span>
 					)}
 				</div>
