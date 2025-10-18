@@ -1,13 +1,36 @@
 import { useAtom } from 'jotai'
 
-import { Card } from '~/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '~/components/ui/card'
 
 import { productAtom } from '../../../../store/product/context'
+import { OptionForm, type ProductOptionType } from './option-form'
 
 export function MainOption() {
-	const [product] = useAtom(productAtom)
+	const [product, setProduct] = useAtom(productAtom)
 
 	if (!product) return null
 
-	return <Card className="p-3">MainOption</Card>
+	const handleOptionChange = (field: Partial<ProductOptionType>) => {
+		setProduct(prev =>
+			prev ? { ...prev, option: { ...prev.option, ...field } } : prev,
+		)
+	}
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>{product.name}</CardTitle>
+				<CardDescription>Edit product details</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<OptionForm option={product.option} onChange={handleOptionChange} />
+			</CardContent>
+		</Card>
+	)
 }

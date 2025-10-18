@@ -198,8 +198,22 @@ export const productOption = pgTable(
 		note: text('note'),
 	},
 	t => [
-		// scale must be >= 0
-		check('price_scale_non_negative', sql`${t.scale} >= 0`),
+		check('scale_non_negative', sql`${t.scale} >= 0`),
+		check('step_positive', sql`${t.step} >= 1`),
+		check('min_qty_allowed_positive', sql`${t.minQtyAllowed} >= 1`),
+		check(
+			'max_qty_allowed_non_negative',
+			sql`${t.maxQtyAllowed} IS NULL OR ${t.maxQtyAllowed} >= 0`,
+		),
+		check('weight_non_negative', sql`${t.weight} IS NULL OR ${t.weight} >= 0`),
+		check(
+			'download_limit_non_negative',
+			sql`${t.downloadLimit} IS NULL OR ${t.downloadLimit} >= 0`,
+		),
+		check(
+			'download_expiry_non_negative',
+			sql`${t.downloadExpiry} IS NULL OR ${t.downloadExpiry} >= 0`,
+		),
 
 		// If downloadable = 1 then downloadFiles must be present (simple check)
 		check(

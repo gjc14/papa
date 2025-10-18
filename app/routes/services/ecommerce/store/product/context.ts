@@ -24,6 +24,14 @@ type StoreConfig = {
 	 * @see https://developer.mozilla.org/en-US/docs/Glossary/BCP_47_language_tag
 	 */
 	language: string
+	inventory: {
+		unitSettings: {
+			weight: string
+			length: string
+			volume: string
+		}
+		lowStockThreshold: number
+	}
 }
 
 export const storeConfigAtom = atom<StoreConfig>({
@@ -31,6 +39,14 @@ export const storeConfigAtom = atom<StoreConfig>({
 	name: 'Store',
 	storeFrontPath: '/store',
 	language: 'en-US',
+	inventory: {
+		unitSettings: {
+			weight: 'g',
+			length: 'mm',
+			volume: 'l',
+		},
+		lowStockThreshold: 0,
+	},
 })
 
 export const productAtom = atom<Awaited<ReturnType<typeof getProduct>>>(null)
