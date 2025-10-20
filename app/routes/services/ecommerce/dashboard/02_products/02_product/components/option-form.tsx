@@ -157,6 +157,7 @@ export function OptionForm({
 													: BigInt(0),
 											})
 										}}
+										autoFocus={isVariant}
 									/>
 									<FieldDescription className="break-words">
 										Display:{' '}
