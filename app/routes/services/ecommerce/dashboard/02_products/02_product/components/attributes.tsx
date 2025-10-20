@@ -88,7 +88,7 @@ export function Attributes() {
 					used for filtering and variant options.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="space-y-2">
+			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
 				{product.attributes.length > 0 ? (
 					product.attributes.map(a => (
 						<AttributeItem
@@ -104,20 +104,19 @@ export function Attributes() {
 					</p>
 				)}
 			</CardContent>
-			<CardFooter className="flex-col gap-2">
+			<CardFooter className="flex-col gap-2 @md:flex-row">
 				<Button
 					variant="outline"
 					size="sm"
-					className="w-full"
+					className="flex-1"
 					onClick={handleAddAttribute}
 				>
 					<Plus />
 					Add Attribute
 				</Button>
 				<Button
-					variant="outline"
 					size="sm"
-					className="w-full"
+					className="flex-1"
 					onClick={() => alert('not implemented')}
 				>
 					<ListChecksIcon />

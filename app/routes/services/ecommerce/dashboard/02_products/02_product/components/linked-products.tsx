@@ -99,7 +99,7 @@ export function LinkedProducts() {
 						</div>
 					) : (
 						/* Product list */
-						<div className="space-y-2">
+						<div className="max-h-[360px] space-y-2 overflow-scroll">
 							{crossSellProducts.map(product => (
 								<LinkedProductItem
 									key={product.id}
@@ -145,7 +145,7 @@ export function LinkedProducts() {
 						</div>
 					) : (
 						/* Product list */
-						<div className="space-y-2">
+						<div className="max-h-[360px] space-y-2 overflow-scroll">
 							{upsellProducts.map(product => (
 								<LinkedProductItem
 									key={product.id}

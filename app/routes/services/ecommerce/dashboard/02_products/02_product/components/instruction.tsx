@@ -85,7 +85,7 @@ export const Instructions = () => {
 					How To Use; Ingredients.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="space-y-2">
+			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
 				{instructionsWithIds.length > 0 ? (
 					instructionsWithIds.map(instruction => (
 						<InstructionItem
