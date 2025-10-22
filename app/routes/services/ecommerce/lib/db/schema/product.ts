@@ -263,6 +263,8 @@ export const productAttribute = pgTable(
 	],
 )
 
+export type ProductVariantCombination = Record<string, string>
+
 // Generate product variants and its options from product attributes
 export const productVariant = pgTable('ec_product_variant', {
 	id: serial('id').primaryKey(),
@@ -272,7 +274,9 @@ export const productVariant = pgTable('ec_product_variant', {
 	optionId: integer('option_id')
 		.notNull()
 		.references(() => productOption.id, { onDelete: 'cascade' }),
-	combination: jsonb('combination').$type<Record<string, string>>().notNull(), // e.g.,{ color: 'red', weight: '100g' }
+	combination: jsonb('combination')
+		.$type<ProductVariantCombination>()
+		.notNull(), // e.g.,{ color: 'red', weight: '100g' }
 	order: integer('order').notNull().default(0),
 })
 

@@ -46,6 +46,18 @@ type AttributeType = NonNullable<
 	NonNullable<ReturnType<typeof productAtom.read>>['attributes']
 >[number]
 
+export function newAttribute(length: number): AttributeType {
+	return {
+		id: -Math.random(), // Temporary ID; replace with real ID from backend
+		name: 'New Attribute',
+		value: 'Value',
+		order: length,
+		selectType: 'SELECTOR',
+		visible: 1,
+		attributeId: null,
+	}
+}
+
 export function Attributes() {
 	const [product, setProduct] = useAtom(productAtom)
 
@@ -64,18 +76,12 @@ export function Attributes() {
 	}
 
 	const handleAddAttribute = () => {
-		const newAttribute: AttributeType = {
-			id: -Math.random(), // Temporary ID; replace with real ID from backend
-			name: 'New Attribute',
-			value: 'Value',
-			order: product.attributes.length,
-			selectType: 'SELECTOR',
-			visible: 1,
-			attributeId: null,
-		}
 		setProduct({
 			...product,
-			attributes: [...product.attributes, newAttribute],
+			attributes: [
+				...product.attributes,
+				newAttribute(product.attributes.length),
+			],
 		})
 	}
 

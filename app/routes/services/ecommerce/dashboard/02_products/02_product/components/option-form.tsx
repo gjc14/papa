@@ -84,11 +84,11 @@ export function OptionForm({
 	})
 
 	return (
-		<FieldSet>
+		<FieldSet className="h-full w-full">
 			<Tabs
 				defaultValue={tabConfig[0].value}
 				orientation="vertical"
-				className="flex w-full flex-row gap-1"
+				className="flex h-full w-full flex-row gap-1"
 			>
 				<TabsList asChild>
 					<Field
@@ -96,31 +96,32 @@ export function OptionForm({
 						className="h-auto w-fit justify-start gap-2"
 					>
 						{tabConfig.map(({ value, icon: Icon, label }) => (
-							<TooltipProvider delayDuration={0} key={value}>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<span>
-											<TabsTrigger
-												value={value}
-												className="h-9 w-9 cursor-pointer p-2"
-											>
-												<Icon size={16} />
-											</TabsTrigger>
-										</span>
-									</TooltipTrigger>
-									<TooltipContent side="right" className="px-2 py-1 text-xs">
-										{label}
-									</TooltipContent>
-								</Tooltip>
-							</TooltipProvider>
+							<Tooltip delayDuration={0} key={value}>
+								<TooltipTrigger asChild>
+									<span>
+										<TabsTrigger
+											value={value}
+											className="h-9 w-9 cursor-pointer p-2"
+										>
+											<Icon size={16} />
+										</TabsTrigger>
+									</span>
+								</TooltipTrigger>
+								<TooltipContent side="right" className="px-2 py-1 text-xs">
+									{label}
+								</TooltipContent>
+							</Tooltip>
 						))}
 					</Field>
 				</TabsList>
 
 				<div className="flex grow flex-col overflow-hidden rounded-md border">
 					<TabsContent
+						tabIndex={-1}
 						value="general"
-						className="m-0 flex h-[360px] flex-col gap-3 overflow-y-scroll p-3 pb-12"
+						className={`m-0 flex ${
+							isVariant ? '' : 'h-[360px]'
+						} flex-col gap-3 overflow-y-scroll p-3 pb-12`}
 					>
 						<CardTitle className="my-1 mb-3">General</CardTitle>
 
@@ -357,8 +358,11 @@ export function OptionForm({
 					</TabsContent>
 
 					<TabsContent
+						tabIndex={-1}
 						value="inventory"
-						className="m-0 flex h-[360px] flex-col gap-3 overflow-y-scroll p-3 pb-12"
+						className={`m-0 flex ${
+							isVariant ? '' : 'h-[360px]'
+						} flex-col gap-3 overflow-y-scroll p-3 pb-12`}
 					>
 						<CardTitle className="my-1 mb-3">Inventory</CardTitle>
 
@@ -452,8 +456,11 @@ export function OptionForm({
 
 					{/* Shipping Tab */}
 					<TabsContent
+						tabIndex={-1}
 						value="shipping"
-						className="m-0 flex h-[360px] flex-col gap-3 overflow-y-scroll p-3 pb-12"
+						className={`m-0 flex ${
+							isVariant ? '' : 'h-[360px]'
+						} flex-col gap-3 overflow-y-scroll p-3 pb-12`}
 					>
 						<CardTitle className="my-1 mb-3">Shipping</CardTitle>
 
@@ -577,8 +584,11 @@ export function OptionForm({
 
 					{/* Digital Product Tab */}
 					<TabsContent
+						tabIndex={-1}
 						value="digital"
-						className="m-0 flex h-[360px] flex-col gap-3 overflow-y-scroll p-3 pb-12"
+						className={`m-0 flex ${
+							isVariant ? '' : 'h-[360px]'
+						} flex-col gap-3 overflow-y-scroll p-3 pb-12`}
 					>
 						<CardTitle className="my-1 mb-3">Digital</CardTitle>
 
@@ -741,8 +751,11 @@ export function OptionForm({
 
 					{/* Others Tab */}
 					<TabsContent
+						tabIndex={-1}
 						value="others"
-						className="m-0 flex h-[360px] flex-col gap-3 overflow-y-scroll p-3 pb-12"
+						className={`m-0 flex ${
+							isVariant ? '' : 'h-[360px]'
+						} flex-col gap-3 overflow-y-scroll p-3 pb-12`}
 					>
 						<CardTitle className="my-1 mb-3">Others</CardTitle>
 

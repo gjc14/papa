@@ -1,14 +1,17 @@
-import { useState } from 'react'
-
-import { useAtom } from 'jotai'
-import { Grid, Plus } from 'lucide-react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from '~/components/ui/accordion'
+	flexRender,
+	getCoreRowModel,
+	getExpandedRowModel,
+	useReactTable,
+	type ColumnDef,
+	type ExpandedState,
+	type Row,
+} from '@tanstack/react-table'
+import { useAtom } from 'jotai'
+import { ChevronDown, ChevronRight, Grid, Plus } from 'lucide-react'
+
 import { Button } from '~/components/ui/button'
 import {
 	Card,
@@ -25,48 +28,190 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '~/components/ui/dialog'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '~/components/ui/select'
+import { cn } from '~/lib/utils'
+import {
+	productAtom,
+	storeConfigAtom,
+} from '~/routes/services/ecommerce/store/product/context'
+import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
-import { productAtom } from '../../../../store/product/context'
 import { OptionForm } from './option-form'
+
+type VariantType = NonNullable<
+	ReturnType<typeof productAtom.read>
+>['variants'][number]
 
 /**
  * Variants Component
  * Renders the list of product variants with their respective option forms.
  * Shows all combinations in a card preview, with edit capability via dialog and accordion.
+ * @see https://tanstack.com/table/latest/docs/framework/react/examples/expanding?panel=sandbox
  * @link [ProductVariant](../../../../lib/db/product.server.ts)
  */
 export function Variants() {
+	const [storeConfig] = useAtom(storeConfigAtom)
 	const [product, setProduct] = useAtom(productAtom)
+
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
-	const [expandedAccordions, setExpandedAccordions] = useState<Set<number>>(
-		new Set(),
-	)
+	const [expanded, setExpanded] = useState<ExpandedState>({})
+	const [focusedRowId, setFocusedRowId] = useState<string | null>(null)
+
+	// Effect to focus the expander button after dialog opens and row expands
+	useEffect(() => {
+		if (isDialogOpen && focusedRowId) {
+			// Wait for next tick to ensure DOM is updated
+			const timer = setTimeout(() => {
+				const expanderButton = document.querySelector(
+					`button[aria-expanded="true"][data-row-id="${focusedRowId}"]`,
+				) as HTMLButtonElement
+
+				if (expanderButton) {
+					expanderButton.focus()
+					setFocusedRowId(null) // Reset after focusing
+				}
+			}, 100)
+
+			return () => clearTimeout(timer)
+		}
+	}, [isDialogOpen, focusedRowId])
 
 	if (!product) return null
 
-	const handleVariantOptionChange = (
-		variantId: number,
-		field: Partial<(typeof product.variants)[number]['option']>,
-	) => {
-		setProduct(prev => {
-			if (!prev) return prev
-			const updatedVariants = prev.variants.map(v =>
-				v.id === variantId ? { ...v, option: { ...v.option, ...field } } : v,
-			)
-			return { ...prev, variants: updatedVariants }
-		})
-	}
-
 	const handleEditClick = (variantId: number) => {
-		setExpandedAccordions(new Set([variantId]))
+		const rowId = variantId.toString()
+		setExpanded({ [rowId]: true })
+		setFocusedRowId(rowId)
 		setIsDialogOpen(true)
 	}
 
-	const formatCombination = (combination: { [x: string]: string }) => {
-		return Object.entries(combination)
-			.map(([key, value]) => `${key}: ${value}`)
-			.join(', ')
+	const handleOptionChange = (
+		variantId: number,
+		changes: Partial<VariantType>,
+	) => {
+		setProduct(prev => {
+			if (!prev) return prev
+
+			return {
+				...prev,
+				variants: prev.variants.map(v =>
+					v.id === variantId
+						? { ...v, option: { ...v.option, ...changes } }
+						: v,
+				),
+			}
+		})
 	}
+
+	const handleCombinationChange = (
+		variantId: number,
+		key: string,
+		value: string,
+	) => {
+		setProduct(prev => {
+			if (!prev) return prev
+
+			return {
+				...prev,
+				variants: prev.variants.map(v =>
+					v.id === variantId
+						? { ...v, combination: { ...v.combination, [key]: value } }
+						: v,
+				),
+			}
+		})
+	}
+
+	const [attrKeys, attrOptions] = useMemo(() => {
+		const keys = new Set<string>()
+		const options: Record<string, string[]> = {}
+		product.attributes.forEach(attr => {
+			if (attr.selectType !== 'HIDDEN' && attr.name && attr.value) {
+				keys.add(attr.name)
+				// Split pipe-separated values
+				options[attr.name] = attr.value.split('|').map(v => v.trim())
+			}
+		})
+		return [Array.from(keys), options]
+	}, [product.attributes])
+
+	const columns: ColumnDef<VariantType>[] = useMemo(() => {
+		return [
+			{
+				id: 'expander',
+				header: () => null,
+				cell: ({ row }) => {
+					return row.getCanExpand() ? (
+						<Button
+							onClick={row.getToggleExpandedHandler()}
+							variant={'ghost'}
+							size={'icon'}
+							className="h-full w-full rounded-none focus:ring-0 focus-visible:ring-0"
+							aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
+							aria-expanded={row.getIsExpanded()}
+							data-row-id={row.id}
+						>
+							{row.getIsExpanded() ? <ChevronDown /> : <ChevronRight />}
+						</Button>
+					) : null
+				},
+				size: 50,
+			},
+			...attrKeys.map(key => ({
+				id: key,
+				header: key,
+				cell: ({ row }: { row: Row<VariantType> }) => {
+					const variant = row.original
+					const currentValue = variant.combination[key]
+					const options = attrOptions[key] || []
+
+					return (
+						<Select
+							value={currentValue}
+							onValueChange={value =>
+								handleCombinationChange(variant.id, key, value)
+							}
+						>
+							<SelectTrigger className="h-8 w-full rounded-none">
+								<SelectValue placeholder={`Select ${key}`} />
+							</SelectTrigger>
+							<SelectContent className="rounded-none">
+								{options.map(option => (
+									<SelectItem
+										key={option}
+										value={option}
+										className="rounded-none"
+									>
+										{option}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					)
+				},
+				size: 150,
+			})),
+		]
+	}, [attrKeys, attrOptions])
+
+	const table = useReactTable({
+		data: product.variants,
+		columns,
+		state: {
+			expanded,
+		},
+		onExpandedChange: setExpanded,
+		getCoreRowModel: getCoreRowModel(),
+		getExpandedRowModel: getExpandedRowModel(),
+		getRowCanExpand: () => true,
+		getRowId: row => row.id.toString(),
+	})
 
 	return (
 		<>
@@ -78,25 +223,53 @@ export function Variants() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
-					{product.variants.map(v => (
-						<div
-							key={v.id}
-							className="flex items-center justify-between rounded-md border p-3"
-						>
-							<div className="flex-1">
-								<p className="text-sm font-medium">
-									{formatCombination(v.combination)}
-								</p>
-							</div>
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => handleEditClick(v.id)}
+					{product.variants.map(v => {
+						const fmt = new Intl.NumberFormat(storeConfig.language, {
+							style: 'currency',
+							currency: v.option.currency,
+							minimumFractionDigits: v.option.scale,
+							maximumFractionDigits: v.option.scale,
+						})
+
+						return (
+							<div
+								key={v.id}
+								className="flex items-center justify-between rounded-md border p-3"
 							>
-								Edit
-							</Button>
-						</div>
-					))}
+								<div className="flex-1">
+									<p>
+										{Object.entries(v.combination).map(([key, value], i) => (
+											<Fragment key={key}>
+												{i !== 0 && (
+													<span className="text-muted-foreground"> ⨉ </span>
+												)}
+												<span className="text-sm font-medium">{key}</span>
+												<span className="bg-muted ml-1 border px-1 py-0.5 text-xs">
+													{value}
+												</span>
+											</Fragment>
+										))}
+									</p>
+									<p className="text-muted-foreground mt-2 text-xs">
+										{v.option.sku || 'No SKU'} •{' '}
+										{fmt.format(
+											formatPrice(
+												v.option.price,
+												v.option.scale,
+											) as Intl.StringNumericLiteral,
+										)}
+									</p>
+								</div>
+								<Button
+									size="sm"
+									variant="outline"
+									onClick={() => handleEditClick(v.id)}
+								>
+									Edit
+								</Button>
+							</div>
+						)
+					})}
 				</CardContent>
 				<CardFooter className="flex-col gap-2 @md:flex-row">
 					<Button
@@ -115,37 +288,95 @@ export function Variants() {
 			</Card>
 
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="flex max-h-[80vh] w-full flex-col p-0 sm:max-w-3xl">
+				<DialogContent className="bg-card flex h-[85vh] w-full flex-col p-0 sm:max-w-[calc(100%-3rem)]">
 					<DialogHeader className="flex-shrink-0 px-6 pt-6">
 						<DialogTitle>Edit Variants</DialogTitle>
 						<DialogDescription>
 							Modify the options for each product variant below.
 						</DialogDescription>
 					</DialogHeader>
-					<div className="flex-1 overflow-y-auto px-6 pb-6">
-						<Accordion
-							type="multiple"
-							value={Array.from(expandedAccordions).map(String)}
-							onValueChange={values => {
-								setExpandedAccordions(new Set(values.map(Number)))
-							}}
-							className="w-full"
-						>
-							{product.variants.map(v => (
-								<AccordionItem key={v.id} value={String(v.id)}>
-									<AccordionTrigger className="cursor-pointer hover:no-underline">
-										{formatCombination(v.combination)}
-									</AccordionTrigger>
-									<AccordionContent>
-										<OptionForm
-											option={v.option}
-											parentOption={product.option}
-											onChange={o => handleVariantOptionChange(v.id, o)}
-										/>
-									</AccordionContent>
-								</AccordionItem>
-							))}
-						</Accordion>
+
+					<div className="flex-1 overflow-auto px-6 pb-6">
+						<div className="overflow-hidden border" role="grid">
+							<div
+								className="border-primary/30 grid border-b"
+								style={{
+									gridTemplateColumns: table
+										.getHeaderGroups()[0]
+										.headers.map(header => `${header.getSize()}px`)
+										.join(' '),
+								}}
+								role="row"
+							>
+								{table.getHeaderGroups().map(g =>
+									g.headers.map(header => (
+										<div
+											key={header.id}
+											className="text-foreground px-4 py-3 text-sm font-medium"
+											role="columnheader"
+										>
+											{header.isPlaceholder
+												? null
+												: flexRender(
+														header.column.columnDef.header,
+														header.getContext(),
+													)}
+										</div>
+									)),
+								)}
+							</div>
+
+							<div role="rowgroup">
+								{table.getRowModel().rows.map(row => (
+									<Fragment key={row.id}>
+										<div
+											className="hover:bg-accent/50 grid border-b last:border-b-0"
+											style={{
+												gridTemplateColumns: row
+													.getVisibleCells()
+													.map(cell => `${cell.column.getSize()}px`)
+													.join(' '),
+											}}
+											role="row"
+										>
+											{row.getVisibleCells().map(cell => (
+												<div
+													key={cell.id}
+													className={cn(
+														'focus-within:bg-accent text-sm',
+														cell.column.id === 'expander' ? 'p-0' : 'p-2',
+													)}
+													role="gridcell"
+													tabIndex={-1}
+												>
+													{flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext(),
+													)}
+												</div>
+											))}
+										</div>
+
+										{row.getIsExpanded() && (
+											<div role="row">
+												<div
+													role="gridcell"
+													style={{ gridColumn: '1 / -1' }}
+													className="p-3"
+												>
+													<OptionForm
+														option={row.original.option}
+														onChange={changes =>
+															handleOptionChange(row.original.id, changes)
+														}
+													/>
+												</div>
+											</div>
+										)}
+									</Fragment>
+								))}
+							</div>
+						</div>
 					</div>
 				</DialogContent>
 			</Dialog>
