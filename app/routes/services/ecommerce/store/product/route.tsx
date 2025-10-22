@@ -2,7 +2,7 @@ import type { Route } from './+types/route'
 import { useEffect } from 'react'
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router'
 
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { ArrowLeft, Store } from 'lucide-react'
 
@@ -65,10 +65,10 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 
 export default function ProductRoute({ loaderData }: Route.ComponentProps) {
 	useHydrateAtoms([[productAtom, loaderData.product]])
-	const [, setProduct] = useAtom(productAtom)
-	const [, setIsResolving] = useAtom(isResolvingAtom)
-	const [, setCrossSellProducts] = useAtom(crossSellProductsAtom)
-	const [, setProductGallery] = useAtom(productGalleryAtom)
+	const setProduct = useSetAtom(productAtom)
+	const setIsResolving = useSetAtom(isResolvingAtom)
+	const setCrossSellProducts = useSetAtom(crossSellProductsAtom)
+	const setProductGallery = useSetAtom(productGalleryAtom)
 
 	useEffect(() => {
 		setProduct(loaderData.product)

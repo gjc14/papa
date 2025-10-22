@@ -5,12 +5,9 @@ import { useProductContext } from '../../hooks/use-product-context'
 export const ProductAttributes = () => {
 	const { product } = useProductContext()
 
-	if (!product || !product.attributes || product.attributes.length === 0)
-		return null
+	if (!product) return null
 
-	const visibleAttributes = product.attributes.filter(
-		attr => attr.visible === 1,
-	)
+	const visibleAttributes = product.attributes.filter(attr => !!attr.visible)
 
 	if (visibleAttributes.length === 0) return null
 

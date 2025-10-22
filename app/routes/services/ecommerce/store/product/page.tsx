@@ -1,7 +1,7 @@
 /**
  * Store Product Page is a component that could be dynamically rendered from database.
  */
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { Separator } from '~/components/ui/separator'
 
@@ -21,9 +21,9 @@ import { isResolvingAtom, productAtom } from './context'
  * Store product page component, displays product, image gallery, and cross-sell products.
  */
 export function StoreProductPage() {
-	const [product] = useAtom(productAtom)
+	const product = useAtomValue(productAtom)
 
-	const [isResolving] = useAtom(isResolvingAtom)
+	const isResolving = useAtomValue(isResolvingAtom)
 
 	if (!product) return null
 

@@ -74,7 +74,7 @@ export const isResolvingAtom = atom<{
 	crossSellProducts: boolean
 }>({ productGallery: true, crossSellProducts: true })
 
-export const selectedAttributesAtom = atom<Record<string, string>>({})
+export const selectedVariantAttributesAtom = atom<Record<string, string>>({})
 
 export const hoveredAttributeImageAtom = atom<{
 	image: string

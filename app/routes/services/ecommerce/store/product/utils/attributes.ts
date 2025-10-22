@@ -1,49 +1,51 @@
-import type { Product, selectedAttributesAtom } from '../context'
+import type { Product, selectedVariantAttributesAtom } from '../context'
 
 /**
- * Get ordered attribute keys based on product.attributes
- * Only includes attributes that exist in variants and selectType is not HIDDEN
+ * Get variant attribute keys based on product attributes and variants
+ *
+ * @example
+ * const variantOptions = getVariantOptions(product.attributes, product.variants)
+ * console.log(variantOptions) // { color: Set{'black','white'}, size: Set{'S','M','L'} }
  */
-const getAttributeKeys = (product: NonNullable<Product>) => {
-	// Get all attribute names that exist in variants
-	const variantAttributeNames = new Set(
-		product.variants.flatMap(variant => Object.keys(variant.combination)),
-	)
+const getVariantOptions = (
+	attributes: NonNullable<Product>['attributes'],
+	variants?: NonNullable<Product>['variants'],
+) => {
+	const options: Record<string, Set<string>> = {}
 
-	return product.attributes
-		.filter(attr => {
-			if (!attr.name || attr.selectType === 'HIDDEN') return false
-			return variantAttributeNames.has(attr.name)
-		})
-		.sort((a, b) => a.order - b.order)
-		.map(attr => attr.name)
-		.filter(v => v !== null)
-}
+	let availableCombinations: Record<string, Set<string>> | undefined = undefined
+	if (variants) {
+		availableCombinations = variants.reduce(
+			(acc, variant) => {
+				Object.entries(variant.combination).forEach(([attr, value]) => {
+					if (!acc[attr]) {
+						acc[attr] = new Set<string>()
+					}
+					acc[attr].add(value)
+				})
+				return acc
+			},
+			{} as Record<string, Set<string>>,
+		)
+	}
 
-/**
- * Get all possible values for each attribute from variants
- * e.g. { color: ['red', 'blue'], size: ['S', 'M', 'L'] }
- */
-const getAttributeValues = (product: NonNullable<Product>) => {
-	const valuesMap: Record<string, Set<string>> = {}
-
-	// Collect all unique values for each attribute
-	product.variants.forEach(variant => {
-		Object.entries(variant.combination).forEach(([attr, value]) => {
-			if (!valuesMap[attr]) {
-				valuesMap[attr] = new Set()
+	attributes.forEach(attr => {
+		if (attr.selectType !== 'HIDDEN' && attr.name && attr.value) {
+			const aName = attr.name
+			if (availableCombinations) {
+				Object.keys(availableCombinations).includes(aName) &&
+					availableCombinations[aName].forEach(value => {
+						if (!options[aName]) {
+							options[aName] = new Set()
+						}
+						options[aName].add(value)
+					})
+			} else {
+				options[aName] = new Set(attr.value.split('|').map(v => v.trim()))
 			}
-			valuesMap[attr].add(value)
-		})
+		}
 	})
-
-	// Convert Sets to Arrays
-	return Object.fromEntries(
-		Object.entries(valuesMap).map(([key, valueSet]) => [
-			key,
-			Array.from(valueSet),
-		]),
-	)
+	return options
 }
 
 // ========================================
@@ -56,14 +58,17 @@ const getAttributeValues = (product: NonNullable<Product>) => {
  */
 const getIsAttributeValueAvailable = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 	attributeName: string
 	attributeValue: string
 }): boolean => {
-	const { product, selectedAttributes, attributeName, attributeValue } = props
+	const { product, selectedVariantAttributes, attributeName, attributeValue } =
+		props
 
 	const testSelection = {
-		...selectedAttributes,
+		...selectedVariantAttributes,
 		[attributeName]: attributeValue, // Simulate selecting this value
 	}
 	return product.variants.some(variant => {
@@ -79,14 +84,17 @@ const getIsAttributeValueAvailable = (props: {
  */
 const getVariantsForAttributeValue = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 	attributeName: string
 	attributeValue: string
 }) => {
-	const { product, selectedAttributes, attributeName, attributeValue } = props
+	const { product, selectedVariantAttributes, attributeName, attributeValue } =
+		props
 
 	const testSelection = {
-		...selectedAttributes,
+		...selectedVariantAttributes,
 		[attributeName]: attributeValue, // Simulate selecting this value
 	}
 	return product.variants.filter(variant => {
@@ -103,7 +111,9 @@ const getVariantsForAttributeValue = (props: {
  */
 const getAttributeValueImage = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 	attributeName: string
 	attributeValue: string
 }) => {
@@ -124,8 +134,7 @@ const getAttributeValueImage = (props: {
 }
 
 export {
-	getAttributeKeys,
-	getAttributeValues,
+	getVariantOptions,
 	getIsAttributeValueAvailable,
 	getVariantsForAttributeValue,
 	getAttributeValueImage,

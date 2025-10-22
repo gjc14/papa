@@ -1,4 +1,4 @@
-import type { Product, selectedAttributesAtom } from '../context'
+import type { Product, selectedVariantAttributesAtom } from '../context'
 import {
 	getFilteredVariants,
 	getHasVariants,
@@ -62,7 +62,9 @@ const getLowestPrice = (variants: NonNullable<Product>['variants']) => {
  */
 const getDisplayPrice = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 }) => {
 	const hasVariants = getHasVariants(props.product)
 
@@ -94,7 +96,9 @@ const getDisplayPrice = (props: {
  */
 const getHasDiscount = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 }) => {
 	const hasVariants = getHasVariants(props.product)
 
@@ -119,7 +123,9 @@ const getHasDiscount = (props: {
  */
 const getDisplayOriginalPrice = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 }) => {
 	const hasVariants = getHasVariants(props.product)
 
@@ -150,7 +156,9 @@ const getDisplayOriginalPrice = (props: {
 
 const getPricing = (props: {
 	product: NonNullable<Product>
-	selectedAttributes: ReturnType<typeof selectedAttributesAtom.read>
+	selectedVariantAttributes: ReturnType<
+		typeof selectedVariantAttributesAtom.read
+	>
 }) => {
 	return {
 		displayPrice: getDisplayPrice(props),
