@@ -21,6 +21,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
+	DialogTrigger,
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { Spinner } from '~/components/ui/spinner'
@@ -111,18 +112,28 @@ export function LinkedProducts() {
 					)}
 				</CardContent>
 				<CardFooter>
-					<Button
-						size="sm"
-						variant="outline"
-						className="w-full"
-						onClick={() => {
-							!productsLoaded && fetcher.load('resource')
-							setIsCSOpen(true)
-						}}
-					>
-						<Plus />
-						Add Cross Sell Product
-					</Button>
+					<AddLinkedProductsDialog
+						open={isCSOpen}
+						onOpenChange={setIsCSOpen}
+						onConfirm={handleSetCSProducts}
+						selected={crossSellProducts ?? []}
+						products={productsAvailable}
+						isLoading={fetcher.state === 'loading'}
+						trigger={
+							<Button
+								size="sm"
+								variant="outline"
+								className="w-full"
+								onClick={() => {
+									!productsLoaded && fetcher.load('resource')
+									setIsCSOpen(true)
+								}}
+							>
+								<Plus />
+								Add Cross Sell Product
+							</Button>
+						}
+					/>
 				</CardFooter>
 			</Card>
 			<Card>
@@ -157,38 +168,30 @@ export function LinkedProducts() {
 					)}
 				</CardContent>
 				<CardFooter>
-					<Button
-						size="sm"
-						variant="outline"
-						className="w-full"
-						onClick={() => {
-							!productsLoaded && fetcher.load('resource')
-							setIsUSOpen(true)
-						}}
-					>
-						<Plus />
-						Add Upsell Product
-					</Button>
+					<AddLinkedProductsDialog
+						open={isUSOpen}
+						onOpenChange={setIsUSOpen}
+						onConfirm={handleSetUSProducts}
+						selected={upsellProducts ?? []}
+						products={productsAvailable}
+						isLoading={fetcher.state === 'loading'}
+						trigger={
+							<Button
+								size="sm"
+								variant="outline"
+								className="w-full"
+								onClick={() => {
+									!productsLoaded && fetcher.load('resource')
+									setIsUSOpen(true)
+								}}
+							>
+								<Plus />
+								Add Upsell Product
+							</Button>
+						}
+					/>
 				</CardFooter>
 			</Card>
-
-			{/* Add products dialog */}
-			<AddLinkedProductsDialog
-				open={isCSOpen}
-				onOpenChange={setIsCSOpen}
-				onConfirm={handleSetCSProducts}
-				selected={crossSellProducts ?? []}
-				products={productsAvailable}
-				isLoading={fetcher.state === 'loading'}
-			/>
-			<AddLinkedProductsDialog
-				open={isUSOpen}
-				onOpenChange={setIsUSOpen}
-				onConfirm={handleSetUSProducts}
-				selected={upsellProducts ?? []}
-				products={productsAvailable}
-				isLoading={fetcher.state === 'loading'}
-			/>
 		</>
 	)
 }
@@ -259,6 +262,8 @@ interface AddLinkedProductsDialogProps {
 	selected: ProductListing[]
 	products: ProductListing[]
 	isLoading: boolean
+	/** Pass in trigger to auto focus on close */
+	trigger?: React.ReactNode
 }
 
 // === Dialog for adding linked products ===
@@ -270,6 +275,7 @@ function AddLinkedProductsDialog({
 	selected,
 	products,
 	isLoading,
+	trigger,
 }: AddLinkedProductsDialogProps) {
 	const [selectedProducts, setSelectedProducts] =
 		useState<ProductListing[]>(selected)
@@ -301,6 +307,7 @@ function AddLinkedProductsDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
+			{trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 			<DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
 				<DialogHeader className="shrink-0">
 					<DialogTitle>Add Linked Products</DialogTitle>
@@ -385,6 +392,7 @@ function SelectableProductItem({
 			<Checkbox
 				checked={isSelected}
 				onCheckedChange={() => onToggle(product)}
+				onClick={e => e.stopPropagation()}
 			/>
 
 			{/* Product image */}
