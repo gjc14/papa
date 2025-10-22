@@ -9,7 +9,7 @@ import {
 	type ExpandedState,
 	type Row,
 } from '@tanstack/react-table'
-import { useAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { ChevronDown, ChevronRight, Grid, Plus } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -40,9 +40,13 @@ import {
 	productAtom,
 	storeConfigAtom,
 } from '~/routes/services/ecommerce/store/product/context'
+import { getVariantOptions } from '~/routes/services/ecommerce/store/product/utils/attributes'
 import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import { OptionForm } from './option-form'
+
+const productAttributesAtom = atom(get => get(productAtom)?.attributes || null)
+const productVariantsAtom = atom(get => get(productAtom)?.variants || null)
 
 type VariantType = NonNullable<
 	ReturnType<typeof productAtom.read>
@@ -56,9 +60,6 @@ type VariantType = NonNullable<
  * @link [ProductVariant](../../../../lib/db/product.server.ts)
  */
 export function Variants() {
-	const [storeConfig] = useAtom(storeConfigAtom)
-	const [product, setProduct] = useAtom(productAtom)
-
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [expanded, setExpanded] = useState<ExpandedState>({})
 	const [focusedRowId, setFocusedRowId] = useState<string | null>(null)
@@ -82,8 +83,6 @@ export function Variants() {
 		}
 	}, [isDialogOpen, focusedRowId])
 
-	if (!product) return null
-
 	const handleEditClick = (variantId: number) => {
 		const rowId = variantId.toString()
 		setExpanded({ [rowId]: true })
@@ -91,139 +90,49 @@ export function Variants() {
 		setIsDialogOpen(true)
 	}
 
-	const handleOptionChange = (
-		variantId: number,
-		changes: Partial<VariantType>,
-	) => {
-		setProduct(prev => {
-			if (!prev) return prev
-
-			return {
-				...prev,
-				variants: prev.variants.map(v =>
-					v.id === variantId
-						? { ...v, option: { ...v.option, ...changes } }
-						: v,
-				),
-			}
-		})
-	}
-
-	const handleCombinationChange = (
-		variantId: number,
-		key: string,
-		value: string,
-	) => {
-		setProduct(prev => {
-			if (!prev) return prev
-
-			return {
-				...prev,
-				variants: prev.variants.map(v =>
-					v.id === variantId
-						? { ...v, combination: { ...v.combination, [key]: value } }
-						: v,
-				),
-			}
-		})
-	}
-
-	const [attrKeys, attrOptions] = useMemo(() => {
-		const keys = new Set<string>()
-		const options: Record<string, string[]> = {}
-		product.attributes.forEach(attr => {
-			if (attr.selectType !== 'HIDDEN' && attr.name && attr.value) {
-				keys.add(attr.name)
-				// Split pipe-separated values
-				options[attr.name] = attr.value.split('|').map(v => v.trim())
-			}
-		})
-		return [Array.from(keys), options]
-	}, [product.attributes])
-
-	const columns: ColumnDef<VariantType>[] = useMemo(() => {
-		return [
-			{
-				id: 'expander',
-				header: () => null,
-				cell: ({ row }) => {
-					return row.getCanExpand() ? (
-						<Button
-							onClick={row.getToggleExpandedHandler()}
-							variant={'ghost'}
-							size={'icon'}
-							className="h-full w-full rounded-none focus:ring-0 focus-visible:ring-0"
-							aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
-							aria-expanded={row.getIsExpanded()}
-							data-row-id={row.id}
-						>
-							{row.getIsExpanded() ? <ChevronDown /> : <ChevronRight />}
-						</Button>
-					) : null
-				},
-				size: 50,
-			},
-			...attrKeys.map(key => ({
-				id: key,
-				header: key,
-				cell: ({ row }: { row: Row<VariantType> }) => {
-					const variant = row.original
-					const currentValue = variant.combination[key]
-					const options = attrOptions[key] || []
-
-					return (
-						<Select
-							value={currentValue}
-							onValueChange={value =>
-								handleCombinationChange(variant.id, key, value)
-							}
-						>
-							<SelectTrigger className="h-8 w-full rounded-none">
-								<SelectValue placeholder={`Select ${key}`} />
-							</SelectTrigger>
-							<SelectContent className="rounded-none">
-								{options.map(option => (
-									<SelectItem
-										key={option}
-										value={option}
-										className="rounded-none"
-									>
-										{option}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					)
-				},
-				size: 150,
-			})),
-		]
-	}, [attrKeys, attrOptions])
-
-	const table = useReactTable({
-		data: product.variants,
-		columns,
-		state: {
-			expanded,
-		},
-		onExpandedChange: setExpanded,
-		getCoreRowModel: getCoreRowModel(),
-		getExpandedRowModel: getExpandedRowModel(),
-		getRowCanExpand: () => true,
-		getRowId: row => row.id.toString(),
-	})
-
 	return (
 		<>
-			<Card>
-				<CardHeader>
-					<CardTitle>Product Variants</CardTitle>
-					<CardDescription>
-						Manage detail of different variants of your product.
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
-					{product.variants.map(v => {
+			<VariantCard
+				onEditVariant={handleEditClick}
+				onOpen={() => setIsDialogOpen(true)}
+			/>
+			<VariantDialog
+				open={isDialogOpen}
+				onOpenChange={setIsDialogOpen}
+				expanded={expanded}
+				setExpanded={setExpanded}
+			/>
+		</>
+	)
+}
+
+function VariantCard({
+	onEditVariant,
+	onOpen,
+}: {
+	onEditVariant: (variantId: number) => void
+	onOpen: () => void
+}) {
+	const storeConfig = useAtomValue(storeConfigAtom)
+	const productVariants = useAtomValue(productVariantsAtom)
+
+	const noVariants = !productVariants || productVariants.length === 0
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Product Variants</CardTitle>
+				<CardDescription>
+					Manage detail of different variants of your product.
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
+				{noVariants ? (
+					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+						No variants available. Click "Add Variant" to create one.
+					</p>
+				) : (
+					productVariants?.map(v => {
 						const fmt = new Intl.NumberFormat(storeConfig.language, {
 							style: 'currency',
 							currency: v.option.currency,
@@ -263,123 +172,265 @@ export function Variants() {
 								<Button
 									size="sm"
 									variant="outline"
-									onClick={() => handleEditClick(v.id)}
+									onClick={() => onEditVariant(v.id)}
 								>
 									Edit
 								</Button>
 							</div>
 						)
-					})}
-				</CardContent>
-				<CardFooter className="flex-col gap-2 @md:flex-row">
-					<Button
-						variant="outline"
-						className="flex-1"
-						onClick={() => alert('Not implemented')}
-					>
-						<Plus />
-						Add Variant
-					</Button>
-					<Button className="flex-1" onClick={() => setIsDialogOpen(true)}>
-						<Grid />
-						Open Manager
-					</Button>
-				</CardFooter>
-			</Card>
+					})
+				)}
+			</CardContent>
+			<CardFooter className="flex-col gap-2 @md:flex-row">
+				<Button
+					variant="outline"
+					className="flex-1"
+					onClick={() => alert('Not implemented')}
+				>
+					<Plus />
+					Add Variant
+				</Button>
+				<Button
+					className="flex-1"
+					onClick={() => {
+						if (noVariants) return
+						onOpen()
+					}}
+					disabled={noVariants}
+				>
+					<Grid />
+					Open Manager
+				</Button>
+			</CardFooter>
+		</Card>
+	)
+}
 
-			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="bg-card flex h-[85vh] w-full flex-col p-0 sm:max-w-[calc(100%-3rem)]">
-					<DialogHeader className="flex-shrink-0 px-6 pt-6">
-						<DialogTitle>Edit Variants</DialogTitle>
-						<DialogDescription>
-							Modify the options for each product variant below.
-						</DialogDescription>
-					</DialogHeader>
+function VariantDialog({
+	open,
+	onOpenChange,
+	expanded,
+	setExpanded,
+}: {
+	open: boolean
+	onOpenChange: (open: boolean) => void
+	expanded: ExpandedState
+	setExpanded: React.Dispatch<React.SetStateAction<ExpandedState>>
+}) {
+	const setProduct = useSetAtom(productAtom)
+	const productAttributes = useAtomValue(productAttributesAtom)
+	const productVariants = useAtomValue(productVariantsAtom)
 
-					<div className="flex-1 overflow-auto px-6 pb-6">
-						<div className="overflow-hidden border" role="grid">
-							<div
-								className="border-primary/30 grid border-b"
-								style={{
-									gridTemplateColumns: table
-										.getHeaderGroups()[0]
-										.headers.map(header => `${header.getSize()}px`)
-										.join(' '),
-								}}
-								role="row"
-							>
-								{table.getHeaderGroups().map(g =>
-									g.headers.map(header => (
-										<div
-											key={header.id}
-											className="text-foreground px-4 py-3 text-sm font-medium"
-											role="columnheader"
-										>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef.header,
-														header.getContext(),
-													)}
-										</div>
-									)),
-								)}
-							</div>
+	const handleOptionChange = (
+		variantId: number,
+		changes: Partial<VariantType>,
+	) => {
+		setProduct(prev => {
+			if (!prev) return prev
 
-							<div role="rowgroup">
-								{table.getRowModel().rows.map(row => (
-									<Fragment key={row.id}>
-										<div
-											className="hover:bg-accent/50 grid border-b last:border-b-0"
-											style={{
-												gridTemplateColumns: row
-													.getVisibleCells()
-													.map(cell => `${cell.column.getSize()}px`)
-													.join(' '),
-											}}
-											role="row"
-										>
-											{row.getVisibleCells().map(cell => (
-												<div
-													key={cell.id}
-													className={cn(
-														'focus-within:bg-accent text-sm',
-														cell.column.id === 'expander' ? 'p-0' : 'p-2',
-													)}
-													role="gridcell"
-													tabIndex={-1}
-												>
-													{flexRender(
-														cell.column.columnDef.cell,
-														cell.getContext(),
-													)}
-												</div>
-											))}
-										</div>
+			return {
+				...prev,
+				variants: prev.variants.map(v =>
+					v.id === variantId
+						? { ...v, option: { ...v.option, ...changes } }
+						: v,
+				),
+			}
+		})
+	}
 
-										{row.getIsExpanded() && (
-											<div role="row">
-												<div
-													role="gridcell"
-													style={{ gridColumn: '1 / -1' }}
-													className="p-3"
-												>
-													<OptionForm
-														option={row.original.option}
-														onChange={changes =>
-															handleOptionChange(row.original.id, changes)
-														}
-													/>
-												</div>
+	const handleCombinationChange = (
+		variantId: number,
+		key: string,
+		value: string,
+	) => {
+		setProduct(prev => {
+			if (!prev) return prev
+
+			return {
+				...prev,
+				variants: prev.variants.map(v =>
+					v.id === variantId
+						? { ...v, combination: { ...v.combination, [key]: value } }
+						: v,
+				),
+			}
+		})
+	}
+
+	const attrOptions = useMemo(() => {
+		if (!productAttributes) return null
+
+		return getVariantOptions(productAttributes)
+	}, [productAttributes])
+
+	const columns: ColumnDef<VariantType>[] = useMemo(() => {
+		return [
+			{
+				id: 'expander',
+				header: () => null,
+				cell: ({ row }) => {
+					return row.getCanExpand() ? (
+						<Button
+							onClick={row.getToggleExpandedHandler()}
+							variant={'ghost'}
+							size={'icon'}
+							className="h-full w-full rounded-none focus:ring-0 focus-visible:ring-0"
+							aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
+							aria-expanded={row.getIsExpanded()}
+							data-row-id={row.id}
+						>
+							{row.getIsExpanded() ? <ChevronDown /> : <ChevronRight />}
+						</Button>
+					) : null
+				},
+				size: 50,
+			},
+			...(attrOptions
+				? Object.keys(attrOptions).map(key => ({
+						id: key,
+						header: key,
+						cell: ({ row }: { row: Row<VariantType> }) => {
+							const variant = row.original
+							const currentValue = variant.combination[key]
+							const options = Array.from(attrOptions[key]) || []
+
+							return (
+								<Select
+									value={currentValue}
+									onValueChange={value =>
+										handleCombinationChange(variant.id, key, value)
+									}
+								>
+									<SelectTrigger className="h-8 w-full rounded-none">
+										<SelectValue placeholder={`Select ${key}`} />
+									</SelectTrigger>
+									<SelectContent className="rounded-none">
+										{options.map(option => (
+											<SelectItem
+												key={option}
+												value={option}
+												className="rounded-none"
+											>
+												{option}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							)
+						},
+						size: 150,
+					}))
+				: []),
+		]
+	}, [attrOptions])
+
+	const table = useReactTable({
+		data: productVariants ?? [],
+		columns,
+		state: {
+			expanded,
+		},
+		onExpandedChange: setExpanded,
+		getCoreRowModel: getCoreRowModel(),
+		getExpandedRowModel: getExpandedRowModel(),
+		getRowCanExpand: () => true,
+		getRowId: row => row.id.toString(),
+	})
+
+	return (
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="bg-card flex h-[85vh] w-full flex-col p-0 sm:max-w-[calc(100%-3rem)]">
+				<DialogHeader className="flex-shrink-0 px-6 pt-6">
+					<DialogTitle>Edit Variants</DialogTitle>
+					<DialogDescription>
+						Modify the options for each product variant below.
+					</DialogDescription>
+				</DialogHeader>
+
+				<div className="flex-1 overflow-auto px-6 pb-6">
+					<div className="overflow-hidden border" role="grid">
+						<div
+							className="border-primary/30 grid border-b"
+							style={{
+								gridTemplateColumns: table
+									.getHeaderGroups()[0]
+									.headers.map(header => `${header.getSize()}px`)
+									.join(' '),
+							}}
+							role="row"
+						>
+							{table.getHeaderGroups().map(g =>
+								g.headers.map(header => (
+									<div
+										key={header.id}
+										className="text-foreground px-4 py-3 text-sm font-medium"
+										role="columnheader"
+									>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext(),
+												)}
+									</div>
+								)),
+							)}
+						</div>
+
+						<div role="rowgroup">
+							{table.getRowModel().rows.map(row => (
+								<Fragment key={row.id}>
+									<div
+										className="hover:bg-accent/50 grid border-b last:border-b-0"
+										style={{
+											gridTemplateColumns: row
+												.getVisibleCells()
+												.map(cell => `${cell.column.getSize()}px`)
+												.join(' '),
+										}}
+										role="row"
+									>
+										{row.getVisibleCells().map(cell => (
+											<div
+												key={cell.id}
+												className={cn(
+													'focus-within:bg-accent text-sm',
+													cell.column.id === 'expander' ? 'p-0' : 'p-2',
+												)}
+												role="gridcell"
+												tabIndex={-1}
+											>
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext(),
+												)}
 											</div>
-										)}
-									</Fragment>
-								))}
-							</div>
+										))}
+									</div>
+
+									{row.getIsExpanded() && (
+										<div role="row">
+											<div
+												role="gridcell"
+												style={{ gridColumn: '1 / -1' }}
+												className="p-3"
+											>
+												<OptionForm
+													option={row.original.option}
+													onChange={changes =>
+														handleOptionChange(row.original.id, changes)
+													}
+												/>
+											</div>
+										</div>
+									)}
+								</Fragment>
+							))}
 						</div>
 					</div>
-				</DialogContent>
-			</Dialog>
-		</>
+				</div>
+			</DialogContent>
+		</Dialog>
 	)
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useFetcher } from 'react-router'
 
-import { useAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 import { Card, CardFooter, CardHeader, CardTitle } from '~/components/ui/card'
 import { Spinner } from '~/components/ui/spinner'
@@ -22,6 +22,10 @@ import type { loader as cLoader } from '../../04_categories/route'
 import type { action as tAction } from '../../05_tags/resource'
 import type { loader as tLoader } from '../../05_tags/route'
 import { CreateTaxonomyPopover } from './create-taxonomy-popover'
+
+const productTagsAtom = atom(get => get(productAtom)?.tags || null)
+const productCategoriesAtom = atom(get => get(productAtom)?.categories || null)
+const productBrandsAtom = atom(get => get(productAtom)?.brands || null)
 
 const generateTaxonomy = (name: string) => {
 	const slug = generateSlug(name, { fallbackPrefix: 'new classification' })
@@ -46,7 +50,10 @@ export function Taxonomies() {
 	const tCreateFetcher = useFetcher<typeof tAction>()
 	const bCreateFetcher = useFetcher<typeof bAction>()
 
-	const [product, setProduct] = useAtom(productAtom)
+	const setProduct = useSetAtom(productAtom)
+	const productTags = useAtomValue(productTagsAtom)
+	const productCategories = useAtomValue(productCategoriesAtom)
+	const productBrands = useAtomValue(productBrandsAtom)
 	const [categories, setCategories] = useAtom(categoriesAtom)
 	const [tags, setTags] = useAtom(tagsAtom)
 	const [brands, setBrands] = useAtom(brandsAtom)
@@ -55,10 +62,10 @@ export function Taxonomies() {
 	const topLevelBrands = brands.filter(b => !b.parentId)
 
 	const [selectedCIds, setSelectedCIds] = useState<string[]>(
-		product ? product.categories.map(c => String(c.id)) : [],
+		productCategories ? productCategories.map(c => String(c.id)) : [],
 	)
 	const [selectedBIds, setSelectedBIds] = useState<string[]>(
-		product ? product.brands.map(b => String(b.id)) : [],
+		productBrands ? productBrands.map(b => String(b.id)) : [],
 	)
 
 	const cTreeData = taxonomiesToTree(categories)
@@ -145,9 +152,10 @@ export function Taxonomies() {
 
 			setTPending(prev => prev.filter(t => t.slug !== createdTag.slug))
 			setTags(prev => [...prev, createdTag])
-			setProduct(prev =>
-				prev ? { ...prev, tags: [...prev.tags, createdTag] } : prev,
-			)
+			setProduct(prev => {
+				if (!prev) return prev
+				return { ...prev, tags: [...prev.tags, createdTag] }
+			})
 		}
 	}, [tCreateFetcher.state, tCreateFetcher.data])
 
@@ -162,9 +170,10 @@ export function Taxonomies() {
 			const createdBrand = bCreateFetcher.data.data
 
 			setBrands(prev => [...prev, { ...createdBrand, children: [] }])
-			setProduct(prev =>
-				prev ? { ...prev, brands: [...prev.brands, createdBrand] } : prev,
-			)
+			setProduct(prev => {
+				if (!prev) return prev
+				return { ...prev, brands: [...prev.brands, createdBrand] }
+			})
 		}
 	}, [bCreateFetcher.state, bCreateFetcher.data])
 
@@ -183,9 +192,9 @@ export function Taxonomies() {
 		}
 	}, [tPending, tCreateFetcher.state])
 
-	const tSelected = product
+	const tSelected = productTags
 		? [
-				...product.tags.map(t => ({
+				...productTags.map(t => ({
 					label: t.name,
 					value: String(t.id),
 				})),
@@ -204,7 +213,7 @@ export function Taxonomies() {
 					<CardTitle>Categories</CardTitle>
 				</CardHeader>
 				<div className="flex w-full items-center justify-center px-5">
-					{!product || !dataInitialized.categories ? (
+					{!dataInitialized.categories ? (
 						<Spinner />
 					) : cTreeData.length > 0 ? (
 						<div className="max-h-52 w-full overflow-auto border py-1.5">
@@ -232,7 +241,6 @@ export function Taxonomies() {
 							})
 						}}
 						isSubmitting={
-							!product ||
 							!dataInitialized.categories ||
 							cCreateFetcher.state === 'submitting'
 						}
@@ -244,44 +252,41 @@ export function Taxonomies() {
 					<CardTitle>Tags</CardTitle>
 				</CardHeader>
 				<div className="flex w-full items-center justify-center px-5">
-					{!product ? (
-						<Spinner />
-					) : (
-						<MultiSelect
-							options={tags.map(t => ({
-								label: t.name,
-								value: String(t.id),
-							}))}
-							selected={tSelected}
-							onSelectedChange={areSelected => {
-								const { existing, notExisting } = areSelected.reduce(
-									(acc, selected) => {
-										const found = tags.find(
-											t => String(t.id) === selected.value,
-										)
-										if (found) {
-											acc.existing.push(found)
-										} else {
-											acc.notExisting.push(generateTaxonomy(selected.label))
-										}
-										return acc
-									},
-									{
-										existing: [] as typeof tags,
-										notExisting: [] as typeof tags,
-									},
-								)
+					<MultiSelect
+						options={tags.map(t => ({
+							label: t.name,
+							value: String(t.id),
+						}))}
+						selected={tSelected}
+						onSelectedChange={areSelected => {
+							const { existing, notExisting } = areSelected.reduce(
+								(acc, selected) => {
+									const found = tags.find(t => String(t.id) === selected.value)
+									if (found) {
+										acc.existing.push(found)
+									} else {
+										acc.notExisting.push(generateTaxonomy(selected.label))
+									}
+									return acc
+								},
+								{
+									existing: [] as typeof tags,
+									notExisting: [] as typeof tags,
+								},
+							)
 
-								setProduct(prev => (prev ? { ...prev, tags: existing } : prev))
-								setTPending(notExisting)
-							}}
-							onInitSearch={() =>
-								!dataInitialized.tags &&
-								tFetcher.load('/dashboard/ecommerce/products/tags')
-							}
-							isSearching={!dataInitialized.tags}
-						/>
-					)}
+							setProduct(prev => {
+								if (!prev) return prev
+								return { ...prev, tags: existing }
+							})
+							setTPending(notExisting)
+						}}
+						onInitSearch={() =>
+							!dataInitialized.tags &&
+							tFetcher.load('/dashboard/ecommerce/products/tags')
+						}
+						isSearching={!dataInitialized.tags}
+					/>
 				</div>
 			</Card>
 			<Card className="gap-4 pt-6 pb-5">
@@ -289,7 +294,7 @@ export function Taxonomies() {
 					<CardTitle>Brands</CardTitle>
 				</CardHeader>
 				<div className="flex w-full items-center justify-center px-5">
-					{!product || !dataInitialized.brands ? (
+					{!dataInitialized.brands ? (
 						<Spinner />
 					) : bTreeData.length > 0 ? (
 						<div className="max-h-52 w-full overflow-auto border py-1.5">
@@ -317,9 +322,7 @@ export function Taxonomies() {
 							})
 						}}
 						isSubmitting={
-							!product ||
-							!dataInitialized.brands ||
-							bCreateFetcher.state === 'submitting'
+							!dataInitialized.brands || bCreateFetcher.state === 'submitting'
 						}
 					/>
 				</CardFooter>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { useAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { Plus } from 'lucide-react'
 import { nanoid } from 'nanoid'
 
@@ -24,6 +24,10 @@ import {
 
 import { productAtom } from '../../../../store/product/context'
 
+const productInstructionsAtom = atom(
+	get => get(productAtom)?.instructions || null,
+)
+
 type InstructionsType = NonNullable<
 	NonNullable<ReturnType<typeof productAtom.read>>['instructions']
 >[number]
@@ -31,50 +35,60 @@ type InstructionsType = NonNullable<
 type InstructionWithId = InstructionsType & { _id: string }
 
 export const Instructions = () => {
-	const [product, setProduct] = useAtom(productAtom)
+	const setProduct = useSetAtom(productAtom)
+	const productInstructions = useAtomValue(productInstructionsAtom)
+
+	if (!productInstructions) return null
 
 	// useMemo to ensure each instruction has a unique and stable _id
 	const instructionsWithIds = useMemo<InstructionWithId[]>(() => {
-		if (!product || !product.instructions) return []
-		return product.instructions.map(d => ({
+		if (!productInstructions) return []
+		return productInstructions.map(d => ({
 			...d,
 			_id: (d as InstructionWithId)._id || nanoid(),
 		}))
-	}, [product?.instructions])
+	}, [productInstructions])
 
 	const handleAddInstruction = () => {
-		if (!product) return
+		if (!productInstructions) return
 		const newInstruction: InstructionWithId = {
 			order: instructionsWithIds.length,
 			title: 'New Instruction',
 			content: 'Content here',
 			_id: nanoid(),
 		}
-		setProduct({
-			...product,
-			instructions: [...instructionsWithIds, newInstruction],
+		setProduct(prev => {
+			if (!prev) return prev
+			return {
+				...prev,
+				instructions: [...instructionsWithIds, newInstruction],
+			}
 		})
 	}
 
 	const handleUpdateInstruction = (updatedInstruction: InstructionWithId) => {
-		if (!product) return
-		setProduct({
-			...product,
-			instructions: instructionsWithIds.map(d =>
-				d._id === updatedInstruction._id ? updatedInstruction : d,
-			),
+		if (!productInstructions) return
+		setProduct(prev => {
+			if (!prev) return prev
+			return {
+				...prev,
+				instructions: instructionsWithIds.map(d =>
+					d._id === updatedInstruction._id ? updatedInstruction : d,
+				),
+			}
 		})
 	}
 
 	const handleDeleteInstruction = (id: string) => {
-		if (!product) return
-		setProduct({
-			...product,
-			instructions: instructionsWithIds.filter(d => d._id !== id),
+		if (!productInstructions) return
+		setProduct(prev => {
+			if (!prev) return prev
+			return {
+				...prev,
+				instructions: instructionsWithIds.filter(d => d._id !== id),
+			}
 		})
 	}
-
-	if (!product) return null
 
 	return (
 		<Card>

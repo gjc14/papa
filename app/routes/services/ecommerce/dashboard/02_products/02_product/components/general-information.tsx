@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import {
 	Card,
@@ -13,14 +13,28 @@ import { Textarea } from '~/components/ui/textarea'
 
 import { productAtom } from '../../../../store/product/context'
 
-export function GeneralInformation() {
-	const [product, setProduct] = useAtom(productAtom)
+const productNameAtom = atom(get => get(productAtom)?.name)
+const productSubtitleAtom = atom(get => get(productAtom)?.subtitle)
+const productDescriptionAtom = atom(get => get(productAtom)?.description)
+const productPurchaseNoteAtom = atom(get => get(productAtom)?.purchaseNote)
 
-	const handleProductChange = (updatedProduct: Partial<typeof product>) => {
-		setProduct(prev => prev && { ...prev, ...updatedProduct })
+export function GeneralInformation() {
+	const setProduct = useSetAtom(productAtom)
+	const productName = useAtomValue(productNameAtom)
+	const productSubtitle = useAtomValue(productSubtitleAtom)
+	const productDescription = useAtomValue(productDescriptionAtom)
+	const productPurchaseNote = useAtomValue(productPurchaseNoteAtom)
+
+	const handleProductChange = (
+		updatedProduct: Partial<typeof productAtom.read>,
+	) => {
+		setProduct(prev => {
+			if (!prev) return prev
+			return { ...prev, ...updatedProduct }
+		})
 	}
 
-	if (!product) return null
+	if (!productName) return null
 
 	return (
 		<Card>
@@ -37,7 +51,7 @@ export function GeneralInformation() {
 						id="p-name"
 						name="name"
 						placeholder="Taiwan Formosa Oolong Tea"
-						value={product.name}
+						value={productName}
 						onChange={e => handleProductChange({ name: e.target.value })}
 						required
 						autoFocus
@@ -50,7 +64,7 @@ export function GeneralInformation() {
 						id="p-subtitle"
 						name="subtitle"
 						placeholder="A short one-liner about your product"
-						value={product.subtitle || ''}
+						value={productSubtitle || ''}
 						onChange={e => handleProductChange({ subtitle: e.target.value })}
 					/>
 					<FieldDescription>
@@ -64,7 +78,7 @@ export function GeneralInformation() {
 						id="p-description"
 						name="description"
 						placeholder="Detailed product description..."
-						value={product.description || ''}
+						value={productDescription || ''}
 						onChange={e =>
 							handleProductChange({
 								description: e.target.value,
@@ -83,7 +97,7 @@ export function GeneralInformation() {
 						id="p-purchase-note"
 						name="purchaseNote"
 						placeholder="Special instructions or notes after purchase..."
-						value={product.purchaseNote || ''}
+						value={productPurchaseNote || ''}
 						onChange={e =>
 							handleProductChange({
 								purchaseNote: e.target.value,

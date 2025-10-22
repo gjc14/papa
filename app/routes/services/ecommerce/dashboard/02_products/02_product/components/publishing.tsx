@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import {
 	Card,
@@ -21,14 +21,28 @@ import { Separator } from '~/components/ui/separator'
 import { ProductStatus, ProductVisibility } from '../../../../lib/db/schema'
 import { productAtom } from '../../../../store/product/context'
 
+const productStatusAtom = atom(get => get(productAtom)?.status || null)
+const productPublishedAtAtom = atom(
+	get => get(productAtom)?.publishedAt || null,
+)
+const productVisibilityAtom = atom(get => get(productAtom)?.visibility || null)
+const productPasswordAtom = atom(get => get(productAtom)?.password || null)
+
 export function Publishing() {
-	const [product, setProduct] = useAtom(productAtom)
+	const setProduct = useSetAtom(productAtom)
+	const productStatus = useAtomValue(productStatusAtom)
+	const productPublishedAt = useAtomValue(productPublishedAtAtom)
+	const productVisibility = useAtomValue(productVisibilityAtom)
+	const productPassword = useAtomValue(productPasswordAtom)
 
-	const handleProductChange = (updatedProduct: Partial<typeof product>) => {
-		setProduct(prev => prev && { ...prev, ...updatedProduct })
+	const handleProductChange = (
+		updatedProduct: Partial<typeof productAtom.read>,
+	) => {
+		setProduct(prev => {
+			if (!prev) return prev
+			return { ...prev, ...updatedProduct }
+		})
 	}
-
-	if (!product) return null
 
 	return (
 		<Card>
@@ -40,10 +54,10 @@ export function Publishing() {
 				<Field>
 					<FieldLabel htmlFor="p-status">Status</FieldLabel>
 					<Select
-						value={product.status}
+						value={productStatus || ProductStatus[0]}
 						onValueChange={value =>
 							handleProductChange({
-								status: value as typeof product.status,
+								status: value as ProductStatus,
 							})
 						}
 					>
@@ -60,7 +74,7 @@ export function Publishing() {
 					</Select>
 				</Field>
 
-				{product.status === 'SCHEDULED' && (
+				{productStatus === 'SCHEDULED' && (
 					<Field>
 						<FieldLabel htmlFor="p-published-at">
 							Publish Date & Time
@@ -69,8 +83,8 @@ export function Publishing() {
 							id="p-published-at"
 							type="datetime-local"
 							value={
-								product.publishedAt
-									? new Date(product.publishedAt).toISOString().slice(0, 16)
+								productPublishedAt
+									? new Date(productPublishedAt).toISOString().slice(0, 16)
 									: ''
 							}
 						/>
@@ -85,10 +99,10 @@ export function Publishing() {
 				<Field>
 					<FieldLabel htmlFor="p-visibility">Visibility</FieldLabel>
 					<Select
-						value={product.visibility}
+						value={productVisibility || ProductVisibility[0]}
 						onValueChange={value =>
 							handleProductChange({
-								visibility: value as typeof product.visibility,
+								visibility: value as ProductVisibility,
 							})
 						}
 					>
@@ -105,7 +119,7 @@ export function Publishing() {
 					</Select>
 				</Field>
 
-				{product.visibility === 'PROTECTED' && (
+				{productVisibility === 'PROTECTED' && (
 					<Field>
 						<FieldLabel htmlFor="p-password">Password</FieldLabel>
 						<Input
@@ -113,7 +127,7 @@ export function Publishing() {
 							name="password"
 							type="password"
 							placeholder="Enter protection password"
-							value={product.password || ''}
+							value={productPassword || ''}
 							onChange={e => handleProductChange({ password: e.target.value })}
 						/>
 						<FieldDescription>

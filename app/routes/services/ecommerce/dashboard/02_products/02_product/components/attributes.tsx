@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { useAtom } from 'jotai'
-import { Eye, EyeClosed, EyeOff, ListChecksIcon, Plus } from 'lucide-react'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { Eye, EyeOff, ListChecksIcon, Plus } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -30,7 +30,6 @@ import {
 	ItemDescription,
 	ItemTitle,
 } from '~/components/ui/item'
-import { Label } from '~/components/ui/label'
 import {
 	Select,
 	SelectContent,
@@ -41,6 +40,8 @@ import {
 import { ProductAttributeSelectType } from '~/routes/services/ecommerce/lib/db/schema'
 
 import { productAtom } from '../../../../store/product/context'
+
+const productAttributesAtom = atom(get => get(productAtom)?.attributes || null)
 
 type AttributeType = NonNullable<
 	NonNullable<ReturnType<typeof productAtom.read>>['attributes']
@@ -59,29 +60,36 @@ export function newAttribute(length: number): AttributeType {
 }
 
 export function Attributes() {
-	const [product, setProduct] = useAtom(productAtom)
+	const attributes = useAtomValue(productAttributesAtom)
+	const setProduct = useSetAtom(productAtom)
 
-	if (!product) return null
+	if (!attributes) return null
 
 	const handleUpdateAttribute = (updatedAttribute: AttributeType) => {
-		const updatedAttributes = product.attributes.map(attr =>
+		const updatedAttributes = attributes.map(attr =>
 			attr.id === updatedAttribute.id ? updatedAttribute : attr,
 		)
-		setProduct({ ...product, attributes: updatedAttributes })
+		setProduct(prev => {
+			if (!prev) return prev
+			return { ...prev, attributes: updatedAttributes }
+		})
 	}
 
 	const handleDeleteAttribute = (id: number) => {
-		const updatedAttributes = product.attributes.filter(attr => attr.id !== id)
-		setProduct({ ...product, attributes: updatedAttributes })
+		const updatedAttributes = attributes.filter(attr => attr.id !== id)
+		setProduct(prev => {
+			if (!prev) return prev
+			return { ...prev, attributes: updatedAttributes }
+		})
 	}
 
 	const handleAddAttribute = () => {
-		setProduct({
-			...product,
-			attributes: [
-				...product.attributes,
-				newAttribute(product.attributes.length),
-			],
+		setProduct(prev => {
+			if (!prev) return prev
+			return {
+				...prev,
+				attributes: [...attributes, newAttribute(attributes.length)],
+			}
 		})
 	}
 
@@ -95,8 +103,8 @@ export function Attributes() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
-				{product.attributes.length > 0 ? (
-					product.attributes.map(a => (
+				{attributes.length > 0 ? (
+					attributes.map(a => (
 						<AttributeItem
 							key={a.id}
 							attribute={a}

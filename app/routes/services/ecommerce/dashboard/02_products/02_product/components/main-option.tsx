@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import {
 	Card,
@@ -11,25 +11,31 @@ import {
 import { productAtom } from '../../../../store/product/context'
 import { OptionForm, type ProductOptionType } from './option-form'
 
-export function MainOption() {
-	const [product, setProduct] = useAtom(productAtom)
+const productNameAtom = atom(get => get(productAtom)?.name || null)
+const productOptionAtom = atom(get => get(productAtom)?.option || null)
 
-	if (!product) return null
+export function MainOption() {
+	const setProduct = useSetAtom(productAtom)
+	const productName = useAtomValue(productNameAtom)
+	const productOption = useAtomValue(productOptionAtom)
+
+	if (!productName || !productOption) return null
 
 	const handleOptionChange = (field: Partial<ProductOptionType>) => {
-		setProduct(prev =>
-			prev ? { ...prev, option: { ...prev.option, ...field } } : prev,
-		)
+		setProduct(prev => {
+			if (!prev) return prev
+			return { ...prev, option: { ...prev.option, ...field } }
+		})
 	}
 
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>{product.name}</CardTitle>
+				<CardTitle>{productName}</CardTitle>
 				<CardDescription>Edit product details</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<OptionForm option={product.option} onChange={handleOptionChange} />
+				<OptionForm option={productOption} onChange={handleOptionChange} />
 			</CardContent>
 		</Card>
 	)
