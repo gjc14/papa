@@ -106,11 +106,13 @@ export function Gallery() {
 				actionLabel="Set as Feature Image"
 				title="Image"
 				trigger={
-					<DialogTrigger
-						onClick={() => !assets && fetcher.load(assetResourceRoute)}
-						asChild
-					>
-						<Button variant={'outline'} size={'sm'} className={`w-full`}>
+					<DialogTrigger asChild>
+						<Button
+							variant={'outline'}
+							size={'sm'}
+							className={`w-full`}
+							onClick={() => !assets && fetcher.load(assetResourceRoute)}
+						>
 							<Image />
 							Edit Feature Image
 						</Button>
@@ -167,11 +169,13 @@ export function Gallery() {
 				actionLabel="Insert"
 				title="Image"
 				trigger={
-					<DialogTrigger
-						onClick={() => !assets && fetcher.load(assetResourceRoute)}
-						asChild
-					>
-						<Button variant={'outline'} size={'sm'} className={`w-full`}>
+					<DialogTrigger asChild>
+						<Button
+							variant={'outline'}
+							size={'sm'}
+							className={`w-full`}
+							onClick={() => !assets && fetcher.load(assetResourceRoute)}
+						>
 							<Image />
 							Add Image
 						</Button>

@@ -121,6 +121,7 @@ export const ImageButton = () => {
 					editor.commands.focus()
 				}
 			}}
+			onCloseAutoFocus={e => e.preventDefault()}
 			available={canRun}
 			srcInput={srcInput}
 			setSrcInput={setSrcInput}

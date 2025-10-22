@@ -13,7 +13,7 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
-import { defaultValidUrlProtocols, isValidUrl } from '~/lib/utils'
+import { cn, defaultValidUrlProtocols, isValidUrl } from '~/lib/utils'
 import { FileGrid } from '~/routes/papa/dashboard/assets/components/file-grid'
 import type { loader } from '~/routes/papa/dashboard/assets/resource'
 
@@ -42,7 +42,8 @@ type AssetSelectionDialogProps = {
 	onAction?: () => void
 	/** Title of the asset type, e.g. Image, Video, etc. */
 	title?: string
-} & Pick<AssetGalleryProps, 'assets' | 'isLoading'>
+} & Pick<AssetGalleryProps, 'assets' | 'isLoading'> &
+	React.ComponentProps<typeof DialogContent>
 
 /**
  * ```tsx
@@ -93,28 +94,45 @@ type AssetSelectionDialogProps = {
  * }
  * ```
  */
-export function AssetSelectionDialog(props: AssetSelectionDialogProps) {
+export function AssetSelectionDialog({
+	trigger,
+	open,
+	onOpenChange,
+	available,
+	srcInput,
+	setSrcInput,
+	altInput,
+	setAltInput,
+	titleInput,
+	setTitleInput,
+	actionLabel,
+	onAction,
+	title,
+	assets,
+	isLoading,
+	...dialogContentProps
+}: AssetSelectionDialogProps) {
 	const [assetLoading, setAssetLoading] = useState(false)
 	const [assetError, setAssetError] = useState(false)
 	const [currentLoadingSrc, setCurrentLoadingSrc] = useState('')
 
 	const validSrcInput =
-		props.srcInput.startsWith('/assets') ||
-		isValidUrl(props.srcInput, [...defaultValidUrlProtocols, 'blob:'])
+		srcInput.startsWith('/assets') ||
+		isValidUrl(srcInput, [...defaultValidUrlProtocols, 'blob:'])
 
-	const isAvailable = (props.available || true) && validSrcInput
+	const isAvailable = (available || true) && validSrcInput
 
 	useEffect(() => {
-		if (validSrcInput && props.srcInput !== currentLoadingSrc) {
+		if (validSrcInput && srcInput !== currentLoadingSrc) {
 			setAssetLoading(true)
 			setAssetError(false)
-			setCurrentLoadingSrc(props.srcInput)
+			setCurrentLoadingSrc(srcInput)
 		} else if (!validSrcInput) {
 			setAssetLoading(false)
 			setAssetError(false)
 			setCurrentLoadingSrc('')
 		}
-	}, [props.srcInput, currentLoadingSrc])
+	}, [srcInput, currentLoadingSrc])
 
 	const handleAssetLoad = () => {
 		setAssetLoading(false)
@@ -127,13 +145,16 @@ export function AssetSelectionDialog(props: AssetSelectionDialogProps) {
 	}
 
 	return (
-		<Dialog open={props.open} onOpenChange={props.onOpenChange}>
-			{props.trigger}
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			{trigger}
 			<DialogContent
-				className="max-h-[90vh] overflow-scroll"
-				onCloseAutoFocus={e => e.preventDefault()}
+				{...dialogContentProps}
+				className={cn(
+					'max-h-[90vh] overflow-scroll',
+					dialogContentProps.className,
+				)}
 			>
-				<DialogTitle hidden>{`Add ${props.title}`}</DialogTitle>
+				<DialogTitle hidden>{`Add ${title}`}</DialogTitle>
 				<DialogDescription hidden></DialogDescription>
 				<div className="flex flex-col items-center gap-3">
 					{/* Preview */}
@@ -144,9 +165,9 @@ export function AssetSelectionDialog(props: AssetSelectionDialogProps) {
 							<>
 								{/* TODO: add other type of asset previews */}
 								<img
-									src={props.srcInput}
-									alt={props.altInput}
-									title={props.titleInput}
+									src={srcInput}
+									alt={altInput}
+									title={titleInput}
 									className={`max-h-40 object-contain transition-opacity ${
 										assetLoading ? 'hidden' : 'opacity-100'
 									}`}
@@ -164,32 +185,32 @@ export function AssetSelectionDialog(props: AssetSelectionDialogProps) {
 					{/* Inputs */}
 					<section className="flex w-full flex-col gap-2">
 						<div className="w-full">
-							<Label htmlFor="asset-src">{props.title} URL*</Label>
+							<Label htmlFor="asset-src">{title} URL*</Label>
 							<Input
 								id="asset-src"
-								value={props.srcInput}
-								onChange={e => props.setSrcInput(e.target.value)}
+								value={srcInput}
+								onChange={e => setSrcInput(e.target.value)}
 								placeholder="https://example.com/asset.webp"
 							/>
 						</div>
 
 						<div className="w-full">
-							<Label htmlFor="asset-alt">{props.title} Alt Text </Label>
+							<Label htmlFor="asset-alt">{title} Alt Text </Label>
 							<Input
 								id="asset-alt"
-								value={props.altInput}
-								onChange={e => props.setAltInput(e.target.value)}
-								placeholder={`My ${props.title} Alt Text`}
+								value={altInput}
+								onChange={e => setAltInput(e.target.value)}
+								placeholder={`My ${title} Alt Text`}
 							/>
 						</div>
 
 						<div className="w-full">
-							<Label htmlFor="asset-title">{props.title} Title </Label>
+							<Label htmlFor="asset-title">{title} Title </Label>
 							<Input
 								id="asset-title"
-								value={props.titleInput}
-								onChange={e => props.setTitleInput(e.target.value)}
-								placeholder={`My ${props.title} Title`}
+								value={titleInput}
+								onChange={e => setTitleInput(e.target.value)}
+								placeholder={`My ${title} Title`}
 							/>
 						</div>
 					</section>
@@ -197,22 +218,22 @@ export function AssetSelectionDialog(props: AssetSelectionDialogProps) {
 					<Separator />
 
 					<AssetGallery
-						assets={props.assets}
-						isLoading={props.isLoading}
+						assets={assets}
+						isLoading={isLoading}
 						onSelect={({ src, alt, title }) => {
-							props.setSrcInput(src)
-							props.setAltInput(alt || '')
-							props.setTitleInput(title)
+							setSrcInput(src)
+							setAltInput(alt || '')
+							setTitleInput(title)
 						}}
 					/>
 
 					<DialogClose asChild>
 						<Button
-							onClick={props.onAction}
+							onClick={onAction}
 							className="mt-2 w-full"
 							disabled={!isAvailable}
 						>
-							{props.actionLabel || 'Insert'}
+							{actionLabel || 'Insert'}
 						</Button>
 					</DialogClose>
 				</div>
