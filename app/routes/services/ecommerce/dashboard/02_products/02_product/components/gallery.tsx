@@ -105,7 +105,7 @@ export function Gallery() {
 				isLoading={fetcher.state === 'loading'}
 				open={openSelectFeature}
 				onOpenChange={open => {
-					setOpenSelectGallery(open)
+					setOpenSelectFeature(open)
 					if (open) {
 						setSrcInput(product.option.image || '')
 						setAltInput(product.option.imageAlt || '')
