@@ -95,7 +95,10 @@ export const product = pgTable(
 		name: varchar('name').notNull(),
 		subtitle: varchar('subtitle'),
 		description: varchar('description'),
-		instructions: jsonb('instructions').$type<ProductInstruction[]>(),
+		instructions: jsonb('instructions')
+			.$type<ProductInstruction[]>()
+			.notNull()
+			.default([]),
 		purchaseNote: varchar('purchase_note'),
 
 		productOptionId: integer('product_option_id')
@@ -115,10 +118,8 @@ export const product = pgTable(
 		}),
 
 		seoId: integer('seo_id')
-			.references(() => seo.id, {
-				onDelete: 'restrict',
-			})
-			.notNull(),
+			.notNull()
+			.references(() => seo.id, { onDelete: 'restrict' }),
 
 		publishedAt: timestamp('published_at', { withTimezone: true }).defaultNow(),
 		...timestampAttributes,
@@ -166,7 +167,10 @@ export const productOption = pgTable(
 		// downloadable toggle
 		downloadable: integer('downloadable').notNull().default(0),
 
-		downloadFiles: jsonb('download_files').$type<DownloadFile[]>(),
+		downloadFiles: jsonb('download_files')
+			.$type<DownloadFile[]>()
+			.notNull()
+			.default([]),
 		downloadLimit: integer('download_limit'),
 		downloadExpiry: integer('download_expiry'), // in seconds
 
@@ -189,7 +193,10 @@ export const productOption = pgTable(
 		// virtual or physical
 		virtual: integer('virtual').notNull().default(0),
 		weight: integer('weight'), // in grams
-		dimension: jsonb('dimension').$type<ProductDimension>(),
+		dimension: jsonb('dimension')
+			.$type<ProductDimension>()
+			.notNull()
+			.default({ length: 0, width: 0, height: 0 }),
 		// TODO: refer to class table
 		// classId: integer('class_id').references(() => ecShippingClass.id, {
 		// 	onDelete: 'set null',
