@@ -25,7 +25,11 @@ import {
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { Spinner } from '~/components/ui/spinner'
-import type { ProductListing } from '~/routes/services/ecommerce/lib/db/product.server'
+import type {
+	CrossSellProduct,
+	ProductListing,
+	UpsellProduct,
+} from '~/routes/services/ecommerce/lib/db/product.server'
 import {
 	crossSellProductsAtom,
 	upsellProductsAtom,
@@ -55,12 +59,12 @@ export function LinkedProducts() {
 		setProductsLoaded(true)
 	}, [fetcher.data])
 
-	const handleSetCSProducts = (products: ProductListing[]) => {
+	const handleSetCSProducts = (products: CrossSellProduct[]) => {
 		setCrossSellProducts(products)
 		setIsCSOpen(false)
 	}
 
-	const handleSetUSProducts = (products: ProductListing[]) => {
+	const handleSetUSProducts = (products: UpsellProduct[]) => {
 		setUpsellProducts(products)
 		setIsUSOpen(false)
 	}
@@ -101,13 +105,15 @@ export function LinkedProducts() {
 					) : (
 						/* Product list */
 						<div className="max-h-[360px] space-y-2 overflow-scroll">
-							{crossSellProducts.map(product => (
-								<LinkedProductItem
-									key={product.id}
-									product={product}
-									onRemove={handleRemoveCSProduct}
-								/>
-							))}
+							{crossSellProducts
+								.sort((a, b) => a.order - b.order)
+								.map(product => (
+									<LinkedProductItem
+										key={product.id}
+										product={product}
+										onRemove={handleRemoveCSProduct}
+									/>
+								))}
 						</div>
 					)}
 				</CardContent>
@@ -157,13 +163,15 @@ export function LinkedProducts() {
 					) : (
 						/* Product list */
 						<div className="max-h-[360px] space-y-2 overflow-scroll">
-							{upsellProducts.map(product => (
-								<LinkedProductItem
-									key={product.id}
-									product={product}
-									onRemove={handleRemoveUSProduct}
-								/>
-							))}
+							{upsellProducts
+								.sort((a, b) => a.order - b.order)
+								.map(product => (
+									<LinkedProductItem
+										key={product.id}
+										product={product}
+										onRemove={handleRemoveUSProduct}
+									/>
+								))}
 						</div>
 					)}
 				</CardContent>
@@ -258,8 +266,8 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 interface AddLinkedProductsDialogProps {
 	open: boolean
 	onOpenChange: (open: boolean) => void
-	onConfirm: (products: ProductListing[]) => void
-	selected: ProductListing[]
+	onConfirm: (products: (ProductListing & { order: number })[]) => void
+	selected: (ProductListing & { order: number })[]
 	products: ProductListing[]
 	isLoading: boolean
 	/** Pass in trigger to auto focus on close */
@@ -278,7 +286,7 @@ function AddLinkedProductsDialog({
 	trigger,
 }: AddLinkedProductsDialogProps) {
 	const [selectedProducts, setSelectedProducts] =
-		useState<ProductListing[]>(selected)
+		useState<(ProductListing & { order: number })[]>(selected)
 	const [search, setSearch] = useState('')
 
 	useEffect(() => {
@@ -287,11 +295,13 @@ function AddLinkedProductsDialog({
 
 	const handleToggleProduct = (product: ProductListing) => {
 		setSelectedProducts(prev => {
-			const exists = prev.find(p => p.id === product.id)
+			const exists = prev.some(p => p.id === product.id)
 			if (exists) {
-				return prev.filter(p => p.id !== product.id)
+				return prev
+					.filter(p => p.id !== product.id)
+					.map((p, index) => ({ ...p, order: index + 1 }))
 			}
-			return [...prev, product]
+			return [...prev, { ...product, order: prev.length + 1 }]
 		})
 	}
 
@@ -336,14 +346,18 @@ function AddLinkedProductsDialog({
 					) : (
 						/* Product selection list */
 						<div className="space-y-2">
-							{filteredProducts.map(product => (
-								<SelectableProductItem
-									key={product.id}
-									product={product}
-									isSelected={selectedProducts.some(p => p.id === product.id)}
-									onToggle={handleToggleProduct}
-								/>
-							))}
+							{filteredProducts.map(product => {
+								return (
+									<SelectableProductItem
+										key={product.id}
+										product={product}
+										selectedOrder={
+											selectedProducts.find(p => p.id === product.id)?.order
+										}
+										onToggle={handleToggleProduct}
+									/>
+								)
+							})}
 						</div>
 					)}
 				</div>
@@ -372,15 +386,17 @@ function AddLinkedProductsDialog({
 
 interface SelectableProductItemProps {
 	product: ProductListing
-	isSelected: boolean
+	selectedOrder?: number
 	onToggle: (product: ProductListing) => void
 }
 
 function SelectableProductItem({
 	product,
-	isSelected,
+	selectedOrder,
 	onToggle,
 }: SelectableProductItemProps) {
+	const isSelected = selectedOrder !== undefined
+
 	return (
 		<div
 			className={`hover:bg-muted/50 flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
@@ -393,6 +409,7 @@ function SelectableProductItem({
 				checked={isSelected}
 				onCheckedChange={() => onToggle(product)}
 				onClick={e => e.stopPropagation()}
+				icon={isSelected && <span className="text-xs">{selectedOrder}</span>}
 			/>
 
 			{/* Product image */}

@@ -50,8 +50,12 @@ type VariantType = NonNullable<
 	ReturnType<typeof productAtom.read>
 >['variants'][number]
 
-const productAttributesAtom = atom(get => get(productAtom)?.attributes || null)
-const productVariantsAtom = atom(get => get(productAtom)?.variants || null)
+const productAttributesAtom = atom(
+	get => get(productAtom)?.attributes.sort((a, b) => a.order - b.order) || null,
+)
+const productVariantsAtom = atom(
+	get => get(productAtom)?.variants.sort((a, b) => a.order - b.order) || null,
+)
 
 // Split the variants array into individual atoms
 const variantAtomFamily = atomFamily((variantId: number) => {
@@ -140,7 +144,7 @@ function VariantCard({
 						No variants available. Click "Add Variant" to create one.
 					</p>
 				) : (
-					productVariants?.map(v => {
+					productVariants.map(v => {
 						const fmt = new Intl.NumberFormat(storeConfig.language, {
 							style: 'currency',
 							currency: v.option.currency,
