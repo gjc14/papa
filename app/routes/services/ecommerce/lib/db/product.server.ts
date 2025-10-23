@@ -400,10 +400,13 @@ export const getProductGallery = async (productId: number) => {
 	return gallery
 }
 
+export type CrossSellProduct = ProductListing &
+	Pick<typeof productCrossSell.$inferSelect, 'order'>
+
 export const getCrossSellProducts = async (
 	productId: number,
-): Promise<ProductListing[]> => {
-	const crossSells = await dbStore.execute<ProductListing>(sql`
+): Promise<CrossSellProduct[]> => {
+	const crossSells = await dbStore.execute<CrossSellProduct>(sql`
 		SELECT
 		DISTINCT ON (p.id)
 			p.id,
@@ -411,6 +414,7 @@ export const getCrossSellProducts = async (
 			p.slug,
 			p.status,
 			p.updated_at,
+			pcs.order,
 			CASE
 				WHEN po.id IS NOT NULL
 				THEN json_build_object(
@@ -443,10 +447,13 @@ export const getCrossSellProducts = async (
 	}))
 }
 
+export type UpsellProduct = ProductListing &
+	Pick<typeof productUpsell.$inferSelect, 'order'>
+
 export const getUpsellProducts = async (
 	productId: number,
-): Promise<ProductListing[]> => {
-	const upsells = await dbStore.execute<ProductListing>(sql`
+): Promise<UpsellProduct[]> => {
+	const upsells = await dbStore.execute<UpsellProduct>(sql`
 		SELECT
 		DISTINCT ON (p.id)
 			p.id,
@@ -454,6 +461,7 @@ export const getUpsellProducts = async (
 			p.slug,
 			p.status,
 			p.updated_at,
+			pus.order,
 			CASE
 				WHEN po.id IS NOT NULL
 				THEN json_build_object(

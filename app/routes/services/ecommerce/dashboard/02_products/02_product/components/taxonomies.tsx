@@ -68,11 +68,11 @@ export function Taxonomies() {
 	const topLevelCategories = categories.filter(c => !c.parentId)
 	const topLevelBrands = brands.filter(b => !b.parentId)
 
-	const [selectedCIds, setSelectedCIds] = useState<string[]>(
-		productCategories ? productCategories.map(c => String(c.id)) : [],
+	const [selectedCIds, setSelectedCIds] = useState<Set<string>>(
+		new Set(productCategories ? productCategories.map(c => String(c.id)) : []),
 	)
-	const [selectedBIds, setSelectedBIds] = useState<string[]>(
-		productBrands ? productBrands.map(b => String(b.id)) : [],
+	const [selectedBIds, setSelectedBIds] = useState<Set<string>>(
+		new Set(productBrands ? productBrands.map(b => String(b.id)) : []),
 	)
 
 	const cTreeData = taxonomiesToTree(categories)
@@ -115,17 +115,14 @@ export function Taxonomies() {
 
 	// Sync selected categories/brands with product
 	useEffect(() => {
-		setProduct(prev =>
-			prev
-				? {
-						...prev,
-						categories: categories.filter(c =>
-							selectedCIds.includes(String(c.id)),
-						),
-						brands: brands.filter(b => selectedBIds.includes(String(b.id))),
-					}
-				: prev,
-		)
+		setProduct(prev => {
+			if (!prev) return prev
+			return {
+				...prev,
+				categories: categories.filter(c => selectedCIds.has(String(c.id))),
+				brands: brands.filter(b => selectedBIds.has(String(b.id))),
+			}
+		})
 	}, [selectedCIds, selectedBIds])
 
 	// Handle category creation
@@ -139,11 +136,10 @@ export function Taxonomies() {
 			const createdCategory = cCreateFetcher.data.data
 
 			setCategories(prev => [...prev, { ...createdCategory, children: [] }])
-			setProduct(prev =>
-				prev
-					? { ...prev, categories: [...prev.categories, createdCategory] }
-					: prev,
-			)
+			setProduct(prev => {
+				if (!prev) return prev
+				return { ...prev, categories: [...prev.categories, createdCategory] }
+			})
 		}
 	}, [cCreateFetcher.state, cCreateFetcher.data])
 
@@ -226,8 +222,8 @@ export function Taxonomies() {
 						<div className="max-h-52 w-full overflow-auto border py-1.5">
 							<CheckboxTree
 								data={cTreeData}
-								selectedIds={selectedCIds}
-								onSelectionChange={setSelectedCIds}
+								selectedIds={Array.from(selectedCIds)}
+								onSelectionChange={s => setSelectedCIds(new Set(s))}
 							/>
 						</div>
 					) : (
@@ -304,8 +300,8 @@ export function Taxonomies() {
 						<div className="max-h-52 w-full overflow-auto border py-1.5">
 							<CheckboxTree
 								data={bTreeData}
-								selectedIds={selectedBIds}
-								onSelectionChange={setSelectedBIds}
+								selectedIds={Array.from(selectedBIds)}
+								onSelectionChange={s => setSelectedBIds(new Set(s))}
 							/>
 						</div>
 					) : (
@@ -341,31 +337,31 @@ type Taxonomy =
 /**
  * Transform a flat array into a tree structure
  */
-function taxonomiesToTree(tmies: Taxonomy[]): TreeNode[] {
+function taxonomiesToTree(txmies: Taxonomy[]): TreeNode[] {
 	const tmyMap = new Map<number, Taxonomy>()
 	const rootTaxonomies: Taxonomy[] = []
 
-	// Create tmy map
-	tmies.forEach(tmy => {
-		tmyMap.set(tmy.id, tmy)
+	// Create txmy map
+	txmies.forEach(txmy => {
+		tmyMap.set(txmy.id, txmy)
 	})
 
 	// Find root (no parent) taxonomies
-	tmies.forEach(tmy => {
-		if (tmy.parentId === null) {
-			rootTaxonomies.push(tmy)
+	txmies.forEach(txmy => {
+		if (txmy.parentId === null) {
+			rootTaxonomies.push(txmy)
 		}
 	})
 
 	// Recursively build tree structure
-	function buildTree(tmy: Taxonomy): TreeNode {
-		const children = tmies
-			.filter(t => t.parentId === tmy.id)
+	function buildTree(txmy: Taxonomy): TreeNode {
+		const children = txmies
+			.filter(t => t.parentId === txmy.id)
 			.map(child => buildTree(child))
 
 		return {
-			id: String(tmy.id),
-			label: tmy.name,
+			id: String(txmy.id),
+			label: txmy.name,
 			children: children.length > 0 ? children : undefined,
 		}
 	}

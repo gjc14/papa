@@ -47,18 +47,6 @@ type AttributeType = NonNullable<
 	NonNullable<ReturnType<typeof productAtom.read>>['attributes']
 >[number]
 
-export function newAttribute(length: number): AttributeType {
-	return {
-		id: -Math.random(), // Temporary ID; replace with real ID from backend
-		name: 'New Attribute',
-		value: 'Value',
-		order: length,
-		selectType: 'SELECTOR',
-		visible: 1,
-		attributeId: null,
-	}
-}
-
 export function Attributes() {
 	const attributes = useAtomValue(productAttributesAtom)
 	const setProduct = useSetAtom(productAtom)
@@ -88,7 +76,18 @@ export function Attributes() {
 			if (!prev) return prev
 			return {
 				...prev,
-				attributes: [...attributes, newAttribute(attributes.length)],
+				attributes: [
+					...attributes,
+					{
+						id: -Math.random(), // id doesn't matter, backend will delete all and recreate
+						name: 'New Attribute',
+						value: 'Value',
+						order: attributes.length + 1,
+						selectType: 'SELECTOR',
+						visible: 1,
+						attributeId: null,
+					},
+				],
 			}
 		})
 	}
@@ -104,14 +103,16 @@ export function Attributes() {
 			</CardHeader>
 			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
 				{attributes.length > 0 ? (
-					attributes.map(a => (
-						<AttributeItem
-							key={a.id}
-							attribute={a}
-							onUpdate={handleUpdateAttribute}
-							onDelete={handleDeleteAttribute}
-						/>
-					))
+					attributes
+						.sort((a, b) => a.order - b.order)
+						.map(a => (
+							<AttributeItem
+								key={a.id}
+								attribute={a}
+								onUpdate={handleUpdateAttribute}
+								onDelete={handleDeleteAttribute}
+							/>
+						))
 				) : (
 					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
 						No attributes. Click "Add Attribute" to create one.

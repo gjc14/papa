@@ -25,7 +25,8 @@ import {
 import { productAtom } from '../../../../store/product/context'
 
 const productInstructionsAtom = atom(
-	get => get(productAtom)?.instructions || null,
+	get =>
+		get(productAtom)?.instructions.sort((a, b) => a.order - b.order) || null,
 )
 
 type InstructionsType = NonNullable<
