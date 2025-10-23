@@ -1,13 +1,15 @@
 import camelcaseKeys from 'camelcase-keys'
-import { sql } from 'drizzle-orm'
+import { eq, inArray, sql } from 'drizzle-orm'
 
+import { seo } from '~/lib/db/schema'
 import { convertDateFields } from '~/lib/db/utils'
 
-import { dbStore } from './db.server'
+import { dbStore, type TransactionType } from './db.server'
 import {
 	product,
 	productAttribute,
 	productCrossSell,
+	productGallery,
 	productOption,
 	productToBrand,
 	productToCategory,
@@ -20,6 +22,9 @@ import { ecAttribute, ecBrand, ecCategory, ecTag } from './schema/taxonomy'
 
 type Product = typeof product.$inferSelect
 type ProductOption = typeof productOption.$inferSelect
+type Category = typeof ecCategory.$inferSelect
+type Tag = typeof ecTag.$inferSelect
+type Brand = typeof ecBrand.$inferSelect
 
 export type ProductListing = Pick<
 	Product,
@@ -41,9 +46,9 @@ export type ProductListing = Pick<
 }
 
 export type ProductListingWithRelations = ProductListing & {
-	categories: (typeof ecCategory.$inferSelect)[]
-	tags: (typeof ecTag.$inferSelect)[]
-	brands: (typeof ecBrand.$inferSelect)[]
+	categories: Category[]
+	tags: Tag[]
+	brands: Brand[]
 }
 
 type GetProductsParamsBase = {
@@ -208,7 +213,7 @@ export type ProductWithOption = Product & {
 
 /** Single product select attribute type */
 export type ProductVariant = typeof productVariant.$inferSelect & {
-	option: typeof productOption.$inferSelect
+	option: ProductOption
 }
 
 /** Single product select attribute type */
@@ -237,9 +242,9 @@ export const getProduct = async ({
 	console.time('getProduct')
 	const products = await dbStore.execute<
 		ProductWithOption & {
-			categories: (typeof ecCategory.$inferSelect)[]
-			tags: (typeof ecTag.$inferSelect)[]
-			brands: (typeof ecBrand.$inferSelect)[]
+			categories: Category[]
+			tags: Tag[]
+			brands: Brand[]
 			variants: ProductVariant[]
 			attributes: ProductAttribute[]
 		}
@@ -492,4 +497,293 @@ export const getUpsellProducts = async (
 		...p,
 		option: convertPriceStringToBigInt(p.option),
 	}))
+}
+
+// ==============================
+// Create / Update / Delete
+// ==============================
+
+type InsertUpsell = typeof productUpsell.$inferInsert
+type InsertCrossSell = typeof productCrossSell.$inferInsert
+
+// ===== Helper Functions =====
+
+/**
+ * 1. categories: Category[]
+ * 2. tags: Tag[]
+ * 3. brands: Brand[]
+ * 4. variants: ProductVariant[]
+ * 5. attributes: ProductAttribute[]
+ * 6. gallery: ProductGallery[]
+ * 7. crossSells: ("order" | "crossSellProductId")[]
+ * 8. upsells: ("order" | "upsellProductId")[]
+ */
+
+/** Replace product categories */
+async function connectProductCategories(
+	tx: TransactionType,
+	productId: number,
+	categories: Category[],
+) {
+	// Delete existing associations
+	await tx
+		.delete(productToCategory)
+		.where(eq(productToCategory.productId, productId))
+
+	// Insert new associations
+	if (categories.length > 0) {
+		await tx.insert(productToCategory).values(
+			categories.map((cat, index) => ({
+				productId,
+				categoryId: cat.id,
+				order: index,
+			})),
+		)
+	}
+}
+
+/** Replace product tags */
+async function connectProductTags(
+	tx: TransactionType,
+	productId: number,
+	tags: Tag[],
+) {
+	// Delete existing associations
+	await tx.delete(productToTag).where(eq(productToTag.productId, productId))
+
+	// Insert new associations
+	if (tags.length > 0) {
+		await tx.insert(productToTag).values(
+			tags.map((tag, index) => ({
+				productId,
+				tagId: tag.id,
+				order: index,
+			})),
+		)
+	}
+}
+
+/** Replace product brands */
+async function connectProductBrands(
+	tx: TransactionType,
+	productId: number,
+	brands: Brand[],
+) {
+	// Delete existing associations
+	await tx.delete(productToBrand).where(eq(productToBrand.productId, productId))
+
+	// Insert new associations
+	if (brands.length > 0) {
+		await tx.insert(productToBrand).values(
+			brands.map((brand, index) => ({
+				productId,
+				brandId: brand.id,
+				order: index,
+			})),
+		)
+	}
+}
+
+/** Replace product variants */
+async function connectProductVariants(
+	tx: TransactionType,
+	productId: number,
+	variants: ProductVariant[],
+) {
+	const existingVariants = await tx.query.productVariant.findMany({
+		where: eq(productVariant.productId, productId),
+	})
+
+	// Collect option IDs to delete (those not being reused)
+	const existingOptionIds = existingVariants.map(v => v.optionId)
+	const optionIdsInUse = variants
+		.map(v => v.option.id)
+		.filter(id => existingOptionIds.includes(id))
+	const optionIdsToDelete = existingOptionIds.filter(
+		id => !optionIdsInUse.includes(id),
+	)
+
+	// Delete orphaned options
+	if (optionIdsToDelete.length > 0) {
+		await tx
+			.delete(productOption)
+			.where(inArray(productOption.id, optionIdsToDelete))
+	}
+
+	// Insert new variants
+	if (variants.length > 0) {
+		const optionIds = variants.map(v => v.option.id)
+		const existingOptions = await tx
+			.select({ id: productOption.id })
+			.from(productOption)
+			.where(inArray(productOption.id, optionIds))
+
+		const existingOptionIds = new Set(existingOptions.map(o => o.id))
+
+		// Classify: 1. toInsert (bulk), 2. toUpdate (loop)
+		const optionsToInsert = variants
+			.filter(v => !existingOptionIds.has(v.option.id))
+			.map(v => v.option)
+
+		const optionsToUpdate = variants
+			.filter(v => existingOptionIds.has(v.option.id))
+			.map(v => v.option)
+
+		const insertedOptionIds = new Map<number, number>() // oldId -> newId
+		if (optionsToInsert.length > 0) {
+			const inserted = await tx
+				.insert(productOption)
+				.values(optionsToInsert)
+				.returning({ id: productOption.id })
+
+			optionsToInsert.forEach((opt, index) => {
+				insertedOptionIds.set(opt.id, inserted[index].id)
+			})
+		}
+
+		for (const opt of optionsToUpdate) {
+			await tx
+				.update(productOption)
+				.set(opt)
+				.where(eq(productOption.id, opt.id))
+		}
+
+		const variantsToInsert = variants.map(variant => {
+			const optionIdDatabase =
+				insertedOptionIds.get(variant.option.id) ?? variant.option.id
+			const { combination, order } = variant
+			return { combination, order, optionId: optionIdDatabase, productId }
+		})
+
+		// Delete and Insert variants at once
+		await tx
+			.delete(productVariant)
+			.where(eq(productVariant.productId, productId))
+		if (variantsToInsert.length > 0) {
+			await tx.insert(productVariant).values(variantsToInsert)
+		}
+	}
+}
+
+/** Replace product attributes */
+async function connectProductAttributes(
+	tx: TransactionType,
+	productId: number,
+	attributes: ProductAttribute[],
+) {
+	// Delete existing attributes
+	await tx
+		.delete(productAttribute)
+		.where(eq(productAttribute.productId, productId))
+
+	// Insert new attributes
+	if (attributes.length > 0) {
+		await tx.insert(productAttribute).values(
+			attributes.map(
+				attr =>
+					({
+						productId,
+						name: attr.name,
+						value: attr.value,
+						attributeId: attr.attributeId,
+						order: attr.order,
+						selectType: attr.selectType,
+						visible: attr.visible,
+					}) satisfies typeof productAttribute.$inferInsert,
+			),
+		)
+	}
+}
+
+/** Replace product gallery images */
+async function connectProductGallery(
+	tx: TransactionType,
+	productId: number,
+	gallery: Awaited<ReturnType<typeof getProductGallery>>,
+) {
+	// Delete existing associations
+	await tx.delete(productGallery).where(eq(productGallery.productId, productId))
+
+	// Insert new associations (including order)
+	if (gallery.length > 0) {
+		await tx.insert(productGallery).values(gallery)
+	}
+}
+
+export type ConnectCrossSellProducts = Pick<
+	InsertCrossSell,
+	'crossSellProductId' | 'order'
+>[]
+
+/** Replace cross-sell products */
+async function connectCrossSellProducts(
+	tx: TransactionType,
+	productId: number,
+	values: ConnectCrossSellProducts,
+) {
+	// Delete existing associations
+	await tx
+		.delete(productCrossSell)
+		.where(eq(productCrossSell.productId, productId))
+
+	// Insert new associations (including order)
+	if (values.length > 0) {
+		await tx
+			.insert(productCrossSell)
+			.values(values.map(v => ({ ...v, productId })))
+	}
+}
+
+export type ConnectUpsellProducts = Pick<
+	InsertUpsell,
+	'upsellProductId' | 'order'
+>[]
+
+/** Replace upsell products */
+async function connectUpsellProducts(
+	tx: TransactionType,
+	productId: number,
+	values: ConnectUpsellProducts,
+) {
+	// Delete existing associations
+	await tx.delete(productUpsell).where(eq(productUpsell.productId, productId))
+
+	// Insert new associations (including order)
+	if (values.length > 0) {
+		await tx
+			.insert(productUpsell)
+			.values(values.map(v => ({ ...v, productId })))
+	}
+}
+
+/** Delete a product (soft delete by default, or hard delete) */
+export async function deleteProduct(productId: number, hardDelete = false) {
+	if (hardDelete) {
+		await dbStore.transaction(async tx => {
+			// Get product to find its default option
+			const [p] = await tx
+				.select({
+					productOptionId: product.productOptionId,
+					seoId: product.seoId,
+				})
+				.from(product)
+				.where(eq(product.id, productId))
+
+			if (!p) {
+				throw new Error(`ProductId ${productId} not found`)
+			}
+
+			await tx.delete(product).where(eq(product.id, productId)).returning({
+				name: product.name,
+			})
+			await tx.delete(seo).where(eq(seo.id, p.seoId))
+		})
+	} else {
+		// Soft delete
+		await dbStore
+			.update(product)
+			.set({ deletedAt: new Date() })
+			.where(eq(product.id, productId))
+			.returning({ name: product.name })
+	}
 }
