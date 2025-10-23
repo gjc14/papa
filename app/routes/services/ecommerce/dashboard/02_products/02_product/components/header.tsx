@@ -1,6 +1,7 @@
-import { Link } from 'react-router'
+import { useCallback } from 'react'
+import { Link, useFetcher } from 'react-router'
 
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { ExternalLink } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -9,25 +10,39 @@ import { Separator } from '~/components/ui/separator'
 import { Switch } from '~/components/ui/switch'
 
 import { productAtom, storeConfigAtom } from '../../../../store/product/context'
+import { isResetAlertOpenAtom, livePreviewAtom } from '../context'
+import type { action } from '../resource'
 
 const productIdAtom = atom(get => get(productAtom)?.id || null)
 const productNameAtom = atom(get => get(productAtom)?.name || null)
 const productSlugAtom = atom(get => get(productAtom)?.slug || null)
 
-export function ProductEditPageHeader({
-	preview,
-	onPreviewChange,
-}: {
-	preview: boolean
-	onPreviewChange: (value: boolean) => void
-}) {
-	const setProduct = useSetAtom(productAtom)
+export function ProductEditPageHeader() {
+	const fetcher = useFetcher<typeof action>()
+
+	const store = useStore()
+	const [preview, setPreview] = useAtom(livePreviewAtom)
 	const storeConfig = useAtomValue(storeConfigAtom)
 	const productId = useAtomValue(productIdAtom)
 	const productName = useAtomValue(productNameAtom)
 	const productSlug = useAtomValue(productSlugAtom)
+	const setResetOpen = useSetAtom(isResetAlertOpenAtom)
 
 	if (!productId || !productName || !productSlug) return null
+
+	const handleSave = useCallback(() => {
+		const product = store.get(productAtom)
+		if (!product) return
+
+		const payload = JSON.stringify(product, (_, v) =>
+			typeof v === 'bigint' ? v.toString() : v,
+		)
+		fetcher.submit(payload, {
+			method: 'post',
+			action: 'resource', // :productSlug/resource route is where the action is defined
+			encType: 'application/json',
+		})
+	}, [store])
 
 	return (
 		<header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 border-b backdrop-blur">
@@ -46,11 +61,7 @@ export function ProductEditPageHeader({
 					<Label htmlFor="preview" className="text-sm">
 						Preview
 					</Label>
-					<Switch
-						id="preview"
-						checked={preview}
-						onCheckedChange={onPreviewChange}
-					/>
+					<Switch id="preview" checked={preview} onCheckedChange={setPreview} />
 					<Button variant={'ghost'} size={'icon'} asChild className="size-8">
 						<Link
 							to={`${storeConfig.storeFrontPath}/product/${productSlug}`}
@@ -61,10 +72,20 @@ export function ProductEditPageHeader({
 						</Link>
 					</Button>
 					<Separator orientation="vertical" className="h-6" />
-					<Button size="sm" variant="outline" type="button">
-						Restore
+					<Button
+						size="sm"
+						variant="outline"
+						type="button"
+						onClick={() => setResetOpen(true)}
+					>
+						Reset
 					</Button>
-					<Button size="sm" type="submit" form="product-edit-form">
+					<Button
+						size="sm"
+						type="submit"
+						form="product-edit-form"
+						onClick={handleSave}
+					>
 						Save
 					</Button>
 				</div>

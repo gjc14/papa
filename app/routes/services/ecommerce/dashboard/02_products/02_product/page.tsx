@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useAtomValue } from 'jotai'
 
 import {
 	ResizableHandle,
@@ -8,6 +8,7 @@ import {
 
 import { Header } from '../../../store/layout/components/header'
 import { StoreProductPage } from '../../../store/product/page'
+import { ProductAlerts } from './components/alerts'
 import { Attributes } from './components/attributes'
 import { Gallery } from './components/gallery'
 import { GeneralInformation } from './components/general-information'
@@ -18,25 +19,24 @@ import { MainOption } from './components/main-option'
 import { Publishing } from './components/publishing'
 import { Taxonomies } from './components/taxonomies'
 import { Variants } from './components/variants'
+import { livePreviewAtom } from './context'
 
 export function ProductEditPage() {
-	const [preview, setPreview] = useState(false)
+	const livePreview = useAtomValue(livePreviewAtom)
 
 	return (
 		<ResizablePanelGroup direction="horizontal">
+			<ProductAlerts />
 			<ResizablePanel
 				className="@container"
-				defaultSize={preview ? 50 : 100}
+				defaultSize={livePreview ? 50 : 100}
 				minSize={30}
 				id="edit-panel"
 				order={0}
 			>
 				<section className="relative h-full w-full overflow-auto">
 					{/* Sticky Header */}
-					<ProductEditPageHeader
-						preview={preview}
-						onPreviewChange={setPreview}
-					/>
+					<ProductEditPageHeader />
 
 					<div className="p-4">
 						<p className="text-muted-foreground mb-4 rounded-lg border bg-violet-300/20 p-3 text-sm @xl:mb-6 dark:bg-violet-700/20">
@@ -69,7 +69,7 @@ export function ProductEditPage() {
 				</section>
 			</ResizablePanel>
 
-			{preview && (
+			{livePreview && (
 				<>
 					<ResizableHandle />
 					<ResizablePanel
