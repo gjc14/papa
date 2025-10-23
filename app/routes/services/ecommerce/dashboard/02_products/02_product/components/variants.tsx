@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useEffect, useMemo, useState } from 'react'
 
 import {
 	flexRender,
@@ -10,6 +10,7 @@ import {
 	type Row,
 } from '@tanstack/react-table'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atomFamily } from 'jotai/utils'
 import { ChevronDown, ChevronRight, Grid, Plus } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -45,12 +46,19 @@ import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/pri
 
 import { OptionForm } from './option-form'
 
-const productAttributesAtom = atom(get => get(productAtom)?.attributes || null)
-const productVariantsAtom = atom(get => get(productAtom)?.variants || null)
-
 type VariantType = NonNullable<
 	ReturnType<typeof productAtom.read>
 >['variants'][number]
+
+const productAttributesAtom = atom(get => get(productAtom)?.attributes || null)
+const productVariantsAtom = atom(get => get(productAtom)?.variants || null)
+
+// Split the variants array into individual atoms
+const variantAtomFamily = atomFamily((variantId: number) => {
+	return atom(
+		get => get(productAtom)?.variants?.find(v => v.id === variantId) || null,
+	)
+})
 
 /**
  * Variants Component
@@ -217,46 +225,8 @@ function VariantDialog({
 	expanded: ExpandedState
 	setExpanded: React.Dispatch<React.SetStateAction<ExpandedState>>
 }) {
-	const setProduct = useSetAtom(productAtom)
 	const productAttributes = useAtomValue(productAttributesAtom)
 	const productVariants = useAtomValue(productVariantsAtom)
-
-	const handleOptionChange = (
-		variantId: number,
-		changes: Partial<VariantType>,
-	) => {
-		setProduct(prev => {
-			if (!prev) return prev
-
-			return {
-				...prev,
-				variants: prev.variants.map(v =>
-					v.id === variantId
-						? { ...v, option: { ...v.option, ...changes } }
-						: v,
-				),
-			}
-		})
-	}
-
-	const handleCombinationChange = (
-		variantId: number,
-		key: string,
-		value: string,
-	) => {
-		setProduct(prev => {
-			if (!prev) return prev
-
-			return {
-				...prev,
-				variants: prev.variants.map(v =>
-					v.id === variantId
-						? { ...v, combination: { ...v.combination, [key]: value } }
-						: v,
-				),
-			}
-		})
-	}
 
 	const attrOptions = useMemo(() => {
 		if (!productAttributes) return null
@@ -287,23 +257,40 @@ function VariantDialog({
 				size: 50,
 			},
 			...(attrOptions
-				? Object.keys(attrOptions).map(key => ({
-						id: key,
-						header: key,
+				? Object.keys(attrOptions).map(attrKey => ({
+						id: attrKey,
+						header: attrKey,
 						cell: ({ row }: { row: Row<VariantType> }) => {
+							const setProduct = useSetAtom(productAtom)
 							const variant = row.original
-							const currentValue = variant.combination[key]
-							const options = Array.from(attrOptions[key]) || []
+							const currentValue = variant.combination[attrKey]
+							const options = Array.from(attrOptions[attrKey]) || []
+
+							const handleCombinationChange = (value: string) => {
+								setProduct(prev => {
+									if (!prev) return prev
+
+									return {
+										...prev,
+										variants: prev.variants.map(v =>
+											v.id === variant.id
+												? {
+														...v,
+														combination: { ...v.combination, [attrKey]: value },
+													}
+												: v,
+										),
+									}
+								})
+							}
 
 							return (
 								<Select
 									value={currentValue}
-									onValueChange={value =>
-										handleCombinationChange(variant.id, key, value)
-									}
+									onValueChange={handleCombinationChange}
 								>
 									<SelectTrigger className="h-8 w-full rounded-none">
-										<SelectValue placeholder={`Select ${key}`} />
+										<SelectValue placeholder={`Select ${attrKey}`} />
 									</SelectTrigger>
 									<SelectContent className="rounded-none">
 										{options.map(option => (
@@ -416,12 +403,7 @@ function VariantDialog({
 												style={{ gridColumn: '1 / -1' }}
 												className="p-3"
 											>
-												<OptionForm
-													option={row.original.option}
-													onChange={changes =>
-														handleOptionChange(row.original.id, changes)
-													}
-												/>
+												<VariantRowExpand variantId={row.original.id} />
 											</div>
 										</div>
 									)}
@@ -434,3 +416,36 @@ function VariantDialog({
 		</Dialog>
 	)
 }
+
+/**
+ * Individual Variant Item Component
+ * Memoized to prevent re-renders when other variants change
+ */
+const VariantRowExpand = memo(({ variantId }: { variantId: number }) => {
+	const setProduct = useSetAtom(productAtom)
+	const variant = useAtomValue(variantAtomFamily(variantId))
+
+	if (!variant) return null
+
+	const handleOptionChange = (field: Partial<VariantType>) => {
+		setProduct(prev => {
+			if (!prev) return prev
+
+			return {
+				...prev,
+				variants: prev.variants.map(v => {
+					if (v.id === variantId) {
+						return {
+							...v,
+							option: { ...v.option, ...field },
+						}
+					}
+					return v
+				}),
+			}
+		})
+	}
+
+	return <OptionForm option={variant.option} onChange={handleOptionChange} />
+})
+VariantRowExpand.displayName = 'VariantRowExpand'
