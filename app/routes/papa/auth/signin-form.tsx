@@ -138,9 +138,9 @@ export const SignInForm = () => {
 							id="email"
 							type="email"
 							placeholder={
-								'yo@' +
+								'email@' +
 								(import.meta.env.DEV
-									? 'yinc.me'
+									? 'example.com'
 									: import.meta.env.VITE_BASE_URL.split('://')[1])
 							}
 							value={email}
