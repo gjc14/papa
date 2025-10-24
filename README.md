@@ -123,9 +123,8 @@ cd ./papa && cp .env.example .env
 4.  `AUTH_SECRET`: Use
     `node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"`
     to generate a random secret with node.
-5.  `VITE_BASE_URL`: This is the domain where you're hosting this app. In dev
-    mode, probably `http://localhost:5173`. In production environment, please
-    use where your app is. E.g. `https://papa.delicioso`.
+5.  `VITE_BASE_URL`: This is the domain where you're hosting this app in
+    production environment, e.g. `https://papa.delicioso`.
 6.  `APP_NAME`: What you call your app.
 7.  `EMAIL_PROVIDER`: Options: `smtp`, `ses`, `resend`, `nodemailer` (same as
     `smtp`). Default `resend`

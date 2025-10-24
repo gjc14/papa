@@ -54,7 +54,10 @@ export const sendVerifyLink = async ({
 			subject: '點擊連結以驗證您的帳號！Click the link to verify your email',
 			react: WelcomeEmail({
 				appName: appName,
-				logoUrl: process.env.VITE_BASE_URL + '/logo.png',
+				logoUrl:
+					(process.env.NODE_ENV === 'production'
+						? process.env.VITE_BASE_URL || 'http://localhost:5173'
+						: 'http://localhost:5173') + '/logo.png',
 				userFirstname: email.split('@')[0],
 				verifyLink: url,
 			}),
@@ -93,7 +96,10 @@ export const sendVerifyChangeEmailLink = async ({
 			subject: '點擊連結以確認更改您的 Email 至 ' + newEmail,
 			react: VerifyChangeEmail({
 				appName: appName,
-				logoUrl: process.env.VITE_BASE_URL + '/logo.png',
+				logoUrl:
+					(process.env.NODE_ENV === 'production'
+						? process.env.VITE_BASE_URL || 'http://localhost:5173'
+						: 'http://localhost:5173') + '/logo.png',
 				userFirstname: email.split('@')[0],
 				verifyLink: url,
 				newEmail,
