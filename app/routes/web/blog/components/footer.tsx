@@ -10,11 +10,11 @@ export const Footer = () => {
 			<p className="text-primary text-sm">
 				Built somewhere on the 🌏. © {new Date().getFullYear()}{' '}
 				<a
-					href="https://yinc.me"
-					aria-label="Go to papa"
+					href="https://github.com/gjc14/papa"
+					aria-label="Go to project"
 					target="_blank"
 					rel="noopener noreferrer"
-					title="Go to the Papa website"
+					title="Go to project"
 					className="hover:underline"
 				>
 					Papa
