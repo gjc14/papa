@@ -89,7 +89,7 @@ export const getPosts = async (
 					SELECT
 						${tagTable.id},
 						${tagTable.name},
-						${tagTable.slug},
+						${tagTable.slug}
 					FROM ${tagTable}
 					WHERE ${tagTable.slug} = ANY(ARRAY[${sql.join(tags, sql`,`)}])
 				`)
@@ -99,7 +99,7 @@ export const getPosts = async (
 					SELECT
 						${categoryTable.id},
 						${categoryTable.name},
-						${categoryTable.slug},
+						${categoryTable.slug}
 					FROM ${categoryTable}
 					WHERE ${categoryTable.slug} = ANY(ARRAY[${sql.join(categories, sql`,`)}])
 				`)
