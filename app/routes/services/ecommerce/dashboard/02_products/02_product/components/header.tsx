@@ -1,16 +1,33 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Link, useFetcher } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Trash } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
+import { Spinner } from '~/components/ui/spinner'
 import { Switch } from '~/components/ui/switch'
+import type {
+	ConnectCrossSellProducts,
+	ConnectUpsellProducts,
+} from '~/routes/services/ecommerce/lib/db/product.server'
 
-import { productAtom, storeConfigAtom } from '../../../../store/product/context'
-import { isResetAlertOpenAtom, livePreviewAtom } from '../context'
+import {
+	crossSellProductsAtom,
+	productAtom,
+	productGalleryAtom,
+	storeConfigAtom,
+	upsellProductsAtom,
+} from '../../../../store/product/context'
+import {
+	isMovingToTrashAtom,
+	isResetAlertOpenAtom,
+	isSavingAtom,
+	isToTrashAlertOpenAtom,
+	livePreviewAtom,
+} from '../context'
 import type { action } from '../resource'
 
 const productIdAtom = atom(get => get(productAtom)?.id || null)
@@ -22,36 +39,61 @@ export function ProductEditPageHeader() {
 
 	const store = useStore()
 	const [preview, setPreview] = useAtom(livePreviewAtom)
+	const [isSaving, setIsSaving] = useAtom(isSavingAtom)
 	const storeConfig = useAtomValue(storeConfigAtom)
 	const productId = useAtomValue(productIdAtom)
 	const productName = useAtomValue(productNameAtom)
 	const productSlug = useAtomValue(productSlugAtom)
+	const isMovingToTrash = useAtomValue(isMovingToTrashAtom)
 	const setResetOpen = useSetAtom(isResetAlertOpenAtom)
+	const setToTrashOpen = useSetAtom(isToTrashAlertOpenAtom)
+
+	useEffect(() => setIsSaving(fetcher.state === 'submitting'), [fetcher.state])
 
 	if (!productId || !productName || !productSlug) return null
 
+	const isNew = productId === -1
+
 	const handleSave = useCallback(() => {
 		const product = store.get(productAtom)
-		if (!product) return
+		const productGallery = store.get(productGalleryAtom)
+		const crossSellProducts = store.get(crossSellProductsAtom)
+		const upsellProducts = store.get(upsellProductsAtom)
 
-		const payload = JSON.stringify(product, (_, v) =>
-			typeof v === 'bigint' ? v.toString() : v,
+		if (!product || !productGallery || !crossSellProducts || !upsellProducts)
+			return
+
+		if (isSaving || isMovingToTrash) return
+
+		const payload = JSON.stringify(
+			{
+				...product,
+				gallery: productGallery,
+				crossSellProductIds: crossSellProducts.map((p, i) => ({
+					crossSellProductId: p.id,
+					order: i,
+				})) satisfies ConnectCrossSellProducts,
+				upsellProductIds: upsellProducts.map((p, i) => ({
+					upsellProductId: p.id,
+					order: i,
+				})) satisfies ConnectUpsellProducts,
+			},
+			(_, v) => (typeof v === 'bigint' ? v.toString() : v),
 		)
 		fetcher.submit(payload, {
-			method: 'post',
-			action: 'resource', // :productSlug/resource route is where the action is defined
+			method: isNew ? 'POST' : 'PUT',
+			action: 'resource', // :productSlug/resource route is where the action defined
 			encType: 'application/json',
 		})
 	}, [store])
 
 	return (
-		<header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 border-b backdrop-blur">
-			<div className="flex flex-wrap items-center justify-between gap-3 p-4">
-				<div className="flex items-center gap-3">
-					<h1 className="text-xl font-semibold">
-						{productId !== -1 ? 'Edit' : 'Create'}: {productName}
-					</h1>
-					{productId !== -1 && ( // new products have id -1
+		<header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 overflow-auto border-b backdrop-blur">
+			<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2">
+				<div className="flex items-center gap-2">
+					<p className="text-muted-foreground">{!isNew ? 'Edit' : 'Create'}</p>
+					<h1 className="text-xl font-semibold">{productName}</h1>
+					{!isNew && (
 						<span className="text-muted-foreground text-sm">
 							ID: {productId}
 						</span>
@@ -72,11 +114,24 @@ export function ProductEditPageHeader() {
 						</Link>
 					</Button>
 					<Separator orientation="vertical" className="h-6" />
+					{!isNew && (
+						<Button
+							size="icon"
+							variant="ghost"
+							type="button"
+							className="hover:bg-destructive dark:hover:bg-destructive size-8"
+							onClick={() => setToTrashOpen(true)}
+							disabled={isSaving || isMovingToTrash}
+						>
+							{isMovingToTrash ? <Spinner /> : <Trash />}
+						</Button>
+					)}
 					<Button
 						size="sm"
 						variant="outline"
 						type="button"
 						onClick={() => setResetOpen(true)}
+						disabled={isSaving || isMovingToTrash}
 					>
 						Reset
 					</Button>
@@ -85,8 +140,10 @@ export function ProductEditPageHeader() {
 						type="submit"
 						form="product-edit-form"
 						onClick={handleSave}
+						disabled={isSaving || isMovingToTrash}
 					>
-						Save
+						{isSaving && <Spinner />}
+						{isNew ? 'Create Product' : 'Save Product'}
 					</Button>
 				</div>
 			</div>
