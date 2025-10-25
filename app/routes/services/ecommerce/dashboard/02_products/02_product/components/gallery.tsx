@@ -143,29 +143,35 @@ export function Gallery() {
 			/>
 			<SeparatorWithText text="Gallery" />
 			<div className="grid grid-cols-3 gap-2">
-				{gallery
-					.sort((a, b) => a.order - b.order)
-					.map((item, i) => (
-						<div key={i} className="relative">
-							<img
-								key={i}
-								src={item.image}
-								alt={item.alt || productName}
-								title={item.title || productName}
-								className="aspect-square rounded object-cover"
-							/>
-							<button
-								type="button"
-								onClick={() => {
-									const newGallery = gallery.filter((_, index) => index !== i)
-									setGallery(newGallery)
-								}}
-								className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
-							>
-								<X size={12} />
-							</button>
-						</div>
-					))}
+				{gallery.length > 0 ? (
+					gallery
+						.sort((a, b) => a.order - b.order)
+						.map((item, i) => (
+							<div key={i} className="relative">
+								<img
+									key={i}
+									src={item.image}
+									alt={item.alt || productName}
+									title={item.title || productName}
+									className="aspect-square rounded object-cover"
+								/>
+								<button
+									type="button"
+									onClick={() => {
+										const newGallery = gallery.filter((_, index) => index !== i)
+										setGallery(newGallery)
+									}}
+									className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+								>
+									<X size={12} />
+								</button>
+							</div>
+						))
+				) : (
+					<p className="text-muted-foreground col-span-3 rounded-md border border-dashed p-3 text-center text-sm">
+						No images yet. Click "Add Image" to create product gallery.
+					</p>
+				)}
 			</div>
 			<AssetSelectionDialog
 				actionLabel="Insert"
