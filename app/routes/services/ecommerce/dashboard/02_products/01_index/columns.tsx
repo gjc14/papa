@@ -165,17 +165,15 @@ export const columns: ColumnDef<
 					id={id}
 					deleteTarget={name}
 					onDelete={() => {
-						fetcher.submit(
-							{ id },
-							{
-								method: 'DELETE',
-								action: `/dashboard/ecommerce/products/${slug}/resource`,
-								encType: 'application/json',
-							},
-						)
+						fetcher.submit([{ id, name }], {
+							method: 'DELETE',
+							action: `resource`,
+							encType: 'application/json',
+						})
 					}}
+					permanent={false}
 				>
-					<Link to={`/dashboard/ecommerce/products/${slug}`}>
+					<Link to={slug}>
 						<DropdownMenuItem>Edit</DropdownMenuItem>
 					</Link>
 				</DashboardDataTableMoreMenu>

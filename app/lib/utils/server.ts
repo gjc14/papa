@@ -13,7 +13,7 @@ const { DatabaseError } = pkg
  */
 export const handleError = (
 	error: unknown,
-	request: Request,
+	request?: Request,
 	options: { errorMessage?: string } = {},
 ) => {
 	const { errorMessage } = options
