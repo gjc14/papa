@@ -14,7 +14,7 @@ import { getProducts } from '../../../lib/db/product.server'
 import { columns } from './columns'
 
 export const loader = async () => {
-	const products = await getProducts({ relations: true })
+	const products = await getProducts({ relations: true, status: 'ALL' })
 	return { products }
 }
 

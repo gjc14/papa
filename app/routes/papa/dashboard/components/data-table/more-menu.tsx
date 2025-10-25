@@ -22,6 +22,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { Spinner } from '~/components/ui/spinner'
 import { useFetcherNotification } from '~/hooks/use-notification'
 
 export const DashboardDataTableMoreMenu = ({
@@ -30,6 +31,7 @@ export const DashboardDataTableMoreMenu = ({
 	hideDelete,
 	deleteTarget = '-->',
 	onDelete,
+	permanent = true,
 }: {
 	id: number | string
 	/** Optional children, you could use <DropdownMenuItem> */
@@ -43,6 +45,8 @@ export const DashboardDataTableMoreMenu = ({
 	deleteTarget?: string
 	/** Callback function to handle deletion */
 	onDelete?: () => void
+	/** If the deletion is permanent or move to trash */
+	permanent?: boolean
 }) => {
 	const fetcher = useFetcher()
 	const { mutating } = useFetcherNotification(fetcher, {
@@ -73,7 +77,7 @@ export const DashboardDataTableMoreMenu = ({
 					<>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={() => setOpen(true)}>
-							Delete
+							{permanent ? 'Delete Permanently' : 'Move to Trash'}
 						</DropdownMenuItem>
 					</>
 				)}
@@ -82,10 +86,14 @@ export const DashboardDataTableMoreMenu = ({
 			<AlertDialog open={open} onOpenChange={setOpen}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+						<AlertDialogTitle>
+							{permanent ? 'Are you absolutely sure?' : 'Move to Trash?'}
+						</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete{' '}
-							<span className="text-primary font-bold">{deleteTarget}</span>
+							{permanent
+								? 'This action cannot be undone. This will permanently delete'
+								: 'Are you sure you want to move to trash?'}
+							<span className="text-primary font-bold"> {deleteTarget} </span>
 							(id: {id}).
 						</AlertDialogDescription>
 					</AlertDialogHeader>
@@ -95,7 +103,8 @@ export const DashboardDataTableMoreMenu = ({
 							className="bg-destructive hover:bg-destructive/90 text-white"
 							onClick={onDelete}
 						>
-							Continue to delete
+							{mutating && <Spinner />}
+							{permanent ? 'Delete Permanently' : 'Move to Trash'}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

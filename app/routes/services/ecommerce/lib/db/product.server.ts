@@ -3,6 +3,7 @@ import { eq, inArray, sql } from 'drizzle-orm'
 
 import { seo } from '~/lib/db/schema'
 import { convertDateFields } from '~/lib/db/utils'
+import { handleError } from '~/lib/utils/server'
 
 import { dbStore, type TransactionType } from './db.server'
 import {
@@ -814,34 +815,117 @@ async function connectUpsellProducts(
 	}
 }
 
-/** Delete a product (soft delete by default, or hard delete) */
-export async function deleteProduct(productId: number, hardDelete = false) {
-	if (hardDelete) {
-		await dbStore.transaction(async tx => {
-			// Get product to find its default option
-			const [p] = await tx
-				.select({
-					productOptionId: product.productOptionId,
-					seoId: product.seoId,
-				})
-				.from(product)
-				.where(eq(product.id, productId))
+type DeleteProductResult = {
+	success: boolean
+	deleted: Array<{ id: number; name: string }>
+	notFound: number[]
+	errors: Array<{ id: number; error: string }>
+}
 
-			if (!p) {
-				throw new Error(`ProductId ${productId} not found`)
-			}
-
-			await tx.delete(product).where(eq(product.id, productId)).returning({
-				name: product.name,
-			})
-			await tx.delete(seo).where(eq(seo.id, p.seoId))
-		})
-	} else {
-		// Soft delete
-		await dbStore
-			.update(product)
-			.set({ deletedAt: new Date() })
-			.where(eq(product.id, productId))
-			.returning({ name: product.name })
+/** Delete products (soft delete by default, or hard delete) */
+export async function deleteProducts(
+	productIds: number[],
+): Promise<DeleteProductResult> {
+	const result: DeleteProductResult = {
+		success: false,
+		deleted: [],
+		notFound: [],
+		errors: [],
 	}
+
+	if (productIds.length === 0) {
+		return result
+	}
+
+	await dbStore.transaction(async tx => {
+		// 1. Query existing products
+		const existingProducts = await tx
+			.select({
+				id: product.id,
+				name: product.name,
+				productOptionId: product.productOptionId,
+				seoId: product.seoId,
+			})
+			.from(product)
+			.where(inArray(product.id, productIds))
+
+		// 2. Collect not found IDs
+		const foundIds = existingProducts.map(p => p.id)
+		result.notFound = productIds.filter(id => !foundIds.includes(id))
+
+		// 3. Early return if no existing products
+		if (existingProducts.length === 0) {
+			return result
+		}
+
+		// 4. Delete products and related records
+		for (const p of existingProducts) {
+			try {
+				// Delete the product itself (cascading deletes related tables)
+				await tx.delete(product).where(eq(product.id, p.id))
+
+				// Delete related productOption
+				await tx
+					.delete(productOption)
+					.where(eq(productOption.id, p.productOptionId))
+
+				// Delete related seo
+				await tx.delete(seo).where(eq(seo.id, p.seoId))
+
+				result.deleted.push({ id: p.id, name: p.name })
+			} catch (error) {
+				const errorResult = handleError(error, undefined, {})
+				result.errors.push({
+					id: p.id,
+					error: errorResult.err,
+				})
+			}
+		}
+
+		result.success = result.errors.length === 0
+	})
+
+	return result
+}
+
+/** Move products to trash */
+export async function moveProductsToTrash(
+	productIds: number[],
+): Promise<DeleteProductResult> {
+	const result: DeleteProductResult = {
+		success: false,
+		deleted: [],
+		notFound: [],
+		errors: [],
+	}
+
+	if (productIds.length === 0) {
+		return result
+	}
+
+	// Soft delete
+	try {
+		const deletedProducts = await dbStore
+			.update(product)
+			.set({ status: 'TRASHED', deletedAt: new Date() })
+			.where(inArray(product.id, productIds))
+			.returning({ id: product.id, name: product.name })
+
+		result.deleted = deletedProducts
+		result.notFound = productIds.filter(
+			id => !deletedProducts.some(p => p.id === id),
+		)
+		result.success = result.deleted.length > 0
+	} catch (error) {
+		const errorResult = handleError(error, undefined, {})
+		// If the bulk delete fails, try deleting one by one to collect errors
+		productIds.forEach(id => {
+			result.errors.push({
+				id,
+				error: errorResult.err,
+			})
+		})
+	}
+
+	return result
 }
