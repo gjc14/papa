@@ -16,7 +16,11 @@ import type { ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
 import { validateAdminSession } from '~/routes/papa/auth/utils'
 
-import { getProducts } from '../../../lib/db/product.server'
+import {
+	createProduct,
+	getProducts,
+	updateProduct,
+} from '../../../lib/db/product.server'
 import {
 	ecBrand,
 	ecCategory,
@@ -104,13 +108,13 @@ export const action = async ({ request }: Route.ActionArgs) => {
 	const { user } = await validateAdminSession(request)
 
 	const jsonData = await request.json()
-	console.log('Product data received for saving:', jsonData, 'by user:', user)
 
 	switch (request.method) {
 		case 'POST':
 			try {
+				console.time('insert:insertUpdateSchema.parse')
 				const newProductData = insertUpdateSchema.parse(jsonData)
-				console.log('passed newProductData', newProductData)
+				console.timeEnd('insert:insertUpdateSchema.parse')
 
 				if (newProductData.status === ('TRASHED' as ProductStatus)) {
 					newProductData.deletedAt = new Date()
@@ -127,8 +131,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 					newProductData.publishedAt = null
 				}
 
-				// await
-				await new Promise(resolve => setTimeout(resolve, 1000))
+				await createProduct(newProductData)
 
 				return {
 					msg: `Product ${newProductData.name} created successfully`,
@@ -138,8 +141,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
 			}
 		case 'PUT':
 			try {
+				console.time('update:insertUpdateSchema.parse')
 				const updatedProductData = insertUpdateSchema.parse(jsonData)
-				console.log('passed updatedProductData', updatedProductData)
+				console.timeEnd('update:insertUpdateSchema.parse')
 
 				if (updatedProductData.status === ('TRASHED' as ProductStatus)) {
 					updatedProductData.deletedAt = new Date()
@@ -156,8 +160,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 					updatedProductData.publishedAt = null
 				}
 
-				// await
-				await new Promise(resolve => setTimeout(resolve, 1000))
+				await updateProduct(updatedProductData)
 
 				return {
 					msg: `Product ${updatedProductData.name} updated successfully`,
