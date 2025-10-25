@@ -565,6 +565,126 @@ export const getUpsellProducts = async (
 type InsertUpsell = typeof productUpsell.$inferInsert
 type InsertCrossSell = typeof productCrossSell.$inferInsert
 
+export const createProduct = async (
+	data: Product & {
+		option: ProductOption
+		categories: Category[]
+		tags: Tag[]
+		brands: Brand[]
+		variants: ProductVariant[]
+		attributes: ProductAttribute[]
+		gallery: Awaited<ReturnType<typeof getProductGallery>>
+		crossSellProductIds: ConnectCrossSellProducts
+		upsellProductIds: ConnectUpsellProducts
+	},
+) => {
+	const {
+		option,
+		categories,
+		tags,
+		brands,
+		variants,
+		attributes,
+		gallery,
+		crossSellProductIds,
+		upsellProductIds,
+		...productData
+	} = data
+
+	console.time('createProduct')
+
+	await dbStore.transaction(async tx => {
+		const promiseProduct = async () => {
+			console.time('product')
+			await tx.insert(product).values(productData)
+			console.timeEnd('product')
+		}
+		const promiseProductOption = async () => {
+			console.time('productOption')
+			await tx.insert(productOption).values(option)
+			console.timeEnd('productOption')
+		}
+
+		await Promise.all([
+			promiseProduct(),
+			promiseProductOption(),
+			connectProductCategories(tx, productData.id, categories || []),
+			connectProductTags(tx, productData.id, tags || []),
+			connectProductBrands(tx, productData.id, brands || []),
+			connectProductVariants(tx, productData.id, variants || []),
+			connectProductAttributes(tx, productData.id, attributes || []),
+			connectProductGallery(tx, productData.id, gallery || []),
+			connectCrossSellProducts(tx, productData.id, crossSellProductIds || []),
+			connectUpsellProducts(tx, productData.id, upsellProductIds || []),
+		])
+	})
+
+	console.timeEnd('createProduct')
+}
+
+export const updateProduct = async (
+	data: Product & {
+		option: ProductOption
+		categories: Category[]
+		tags: Tag[]
+		brands: Brand[]
+		variants: ProductVariant[]
+		attributes: ProductAttribute[]
+		gallery: Awaited<ReturnType<typeof getProductGallery>>
+		crossSellProductIds: ConnectCrossSellProducts
+		upsellProductIds: ConnectUpsellProducts
+	},
+) => {
+	const {
+		option,
+		categories,
+		tags,
+		brands,
+		variants,
+		attributes,
+		gallery,
+		crossSellProductIds,
+		upsellProductIds,
+		...productData
+	} = data
+
+	console.time('updateProduct')
+
+	await dbStore.transaction(async tx => {
+		const promiseProduct = async () => {
+			console.time('product')
+			await tx
+				.update(product)
+				.set(productData)
+				.where(eq(product.id, productData.id))
+			console.timeEnd('product')
+		}
+		const promiseProductOption = async () => {
+			console.time('productOption')
+			await tx
+				.update(productOption)
+				.set(option)
+				.where(eq(productOption.id, option.id))
+			console.timeEnd('productOption')
+		}
+
+		await Promise.all([
+			promiseProduct(),
+			promiseProductOption(),
+			connectProductCategories(tx, productData.id, categories || []),
+			connectProductTags(tx, productData.id, tags || []),
+			connectProductBrands(tx, productData.id, brands || []),
+			connectProductVariants(tx, productData.id, variants || []),
+			connectProductAttributes(tx, productData.id, attributes || []),
+			connectProductGallery(tx, productData.id, gallery || []),
+			connectCrossSellProducts(tx, productData.id, crossSellProductIds || []),
+			connectUpsellProducts(tx, productData.id, upsellProductIds || []),
+		])
+	})
+
+	console.timeEnd('updateProduct')
+}
+
 // ===== Helper Functions =====
 
 /**
@@ -584,6 +704,8 @@ async function connectProductCategories(
 	productId: number,
 	categories: Category[],
 ) {
+	console.time('connectProductCategories')
+
 	// Delete existing associations
 	await tx
 		.delete(productToCategory)
@@ -599,6 +721,8 @@ async function connectProductCategories(
 			})),
 		)
 	}
+
+	console.timeEnd('connectProductCategories')
 }
 
 /** Replace product tags */
@@ -607,6 +731,8 @@ async function connectProductTags(
 	productId: number,
 	tags: Tag[],
 ) {
+	console.time('connectProductTags')
+
 	// Delete existing associations
 	await tx.delete(productToTag).where(eq(productToTag.productId, productId))
 
@@ -620,6 +746,8 @@ async function connectProductTags(
 			})),
 		)
 	}
+
+	console.timeEnd('connectProductTags')
 }
 
 /** Replace product brands */
@@ -628,6 +756,8 @@ async function connectProductBrands(
 	productId: number,
 	brands: Brand[],
 ) {
+	console.time('connectProductBrands')
+
 	// Delete existing associations
 	await tx.delete(productToBrand).where(eq(productToBrand.productId, productId))
 
@@ -641,6 +771,8 @@ async function connectProductBrands(
 			})),
 		)
 	}
+
+	console.timeEnd('connectProductBrands')
 }
 
 /** Replace product variants */
@@ -649,6 +781,8 @@ async function connectProductVariants(
 	productId: number,
 	variants: ProductVariant[],
 ) {
+	console.time('connectProductVariants')
+
 	const existingVariants = await tx.query.productVariant.findMany({
 		where: eq(productVariant.productId, productId),
 	})
@@ -722,6 +856,8 @@ async function connectProductVariants(
 			await tx.insert(productVariant).values(variantsToInsert)
 		}
 	}
+
+	console.timeEnd('connectProductVariants')
 }
 
 /** Replace product attributes */
@@ -730,6 +866,8 @@ async function connectProductAttributes(
 	productId: number,
 	attributes: ProductAttribute[],
 ) {
+	console.time('connectProductAttributes')
+
 	// Delete existing attributes
 	await tx
 		.delete(productAttribute)
@@ -752,6 +890,8 @@ async function connectProductAttributes(
 			),
 		)
 	}
+
+	console.timeEnd('connectProductAttributes')
 }
 
 /** Replace product gallery images */
@@ -760,6 +900,8 @@ async function connectProductGallery(
 	productId: number,
 	gallery: Awaited<ReturnType<typeof getProductGallery>>,
 ) {
+	console.time('connectProductGallery')
+
 	// Delete existing associations
 	await tx.delete(productGallery).where(eq(productGallery.productId, productId))
 
@@ -767,6 +909,8 @@ async function connectProductGallery(
 	if (gallery.length > 0) {
 		await tx.insert(productGallery).values(gallery)
 	}
+
+	console.timeEnd('connectProductGallery')
 }
 
 export type ConnectCrossSellProducts = Pick<
@@ -780,6 +924,8 @@ async function connectCrossSellProducts(
 	productId: number,
 	values: ConnectCrossSellProducts,
 ) {
+	console.time('connectCrossSellProducts')
+
 	// Delete existing associations
 	await tx
 		.delete(productCrossSell)
@@ -791,6 +937,8 @@ async function connectCrossSellProducts(
 			.insert(productCrossSell)
 			.values(values.map(v => ({ ...v, productId })))
 	}
+
+	console.timeEnd('connectCrossSellProducts')
 }
 
 export type ConnectUpsellProducts = Pick<
@@ -804,6 +952,8 @@ async function connectUpsellProducts(
 	productId: number,
 	values: ConnectUpsellProducts,
 ) {
+	console.time('connectUpsellProducts')
+
 	// Delete existing associations
 	await tx.delete(productUpsell).where(eq(productUpsell.productId, productId))
 
@@ -813,6 +963,8 @@ async function connectUpsellProducts(
 			.insert(productUpsell)
 			.values(values.map(v => ({ ...v, productId })))
 	}
+
+	console.timeEnd('connectUpsellProducts')
 }
 
 type DeleteProductResult = {
