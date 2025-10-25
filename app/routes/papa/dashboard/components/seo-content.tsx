@@ -120,6 +120,32 @@ export const SeoContent = ({
 							placeholder="Keywords, separated by comma. E.g. papa, ERP, Colaborative Tool"
 						/>
 					</div>
+					<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="ogImage" className="text-right">
+							Open Graph Image URL
+						</Label>
+						<Input
+							id="ogImage"
+							name="ogImage"
+							defaultValue={seo?.ogImage ?? undefined}
+							className="col-span-3"
+							placeholder="https://example.com/image.webp"
+						/>
+					</div>
+					<div className="grid grid-cols-4 items-center gap-4">
+						<div className="col-start-2 inline-flex aspect-square h-16 w-16 items-center justify-center rounded-md border">
+							{seo?.ogImage ? (
+								<img
+									src={seo.ogImage}
+									alt={seo?.metaTitle || 'SEO Open Graph Image'}
+									className="object-cover"
+								/>
+							) : (
+								'⛰️'
+							)}
+						</div>
+						{/* TODO: tabs to preview different image ratios */}
+					</div>
 				</Form>
 				<DialogFooter>
 					<Button form="seo-content" type="submit" disabled={isSubmitting}>

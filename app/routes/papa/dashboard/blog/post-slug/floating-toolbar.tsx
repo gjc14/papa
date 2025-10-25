@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useFetcher, useNavigate } from 'react-router'
 
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { ExternalLink, Loader2, RotateCcw, Settings } from 'lucide-react'
 
@@ -31,24 +31,23 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 	const method = fetcher.formMethod
 	const isSaving = isSubmitting && (method === 'PUT' || method === 'POST')
 
-	const [editor] = useAtom(editorAtom)
 	const [post, setPost] = useAtom(postAtom)
-	const [, setServerPost] = useAtom(serverPostAtom)
-	const [hasChanges] = useAtom(hasChangesAtom)
+	const setServerPost = useSetAtom(serverPostAtom)
+	const editor = useAtomValue(editorAtom)
+	const hasChanges = useAtomValue(hasChangesAtom)
 
-	const [, setIsSaving] = useAtom(isSavingAtom)
-	const [isDeleting] = useAtom(isDeletingAtom)
-	const [, setIsSettingsOpen] = useAtom(isSettingsOpenAtom)
-	const [, setIsResetAlertOpen] = useAtom(isResetAlertOpenAtom)
+	const setIsSaving = useSetAtom(isSavingAtom)
+	const setIsSettingsOpen = useSetAtom(isSettingsOpenAtom)
+	const setIsResetAlertOpen = useSetAtom(isResetAlertOpenAtom)
+	const isDeleting = useAtomValue(isDeletingAtom)
 
 	useHydrateAtoms([[isSavingAtom, isSaving]])
 
 	// When saving state changes, update atoms
-	useEffect(() => {
-		setIsSaving(isSaving)
-	}, [isSaving])
+	useEffect(() => setIsSaving(isSaving), [isSaving])
 
 	useEffect(() => {
+		if (!post) return
 		if (
 			fetcher.state === 'loading' &&
 			fetcher.data &&
@@ -58,10 +57,10 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 			const data = fetcher.data.data
 			if (data) {
 				// Update atoms with returned data
-				post && window.localStorage.removeItem(postLocalStorageKey(post.id))
+				window.localStorage.removeItem(postLocalStorageKey(post.id))
 				setServerPost(data)
 				setPost(data)
-				data.slug !== post?.slug && navigate('/dashboard/blog/' + data.slug)
+				data.slug !== post.slug && navigate('/dashboard/blog/' + data.slug)
 			}
 		}
 	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
