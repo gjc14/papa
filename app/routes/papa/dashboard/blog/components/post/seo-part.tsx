@@ -55,9 +55,23 @@ export const SeoPart = () => {
 		})
 	}
 
+	const handleOgImage = () => {
+		setPost(prev => {
+			if (!prev) return prev
+			const newPost = {
+				...prev,
+				seo: {
+					...prev.seo,
+					ogImage: post.featuredImage,
+				},
+			} satisfies PostWithRelations
+			return newPost
+		})
+	}
+
 	return (
 		<>
-			<div>
+			<div className="flex flex-col">
 				<Label htmlFor="seo-title">
 					SEO Title
 					<TinyLinkButton title="Copy Title" onClick={handleTitle} />
@@ -86,7 +100,7 @@ export const SeoPart = () => {
 				</div>
 			</div>
 
-			<div>
+			<div className="flex flex-col">
 				<Label htmlFor="seo-description">
 					SEO Description
 					<TinyLinkButton title="Copy from post" onClick={handleDesc} />
@@ -113,7 +127,7 @@ export const SeoPart = () => {
 				/>
 			</div>
 
-			<div>
+			<div className="flex flex-col">
 				<Label htmlFor="seo-keywords">SEO Keywords</Label>
 				<MultiSelect
 					options={[]}
@@ -136,6 +150,49 @@ export const SeoPart = () => {
 						})
 					}}
 				/>
+			</div>
+
+			<div className="flex flex-col">
+				<div className="mb-2">
+					<div className="inline-flex aspect-square h-16 w-16 items-center justify-center rounded-md border">
+						{post.seo.ogImage ? (
+							<img
+								src={post.seo.ogImage}
+								alt={post.title}
+								className="object-cover"
+							/>
+						) : (
+							'⛰️'
+						)}
+					</div>
+					{/* TODO: tabs to preview different image ratios */}
+				</div>
+				<Label htmlFor="seo-og-image">
+					SEO Open Graph Image
+					<TinyLinkButton title="Copy Feature Image" onClick={handleOgImage} />
+				</Label>
+				<div className="flex items-center gap-1.5">
+					<Input
+						id="seo-og-image"
+						name="seo-og-image"
+						type="text"
+						placeholder="https://example.com/image.webp"
+						value={post.seo.ogImage || ''}
+						onChange={e => {
+							setPost(prev => {
+								if (!prev) return prev
+								const newPost = {
+									...prev,
+									seo: {
+										...prev.seo,
+										ogImage: e.target.value,
+									},
+								} satisfies PostWithRelations
+								return newPost
+							})
+						}}
+					/>
+				</div>
 			</div>
 		</>
 	)

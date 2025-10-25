@@ -29,6 +29,8 @@ const seoInsertUpdateSchema = z.object({
 	seo: z.object({
 		metaTitle: z.string().nullable(),
 		metaDescription: z.string().nullable(),
+		keywords: z.string().nullable(),
+		ogImage: z.string().nullable(),
 	}),
 })
 
