@@ -140,7 +140,17 @@ export async function getProducts({
 						,
 						COALESCE(
 							(
-								SELECT json_agg(c)
+								SELECT json_agg(
+									json_build_object(
+										'id', c.id,
+										'name', c.name,
+										'slug', c.slug,
+										'description', c.description,
+										'parentId', c.parent_id,
+										'image', c.image,
+										'order', pc.order
+									)
+								)
 								FROM ${productToCategory} pc
 								LEFT JOIN ${ecCategory} c ON pc.category_id = c.id
 								WHERE pc.product_id = p.id
@@ -149,7 +159,16 @@ export async function getProducts({
 						) AS categories,
 						COALESCE(
 							(
-								SELECT json_agg(t)
+								SELECT json_agg(
+									json_build_object(
+										'id', t.id,
+										'name', t.name,
+										'slug', t.slug,
+										'description', t.description,
+										'image', t.image,
+										'order', pt.order
+									)
+								)
 								FROM ${productToTag} pt
 								LEFT JOIN ${ecTag} t ON pt.tag_id = t.id
 								WHERE pt.product_id = p.id
@@ -158,7 +177,17 @@ export async function getProducts({
 						) AS tags,
 						COALESCE(
 							(
-								SELECT json_agg(b)
+								SELECT json_agg(
+									json_build_object(
+										'id', b.id,
+										'name', b.name,
+										'slug', b.slug,
+										'description', b.description,
+										'parentId', b.parent_id,
+										'image', b.image,
+										'order', pb.order
+									)
+								)
 								FROM ${productToBrand} pb
 								LEFT JOIN ${ecBrand} b ON pb.brand_id = b.id
 								WHERE pb.product_id = p.id
@@ -261,7 +290,17 @@ export const getProduct = async ({
             END AS option,
 			COALESCE(
 				(
-					SELECT json_agg(c)
+					SELECT json_agg(
+						json_build_object(
+							'id', c.id,
+							'name', c.name,
+							'slug', c.slug,
+							'description', c.description,
+							'parentId', c.parent_id,
+							'image', c.image,
+							'order', pc.order
+						)
+					)
 					FROM ${productToCategory} pc
 					LEFT JOIN ${ecCategory} c ON pc.category_id = c.id
 					WHERE pc.product_id = p.id
@@ -270,7 +309,16 @@ export const getProduct = async ({
 			) AS categories,
 			COALESCE(
 				(
-					SELECT json_agg(t)
+					SELECT json_agg(
+						json_build_object(
+							'id', t.id,
+							'name', t.name,
+							'slug', t.slug,
+							'description', t.description,
+							'image', t.image,
+							'order', pt.order
+						)
+					)
 					FROM ${productToTag} pt
 					LEFT JOIN ${ecTag} t ON pt.tag_id = t.id
 					WHERE pt.product_id = p.id
@@ -279,7 +327,17 @@ export const getProduct = async ({
 			) AS tags,
 			COALESCE(
 				(
-					SELECT json_agg(b)
+					SELECT json_agg(
+						json_build_object(
+							'id', b.id,
+							'name', b.name,
+							'slug', b.slug,
+							'description', b.description,
+							'parentId', b.parent_id,
+							'image', b.image,
+							'order', pb.order
+						)
+					)
 					FROM ${productToBrand} pb
 					LEFT JOIN ${ecBrand} b ON pb.brand_id = b.id
 					WHERE pb.product_id = p.id
