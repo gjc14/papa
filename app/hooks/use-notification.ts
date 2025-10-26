@@ -3,10 +3,7 @@ import { useFetchers, type FetcherWithComponents } from 'react-router'
 
 import { toast, type ExternalToast } from '@gjc14/sonner'
 
-type ServerNotificationResponse = {
-	msg?: string
-	err?: string
-}
+import type { ActionResponse } from '~/lib/utils'
 
 /** Function to check if fetchers have response that satisfies auto notification */
 export function useServerNotification() {
@@ -39,30 +36,76 @@ export function useServerNotification() {
 }
 
 /**
+ * Hook extends fetcher to show notification based on conventional action response {@link ActionResponse}
  *
- * @param fetcher Fetcher that needed notification
- * @param onSuccess
- * @param onError
- * @param options
+ * ```markdown
+ * Data flow:
+ * submitting   --->   loading   --->   idle
+ * ^action()           ^loader()        ^done
+ * ^no data            ^data            ^data
+ * ```
+ *
+ * fetcher.submit and fetcher.load both triggers action() or loader() when state 'submitting',
+ * so the data are available once state is 'loading'.
  */
-export function useFetcherNotification(
-	fetcher: FetcherWithComponents<ServerNotificationResponse>,
-	onSuccess?: (msg?: string) => void,
-	onError?: (err?: string) => void,
-	options?: {
+export function useFetcherNotification<
+	T extends ActionResponse,
+> /** Fetcher to subscribe, should fetch an action returning {@link ActionResponse} */(
+	fetcher: FetcherWithComponents<T>,
+	props: {
+		/** Alert when `action` return please use 'loading'. If you wish to alert after `loader` revalidate, please use 'idle' @default 'loading' */
+		alertWhen?: 'loading' | 'idle'
+		/** Callback on success */
+		onSuccess?: (msg?: string) => void
+		/** Callback on error */
+		onError?: (err?: string) => void
+		/** Customize success message instead of returned from server */
 		successMessage?: string
+		/** Customize error message instead of returned from server */
 		errorMessage?: string
-	} & ExternalToast,
+		/** Prevent success alert from showing */
+		preventSuccessAlert?: boolean
+		/** Prevent error alert from showing */
+		preventErrorAlert?: boolean
+	} & ExternalToast = { alertWhen: 'loading' },
 ) {
+	const {
+		onSuccess,
+		onError,
+		alertWhen,
+		successMessage,
+		errorMessage,
+		preventSuccessAlert,
+		preventErrorAlert,
+		...toastOptions
+	} = props
+
 	useEffect(() => {
-		if (fetcher.data) {
+		if (fetcher.state === alertWhen && fetcher.data) {
+			const prevented = fetcher.data.preventNotification
 			if (fetcher.data.msg) {
-				toast.success(options?.successMessage || fetcher.data.msg, options)
+				if (!prevented || !preventSuccessAlert) {
+					toast.success(successMessage || fetcher.data.msg, toastOptions)
+				}
+
 				onSuccess?.(fetcher.data.msg)
 			} else if (fetcher.data.err) {
-				toast.error(options?.errorMessage || fetcher.data.err, options)
+				if (!prevented && !preventErrorAlert) {
+					toast.error(errorMessage || fetcher.data.err, toastOptions)
+				}
+
 				onError?.(fetcher.data.err)
 			}
 		}
-	}, [fetcher.data])
+	}, [fetcher.state, fetcher.data])
+
+	return {
+		mutating:
+			props.alertWhen === 'idle'
+				? fetcher.state !== 'idle'
+				: fetcher.state === 'submitting',
+		isSubmitting: fetcher.state === 'submitting',
+		isLoading: fetcher.state === 'loading',
+		isIdle: fetcher.state === 'idle',
+	}
 }
