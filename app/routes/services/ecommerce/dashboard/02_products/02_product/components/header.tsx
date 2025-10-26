@@ -1,14 +1,36 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
-import { ExternalLink, Trash } from 'lucide-react'
+import {
+	ExternalLink,
+	Eye,
+	MoreVertical,
+	RefreshCcw,
+	Trash,
+} from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
+import { Input } from '~/components/ui/input'
+import {
+	Item,
+	ItemActions,
+	ItemContent,
+	ItemDescription,
+	ItemTitle,
+} from '~/components/ui/item'
 import { Label } from '~/components/ui/label'
-import { Separator } from '~/components/ui/separator'
 import { Spinner } from '~/components/ui/spinner'
 import { Switch } from '~/components/ui/switch'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import type {
 	ConnectCrossSellProducts,
 	ConnectUpsellProducts,
@@ -36,6 +58,7 @@ const productSlugAtom = atom(get => get(productAtom)?.slug || null)
 
 export function ProductEditPageHeader() {
 	const fetcher = useFetcher<typeof action>()
+	const { isSubmitting } = useFetcherNotification(fetcher)
 
 	const store = useStore()
 	const [preview, setPreview] = useAtom(livePreviewAtom)
@@ -47,8 +70,12 @@ export function ProductEditPageHeader() {
 	const isMovingToTrash = useAtomValue(isMovingToTrashAtom)
 	const setResetOpen = useSetAtom(isResetAlertOpenAtom)
 	const setToTrashOpen = useSetAtom(isToTrashAlertOpenAtom)
+	const setProduct = useSetAtom(productAtom)
 
-	useEffect(() => setIsSaving(fetcher.state === 'submitting'), [fetcher.state])
+	const [slugInput, setSlugInput] = useState(productSlug || '')
+	const [editSlug, setEditSlug] = useState(false)
+
+	useEffect(() => setIsSaving(isSubmitting), [fetcher.state])
 
 	if (!productId || !productName || !productSlug) return null
 
@@ -88,65 +115,127 @@ export function ProductEditPageHeader() {
 	}, [store])
 
 	return (
-		<header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 overflow-auto border-b backdrop-blur">
-			<div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2">
-				<div className="flex items-center gap-2">
-					<p className="text-muted-foreground">{!isNew ? 'Edit' : 'Create'}</p>
-					<h1 className="text-xl font-semibold">{productName}</h1>
+		<Item className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b-border sticky top-0 z-10 rounded-none py-2 backdrop-blur">
+			<ItemContent>
+				<ItemTitle>
+					<span className="text-muted-foreground">
+						({!isNew ? 'Edit' : 'Create'}){' '}
+					</span>
+					{productName}
 					{!isNew && (
-						<span className="text-muted-foreground text-sm">
-							ID: {productId}
-						</span>
+						<span className="text-muted-foreground">ID: {productId}</span>
 					)}
-				</div>
-				<div className="flex items-center gap-3">
-					<Label htmlFor="preview" className="text-sm">
-						Preview
-					</Label>
-					<Switch id="preview" checked={preview} onCheckedChange={setPreview} />
-					<Button variant={'ghost'} size={'icon'} asChild className="size-8">
-						<Link
-							to={`${storeConfig.storeFrontPath}/product/${productSlug}`}
-							target="_blank"
-							rel="noreferrer"
-						>
-							<ExternalLink />
-						</Link>
-					</Button>
-					<Separator orientation="vertical" className="h-6" />
-					{!isNew && (
-						<Button
-							size="icon"
-							variant="ghost"
-							type="button"
-							className="hover:bg-destructive dark:hover:bg-destructive size-8"
-							onClick={() => setToTrashOpen(true)}
+				</ItemTitle>
+				<ItemDescription className="overflow-visible">
+					Path:{' '}
+					{editSlug ? (
+						<>
+							{storeConfig.storeFrontPath}/product/
+							<Input
+								value={slugInput}
+								onChange={e => setSlugInput(e.target.value)}
+								className="text-primary ml-2 h-8 w-fit"
+								autoFocus
+							/>
+							<Button
+								className="text-primary-foreground ml-2 h-8"
+								size="sm"
+								onClick={() => {
+									setProduct(pv => (pv ? { ...pv, slug: slugInput } : pv))
+									setEditSlug(false)
+								}}
+							>
+								Save
+							</Button>
+							<Button
+								className="text-primary ml-2 h-8"
+								variant="outline"
+								size="sm"
+								onClick={() => {
+									setSlugInput(productSlug)
+									setEditSlug(false)
+								}}
+							>
+								Cancel
+							</Button>
+						</>
+					) : (
+						<>
+							<Link
+								to={`${storeConfig.storeFrontPath}/product/${productSlug}`}
+								target="_blank"
+								rel="noreferrer"
+							>
+								{storeConfig.storeFrontPath}/product/{productSlug}
+								<ExternalLink className="ml-1 inline-block size-3.5" />
+							</Link>
+							<Button
+								className="ml-2 h-fit px-0"
+								variant="link"
+								size="sm"
+								onClick={() => setEditSlug(true)}
+							>
+								Edit
+							</Button>
+						</>
+					)}
+				</ItemDescription>
+			</ItemContent>
+			<ItemActions>
+				<Button
+					size="sm"
+					type="submit"
+					onClick={handleSave}
+					disabled={isSaving || isMovingToTrash}
+					className="flex-1"
+				>
+					{isSaving && <Spinner />}
+					{isNew ? 'Create Product' : 'Save Product'}
+				</Button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant={'outline'} size={'icon'} className="h-8">
+							<MoreVertical />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuLabel>Product Actions</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							className="flex items-center gap-2"
+							onClick={() => setResetOpen(true)}
 							disabled={isSaving || isMovingToTrash}
 						>
-							{isMovingToTrash ? <Spinner /> : <Trash />}
-						</Button>
-					)}
-					<Button
-						size="sm"
-						variant="outline"
-						type="button"
-						onClick={() => setResetOpen(true)}
-						disabled={isSaving || isMovingToTrash}
-					>
-						Reset
-					</Button>
-					<Button
-						size="sm"
-						type="submit"
-						form="product-edit-form"
-						onClick={handleSave}
-						disabled={isSaving || isMovingToTrash}
-					>
-						{isSaving && <Spinner />}
-						{isNew ? 'Create Product' : 'Save Product'}
-					</Button>
-				</div>
-			</div>
-		</header>
+							<RefreshCcw className="size-4" />
+							<span>Reset Product</span>
+						</DropdownMenuItem>
+
+						<DropdownMenuItem
+							className="flex items-center gap-2"
+							onClick={() => setPreview(prev => !prev)}
+						>
+							<Eye className="size-4" />
+							<Label className="mr-auto text-sm">Live Preview</Label>
+							<Switch id="preview" className="ml-12" checked={preview} />
+						</DropdownMenuItem>
+
+						{!isNew && (
+							<DropdownMenuItem
+								className="hover:bg-destructive focus-visible:bg-destructive flex items-center gap-2 hover:text-white focus-visible:text-white"
+								onClick={() => setToTrashOpen(true)}
+								disabled={isSaving || isMovingToTrash}
+							>
+								{isMovingToTrash ? (
+									<Spinner className="size-4" />
+								) : (
+									<Trash className="size-4" />
+								)}
+								<span>Move to Trash</span>
+							</DropdownMenuItem>
+						)}
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</ItemActions>
+		</Item>
 	)
 }
