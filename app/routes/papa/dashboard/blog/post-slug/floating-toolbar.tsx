@@ -34,7 +34,7 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 	const isSaving = isSubmitting && (method === 'PUT' || method === 'POST')
 
 	const [post, setPost] = useAtom(postAtom)
-	const setServerPost = useSetAtom(serverPostAtom)
+	const [serverPost, setServerPost] = useAtom(serverPostAtom)
 	const editor = useAtomValue(editorAtom)
 	const hasChanges = useAtomValue(hasChangesAtom)
 
@@ -49,7 +49,7 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 	useEffect(() => setIsSaving(isSaving), [isSaving])
 
 	useEffect(() => {
-		if (!post) return
+		if (!post || !serverPost) return
 		if (
 			fetcher.state === 'loading' &&
 			fetcher.data &&
@@ -58,11 +58,14 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 		) {
 			const data = fetcher.data.data
 			if (data) {
+				const shouldNavigate = data.slug !== serverPost.slug
+
 				// Update atoms with returned data
 				window.localStorage.removeItem(postLocalStorageKey(post.id))
 				setServerPost(data)
 				setPost(data)
-				data.slug !== post.slug && navigate('/dashboard/blog/' + data.slug)
+
+				shouldNavigate && navigate('/dashboard/blog/' + data.slug)
 			}
 		}
 	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
