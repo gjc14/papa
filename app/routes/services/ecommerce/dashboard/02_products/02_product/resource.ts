@@ -96,7 +96,7 @@ const insertUpdateSchema = createSelectSchema(product).extend({
 	gallery: z.array(insertUpdateGallerySchema),
 	crossSellProductIds: z.array(insertUpdateCrossSellSchema),
 	upsellProductIds: z.array(insertUpdateUpsellSchema),
-	// seo: insertSeoSchema,
+	seo: insertUpdateSeoSchema,
 
 	createdAt: z.coerce.date(),
 	updatedAt: z.coerce.date(),
