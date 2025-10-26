@@ -17,7 +17,6 @@ import { ThemeProvider } from 'next-themes'
 
 import { FloatingToolkit } from './components/floating-toolkit'
 import { Toaster } from './components/ui/sonner'
-import { useServerNotification } from './hooks/use-notification'
 
 export function links() {
 	return [
@@ -93,8 +92,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-	useServerNotification()
-
 	return (
 		<>
 			<Toaster
@@ -105,7 +102,7 @@ export default function App() {
 						closeButton: 'border border-primary',
 					},
 				}}
-				className="z-99999"
+				className="z-50"
 			/>
 			<Outlet />
 		</>

@@ -1,10 +1,11 @@
 import type { Route } from './+types/route'
 import { useEffect, useMemo, useState } from 'react'
-import { data, Link, useFetcher, useNavigation, useSubmit } from 'react-router'
+import { data, Link, useFetcher } from 'react-router'
 
 import { PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import {
 	DashboardActions,
 	DashboardContent,
@@ -65,8 +66,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 	const { posts, categoryFilter, tagFilter, q } = loaderData
 	const fetcher = useFetcher<typeof action>()
-
-	const isDeleting = fetcher.state === 'submitting'
+	const { mutating } = useFetcherNotification(fetcher, { alertWhen: 'idle' })
 
 	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
 	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
@@ -80,7 +80,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 	}, [posts])
 
 	useEffect(() => {
-		if (fetcher.state === 'idle' && fetcher.data && 'msg' in fetcher.data) {
+		if (!mutating && fetcher.data && 'msg' in fetcher.data) {
 			// Clear selection after successful delete
 			setRowSelection({})
 			// Remove deleted rows from deleting state
@@ -128,7 +128,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 						<BulkDeleteAlertDialog
 							numberOfRowsDeleting={numberOfRowsSelected}
 							onDelete={handleBulkDelete}
-							isDeleting={isDeleting}
+							isDeleting={mutating}
 						/>
 					)}
 					<Filter q={q} tagFilter={tagFilter} categoryFilter={categoryFilter} />

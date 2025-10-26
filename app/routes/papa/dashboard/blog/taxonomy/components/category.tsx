@@ -15,6 +15,7 @@ import {
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { ScrollArea } from '~/components/ui/scroll-area'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { cn } from '~/lib/utils'
 import { generateSlug } from '~/lib/utils/seo'
 
@@ -32,13 +33,13 @@ const CategoryComponent = ({
 	onClick: () => void
 }) => {
 	const fetcher = useFetcher()
-	const isDeleting = fetcher.state !== 'idle'
+	const { mutating } = useFetcherNotification(fetcher, { alertWhen: 'idle' })
 
 	return (
 		<div
 			className={cn(
 				`bg-muted flex items-center justify-between rounded-md p-3 transition-colors`,
-				isDeleting ? 'opacity-50' : '',
+				mutating ? 'opacity-50' : '',
 				cat._isPending ? 'cursor-not-allowed' : 'cursor-pointer',
 				selectedCategoryId === cat.id
 					? 'bg-primary text-primary-foreground'
@@ -55,14 +56,14 @@ const CategoryComponent = ({
 			<CircleX
 				className={
 					'h-5 w-5' +
-					(isDeleting || cat._isPending
+					(mutating || cat._isPending
 						? ' cursor-not-allowed opacity-50'
 						: ' hover:text-destructive cursor-pointer')
 				}
 				onClick={e => {
 					e.stopPropagation()
 
-					if (isDeleting || cat._isPending) return
+					if (mutating || cat._isPending) return
 
 					fetcher.submit(
 						{ id: cat.id, intent: 'category' },
@@ -86,13 +87,13 @@ const ChildCategoryComponent = ({
 	}
 }) => {
 	const fetcher = useFetcher()
-	const isDeleting = fetcher.state !== 'idle'
+	const { mutating } = useFetcherNotification(fetcher, { alertWhen: 'idle' })
 
 	return (
 		<div
 			className={cn(
 				`bg-muted flex items-center justify-between rounded-md p-3 transition-colors`,
-				isDeleting ? 'opacity-50' : '',
+				mutating ? 'opacity-50' : '',
 				category._isPending ? 'cursor-not-allowed' : 'cursor-pointer',
 			)}
 		>
@@ -100,12 +101,12 @@ const ChildCategoryComponent = ({
 			<CircleX
 				className={
 					'h-5 w-5' +
-					(isDeleting || category._isPending
+					(mutating || category._isPending
 						? ' cursor-not-allowed opacity-50'
 						: ' hover:text-destructive cursor-pointer')
 				}
 				onClick={() => {
-					if (isDeleting || category._isPending) return
+					if (mutating || category._isPending) return
 
 					fetcher.submit(
 						{ id: category.id, intent: 'child-category' },

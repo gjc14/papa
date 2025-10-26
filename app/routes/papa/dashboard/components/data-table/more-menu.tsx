@@ -22,6 +22,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
+import { useFetcherNotification } from '~/hooks/use-notification'
 
 export const DashboardDataTableMoreMenu = ({
 	id,
@@ -44,21 +45,17 @@ export const DashboardDataTableMoreMenu = ({
 	onDelete?: () => void
 }) => {
 	const fetcher = useFetcher()
+	const { mutating } = useFetcherNotification(fetcher, {
+		alertWhen: 'idle',
+	})
 	const [open, setOpen] = useState(false)
-
-	const isSubmitting = fetcher.state === 'submitting'
-	const isDeleting = fetcher.state !== 'idle'
 
 	return (
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" size={'icon'} disabled={isDeleting}>
+				<Button variant="ghost" size={'icon'} disabled={mutating}>
 					<span className="sr-only">Open menu</span>
-					{isSubmitting ? (
-						<Loader2 className="animate-spin" />
-					) : (
-						<MoreHorizontal />
-					)}
+					{mutating ? <Loader2 className="animate-spin" /> : <MoreHorizontal />}
 				</Button>
 			</DropdownMenuTrigger>
 

@@ -24,6 +24,8 @@ import {
 } from '~/components/ui/select'
 import { Spinner } from '~/components/ui/spinner'
 import { Textarea } from '~/components/ui/textarea'
+import { useFetcherNotification } from '~/hooks/use-notification'
+import type { ActionResponse } from '~/lib/utils'
 
 type TaxonomyItem = {
 	id: number
@@ -66,8 +68,9 @@ type CreateTaxonomyDialogProps = {
  *
  * ```tsx
  * import { CreateTaxonomyDialog } from '~/routes/services/ecommerce/dashboard/components/create-taxonomy-dialog'
+ * import type { action } from './resource'
  *
- * <CreateTaxonomyDialog
+ * <CreateTaxonomyDialog<Awaited<ReturnType<typeof action>>>
  *   data={yourData}
  *   config={{
  *     name: 'Category',
@@ -85,7 +88,7 @@ type CreateTaxonomyDialogProps = {
  * ## 1. Brands (parent and image)
  *
  * ```tsx
- * <CreateTaxonomyDialog
+ * <CreateTaxonomyDialog<Awaited<ReturnType<typeof action>>>
  * 	data={brands}
  * 	config={{
  * 		name: 'Brand',
@@ -103,7 +106,7 @@ type CreateTaxonomyDialogProps = {
  * ## 2. Tags (image)
  *
  * ```tsx
- * <CreateTaxonomyDialog
+ * <CreateTaxonomyDialog<Awaited<ReturnType<typeof action>>>
  * 	data={tags}
  * 	config={{
  * 		name: 'Tag',
@@ -120,7 +123,7 @@ type CreateTaxonomyDialogProps = {
  * ## 3. Attributes (value & no description/parent/image)
  *
  * ```tsx
- * <CreateTaxonomyDialog
+ * <CreateTaxonomyDialog<Awaited<ReturnType<typeof action>>>
  * 	data={tags}
  * 	config={{
  * 		name: 'Tag',
@@ -133,7 +136,7 @@ type CreateTaxonomyDialogProps = {
  * />
  * ```
  */
-export function CreateTaxonomyDialog({
+export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 	data,
 	config = {
 		name: 'Item',
@@ -147,7 +150,11 @@ export function CreateTaxonomyDialog({
 		slugPlaceholder: undefined,
 	},
 }: CreateTaxonomyDialogProps) {
-	const fetcher = useFetcher<any>()
+	const fetcher = useFetcher<T>()
+	const { mutating } = useFetcherNotification(fetcher, {
+		alertWhen: 'idle',
+		preventSuccessAlert: true,
+	})
 	const formRef = useRef<HTMLFormElement>(null)
 	const [open, setOpen] = useState(false)
 	const [selectedParentId, setSelectedParentId] = useState<string | undefined>(
@@ -155,10 +162,8 @@ export function CreateTaxonomyDialog({
 	)
 	const [showSuccess, setShowSuccess] = useState(false)
 
-	const isSubmitting = fetcher.state === 'submitting'
-
 	useEffect(() => {
-		if (fetcher.state === 'loading' && fetcher.data && 'msg' in fetcher.data) {
+		if (!mutating && fetcher.data?.msg) {
 			setShowSuccess(true)
 		}
 	}, [fetcher.state, fetcher.data])
@@ -241,8 +246,7 @@ export function CreateTaxonomyDialog({
 							<CheckCircle2 className="h-4 w-4" />
 							<AlertTitle>Success!</AlertTitle>
 							<AlertDescription>
-								{(fetcher.data && 'msg' in fetcher.data && fetcher.data.msg) ||
-									`${config.name} created successfully`}
+								{fetcher.data?.msg || `${config.name} created successfully`}
 							</AlertDescription>
 						</Alert>
 
@@ -273,7 +277,7 @@ export function CreateTaxonomyDialog({
 									`Enter ${config.name.toLowerCase()} name`
 								}
 								required
-								disabled={isSubmitting}
+								disabled={mutating}
 							/>
 						</div>
 
@@ -288,7 +292,7 @@ export function CreateTaxonomyDialog({
 									config.slugPlaceholder || `${config.name.toLowerCase()}-slug`
 								}
 								required
-								disabled={isSubmitting}
+								disabled={mutating}
 							/>
 						</div>
 
@@ -300,7 +304,7 @@ export function CreateTaxonomyDialog({
 									name="description"
 									placeholder={`${config.name} description...`}
 									rows={3}
-									disabled={isSubmitting}
+									disabled={mutating}
 								/>
 							</div>
 						)}
@@ -312,7 +316,7 @@ export function CreateTaxonomyDialog({
 									id="value"
 									name="value"
 									placeholder='Seperate your values by "|"'
-									disabled={isSubmitting}
+									disabled={mutating}
 								/>
 							</div>
 						)}
@@ -324,7 +328,7 @@ export function CreateTaxonomyDialog({
 									id="image"
 									name="image"
 									placeholder="https://example.com/image.jpg"
-									disabled={isSubmitting}
+									disabled={mutating}
 								/>
 							</div>
 						)}
@@ -335,7 +339,7 @@ export function CreateTaxonomyDialog({
 								<Select
 									value={selectedParentId}
 									onValueChange={setSelectedParentId}
-									disabled={isSubmitting}
+									disabled={mutating}
 								>
 									<SelectTrigger>
 										<SelectValue
@@ -356,12 +360,8 @@ export function CreateTaxonomyDialog({
 							</div>
 						)}
 
-						<Button
-							type="submit"
-							className="mt-3 w-full"
-							disabled={isSubmitting}
-						>
-							{isSubmitting && <Spinner />}
+						<Button type="submit" className="mt-3 w-full" disabled={mutating}>
+							{mutating && <Spinner />}
 							Create {config.name}
 						</Button>
 					</form>
