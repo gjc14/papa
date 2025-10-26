@@ -17,6 +17,7 @@ import { Instructions } from './components/instruction'
 import { LinkedProducts } from './components/linked-products'
 import { MainOption } from './components/main-option'
 import { Publishing } from './components/publishing'
+import { Seo } from './components/seo'
 import { Taxonomies } from './components/taxonomies'
 import { Variants } from './components/variants'
 import { livePreviewAtom } from './context'
@@ -63,6 +64,7 @@ export function ProductEditPage() {
 								<Publishing />
 								<Gallery />
 								<Taxonomies />
+								<Seo />
 							</div>
 						</div>
 					</div>
