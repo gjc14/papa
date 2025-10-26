@@ -15,6 +15,7 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Textarea } from '~/components/ui/textarea'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { isActionSuccess } from '~/lib/utils'
 import { type SeoLoaderType } from '~/routes/papa/dashboard/seo'
 
@@ -32,11 +33,13 @@ export const SeoContent = ({
 	method: 'PUT' | 'POST'
 }) => {
 	const fetcher = useFetcher()
-	const isSubmitting =
-		fetcher.formAction === action && fetcher.state === 'submitting'
+	const { isLoading, isSubmitting: fSubmitting } =
+		useFetcherNotification(fetcher)
+
+	const isSubmitting = fetcher.formAction === action && fSubmitting
 
 	useEffect(() => {
-		if (fetcher.state === 'loading' && isActionSuccess(fetcher.data)) {
+		if (isLoading && isActionSuccess(fetcher.data)) {
 			setOpen(false)
 		}
 	}, [fetcher])

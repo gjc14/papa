@@ -7,6 +7,7 @@ import { PlusCircle } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { getSEOs } from '~/lib/db/seo.server'
 import {
 	DashboardActions,
@@ -142,6 +143,7 @@ export const columns: ColumnDef<
 		header: 'Edit',
 		cell: ({ row }) => {
 			const fetcher = useFetcher()
+			const { mutating } = useFetcherNotification(fetcher)
 
 			const rowId = row.id
 			const [open, setOpen] = useState(false)
@@ -149,7 +151,7 @@ export const columns: ColumnDef<
 			const deleteTarget = row.original.metaTitle ?? undefined
 
 			useEffect(() => {
-				if (fetcher.state !== 'idle') {
+				if (mutating) {
 					row.original.setRowsDeleting(prev => {
 						const newSet = new Set(prev)
 						newSet.add(rowId)
@@ -162,7 +164,7 @@ export const columns: ColumnDef<
 						return newSet
 					})
 				}
-			}, [fetcher.state])
+			}, [mutating])
 
 			return (
 				<>

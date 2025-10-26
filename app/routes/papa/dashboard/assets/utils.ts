@@ -3,6 +3,7 @@ import { useFetcher } from 'react-router'
 
 import { ZodError } from 'zod'
 
+import { useFetcherNotification } from '~/hooks/use-notification'
 import type { FileMetadata } from '~/lib/db/schema'
 import { isActionSuccess } from '~/lib/utils'
 import {
@@ -135,6 +136,7 @@ export type UploadState = {
 export const useFileUpload = () => {
 	const [uploadProgress, setUploadProgress] = useState<UploadState>({})
 	const fetcher = useFetcher()
+	useFetcherNotification(fetcher)
 
 	const handleDelete = (key: string) => {
 		fetcher.submit(JSON.stringify({ key }), {

@@ -15,12 +15,14 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '~/components/ui/alert-dialog'
+import { useFetcherNotification } from '~/hooks/use-notification'
 
 import { isDeleteAlertOpenAtom, isDeletingAtom, postAtom } from '../../context'
 
 export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 	const fetcher = useFetcher()
 	const navigate = useNavigate()
+	useFetcherNotification(fetcher)
 
 	const isSubmitting = fetcher.state === 'submitting'
 	const method = fetcher.formMethod

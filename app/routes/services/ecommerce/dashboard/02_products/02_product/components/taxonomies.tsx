@@ -7,6 +7,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from '~/components/ui/card'
 import { Spinner } from '~/components/ui/spinner'
 import { CheckboxTree, type TreeNode } from '~/components/checkbox-tree'
 import { MultiSelect } from '~/components/multi-select'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { generateSlug } from '~/lib/utils/seo'
 import {
 	brandsAtom,
@@ -47,8 +48,14 @@ export function Taxonomies() {
 	const bFetcher = useFetcher<typeof bLoader>()
 
 	const cCreateFetcher = useFetcher<typeof cAction>()
-	const tCreateFetcher = useFetcher<typeof tAction>()
+	const { isLoading: cIsLoading, isSubmitting: cSubmitting } =
+		useFetcherNotification(cCreateFetcher)
 	const bCreateFetcher = useFetcher<typeof bAction>()
+	const { isLoading: bIsLoading, isSubmitting: bSubmitting } =
+		useFetcherNotification(bCreateFetcher)
+	const tCreateFetcher = useFetcher<typeof tAction>()
+	const { isLoading: tIsLoading, isIdle: tIsIdle } =
+		useFetcherNotification(tCreateFetcher)
 
 	const setProduct = useSetAtom(productAtom)
 	const productTags = useAtomValue(productTagsAtom)
@@ -124,7 +131,7 @@ export function Taxonomies() {
 	// Handle category creation
 	useEffect(() => {
 		if (
-			cCreateFetcher.state === 'loading' &&
+			cIsLoading &&
 			cCreateFetcher.data &&
 			'data' in cCreateFetcher.data &&
 			cCreateFetcher.data.data
@@ -143,7 +150,7 @@ export function Taxonomies() {
 	// Handle tag creation
 	useEffect(() => {
 		if (
-			tCreateFetcher.state === 'loading' &&
+			tIsLoading &&
 			tCreateFetcher.data &&
 			'data' in tCreateFetcher.data &&
 			tCreateFetcher.data.data
@@ -162,7 +169,7 @@ export function Taxonomies() {
 	// Handle brand creation
 	useEffect(() => {
 		if (
-			bCreateFetcher.state === 'loading' &&
+			bIsLoading &&
 			bCreateFetcher.data &&
 			'data' in bCreateFetcher.data &&
 			bCreateFetcher.data.data
@@ -179,7 +186,7 @@ export function Taxonomies() {
 
 	// Auto-submit pending items
 	useEffect(() => {
-		if (tPending.length > 0 && tCreateFetcher.state === 'idle') {
+		if (tPending.length > 0 && tIsIdle) {
 			const [first] = tPending
 			tCreateFetcher.submit(
 				{ name: first.name, slug: first.slug },
@@ -240,10 +247,7 @@ export function Taxonomies() {
 								encType: 'application/json',
 							})
 						}}
-						isSubmitting={
-							!dataInitialized.categories ||
-							cCreateFetcher.state === 'submitting'
-						}
+						isSubmitting={!dataInitialized.categories || cSubmitting}
 					/>
 				</CardFooter>
 			</Card>
@@ -321,9 +325,7 @@ export function Taxonomies() {
 								encType: 'application/json',
 							})
 						}}
-						isSubmitting={
-							!dataInitialized.brands || bCreateFetcher.state === 'submitting'
-						}
+						isSubmitting={!dataInitialized.brands || bSubmitting}
 					/>
 				</CardFooter>
 			</Card>

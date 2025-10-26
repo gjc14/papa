@@ -33,6 +33,7 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import type { user as userTable } from '~/lib/db/schema'
 import {
 	DashboardActions,
@@ -56,7 +57,7 @@ export const UserManagementRoute = ({
 	role: 'admin' | 'user'
 }) => {
 	const fetcher = useFetcher()
-	const isSubmitting = fetcher.state === 'submitting'
+	const { isLoading, isSubmitting } = useFetcherNotification(fetcher)
 
 	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
 	// The ids selected returned by setRowSelection
@@ -100,7 +101,7 @@ export const UserManagementRoute = ({
 	}
 
 	useEffect(() => {
-		if (fetcher.state === 'loading') {
+		if (isLoading) {
 			switch (fetcher.formMethod) {
 				case 'DELETE':
 					setOpenBulkDeleteAlert(false)

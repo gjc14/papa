@@ -27,15 +27,12 @@ import { Textarea } from '~/components/ui/textarea'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import type { ActionResponse } from '~/lib/utils'
 
-type TaxonomyItem = {
-	id: number
-	name: string
-	slug: string
-	description?: string | null
-	parentId?: number | null
-	image?: string | null
-	value?: string | null
-}
+import type { Brand } from '../../02_products/03_brands/route'
+import type { Category } from '../../02_products/04_categories/route'
+import type { Tag } from '../../02_products/05_tags/route'
+import type { Attribute } from '../../02_products/06_attributes/route'
+
+type TaxonomyItem = Brand | Category | Tag | Attribute
 
 type TaxonomyConfig = {
 	/** The name of the taxonomy (e.g., "Category", "Brand", "Tag", "Attribute") */
@@ -67,18 +64,18 @@ type CreateTaxonomyDialogProps = {
  * # Basic Usage
  *
  * ```tsx
- * import { CreateTaxonomyDialog } from '~/routes/services/ecommerce/dashboard/components/create-taxonomy-dialog'
+ * import { CreateTaxonomyDialog } from '~/routes/services/ecommerce/dashboard/components/taxonomy/create-taxonomy-dialog'
  * import type { action } from './resource'
  *
  * <CreateTaxonomyDialog<Awaited<ReturnType<typeof action>>>
  *   data={yourData}
  *   config={{
- *     name: 'Category',
- *     pluralName: 'Categories',
- *     actionEndpoint: 'resource',
- *      hasDescription: true,
- * 		hasParent: true,
- *      hasImage: true,
+ *   	name: 'Category',
+ *   	pluralName: 'Categories',
+ *   	actionEndpoint: 'resource',
+ *   	hasDescription: true,
+ * 	 	hasParent: true,
+ *   	hasImage: true,
  *   }}
  * />
  * ```
@@ -94,9 +91,9 @@ type CreateTaxonomyDialogProps = {
  * 		name: 'Brand',
  * 		pluralName: 'Brands',
  * 		actionEndpoint: 'resource',
- *      hasDescription: true,
+ * 		hasDescription: true,
  * 		hasParent: true,
- *      hasImage: true,
+ * 		hasImage: true,
  * 		namePlaceholder: 'Nike',
  * 		slugPlaceholder: 'nike',
  * 	}}
@@ -112,8 +109,8 @@ type CreateTaxonomyDialogProps = {
  * 		name: 'Tag',
  * 		pluralName: 'Tags',
  * 		actionEndpoint: 'resource',
- *      hasDescription: true,
- *      hasImage: true,
+ * 		hasDescription: true,
+ * 		hasImage: true,
  * 		namePlaceholder: 'Featured',
  * 		slugPlaceholder: 'featured',
  * 	}}
@@ -124,14 +121,14 @@ type CreateTaxonomyDialogProps = {
  *
  * ```tsx
  * <CreateTaxonomyDialog<Awaited<ReturnType<typeof action>>>
- * 	data={tags}
+ * 	data={attributes}
  * 	config={{
- * 		name: 'Tag',
- * 		pluralName: 'Tags',
- * 		actionEndpoint: 'resource',
- *      hasValue: true,
- * 		namePlaceholder: 'Featured',
- * 		slugPlaceholder: 'featured',
+ *		name: 'Attribute',
+ *		pluralName: 'Attributes',
+ *		actionEndpoint: 'resource',
+ *		hasValue: true,
+ *		namePlaceholder: 'Featured',
+ *		slugPlaceholder: 'featured',
  * 	}}
  * />
  * ```
@@ -169,7 +166,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 
 	// Only top-level items can be parents
 	const validParentItems = config.hasParent
-		? data.filter(item => !item.parentId)
+		? data.filter(item => ('parentId' in item ? !item.parentId : true))
 		: []
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -183,11 +180,11 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 
 		// Add optional fields based on config
 		if (config.hasDescription) {
-			taxonomyData.description = (formData.get('description') as string) || null
+			taxonomyData.description = (formData.get('description') as string) ?? null
 		}
 
 		if (config.hasImage) {
-			taxonomyData.image = (formData.get('image') as string) || null
+			taxonomyData.image = (formData.get('image') as string) ?? null
 		}
 
 		if (config.hasParent) {
@@ -198,7 +195,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		}
 
 		if (config.hasValue) {
-			taxonomyData.value = (formData.get('value') as string) || null
+			taxonomyData.value = (formData.get('value') as string) ?? null
 		}
 
 		fetcher.submit(taxonomyData, {
@@ -223,7 +220,13 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog
+			open={open}
+			onOpenChange={o => {
+				if (o) setShowSuccess(false)
+				setOpen(o)
+			}}
+		>
 			<DialogTrigger asChild>
 				<Button size="sm">
 					<Plus />
@@ -257,7 +260,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 							>
 								Close
 							</Button>
-							<Button className="flex-1" onClick={handleReset}>
+							<Button className="flex-1" autoFocus onClick={handleReset}>
 								Continue Adding
 							</Button>
 						</div>
@@ -277,6 +280,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 								}
 								required
 								disabled={mutating}
+								autoFocus
 							/>
 						</div>
 

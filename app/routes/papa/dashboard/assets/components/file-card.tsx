@@ -35,6 +35,7 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { Textarea } from '~/components/ui/textarea'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import type { FileMetadata } from '~/lib/db/schema'
 import { cn } from '~/lib/utils'
 
@@ -70,6 +71,7 @@ export const FileCard = ({
 	selectOnDoubleClick = false,
 }: FileCardProps) => {
 	const fetcher = useFetcher()
+	const { mutating } = useFetcherNotification(fetcher)
 	const [open, setOpen] = useState(false)
 	const [deleteAlert, setDeleteAlert] = useState(false)
 
@@ -83,10 +85,9 @@ export const FileCard = ({
 
 	const fileGeneralType = file.type.split('/')[0]
 	const url = `/assets/${file.id}`
-	const isSubmitting = fetcher.state === 'submitting'
 
 	const handleUpdate = () => {
-		if (isSubmitting) return
+		if (mutating) return
 
 		const fileMetadataUpdated = {
 			...file,
@@ -103,7 +104,7 @@ export const FileCard = ({
 	}
 
 	const handleDelete = () => {
-		if (isSubmitting) return
+		if (mutating) return
 		fetcher.submit(JSON.stringify({ key: file.key }), {
 			action: assetResourceRoute,
 			method: 'DELETE',
@@ -306,10 +307,10 @@ export const FileCard = ({
 
 						<Button
 							className="w-full"
-							disabled={isSubmitting && fetcher.formMethod === 'PUT'}
+							disabled={mutating && fetcher.formMethod === 'PUT'}
 							onClick={handleUpdate}
 						>
-							{isSubmitting && fetcher.formMethod === 'PUT' ? (
+							{mutating && fetcher.formMethod === 'PUT' ? (
 								<Loader2 className="animate-spin" />
 							) : (
 								'Save'

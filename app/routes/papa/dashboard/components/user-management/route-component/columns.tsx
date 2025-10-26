@@ -6,6 +6,7 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import type { user as userTable } from '~/lib/db/schema'
 import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
 
@@ -92,6 +93,7 @@ export const columns: ColumnDef<
 		header: 'Edit',
 		cell: ({ row }) => {
 			const fetcher = useFetcher()
+			const { mutating, isSubmitting } = useFetcherNotification(fetcher)
 			const [open, setOpen] = useState(false)
 
 			const rowId = row.id
@@ -99,7 +101,7 @@ export const columns: ColumnDef<
 			const userEmail = row.original.email
 
 			useEffect(() => {
-				if (fetcher.state !== 'idle') {
+				if (mutating) {
 					row.original.setRowsDeleting(prev => {
 						const newSet = new Set(prev)
 						newSet.add(rowId)
@@ -112,7 +114,7 @@ export const columns: ColumnDef<
 						return newSet
 					})
 				}
-			}, [fetcher.state])
+			}, [mutating])
 
 			return (
 				<>
@@ -141,8 +143,7 @@ export const columns: ColumnDef<
 							})
 						}}
 						isSubmitting={
-							fetcher.formAction === '/dashboard/user/resource' &&
-							fetcher.state === 'submitting'
+							fetcher.formAction === '/dashboard/user/resource' && isSubmitting
 						}
 						user={{
 							...row.original,

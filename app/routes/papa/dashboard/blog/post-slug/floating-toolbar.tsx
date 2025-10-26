@@ -7,6 +7,7 @@ import { ExternalLink, Loader2, RotateCcw, Settings } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import { useIsMobile } from '~/hooks/use-mobile'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { generateSlug } from '~/lib/utils/seo'
 
 import {
@@ -24,8 +25,9 @@ import { postLocalStorageKey } from './utils'
 
 export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 	const isMobile = useIsMobile()
-	const fetcher = useFetcher<typeof action>()
 	const navigate = useNavigate()
+	const fetcher = useFetcher<typeof action>()
+	useFetcherNotification(fetcher)
 
 	const isSubmitting = fetcher.state === 'submitting'
 	const method = fetcher.formMethod

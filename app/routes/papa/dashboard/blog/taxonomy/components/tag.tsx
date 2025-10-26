@@ -15,6 +15,7 @@ import {
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { ScrollArea } from '~/components/ui/scroll-area'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { generateSlug } from '~/lib/utils/seo'
 
 import { actionRoute } from '..'
@@ -23,24 +24,24 @@ import type { TagType } from '../type'
 // Tag Component
 const TagComponent = ({ tag }: { tag: TagType & { _isPending?: true } }) => {
 	const fetcher = useFetcher()
-	const isDeleting = fetcher.state !== 'idle'
+	const { mutating } = useFetcherNotification(fetcher)
 
 	return (
 		<div
 			className={`bg-muted flex items-center justify-between rounded-md p-3 ${
-				isDeleting ? 'opacity-50' : ''
+				mutating ? 'opacity-50' : ''
 			}`}
 		>
 			<div className="font-medium">{tag.name}</div>
 			<CircleX
 				className={
 					'h-5 w-5' +
-					(isDeleting || tag._isPending
+					(mutating || tag._isPending
 						? ' cursor-not-allowed opacity-50'
 						: ' hover:text-destructive cursor-pointer')
 				}
 				onClick={() => {
-					if (isDeleting || tag._isPending) return
+					if (mutating || tag._isPending) return
 
 					fetcher.submit(
 						{ id: tag.id, intent: 'tag' },

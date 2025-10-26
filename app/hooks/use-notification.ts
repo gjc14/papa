@@ -1,39 +1,9 @@
-import { useEffect, useRef } from 'react'
-import { useFetchers, type FetcherWithComponents } from 'react-router'
+import { useEffect } from 'react'
+import { type FetcherWithComponents } from 'react-router'
 
 import { toast, type ExternalToast } from '@gjc14/sonner'
 
 import type { ActionResponse } from '~/lib/utils'
-
-/** Function to check if fetchers have response that satisfies auto notification */
-export function useServerNotification() {
-	const fetchers = useFetchers()
-	// Prevent duplicate notifications from same fetcher when re-render. e.g. navigate()
-	const processedFetchersRef = useRef<Set<string>>(new Set())
-
-	useEffect(() => {
-		fetchers.forEach(fetcher => {
-			const fetcherKey = fetcher.key
-			if (processedFetchersRef.current.has(fetcherKey)) {
-				if (fetcher.state === 'submitting') {
-					processedFetchersRef.current.delete(fetcherKey)
-				}
-				return console.log('already processed', fetcherKey)
-			}
-
-			if (fetcher.data) {
-				if (fetcher.data.preventNotification) return
-				if (fetcher.data.msg) {
-					toast.success(fetcher.data.msg)
-				} else if (fetcher.data.err) {
-					toast.error(fetcher.data.err)
-				}
-
-				processedFetchersRef.current.add(fetcherKey)
-			}
-		})
-	}, [fetchers])
-}
 
 /**
  * Hook extends fetcher to show notification based on conventional action response {@link ActionResponse}

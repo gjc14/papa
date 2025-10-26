@@ -5,6 +5,7 @@ import { type ColumnDef } from '@tanstack/react-table'
 
 import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import { useFetcherNotification } from '~/hooks/use-notification'
 import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
 import { SimpleSortHeader } from '~/routes/papa/dashboard/components/data-table/simple-sort-header'
 
@@ -136,6 +137,7 @@ export const columns: ColumnDef<
 		cell: props => {
 			const row = props.row
 			const fetcher = useFetcher()
+			const { mutating } = useFetcherNotification(fetcher)
 
 			const rowId = row.id
 			const id = row.original.id
@@ -143,7 +145,7 @@ export const columns: ColumnDef<
 			const name = row.original.name
 
 			useEffect(() => {
-				if (fetcher.state !== 'idle') {
+				if (mutating) {
 					row.original.setRowsDeleting(prev => {
 						const newSet = new Set(prev)
 						newSet.add(rowId)
