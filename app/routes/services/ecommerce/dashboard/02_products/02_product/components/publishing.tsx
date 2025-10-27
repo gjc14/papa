@@ -87,6 +87,13 @@ export function Publishing() {
 									? new Date(productPublishedAt).toISOString().slice(0, 16)
 									: ''
 							}
+							onChange={e =>
+								handleProductChange({
+									publishedAt: e.target.value
+										? new Date(e.target.value).toISOString()
+										: null,
+								})
+							}
 						/>
 						<FieldDescription>
 							Schedule when this product goes live
