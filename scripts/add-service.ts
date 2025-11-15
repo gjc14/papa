@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
+import { initLocale, t } from './i18n'
+
 const exampleServiceConfig = `
 import { Apple, Command } from 'lucide-react'
 
@@ -317,60 +319,78 @@ const filePathProductRoute = join(
 	'app/routes/services/example-service/shop/product/route.tsx',
 )
 
-try {
-	// Create directories
-	await mkdir(join(process.cwd(), 'app/routes/services/example-service'), {
-		recursive: true,
-	})
-	await mkdir(
-		join(
-			process.cwd(),
-			'app/routes/services/example-service/dashboard/product',
-		),
-		{
+async function main() {
+	await initLocale()
+
+	try {
+		// Create directories
+		await mkdir(join(process.cwd(), 'app/routes/services/example-service'), {
 			recursive: true,
-		},
-	)
-	await mkdir(join(process.cwd(), 'app/routes/services/example-service/shop'), {
-		recursive: true,
-	})
-	await mkdir(
-		join(process.cwd(), 'app/routes/services/example-service/shop/product'),
-		{
-			recursive: true,
-		},
-	)
+		})
+		await mkdir(
+			join(
+				process.cwd(),
+				'app/routes/services/example-service/dashboard/product',
+			),
+			{
+				recursive: true,
+			},
+		)
+		await mkdir(
+			join(process.cwd(), 'app/routes/services/example-service/shop'),
+			{
+				recursive: true,
+			},
+		)
+		await mkdir(
+			join(process.cwd(), 'app/routes/services/example-service/shop/product'),
+			{
+				recursive: true,
+			},
+		)
 
-	// Write all service files
-	await writeFile(filePathServiceConfig, exampleServiceConfig.trim())
-	await writeFile(filePathDashboardIndex, exampleDashboardIndex.trim())
-	await writeFile(filePathDashboardLayout, exampleDashboardLayout.trim())
-	await writeFile(
-		filePathDashboardProductRoute,
-		exampleDashboardProductRoute.trim(),
-	)
-	await writeFile(filePathShopIndex, exampleShopIndex.trim())
-	await writeFile(filePathShopLayout, exampleShopLayout.trim())
-	await writeFile(filePathShopData, exampleShopData.trim())
-	await writeFile(filePathProductRoute, exampleProductRoute.trim())
+		// Write all service files
+		await writeFile(filePathServiceConfig, exampleServiceConfig.trim())
+		await writeFile(filePathDashboardIndex, exampleDashboardIndex.trim())
+		await writeFile(filePathDashboardLayout, exampleDashboardLayout.trim())
+		await writeFile(
+			filePathDashboardProductRoute,
+			exampleDashboardProductRoute.trim(),
+		)
+		await writeFile(filePathShopIndex, exampleShopIndex.trim())
+		await writeFile(filePathShopLayout, exampleShopLayout.trim())
+		await writeFile(filePathShopData, exampleShopData.trim())
+		await writeFile(filePathProductRoute, exampleProductRoute.trim())
 
-	console.log(
-		`🎉 Example service files created successfully!
+		const files = [
+			filePathServiceConfig.split('app/routes')[1],
+			filePathDashboardIndex.split('app/routes')[1],
+			filePathDashboardLayout.split('app/routes')[1],
+			filePathDashboardProductRoute.split('app/routes')[1],
+			filePathShopIndex.split('app/routes')[1],
+			filePathShopLayout.split('app/routes')[1],
+			filePathShopData.split('app/routes')[1],
+			filePathProductRoute.split('app/routes')[1],
+		]
 
-		📁 Created 8 files:
-		1️⃣ ${filePathServiceConfig.split('app/routes')[1]}
-		2️⃣ ${filePathDashboardIndex.split('app/routes')[1]}
-		3️⃣ ${filePathDashboardLayout.split('app/routes')[1]}
-		4️⃣ ${filePathDashboardProductRoute.split('app/routes')[1]}
-		5️⃣ ${filePathShopIndex.split('app/routes')[1]}
-		6️⃣ ${filePathShopLayout.split('app/routes')[1]}
-		7️⃣ ${filePathShopData.split('app/routes')[1]}
-		8️⃣ ${filePathProductRoute.split('app/routes')[1]}
-        
-        🏄 Navigate to '/example-shop' to see the shop in action
-        🎛️ Navigate to '/dashboard/example-service' to see the dashboard
-        `.replace(/^[ \t]+/gm, ''),
-	)
-} catch (err) {
-	console.error('Error creating example service files:', err)
+		console.log(
+			t('example-service-created-success', {
+				fileCount: String(files.length),
+			}),
+		)
+		files.forEach((file, index) => {
+			console.log(
+				t('service-file-item', {
+					index: String(index + 1),
+					path: file,
+				}),
+			)
+		})
+		console.log(t('navigate-to-example-shop'))
+		console.log(t('navigate-to-example-dashboard'))
+	} catch (err) {
+		console.error(t('error-creating-example-service-files'), err)
+	}
 }
+
+main()

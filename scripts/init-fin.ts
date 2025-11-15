@@ -1,6 +1,9 @@
-async function initFin() {
-	console.warn(`\n* * * \n初始化完成！(Initialization complete)\n* * *`)
-	console.log('\n* * *\n歡迎使用 Papa 🥔✨\nWelcome to Papa 🥔✨\n* * *')
+import { initLocale, t } from './i18n'
+
+async function initFin(locale?: string) {
+	await initLocale(locale)
+	console.warn(t('initialization-complete'))
 }
 
-initFin()
+const locale = process.argv[2]
+initFin(locale)

@@ -10,6 +10,7 @@ import type { TransactionType } from '~/lib/db/db.server'
 import { isValidEmail } from '~/lib/utils'
 
 import * as schema from '../app/lib/db/schema'
+import { initLocale, t } from './i18n'
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -18,31 +19,24 @@ const rl = readline.createInterface({
 
 const askEmail = (): Promise<string> => {
 	return new Promise(resolve => {
-		rl.question(
-			'\n❓ 請輸入管理員電子郵件地址 (Please enter Admin Email) (按下 ^+C 以關閉) (Press ^+C to exit): ',
-			email => {
-				if (!isValidEmail(email)) {
-					console.error(
-						'❌ 無效的電子郵件格式，請重新輸入。(Invalid email, try again.)',
-					)
-					return resolve(askEmail())
-				}
-				resolve(email)
-			},
-		)
+		rl.question(t('admin-email-prompt'), email => {
+			if (!isValidEmail(email)) {
+				console.error(t('invalid-email'))
+				return resolve(askEmail())
+			}
+			resolve(email)
+		})
 	})
 }
 
 const askName = (): Promise<string> => {
 	return new Promise(resolve => {
-		rl.question(
-			'\n❓ 設定您的名字 (Please enter your name) (按下 ^+C 以關閉) (Press ^+C to exit): ',
-			name => resolve(name),
-		)
+		rl.question(t('admin-name-prompt'), name => resolve(name))
 	})
 }
 
-async function checkAndCreateAdmin() {
+async function initAdmin(locale?: string) {
+	await initLocale(locale)
 	const db = drizzle(process.env.DATABASE_URL!, { schema })
 
 	try {
@@ -57,9 +51,7 @@ async function checkAndCreateAdmin() {
 			const name = await askName()
 
 			// Create admin
-			console.log(
-				'\n🔄 管理員不存在，正在建立... (Admin does not exist. Creating...)',
-			)
+			console.log(t('admin-does-not-exist'))
 			const { user } = await auth.api.createUser({
 				body: {
 					email: email,
@@ -75,23 +67,18 @@ async function checkAndCreateAdmin() {
 				})
 				.where(eq(schema.user.id, user.id))
 
-			console.log(
-				`✅ 管理員已建立！請使用 ${'user.email'} 登入。 (Admin created! Sign in with ${'user.email'})`,
-			)
+			console.log(t('admin-created', { email: user.email }))
 
-			console.log('🔄 正在建立預設資料 (Inserting default data)...')
+			console.log(t('inserting-default-data'))
 			await db.transaction(async tx => {
 				await insertDefaultData(tx, user.id)
 			})
-			console.log('✅ 預設資料已建立 (Default data created)')
+			console.log(t('default-data-created'))
 		} else {
-			console.log(`⚠️ 管理員已存在。Admin already exists.`)
+			console.log(t('admin-already-exists'))
 		}
 	} catch (error) {
-		console.error(
-			'❌ 檢查/建立管理員使用者時發生錯誤 (Error checking/creating admin):',
-			error,
-		)
+		console.error(t('error-checking-creating-admin'), error)
 		process.exit(1)
 	} finally {
 		process.exit(0)
@@ -110,10 +97,7 @@ const insertDefaultData = async (tx: TransactionType, adminId: string) => {
 			route: '/blog/' + defaultPost.slug,
 		})
 		.returning()
-	console.log(
-		'\n✅ 預設文章 SEO 已建立 (Default post SEO created):',
-		defaultPost.title,
-	)
+	console.log(t('default-post-seo-created', { title: defaultPost.title }))
 
 	const [postCreated] = await tx
 		.insert(schema.post)
@@ -128,11 +112,11 @@ const insertDefaultData = async (tx: TransactionType, adminId: string) => {
 			seoId: seoCreated.id,
 		})
 		.returning()
-	console.log('\n✅ 預設文章已建立 (Default post created):', postCreated.title)
+	console.log(t('default-post-created', { title: postCreated.title }))
 
 	const tags = await tx.insert(schema.tag).values(defaultTags).returning()
 	console.log(
-		'\n✅ 預設標籤已建立 (Default tags created):',
+		t('default-tags-created'),
 		defaultTags.map(tag => ({
 			name: tag.name,
 		})),
@@ -143,7 +127,7 @@ const insertDefaultData = async (tx: TransactionType, adminId: string) => {
 		.values(defaultCategories)
 		.returning()
 	console.log(
-		'\n✅ 預設分類已建立 (Default categories created):',
+		t('default-categories-created'),
 		defaultCategories.map(category => ({
 			name: category.name,
 		})),
@@ -162,9 +146,7 @@ const insertDefaultData = async (tx: TransactionType, adminId: string) => {
 			categoryId: category.id,
 		})),
 	)
-	console.log(
-		'\n✅ 預設文章與標籤、分類關聯已建立 (Default post to tags and categories created)',
-	)
+	console.log(t('default-post-relations-created'))
 }
 
 const defaultSEOs = [
@@ -486,4 +468,5 @@ const defaultCategories = [
 	},
 ]
 
-await checkAndCreateAdmin()
+const locale = process.argv[2]
+await initAdmin(locale)

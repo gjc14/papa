@@ -4,6 +4,8 @@ import readline from 'readline'
 
 import { generateSlug } from '~/lib/utils/seo'
 
+import { initLocale, t } from './i18n'
+
 const createTemplates = (routeName: string) => {
 	const serviceConfig = `
 import type { Service } from '../../papa/utils/service-configs'
@@ -56,7 +58,7 @@ const rl = readline.createInterface({
 
 const askRouteName = (defaultName = 'new-route'): Promise<string> => {
 	return new Promise(resolve => {
-		rl.question(`Route name (default: ${defaultName}): `, answer => {
+		rl.question(t('route-name-prompt', { default: defaultName }), answer => {
 			rl.close()
 			const raw = (answer ?? defaultName).trim()
 			const lowered = raw.length ? raw.toLowerCase() : defaultName
@@ -66,30 +68,46 @@ const askRouteName = (defaultName = 'new-route'): Promise<string> => {
 	})
 }
 
-try {
-	const routeName = await askRouteName('new-route')
+async function main() {
+	await initLocale()
 
-	const { serviceConfig, routeFile } = createTemplates(routeName)
+	try {
+		const routeName = await askRouteName('new-route')
 
-	// Create directories
-	await mkdir(join(process.cwd(), `app/routes/services/${routeName}`), {
-		recursive: true,
-	})
+		const { serviceConfig, routeFile } = createTemplates(routeName)
 
-	// Write all service files
-	await writeFile(filePathServiceConfig(routeName), serviceConfig)
-	await writeFile(filePathIndex(routeName), routeFile)
+		// Create directories
+		await mkdir(join(process.cwd(), `app/routes/services/${routeName}`), {
+			recursive: true,
+		})
 
-	console.log(
-		`🎉 Service named ${routeName} files created successfully!
+		// Write all service files
+		await writeFile(filePathServiceConfig(routeName), serviceConfig)
+		await writeFile(filePathIndex(routeName), routeFile)
 
-		📁 Created 2 files:
-		1️⃣ ${filePathServiceConfig(routeName).split('app/routes')[1]}
-		2️⃣ ${filePathIndex(routeName).split('app/routes')[1]}
+		const files = [
+			filePathServiceConfig(routeName).split('app/routes')[1],
+			filePathIndex(routeName).split('app/routes')[1],
+		]
 
-        🌐 Navigate to '/${routeName}' to see the new service in action
-        `.replace(/^[ \t]+/gm, ''),
-	)
-} catch (err) {
-	console.error('Error creating service files:', err)
+		console.log(
+			t('service-created-success', {
+				name: routeName,
+				fileCount: String(files.length),
+			}),
+		)
+		files.forEach((file, index) => {
+			console.log(
+				t('service-file-item', {
+					index: String(index + 1),
+					path: file,
+				}),
+			)
+		})
+		console.log(t('navigate-to-service', { route: `/${routeName}` }))
+	} catch (err) {
+		console.error(t('error-creating-service-files'), err)
+	}
 }
+
+main()

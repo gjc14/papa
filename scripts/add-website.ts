@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
+import { initLocale, t } from './i18n'
+
 const websiteServiceConfig = `
 import type { Service } from '../../papa/utils/service-configs'
 
@@ -111,31 +113,46 @@ const filePathAbout = join(
 	'app/routes/services/website/about.tsx',
 )
 
-try {
-	// Create directories
-	await mkdir(join(process.cwd(), 'app/routes/services/website'), {
-		recursive: true,
-	})
+async function main() {
+	await initLocale()
 
-	// Write all service files
-	await writeFile(filePathServiceConfig, websiteServiceConfig.trim())
-	await writeFile(filePathIndex, websiteIndex.trim())
-	await writeFile(filePathLayout, websiteLayout.trim())
-	await writeFile(filePathAbout, websiteAbout.trim())
+	try {
+		// Create directories
+		await mkdir(join(process.cwd(), 'app/routes/services/website'), {
+			recursive: true,
+		})
 
-	console.log(
-		`🎉 Website service files created successfully!
+		// Write all service files
+		await writeFile(filePathServiceConfig, websiteServiceConfig.trim())
+		await writeFile(filePathIndex, websiteIndex.trim())
+		await writeFile(filePathLayout, websiteLayout.trim())
+		await writeFile(filePathAbout, websiteAbout.trim())
 
-		📁 Created 4 files:
-		1️⃣ ${filePathServiceConfig.split('app/routes')[1]}
-		2️⃣ ${filePathIndex.split('app/routes')[1]}
-		3️⃣ ${filePathLayout.split('app/routes')[1]}
-		4️⃣ ${filePathAbout.split('app/routes')[1]}
-        
-        🌐 Navigate to '/' to see the website service in action
-        📖 Navigate to '/about' to see the about page
-        `.replace(/^[ \t]+/gm, ''),
-	)
-} catch (err) {
-	console.error('Error creating website service files:', err)
+		const files = [
+			filePathServiceConfig.split('app/routes')[1],
+			filePathIndex.split('app/routes')[1],
+			filePathLayout.split('app/routes')[1],
+			filePathAbout.split('app/routes')[1],
+		]
+
+		console.log(
+			t('website-service-created-success', {
+				fileCount: String(files.length),
+			}),
+		)
+		files.forEach((file, index) => {
+			console.log(
+				t('service-file-item', {
+					index: String(index + 1),
+					path: file,
+				}),
+			)
+		})
+		console.log(t('navigate-to-website'))
+		console.log(t('navigate-to-about'))
+	} catch (err) {
+		console.error(t('error-creating-website-service-files'), err)
+	}
 }
+
+main()

@@ -1,88 +1,70 @@
-/**
- * Init check required environment variables
- */
 import 'dotenv/config'
 
-import { emailService } from '~/lib/email'
+import { spawn } from 'child_process'
 
-function checkDatabaseUrl(): boolean {
-	const databaseUrl = process.env.DATABASE_URL
-	if (!databaseUrl) {
-		console.warn(
-			'\n⚠️ PostgreSQL DATABASE_URL 未設定。請設定以啟用 Papa。路徑: `./.env` (PostgreSQL DATABASE_URL is not set. Please set this to enable Papa. Path: `./.env`)',
-		)
-		console.warn(
-			'設定方法: 在專案根目錄的 `.env` 檔案中加入 DATABASE_URL=您的URL (How to set: Add DATABASE_URL=your-url to the `.env` file in the root directory of the project.)',
-		)
-		return false
-	}
+import { initLocale, t } from './i18n'
 
-	console.log('✅ DATABASE_URL 已設定 (DATABASE_URL is set)')
-	return true
+/**
+ * Execute a command and return a promise
+ */
+function execCommand(command: string, args: string[] = []): Promise<void> {
+	return new Promise((resolve, reject) => {
+		const child = spawn(command, args, {
+			stdio: 'inherit',
+			shell: true,
+		})
+
+		child.on('close', code => {
+			if (code !== 0) {
+				reject(new Error(`Command failed with code ${code}`))
+			} else {
+				resolve()
+			}
+		})
+
+		child.on('error', err => {
+			reject(err)
+		})
+	})
 }
 
-function checkObjectStorage(): boolean {
-	const accountId = process.env.OBJECT_STORAGE_ACCOUNT_ID
-	const accessKeyId = process.env.OBJECT_STORAGE_ACCESS_KEY_ID
-	const secretAccessKey = process.env.OBJECT_STORAGE_SECRET_ACCESS_KEY
-
-	if (!accountId || !accessKeyId || !secretAccessKey) {
-		console.warn(
-			'\n⚠️ Cloudflare R2 物件存儲設定尚未完成。請設定 OBJECT_STORAGE_ACCOUNT_ID、OBJECT_STORAGE_ACCESS_KEY_ID 以及 OBJECT_STORAGE_SECRET_ACCESS_KEY 環境變數以啟用物件存儲功能 (Cloudflare R2 object storage setup is not complete. Please set OBJECT_STORAGE_ACCOUNT_ID, OBJECT_STORAGE_ACCESS_KEY_ID, and OBJECT_STORAGE_SECRET_ACCESS_KEY environment variables to enable object storage functionality)',
-		)
-		console.warn(
-			'設定方法: 在專案根目錄的 `.env` 檔案中加入這些變數。您可以在 Cloudflare Dashboard > R2 Object Storage > {} API > Manage API Tokens 中創建 API Token (How to set: Add these variables to the `.env` file in the root directory of the project. You can create API tokens in Cloudflare dashboard > R2 Object Storage > API > Manage API Tokens)',
-		)
-		return false
-	}
-
-	// Check if BUCKET_NAME is set, if not, use 'papa' as default
-	if (!process.env.BUCKET_NAME) {
-		process.env.BUCKET_NAME = 'papa'
-		console.log(
-			'⚠️ BUCKET_NAME 未設定，將使用預設值 "papa" (BUCKET_NAME is not set, using default value "papa")',
-		)
-	} else {
-		console.log(
-			`✅ BUCKET_NAME 已設定為 "${process.env.BUCKET_NAME}" (BUCKET_NAME is set to "${process.env.BUCKET_NAME}")`,
-		)
-	}
-
-	console.log(
-		'✅ Cloudflare R2 物件存儲設定正確 (Cloudflare R2 object storage is set correctly)',
-	)
-	return true
+/**
+ * Execute a tsx script with locale parameter
+ */
+async function execTsxScript(
+	scriptPath: string,
+	locale: string,
+): Promise<void> {
+	return execCommand('tsx', [scriptPath, locale])
 }
 
-function checkResendApiKey(): boolean {
-	if (!emailService) {
-		console.warn(
-			'\n⚠️ Email 設定尚未完成，您必須提供 EMAIL_FROM 以及相應的 Email 服務配置環境變數以啟用 Email 功能 (Email setup is not complete, you must provide EMAIL_FROM and corresponding email service configuration environment variables to enable email functionality)',
-		)
-		console.warn(
-			'\n支援的 Email 服務：Resend、Nodemailer、AWS SES。(Supported email services: Resend, Nodemailer, AWS SES.)',
-		)
-		return false
-	}
-
-	console.log(
-		'✅ Email 寄送系統設定正確 (Email sending system is set correctly)',
-	)
-	return true
-}
-
+/**
+ * Main initialization flow
+ */
 async function init() {
-	console.log('🚀 初始化 Papa 應用程式... (Initializing Papa app...)')
+	// Step 1: Get locale from user
+	const locale = await initLocale()
 
-	if (!checkDatabaseUrl()) {
-		process.exit(1)
-	}
-	if (!checkObjectStorage()) {
-		process.exit(1)
-	}
-	if (!checkResendApiKey()) {
-		process.exit(1)
-	}
+	// Step 2: Check environment variables
+	await execTsxScript('scripts/init-env.ts', locale)
+
+	// Step 3: Push database schema
+	await execCommand('pnpm', ['run', 'db:push'])
+
+	// Step 4: Initialize object storage
+	await execTsxScript('scripts/init-object-storage.ts', locale)
+
+	// Step 5: Initialize admin user
+	await execTsxScript('scripts/init-admin.ts', locale)
+
+	// Step 6: Final initialization
+	await execTsxScript('scripts/init-fin.ts', locale)
+
+	// Step 7: Start dev server
+	await execCommand('pnpm', ['run', 'dev'])
 }
 
-init()
+init().catch(error => {
+	console.error(t('error-during-initialization'), error)
+	process.exit(1)
+})
