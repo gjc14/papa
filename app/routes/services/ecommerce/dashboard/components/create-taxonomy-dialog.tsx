@@ -223,7 +223,13 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog
+			open={open}
+			onOpenChange={o => {
+				if (o) setShowSuccess(false)
+				setOpen(o)
+			}}
+		>
 			<DialogTrigger asChild>
 				<Button size="sm">
 					<Plus />
@@ -257,7 +263,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 							>
 								Close
 							</Button>
-							<Button className="flex-1" onClick={handleReset}>
+							<Button className="flex-1" autoFocus onClick={handleReset}>
 								Continue Adding
 							</Button>
 						</div>
@@ -277,6 +283,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 								}
 								required
 								disabled={mutating}
+								autoFocus
 							/>
 						</div>
 
