@@ -125,6 +125,7 @@ export const generateNewCategory = (newCategoryName: string) => {
 	const slug = generateSlug(newCategoryName, { fallbackPrefix: 'category' })
 
 	return {
+		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1),
 		name: newCategoryName,
 		slug,
@@ -247,6 +248,7 @@ export const generateNewChildCategory = (
 	})
 
 	return {
+		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1),
 		name: newChildCategoryName,
 		slug,

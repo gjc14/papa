@@ -60,6 +60,7 @@ export const generateNewTag = (newTagName: string) => {
 	const slug = generateSlug(newTagName, { fallbackPrefix: 'tag' })
 
 	return {
+		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1),
 		name: newTagName,
 		slug,
