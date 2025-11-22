@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useFetcher } from 'react-router'
 
 import { Loader2, MoreHorizontal } from 'lucide-react'
 
@@ -23,33 +22,30 @@ import {
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Spinner } from '~/components/ui/spinner'
-import { useFetcherNotification } from '~/hooks/use-notification'
 
 export const DashboardDataTableMoreMenu = ({
 	id,
 	children,
-	hideDelete,
+	deletable = true,
 	deleteTarget = '-->',
 	onDelete,
+	mutating,
 	permanent = true,
 }: {
 	id: number | string
-	/** Optional children, you could use <DropdownMenuItem> */
+	/** Use [DropdownMenuItem]('../../../../../../../components/ui/dropdown-menu.tsx) */
 	children?: React.ReactNode
-	/** If you don't want to provide delete function */
-	hideDelete?: boolean
-	/**
-	 * Pass in for the display name of this object
-	 * @default - using id
-	 */
+	/** If you don't want to provide delete function @default true */
+	deletable?: boolean
+	/** Pass in for the display name of this object */
 	deleteTarget?: string
-	/** Callback function to handle deletion */
+	/** Callback function to delete */
 	onDelete?: () => void
-	/** If the deletion is permanent or move to trash */
+	/** If the item is mutating */
+	mutating?: boolean
+	/** Delete permanent or move to trash @default true */
 	permanent?: boolean
 }) => {
-	const fetcher = useFetcher()
-	const { mutating } = useFetcherNotification(fetcher)
 	const [open, setOpen] = useState(false)
 
 	return (
@@ -71,10 +67,13 @@ export const DashboardDataTableMoreMenu = ({
 					</>
 				)}
 
-				{!hideDelete && (
+				{deletable && (
 					<>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => setOpen(true)}>
+						<DropdownMenuItem
+							onClick={() => setOpen(true)}
+							className="hover:bg-destructive/90 dark:hover:bg-destructive/90 hover:text-white"
+						>
 							{permanent ? 'Delete Permanently' : 'Move to Trash'}
 						</DropdownMenuItem>
 					</>
@@ -85,14 +84,26 @@ export const DashboardDataTableMoreMenu = ({
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>
-							{permanent ? 'Are you absolutely sure?' : 'Move to Trash?'}
+							{permanent ? 'Delete Permanently' : 'Move to Trash?'}
 						</AlertDialogTitle>
 						<AlertDialogDescription>
-							{permanent
-								? 'This action cannot be undone. This will permanently delete'
-								: 'Are you sure you want to move to trash?'}
-							<span className="text-primary font-bold"> {deleteTarget} </span>
-							(id: {id}).
+							{permanent ? (
+								<>
+									Your about to PERMANENTLY delete
+									<span className="text-primary font-bold">
+										{` ${deleteTarget} `}
+									</span>
+								</>
+							) : (
+								<>
+									Are you sure you want to move
+									<span className="text-primary font-bold">
+										{` ${deleteTarget} `}
+									</span>
+									to trash?
+								</>
+							)}
+							{` (id: ${id}).`}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
