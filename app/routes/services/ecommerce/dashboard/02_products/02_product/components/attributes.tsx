@@ -41,7 +41,12 @@ import { ProductAttributeSelectType } from '~/routes/services/ecommerce/lib/db/s
 
 import { productAtom } from '../../../../store/product/context'
 
-const productAttributesAtom = atom(get => get(productAtom)?.attributes || null)
+const productAttributesAtom = atom(
+	get => get(productAtom)?.attributes.sort((a, b) => a.order - b.order) || null,
+)
+const productVariantsAtom = atom(
+	get => get(productAtom)?.variants.sort((a, b) => a.order - b.order) || null,
+)
 
 type AttributeType = NonNullable<
 	NonNullable<ReturnType<typeof productAtom.read>>['attributes']
@@ -49,25 +54,77 @@ type AttributeType = NonNullable<
 
 export function Attributes() {
 	const attributes = useAtomValue(productAttributesAtom)
+	const variants = useAtomValue(productVariantsAtom)
 	const setProduct = useSetAtom(productAtom)
 
 	if (!attributes) return null
 
+	/**
+	 * Attributes made up variants, so
+	 * when attribute name updated,
+	 * key in "variant combination" matching the old attribute name should update as well
+	 */
 	const handleUpdateAttribute = (updatedAttribute: AttributeType) => {
+		if (!updatedAttribute.name) return
+		const newAttrName = updatedAttribute.name.trim()
+
+		const oldAttr = attributes.find(attr => attr.id === updatedAttribute.id)
+		if (!oldAttr) return
+
 		const updatedAttributes = attributes.map(attr =>
 			attr.id === updatedAttribute.id ? updatedAttribute : attr,
 		)
+
+		const updatedVariants = variants
+			? variants.map(variant => {
+					if (!oldAttr.name || newAttrName === oldAttr.name) return variant
+
+					// Update key in combination
+					const newCombination = { ...variant.combination }
+					if (newCombination.hasOwnProperty(oldAttr.name)) {
+						newCombination[newAttrName] = newCombination[oldAttr.name]
+						delete newCombination[oldAttr.name]
+					}
+					return { ...variant, combination: newCombination }
+				})
+			: []
+
 		setProduct(prev => {
 			if (!prev) return prev
-			return { ...prev, attributes: updatedAttributes }
+			return {
+				...prev,
+				attributes: updatedAttributes,
+				variants: updatedVariants,
+			}
 		})
 	}
 
+	/**
+	 * Attributes made up variants, so
+	 * when attribute deleted, key in "variant combination" matching the attribute name should also be removed
+	 */
 	const handleDeleteAttribute = (id: number) => {
+		const targetAttribute = attributes.find(attr => attr.id === id)
+		if (!targetAttribute) return
+
 		const updatedAttributes = attributes.filter(attr => attr.id !== id)
+
+		const updatedVariants = variants
+			? variants.map(variant => {
+					if (!targetAttribute.name) return variant
+					const newCombination = { ...variant.combination }
+					delete newCombination[targetAttribute.name]
+					return { ...variant, combination: newCombination }
+				})
+			: []
+
 		setProduct(prev => {
 			if (!prev) return prev
-			return { ...prev, attributes: updatedAttributes }
+			return {
+				...prev,
+				attributes: updatedAttributes,
+				variants: updatedVariants,
+			}
 		})
 	}
 
@@ -80,8 +137,8 @@ export function Attributes() {
 					...attributes,
 					{
 						id: -Math.random(), // id doesn't matter, backend will delete all and recreate
-						name: 'New Attribute',
-						value: 'Value',
+						name: '',
+						value: 'A | B | C',
 						order: attributes.length + 1,
 						selectType: 'SELECTOR',
 						visible: 1,
@@ -281,7 +338,10 @@ function AttributeItem({
 						<Button
 							variant="outline"
 							size="sm"
-							onClick={() => setIsEditing(true)}
+							onClick={() => {
+								setEditedAttribute(attribute) // Reset to original;
+								setIsEditing(true)
+							}}
 						>
 							Edit
 						</Button>
