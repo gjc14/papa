@@ -1,6 +1,6 @@
 import { cn } from '~/lib/utils'
 
-const DashboardSectionWrapper = ({
+const DashboardLayout = ({
 	children,
 	className,
 }: {
@@ -8,14 +8,15 @@ const DashboardSectionWrapper = ({
 	className?: string
 }) => {
 	return (
-		<section
+		<div
+			data-slot="dashboard-wrapper"
 			className={cn(
-				'relative flex h-auto w-full flex-1 flex-col gap-2 overflow-auto p-2 md:gap-3 md:px-5 md:py-3',
+				'relative flex h-min w-full flex-1 flex-col gap-2 overflow-hidden md:gap-3',
 				className,
 			)}
 		>
 			{children}
-		</section>
+		</div>
 	)
 }
 
@@ -28,8 +29,9 @@ const DashboardHeader = ({
 }) => {
 	return (
 		<div
+			data-slot="dashboard-header"
 			className={cn(
-				'flex flex-wrap items-center justify-between gap-3',
+				'flex flex-wrap items-center justify-between gap-3 px-3 pt-2 md:px-5 md:pt-3',
 				className,
 			)}
 		>
@@ -54,7 +56,7 @@ const DashboardTitle = ({
 	children?: React.ReactNode
 }) => {
 	return (
-		<div className={cn('space-y-2', className)}>
+		<div data-slot="dashboard-title" className={cn('space-y-2', className)}>
 			{title && <h2 className={titleClassName}>{title}</h2>}
 			{description && (
 				<p
@@ -76,7 +78,10 @@ const DashboardActions = ({
 	className?: string
 }) => {
 	return (
-		<div className={cn('flex flex-nowrap items-center gap-2', className)}>
+		<div
+			data-slot="dashboard-actions"
+			className={cn('flex flex-nowrap items-center gap-2', className)}
+		>
 			{children}
 		</div>
 	)
@@ -90,18 +95,22 @@ const DashboardContent = ({
 	className?: string
 }) => {
 	return (
-		<main
-			className={cn('flex h-full w-full flex-1 gap-2 overflow-auto', className)}
+		<div
+			data-slot="dashboard-content"
+			className={cn(
+				'flex w-full flex-1 gap-2 overflow-auto px-3 md:px-5',
+				className,
+			)}
 		>
 			{children}
-		</main>
+		</div>
 	)
 }
 
 export {
 	DashboardActions,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 	DashboardContent,
 }

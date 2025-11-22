@@ -9,7 +9,7 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
@@ -109,7 +109,7 @@ export default function DashboardTaxonomy({
 	>('tags')
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle
 					title="Taxonomy"
@@ -180,6 +180,6 @@ export default function DashboardTaxonomy({
 					<CategoryHierarchySection category={selectedCategory} />
 				)}
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

@@ -593,7 +593,7 @@ export function MyComponent() {
 ```tsx
 export default function DashboardExample() {
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="Your dashboard title"></DashboardTitle>
 				<DashboardActions>
@@ -602,7 +602,7 @@ export default function DashboardExample() {
 			</DashboardHeader>
 			{/* Your main content goes here */}
 			<DashboardContent>Main content</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }
 ```

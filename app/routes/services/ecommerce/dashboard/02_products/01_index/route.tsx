@@ -5,7 +5,7 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 import { DataTable } from '~/routes/papa/dashboard/components/data-table'
@@ -28,7 +28,7 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 	}))
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="Products"></DashboardTitle>
 				<DashboardActions>{/* Some action buttons here */}</DashboardActions>
@@ -48,6 +48,6 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 					hideColumnFilter
 				/>
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

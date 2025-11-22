@@ -8,7 +8,7 @@ import {
 import {
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
@@ -26,7 +26,7 @@ export default function DashboardCompany() {
 	const navigating = navMetadata.showGlobalLoader === false
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle className="w-full">
 					<AnimatedNav
@@ -44,6 +44,6 @@ export default function DashboardCompany() {
 			) : (
 				<Outlet />
 			)}
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

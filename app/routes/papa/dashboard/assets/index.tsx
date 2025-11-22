@@ -15,7 +15,7 @@ import { capitalize } from '~/lib/utils'
 import {
 	DashboardActions,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
@@ -52,7 +52,7 @@ export default function DashboardAsset() {
 	}, [files])
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle
 					title="Assets"
@@ -103,6 +103,6 @@ export default function DashboardAsset() {
 					</p>
 				</div>
 			)}
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }
