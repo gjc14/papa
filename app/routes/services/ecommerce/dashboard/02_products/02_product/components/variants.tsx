@@ -297,15 +297,31 @@ function VariantDialog({
 										<SelectValue placeholder={`Select ${attrKey}`} />
 									</SelectTrigger>
 									<SelectContent className="rounded-none">
-										{options.map(option => (
-											<SelectItem
-												key={option}
-												value={option}
-												className="rounded-none"
-											>
-												{option}
-											</SelectItem>
-										))}
+										{options.map(option => {
+											const exists = productVariants
+												? productVariants.some(v => {
+														const currentVCombination = {
+															...variant.combination,
+															[attrKey]: option,
+														}
+														// Check if there are variant that matches this option
+														return Object.entries(currentVCombination).every(
+															([key, value]) => v.combination[key] === value,
+														)
+													})
+												: false
+
+											return (
+												<SelectItem
+													key={option}
+													value={option}
+													className="rounded-none"
+													disabled={exists}
+												>
+													{option}
+												</SelectItem>
+											)
+										})}
 									</SelectContent>
 								</Select>
 							)
@@ -314,7 +330,7 @@ function VariantDialog({
 					}))
 				: []),
 		]
-	}, [attrOptions])
+	}, [attrOptions, productVariants])
 
 	const table = useReactTable({
 		data: productVariants ?? [],
