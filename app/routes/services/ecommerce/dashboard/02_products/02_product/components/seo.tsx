@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { Image } from 'lucide-react'
+import { CircleQuestionMark, Image, MoreVertical } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -36,12 +36,16 @@ import {
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
 import type { loader } from '~/routes/papa/dashboard/assets/resource'
 import { assetResourceRoute } from '~/routes/papa/dashboard/assets/utils'
-import { productAtom } from '~/routes/services/ecommerce/store/product/context'
+import {
+	productAtom,
+	storeConfigAtom,
+} from '~/routes/services/ecommerce/store/product/context'
 
 import { assetsAtom } from '../../../context'
 
 const productSeoAtom = atom(get => get(productAtom)?.seo || null)
 const productNameAtom = atom(get => get(productAtom)?.name || null)
+const productSlugAtom = atom(get => get(productAtom)?.slug || null)
 const productDescriptionAtom = atom(
 	get => get(productAtom)?.description || null,
 )
@@ -50,8 +54,10 @@ export function Seo() {
 	const fetcher = useFetcher<typeof loader>()
 
 	const setProduct = useSetAtom(productAtom)
+	const storeConfig = useAtomValue(storeConfigAtom)
 	const seo = useAtomValue(productSeoAtom)
 	const name = useAtomValue(productNameAtom)
+	const slug = useAtomValue(productSlugAtom)
 	const description = useAtomValue(productDescriptionAtom)
 	const [assets, setAssets] = useAtom(assetsAtom)
 
@@ -91,7 +97,7 @@ export function Seo() {
 				<CardTitle>SEO</CardTitle>
 				<CardDescription>Manage your product's SEO settings</CardDescription>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="space-y-6">
 				<FieldSet>
 					<Field>
 						<FieldLabel htmlFor="seo-title">
@@ -139,22 +145,28 @@ export function Seo() {
 						/>
 					</Field>
 
-					<Field>
-						<FieldLabel htmlFor="seo-keywords">SEO Keywords</FieldLabel>
-						<Input
-							id="seo-keywords"
-							name="seo-keywords"
-							type="text"
-							placeholder="keyword1, keyword2, keyword3"
-							value={seo.keywords || ''}
-							onChange={e => {
-								handleChange({ keywords: e.target.value })
-							}}
-						/>
-						<FieldDescription>
-							Separate keywords with commas (,).
-						</FieldDescription>
-					</Field>
+					<div className="bg-muted/50 flex flex-col rounded-md border p-3">
+						<p className="text-primary mb-2 text-xs font-bold tracking-wider uppercase">
+							Search Preview
+						</p>
+						<div className="font-sans">
+							<div className="text-primary mb-0.5 flex items-center gap-1 text-sm">
+								<div className="min-w-0 truncate">
+									{`${import.meta.env.VITE_BASE_URL} › ${storeConfig.storeFrontPath.slice(1)} › product › ${slug} `}
+								</div>
+								<MoreVertical
+									size={10}
+									className="text-muted-foreground flex-shrink-0"
+								/>
+							</div>
+							<div className="cursor-pointer truncate text-xl font-normal text-[#1a0dab] hover:underline dark:text-[#99c3ff]">
+								{seo.metaTitle || name}
+							</div>
+							<div className="mt-1 line-clamp-2 text-sm text-[#474747] dark:text-[#bfbfbf]">
+								{seo.metaDescription || description}
+							</div>
+						</div>
+					</div>
 
 					<Field>
 						<FieldLabel htmlFor="seo-og-image">SEO Open Graph Image</FieldLabel>
@@ -221,9 +233,14 @@ export function Seo() {
 							</Link>
 							.
 						</FieldDescription>
-						<div className="flex items-start justify-between gap-2">
+
+						<div className="bg-muted/50 flex flex-col rounded-md border p-3">
+							<p className="text-primary mb-2 text-xs font-bold tracking-wider uppercase">
+								OG Image Preview
+							</p>
+
 							<div
-								className="flex flex-1 items-center justify-center overflow-hidden rounded-md border"
+								className="relative flex max-w-md shrink items-center justify-center overflow-hidden rounded-md border"
 								style={{
 									aspectRatio: aspectRatio.replace('x', '/'),
 								}}
@@ -237,24 +254,49 @@ export function Seo() {
 								) : (
 									'⛰️'
 								)}
+
+								<div className="absolute top-3 right-3 flex items-center">
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button variant="link" className="size-6 text-sm">
+												<CircleQuestionMark />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent className="text-sm">
+											File no smaller than 600x315 / 5MB.
+											<br />
+											1200x630 is used by Facebook, LinkedIn, Threads, and other
+											platforms; 1200x675 is used by X (Twitter).
+										</TooltipContent>
+									</Tooltip>
+									<Select value={aspectRatio} onValueChange={setAspectRatio}>
+										<SelectTrigger className="bg-background h-8 w-fit gap-2">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="1200x630">1200x630</SelectItem>
+											<SelectItem value="1200x675">1200x675</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
 							</div>
-							<Select value={aspectRatio} onValueChange={setAspectRatio}>
-								<SelectTrigger className="w-28">
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="1200x630">1200x630</SelectItem>
-									<SelectItem value="1200x675">1200x675</SelectItem>
-								</SelectContent>
-							</Select>
 						</div>
+					</Field>
+
+					<Field>
+						<FieldLabel htmlFor="seo-keywords">SEO Keywords</FieldLabel>
+						<Input
+							id="seo-keywords"
+							name="seo-keywords"
+							type="text"
+							placeholder="keyword1, keyword2, keyword3"
+							value={seo.keywords || ''}
+							onChange={e => {
+								handleChange({ keywords: e.target.value })
+							}}
+						/>
 						<FieldDescription>
-							Recommended no smaller than 600x315, and 5MB file size.{' '}
-							{aspectRatio === '1200x630'
-								? 'Standard size, used by Facebook, LinkedIn, Threads, and other platforms.'
-								: aspectRatio === '1200x675'
-									? 'Used by Twitter.'
-									: ''}
+							Separate keywords with commas (,).
 						</FieldDescription>
 					</Field>
 				</FieldSet>
