@@ -32,6 +32,7 @@ const generateTaxonomy = (name: string) => {
 	const slug = generateSlug(name, { fallbackPrefix: 'new classification' })
 
 	return {
+		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1),
 		name: name,
 		slug,

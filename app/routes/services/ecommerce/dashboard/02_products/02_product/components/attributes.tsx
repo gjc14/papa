@@ -136,7 +136,8 @@ export function Attributes() {
 				attributes: [
 					...attributes,
 					{
-						id: -Math.random(), // id doesn't matter, backend will delete all and recreate
+						// postgres integer -2147483648 to +2147483647
+						id: -(Math.floor(Math.random() * 2147483648) + 1), // id doesn't matter, backend will delete all and recreate
 						name: '',
 						value: 'A | B | C',
 						order: attributes.length + 1,
