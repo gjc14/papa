@@ -162,7 +162,7 @@ export function ProductEditPageHeader() {
 					) : (
 						<>
 							<Link
-								to={`${storeConfig.storeFrontPath}/product/${productSlug}`}
+								to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
 								target="_blank"
 								rel="noreferrer"
 							>
@@ -221,7 +221,7 @@ export function ProductEditPageHeader() {
 
 						{!isNew && (
 							<DropdownMenuItem
-								className="hover:bg-destructive focus-visible:bg-destructive flex items-center gap-2 hover:text-white focus-visible:text-white"
+								className="hover:bg-destructive dark:hover:bg-destructive focus-visible:bg-destructive flex items-center gap-2 hover:text-white focus-visible:text-white"
 								onClick={() => setToTrashOpen(true)}
 								disabled={isSaving || isMovingToTrash}
 							>
