@@ -4,7 +4,7 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
@@ -18,7 +18,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 
 export default function ECTags({ loaderData }: Route.ComponentProps) {
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="Tags"></DashboardTitle>
 				<DashboardActions>
@@ -42,6 +42,6 @@ export default function ECTags({ loaderData }: Route.ComponentProps) {
 					<div key={tag.id}>{tag.name}</div>
 				))}
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

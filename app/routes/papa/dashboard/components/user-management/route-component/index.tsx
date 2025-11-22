@@ -39,7 +39,7 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 import { DataTable } from '~/routes/papa/dashboard/components/data-table'
@@ -117,7 +117,7 @@ export const UserManagementRoute = ({
 	}, [fetcher.state, fetcher.formMethod])
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle
 					title={role === 'admin' ? 'Admins' : 'Users'}
@@ -290,6 +290,6 @@ export const UserManagementRoute = ({
 					</AlertDialogContent>
 				</AlertDialog>
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

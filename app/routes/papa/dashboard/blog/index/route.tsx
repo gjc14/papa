@@ -10,7 +10,7 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 import { DataTable } from '~/routes/papa/dashboard/components/data-table'
@@ -120,7 +120,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 	}
 
 	return (
-		<DashboardSectionWrapper className="gap-2">
+		<DashboardLayout className="gap-2">
 			<DashboardHeader>
 				<DashboardTitle title="Posts"></DashboardTitle>
 				<DashboardActions>
@@ -155,6 +155,6 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 					]}
 				/>
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

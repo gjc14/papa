@@ -10,7 +10,7 @@ import {
 import {
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
@@ -21,7 +21,7 @@ export default function DashboardIndex() {
 	const services = getServiceDashboardConfigs()
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="Services" />
 			</DashboardHeader>
@@ -94,7 +94,7 @@ export default function DashboardIndex() {
 										{service.description && (
 											<Tooltip>
 												<TooltipTrigger asChild>
-													<p className="text-muted-foreground line-clamp-3 flex-1 text-start text-sm text-pretty">
+													<p className="text-muted-foreground line-clamp-3 flex-1 text-pretty text-start text-sm">
 														{service.description}
 													</p>
 												</TooltipTrigger>
@@ -110,6 +110,6 @@ export default function DashboardIndex() {
 					</TooltipProvider>
 				)}
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

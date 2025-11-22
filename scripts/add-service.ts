@@ -98,13 +98,13 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
 export default function ExampleDashboardLayout() {
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="🍜 Example Shop Dashboard" />
 				<DashboardActions>
@@ -118,7 +118,7 @@ export default function ExampleDashboardLayout() {
 				{/* This will renders the nested routes */}
 				<Outlet />
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }
 

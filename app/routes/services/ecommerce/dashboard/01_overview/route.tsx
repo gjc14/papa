@@ -5,13 +5,13 @@ import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 
 export default function ECOverview() {
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="E-Commerce Overview" />
 				<DashboardActions>
@@ -25,6 +25,6 @@ export default function ECOverview() {
 				{/* This will renders the nested routes */}
 				Content goes here
 			</DashboardContent>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }

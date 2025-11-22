@@ -12,7 +12,7 @@ import { getSEOs } from '~/lib/db/seo.server'
 import {
 	DashboardActions,
 	DashboardHeader,
-	DashboardSectionWrapper,
+	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
 import {
@@ -44,7 +44,7 @@ export default function SEO() {
 	}, [seos])
 
 	return (
-		<DashboardSectionWrapper>
+		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle
 					title="SEO"
@@ -84,7 +84,7 @@ export default function SEO() {
 					/>
 				)}
 			</DataTable>
-		</DashboardSectionWrapper>
+		</DashboardLayout>
 	)
 }
 

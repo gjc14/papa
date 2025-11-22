@@ -23,7 +23,7 @@ import { statusCodeMap } from '~/lib/utils/status-code'
 
 import { validateAdminSession } from '../../auth/utils'
 import { getServiceDashboardConfigs } from '../../utils/service-configs'
-import { DashboardSectionWrapper } from '../components/dashboard-wrapper'
+import { DashboardLayout } from '../components/dashboard-wrapper'
 import type { ServiceDashboardConfig } from '../components/service-swicher'
 import { DashboardSidebar } from './components/dashboard-sidebar'
 import {
@@ -151,9 +151,9 @@ const Outlet = () => {
 
 	if (shouldShowLoader) {
 		return (
-			<DashboardSectionWrapper className="items-center justify-center">
+			<DashboardLayout className="items-center justify-center">
 				<Spinner />
-			</DashboardSectionWrapper>
+			</DashboardLayout>
 		)
 	}
 
