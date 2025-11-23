@@ -29,10 +29,12 @@ export function MainOption() {
 	}
 
 	return (
-		<Card>
+		<Card id="main-option">
 			<CardHeader>
 				<CardTitle>{productName}</CardTitle>
-				<CardDescription>Edit product details</CardDescription>
+				<CardDescription>
+					Manage product, inventory, logistics details and more.
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<OptionForm option={productOption} onChange={handleOptionChange} />

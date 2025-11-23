@@ -3,7 +3,13 @@ import { useFetcher } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 
-import { Card, CardFooter, CardHeader, CardTitle } from '~/components/ui/card'
+import {
+	Card,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '~/components/ui/card'
 import { Spinner } from '~/components/ui/spinner'
 import { CheckboxTree, type TreeNode } from '~/components/checkbox-tree'
 import { MultiSelect } from '~/components/multi-select'
@@ -211,16 +217,20 @@ export function Taxonomies() {
 		: []
 
 	return (
-		<>
+		<div id="taxonomies" className="space-y-6">
 			<Card className="gap-4 pt-6 pb-5">
 				<CardHeader>
 					<CardTitle>Categories</CardTitle>
+					<CardDescription>
+						Classify products based on common characteristics, functions,
+						features, or use case.
+					</CardDescription>
 				</CardHeader>
 				<div className="flex w-full items-center justify-center px-5">
 					{!dataInitialized.categories ? (
 						<Spinner />
 					) : cTreeData.length > 0 ? (
-						<div className="max-h-52 w-full overflow-auto border py-1.5">
+						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
 							<CheckboxTree
 								data={cTreeData}
 								selectedIds={Array.from(selectedCIds)}
@@ -251,8 +261,11 @@ export function Taxonomies() {
 			<Card className="gap-4 pt-6 pb-5">
 				<CardHeader>
 					<CardTitle>Tags</CardTitle>
+					<CardDescription>
+						Add keywords that best describe your product.
+					</CardDescription>
 				</CardHeader>
-				<div className="flex w-full items-center justify-center px-5">
+				<div className="flex w-full items-center justify-center px-6">
 					<MultiSelect
 						options={tags.map(t => ({
 							label: t.name,
@@ -293,12 +306,15 @@ export function Taxonomies() {
 			<Card className="gap-4 pt-6 pb-5">
 				<CardHeader>
 					<CardTitle>Brands</CardTitle>
+					<CardDescription>
+						Organize products by brand or manufacturer.
+					</CardDescription>
 				</CardHeader>
-				<div className="flex w-full items-center justify-center px-5">
+				<div className="flex w-full items-center justify-center px-6">
 					{!dataInitialized.brands ? (
 						<Spinner />
 					) : bTreeData.length > 0 ? (
-						<div className="max-h-52 w-full overflow-auto border py-1.5">
+						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
 							<CheckboxTree
 								data={bTreeData}
 								selectedIds={Array.from(selectedBIds)}
@@ -326,7 +342,7 @@ export function Taxonomies() {
 					/>
 				</CardFooter>
 			</Card>
-		</>
+		</div>
 	)
 }
 

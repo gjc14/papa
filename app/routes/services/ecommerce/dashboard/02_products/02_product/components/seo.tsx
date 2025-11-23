@@ -92,10 +92,13 @@ export function Seo() {
 	if (!seo) return null
 
 	return (
-		<Card>
+		<Card id="seo">
 			<CardHeader>
 				<CardTitle>SEO</CardTitle>
-				<CardDescription>Manage your product's SEO settings</CardDescription>
+				<CardDescription>
+					Manage your search engine optimization (SEO) to improve product
+					visibility.
+				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
 				<FieldSet>

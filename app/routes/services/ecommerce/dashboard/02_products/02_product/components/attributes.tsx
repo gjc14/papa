@@ -151,7 +151,7 @@ export function Attributes() {
 	}
 
 	return (
-		<Card>
+		<Card id="attributes">
 			<CardHeader>
 				<CardTitle>Attributes (Variant Options)</CardTitle>
 				<CardDescription>
