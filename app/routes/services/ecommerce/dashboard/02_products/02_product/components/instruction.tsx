@@ -156,6 +156,7 @@ function InstructionItem({
 							})
 						}
 						placeholder="Title"
+						autoFocus
 					/>
 					<Input
 						value={editedInstruction.content || ''}
