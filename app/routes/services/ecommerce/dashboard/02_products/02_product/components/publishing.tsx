@@ -45,7 +45,7 @@ export function Publishing() {
 	}
 
 	return (
-		<Card>
+		<Card id="publishing">
 			<CardHeader>
 				<CardTitle>Publishing</CardTitle>
 				<CardDescription>Control product status and visibility</CardDescription>

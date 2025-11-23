@@ -131,7 +131,7 @@ function VariantCard({
 	const noVariants = !productVariants || productVariants.length === 0
 
 	return (
-		<Card>
+		<Card id="variants">
 			<CardHeader>
 				<CardTitle>Product Variants</CardTitle>
 				<CardDescription>

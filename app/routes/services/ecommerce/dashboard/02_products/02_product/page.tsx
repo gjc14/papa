@@ -40,12 +40,6 @@ export function ProductEditPage() {
 					<ProductEditPageHeader />
 
 					<div className="p-4">
-						<p className="text-muted-foreground mb-4 rounded-lg border bg-violet-300/20 p-3 text-sm @xl:mb-6 dark:bg-violet-700/20">
-							<strong>Instructions:</strong> Add attributes (options) to your
-							product, and use them to generate variants. Use the preview panel
-							to see how your product will appear to customers.
-						</p>
-
 						<div className="grid grid-cols-1 gap-6 @xl:grid-cols-5">
 							{/* Left Column */}
 							<div className="space-y-6 @xl:col-span-3">
@@ -56,7 +50,6 @@ export function ProductEditPage() {
 								<Attributes />
 								<Variants />
 								<LinkedProducts />
-								{/* TODO: SEO */}
 							</div>
 
 							{/* Right Column */}

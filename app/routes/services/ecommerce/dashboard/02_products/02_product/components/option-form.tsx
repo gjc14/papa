@@ -366,7 +366,6 @@ export function OptionForm({
 						<CardTitle className="my-1 mb-3">Inventory</CardTitle>
 
 						<FieldGroup>
-							<FieldLabel>Product Identification</FieldLabel>
 							<FieldGroup className="@sm:flex-row">
 								<Field className="min-w-0 flex-1">
 									<FieldLabel htmlFor="sku">SKU</FieldLabel>
@@ -574,8 +573,7 @@ export function OptionForm({
 								</>
 							) : (
 								<Field className="text-muted-foreground bg-muted items-center justify-center rounded-md border border-dashed p-3 text-sm">
-									Enable physical product shipping by turning off the virtual
-									product option to set shipping details.
+									Turn off virtual product to enable shipping details.
 								</Field>
 							)}
 						</FieldGroup>
@@ -769,7 +767,7 @@ export function OptionForm({
 									rows={4}
 								/>
 								<FieldDescription>
-									Note for your reference, not visible to customers.
+									Note for your own reference, not visible to customers.
 								</FieldDescription>
 							</Field>
 						</FieldGroup>

@@ -92,7 +92,7 @@ export const Instructions = () => {
 	}
 
 	return (
-		<Card>
+		<Card id="instruction">
 			<CardHeader>
 				<CardTitle>Instructions</CardTitle>
 				<CardDescription>

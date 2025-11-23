@@ -37,12 +37,10 @@ export function GeneralInformation() {
 	if (!productName) return null
 
 	return (
-		<Card>
+		<Card id="general-information">
 			<CardHeader>
 				<CardTitle>General Information</CardTitle>
-				<CardDescription>
-					Basic product details and descriptions
-				</CardDescription>
+				<CardDescription>Manage product basics and details.</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<Field>
@@ -68,7 +66,7 @@ export function GeneralInformation() {
 						onChange={e => handleProductChange({ subtitle: e.target.value })}
 					/>
 					<FieldDescription>
-						Optional tagline displayed below product name
+						Optional tagline displayed below product name.
 					</FieldDescription>
 				</Field>
 
@@ -87,7 +85,7 @@ export function GeneralInformation() {
 						rows={5}
 					/>
 					<FieldDescription>
-						Main product description shown on the product page
+						Main product description shown on the product page.
 					</FieldDescription>
 				</Field>
 
@@ -106,7 +104,7 @@ export function GeneralInformation() {
 						rows={3}
 					/>
 					<FieldDescription>
-						Note displayed to customer after purchasing
+						Note displayed to customer after purchasing.
 					</FieldDescription>
 				</Field>
 			</CardContent>

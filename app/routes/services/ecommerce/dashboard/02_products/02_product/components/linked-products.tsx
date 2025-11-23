@@ -82,7 +82,7 @@ export function LinkedProducts() {
 	}
 
 	return (
-		<>
+		<div id="linked-products" className="space-y-6">
 			<Card>
 				<CardHeader>
 					<CardTitle>Cross Sell Products</CardTitle>
@@ -200,7 +200,7 @@ export function LinkedProducts() {
 					/>
 				</CardFooter>
 			</Card>
-		</>
+		</div>
 	)
 }
 

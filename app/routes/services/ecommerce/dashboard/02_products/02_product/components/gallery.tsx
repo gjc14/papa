@@ -86,7 +86,7 @@ export function Gallery() {
 	}
 
 	return (
-		<Card className="gap-3 p-3">
+		<Card id="gallery" className="gap-3 p-3">
 			{productImage ? (
 				<img
 					src={productImage}
