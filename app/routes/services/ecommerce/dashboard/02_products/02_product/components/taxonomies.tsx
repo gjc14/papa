@@ -10,6 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '~/components/ui/card'
+import { Input } from '~/components/ui/input'
 import { Spinner } from '~/components/ui/spinner'
 import { CheckboxTree, type TreeNode } from '~/components/checkbox-tree'
 import { MultiSelect } from '~/components/multi-select'
@@ -71,6 +72,8 @@ export function Taxonomies() {
 	const [categories, setCategories] = useAtom(categoriesAtom)
 	const [tags, setTags] = useAtom(tagsAtom)
 	const [brands, setBrands] = useAtom(brandsAtom)
+	const [categoriesFilter, setCategoriesFilter] = useState('')
+	const [brandsFilter, setBrandsFilter] = useState('')
 
 	const topLevelCategories = categories.filter(c => !c.parentId)
 	const topLevelBrands = brands.filter(b => !b.parentId)
@@ -84,6 +87,18 @@ export function Taxonomies() {
 
 	const cTreeData = taxonomiesToTree(categories)
 	const bTreeData = taxonomiesToTree(brands)
+
+	const filteredCTreeData = categoriesFilter
+		? cTreeData.filter(node =>
+				node.label.toLowerCase().includes(categoriesFilter.toLowerCase()),
+			)
+		: cTreeData
+
+	const filteredBTreeData = brandsFilter
+		? bTreeData.filter(node =>
+				node.label.toLowerCase().includes(brandsFilter.toLowerCase()),
+			)
+		: bTreeData
 
 	const [tPending, setTPending] = useState<typeof tags>([])
 
@@ -231,8 +246,15 @@ export function Taxonomies() {
 						<Spinner />
 					) : cTreeData.length > 0 ? (
 						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
+							<div className="m-2 mt-1">
+								<Input
+									value={categoriesFilter}
+									onChange={e => setCategoriesFilter(e.target.value)}
+									placeholder="Filter categories"
+								/>
+							</div>
 							<CheckboxTree
-								data={cTreeData}
+								data={filteredCTreeData}
 								selectedIds={Array.from(selectedCIds)}
 								onSelectionChange={s => setSelectedCIds(new Set(s))}
 							/>
@@ -315,8 +337,15 @@ export function Taxonomies() {
 						<Spinner />
 					) : bTreeData.length > 0 ? (
 						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
+							<div className="m-2 mt-1">
+								<Input
+									value={brandsFilter}
+									onChange={e => setBrandsFilter(e.target.value)}
+									placeholder="Filter brands"
+								/>
+							</div>
 							<CheckboxTree
-								data={bTreeData}
+								data={filteredBTreeData}
 								selectedIds={Array.from(selectedBIds)}
 								onSelectionChange={s => setSelectedBIds(new Set(s))}
 							/>

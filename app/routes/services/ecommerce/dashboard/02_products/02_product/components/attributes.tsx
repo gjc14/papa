@@ -230,6 +230,7 @@ function AttributeItem({
 									})
 								}
 								placeholder="Name"
+								autoFocus
 							/>
 						</Field>
 						<Field>
