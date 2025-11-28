@@ -32,7 +32,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 					</div>
 				)}
 				{hasDiscount && (
-					<div className="bg-primary-foreground border-primary/60 text-primary absolute top-2 right-2 border px-2 py-1 text-xs @md:top-4 @md:right-4">
+					<div className="bg-primary-foreground border-primary/60 text-primary absolute top-2 right-2 border px-2 py-1 text-xs md:top-4 md:right-4">
 						SALE
 					</div>
 				)}

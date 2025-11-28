@@ -1,7 +1,5 @@
 import { atom } from 'jotai'
 
-export const livePreviewAtom = atom(false)
-
 export const isRestoreAlertOpenAtom = atom(false)
 export const isResetAlertOpenAtom = atom(false)
 export const isToTrashAlertOpenAtom = atom(false)
