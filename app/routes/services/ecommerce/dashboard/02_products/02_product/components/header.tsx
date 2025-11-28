@@ -2,13 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
-import {
-	ExternalLink,
-	Eye,
-	MoreVertical,
-	RefreshCcw,
-	Trash,
-} from 'lucide-react'
+import { ExternalLink, MoreVertical, RefreshCcw, Trash } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -27,9 +21,7 @@ import {
 	ItemDescription,
 	ItemTitle,
 } from '~/components/ui/item'
-import { Label } from '~/components/ui/label'
 import { Spinner } from '~/components/ui/spinner'
-import { Switch } from '~/components/ui/switch'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import type {
 	ConnectCrossSellProducts,
@@ -48,7 +40,6 @@ import {
 	isResetAlertOpenAtom,
 	isSavingAtom,
 	isToTrashAlertOpenAtom,
-	livePreviewAtom,
 } from '../context'
 import type { action } from '../resource'
 
@@ -61,7 +52,6 @@ export function ProductEditPageHeader() {
 	const { isSubmitting } = useFetcherNotification(fetcher)
 
 	const store = useStore()
-	const [preview, setPreview] = useAtom(livePreviewAtom)
 	const [isSaving, setIsSaving] = useAtom(isSavingAtom)
 	const storeConfig = useAtomValue(storeConfigAtom)
 	const productId = useAtomValue(productIdAtom)
@@ -115,9 +105,9 @@ export function ProductEditPageHeader() {
 	}, [store])
 
 	return (
-		<Item className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b-border sticky top-0 z-10 rounded-none py-2 backdrop-blur">
+		<Item className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b-border sticky top-0 z-10 overflow-auto rounded-none py-2 backdrop-blur">
 			<ItemContent>
-				<ItemTitle>
+				<ItemTitle className="truncate whitespace-nowrap">
 					<span className="text-muted-foreground">
 						({!isNew ? 'Edit' : 'Create'}){' '}
 					</span>
@@ -126,7 +116,7 @@ export function ProductEditPageHeader() {
 						<span className="text-muted-foreground">ID: {productId}</span>
 					)}
 				</ItemTitle>
-				<ItemDescription className="overflow-visible">
+				<ItemDescription className="truncate overflow-visible whitespace-nowrap">
 					Path:{' '}
 					{editSlug ? (
 						<>
@@ -208,15 +198,6 @@ export function ProductEditPageHeader() {
 						>
 							<RefreshCcw className="size-4" />
 							<span>Reset Product</span>
-						</DropdownMenuItem>
-
-						<DropdownMenuItem
-							className="flex items-center gap-2"
-							onClick={() => setPreview(prev => !prev)}
-						>
-							<Eye className="size-4" />
-							<Label className="mr-auto text-sm">Live Preview</Label>
-							<Switch id="preview" className="ml-12" checked={preview} />
 						</DropdownMenuItem>
 
 						{!isNew && (

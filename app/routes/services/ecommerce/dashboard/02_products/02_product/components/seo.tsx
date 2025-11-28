@@ -101,7 +101,7 @@ export function Seo() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
-				<FieldSet>
+				<FieldSet className="min-w-0">
 					<Field>
 						<FieldLabel htmlFor="seo-title">
 							SEO Title
@@ -125,7 +125,7 @@ export function Seo() {
 						/>
 					</Field>
 
-					<Field>
+					<Field className="min-w-0">
 						<FieldLabel htmlFor="seo-description">
 							SEO Description
 							<button
@@ -146,30 +146,31 @@ export function Seo() {
 								handleChange({ metaDescription: e.target.value })
 							}}
 						/>
-					</Field>
 
-					<div className="bg-muted/50 flex flex-col rounded-md border p-3">
-						<p className="text-primary mb-2 text-xs font-bold tracking-wider uppercase">
-							Search Preview
-						</p>
-						<div className="font-sans">
-							<div className="text-primary mb-0.5 flex items-center gap-1 text-sm">
-								<div className="min-w-0 truncate">
+						<div className="bg-muted/50 flex w-full min-w-0 flex-col rounded-md border p-3">
+							<div className="mb-3 flex w-full flex-wrap items-start justify-between gap-x-2">
+								<p className="text-primary text-xs font-bold tracking-wider uppercase">
+									Search Preview
+								</p>
+							</div>
+
+							<div className="flex min-w-0 items-center gap-1">
+								<span className="truncate">
 									{`${import.meta.env.VITE_BASE_URL} › ${storeConfig.storeFrontPath.slice(1)} › product › ${slug} `}
-								</div>
+								</span>
 								<MoreVertical
 									size={10}
 									className="text-muted-foreground flex-shrink-0"
 								/>
 							</div>
-							<div className="cursor-pointer truncate text-xl font-normal text-[#1a0dab] hover:underline dark:text-[#99c3ff]">
+							<p className="min-w-0 cursor-pointer truncate text-xl font-normal text-[#1a0dab] hover:underline dark:text-[#99c3ff]">
 								{seo.metaTitle || name}
-							</div>
+							</p>
 							<div className="mt-1 line-clamp-2 text-sm text-[#474747] dark:text-[#bfbfbf]">
 								{seo.metaDescription || description}
 							</div>
 						</div>
-					</div>
+					</Field>
 
 					<Field>
 						<FieldLabel htmlFor="seo-og-image">SEO Open Graph Image</FieldLabel>
@@ -237,10 +238,37 @@ export function Seo() {
 							.
 						</FieldDescription>
 
-						<div className="bg-muted/50 flex flex-col rounded-md border p-3">
-							<p className="text-primary mb-2 text-xs font-bold tracking-wider uppercase">
-								OG Image Preview
-							</p>
+						<div className="bg-muted/50 flex w-full flex-col rounded-md border p-3">
+							<div className="mb-3 flex w-full flex-wrap items-start justify-between gap-x-2 gap-y-1">
+								<p className="text-primary text-xs font-bold tracking-wider uppercase">
+									OG Image Preview
+								</p>
+
+								<div className="flex items-center gap-1">
+									<Select value={aspectRatio} onValueChange={setAspectRatio}>
+										<SelectTrigger className="h-8 w-fit gap-2">
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="1200x630">1200x630</SelectItem>
+											<SelectItem value="1200x675">1200x675</SelectItem>
+										</SelectContent>
+									</Select>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button variant="link" className="size-6 text-sm">
+												<CircleQuestionMark />
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent className="text-sm">
+											File no smaller than 600x315 / 5MB.
+											<br />
+											1200x630 is used by Facebook, LinkedIn, Threads, and other
+											platforms; 1200x675 is used by X (Twitter).
+										</TooltipContent>
+									</Tooltip>
+								</div>
+							</div>
 
 							<div
 								className="relative flex max-w-md shrink items-center justify-center overflow-hidden rounded-md border"
@@ -257,31 +285,6 @@ export function Seo() {
 								) : (
 									'⛰️'
 								)}
-
-								<div className="absolute top-3 right-3 flex items-center">
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<Button variant="link" className="size-6 text-sm">
-												<CircleQuestionMark />
-											</Button>
-										</TooltipTrigger>
-										<TooltipContent className="text-sm">
-											File no smaller than 600x315 / 5MB.
-											<br />
-											1200x630 is used by Facebook, LinkedIn, Threads, and other
-											platforms; 1200x675 is used by X (Twitter).
-										</TooltipContent>
-									</Tooltip>
-									<Select value={aspectRatio} onValueChange={setAspectRatio}>
-										<SelectTrigger className="bg-background h-8 w-fit gap-2">
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="1200x630">1200x630</SelectItem>
-											<SelectItem value="1200x675">1200x675</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
 							</div>
 						</div>
 					</Field>

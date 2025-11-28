@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { Plus } from 'lucide-react'
+import { Plus, XIcon } from 'lucide-react'
 import { nanoid } from 'nanoid'
 
 import { Button } from '~/components/ui/button'
@@ -144,9 +144,17 @@ function InstructionItem({
 	const [editedInstruction, setEditedInstruction] = useState(instruction)
 
 	return (
-		<Item variant="outline">
+		<Item variant="outline" className="overflow-auto">
 			{isEditing ? (
 				<ItemContent>
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={() => onDelete(instruction._id)}
+						className="ml-auto size-5"
+					>
+						<XIcon className="size-4" />
+					</Button>
 					<Input
 						value={editedInstruction.title}
 						onChange={e =>
@@ -168,9 +176,10 @@ function InstructionItem({
 						}
 						placeholder="Content"
 					/>
-					<div className="mt-2 flex gap-2">
+					<div className="mt-2 flex flex-col gap-1 md:flex-row-reverse">
 						<Button
 							size="sm"
+							className="w-full md:w-auto md:flex-1"
 							onClick={() => {
 								onUpdate(editedInstruction)
 								setIsEditing(false)
@@ -181,20 +190,13 @@ function InstructionItem({
 						<Button
 							variant="outline"
 							size="sm"
+							className="w-full md:w-auto md:flex-1"
 							onClick={() => {
 								setEditedInstruction(instruction) // Reset to original
 								setIsEditing(false)
 							}}
 						>
 							Cancel
-						</Button>
-						<Button
-							variant="destructive"
-							size="sm"
-							onClick={() => onDelete(instruction._id)}
-							className="ml-auto"
-						>
-							Delete
 						</Button>
 					</div>
 				</ItemContent>

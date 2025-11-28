@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ExternalLink, Plus, X } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -32,8 +32,10 @@ import type {
 } from '~/routes/services/ecommerce/lib/db/product.server'
 import {
 	crossSellProductsAtom,
+	storeConfigAtom,
 	upsellProductsAtom,
 } from '~/routes/services/ecommerce/store/product/context'
+import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import type { loader } from '../resource'
 
@@ -210,8 +212,23 @@ interface LinkedProductItemProps {
 }
 
 function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
+	const storeConfig = useAtomValue(storeConfigAtom)
+
+	const displayPrice = product.option.salePrice || product.option.price
+	const hasDiscount =
+		!!product.option.salePrice &&
+		product.option.salePrice < product.option.price
+
+	const fmt = new Intl.NumberFormat(storeConfig.language, {
+		style: 'currency',
+		currency: product.option.currency,
+		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
+		minimumFractionDigits: product.option.scale,
+		maximumFractionDigits: product.option.scale,
+	})
+
 	return (
-		<div className="flex items-center gap-3 rounded-lg border p-3">
+		<div className="flex items-center gap-3 overflow-auto rounded-lg border p-3">
 			{/* Product image */}
 			<div className="size-16 shrink-0 overflow-hidden rounded-md">
 				{product.option.image ? (
@@ -228,24 +245,39 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 			</div>
 
 			{/* Product info */}
-			<div className="min-w-0 flex-1">
-				<Button variant={'link'} className="h-fit p-0" asChild>
-					<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
-						{product.name}
-					</Link>
-				</Button>
-				<div className="mt-1">
-					<div className="flex flex-col">
-						{!!product.option.salePrice && (
-							<span className="text-muted-foreground text-xs line-through"></span>
+			<div className="flex flex-1 flex-col flex-wrap">
+				<div className="font-medium text-nowrap">{product.name}</div>
+				<div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+					<p className="text-sm">
+						{fmt.format(
+							formatPrice(
+								displayPrice,
+								product.option.scale,
+							) as Intl.StringNumericLiteral,
 						)}
-					</div>
+					</p>
+					{hasDiscount && (
+						<span className="text-muted-foreground text-xs line-through">
+							{fmt.format(
+								formatPrice(
+									product.option.price,
+									product.option.scale,
+								) as Intl.StringNumericLiteral,
+							)}
+						</span>
+					)}
 				</div>
 			</div>
 
 			{/* Actions */}
 			<div className="flex items-center">
-				<Button variant="ghost" size="icon" asChild className="size-7">
+				<Button
+					variant="ghost"
+					size="icon"
+					className="size-8"
+					onClick={e => e.stopPropagation()}
+					asChild
+				>
 					<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
 						<ExternalLink />
 					</Link>
@@ -254,7 +286,7 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 					variant="ghost"
 					size="icon"
 					onClick={() => onRemove(product.id)}
-					className="size-7"
+					className="size-8"
 				>
 					<X />
 				</Button>
@@ -395,11 +427,25 @@ function SelectableProductItem({
 	selectedOrder,
 	onToggle,
 }: SelectableProductItemProps) {
+	const storeConfig = useAtomValue(storeConfigAtom)
 	const isSelected = selectedOrder !== undefined
+
+	const displayPrice = product.option.salePrice || product.option.price
+	const hasDiscount =
+		!!product.option.salePrice &&
+		product.option.salePrice < product.option.price
+
+	const fmt = new Intl.NumberFormat(storeConfig.language, {
+		style: 'currency',
+		currency: product.option.currency,
+		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
+		minimumFractionDigits: product.option.scale,
+		maximumFractionDigits: product.option.scale,
+	})
 
 	return (
 		<div
-			className={`hover:bg-muted/50 flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
+			className={`hover:bg-muted/50 flex min-w-0 cursor-pointer items-center gap-3 overflow-auto rounded-lg border p-3 transition-colors ${
 				isSelected ? 'border-primary bg-primary/5' : ''
 			}`}
 			onClick={() => onToggle(product)}
@@ -428,14 +474,27 @@ function SelectableProductItem({
 			</div>
 
 			{/* Product info */}
-			<div className="min-w-0 flex-1">
-				<div className="line-clamp-1 font-medium">{product.name}</div>
-				<div className="mt-1">
-					<div className="flex flex-col">
-						{!!product.option.salePrice && (
-							<span className="text-muted-foreground text-xs line-through"></span>
+			<div className="flex flex-1 flex-col flex-wrap">
+				<div className="font-medium text-nowrap">{product.name}</div>
+				<div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+					<p className="text-sm">
+						{fmt.format(
+							formatPrice(
+								displayPrice,
+								product.option.scale,
+							) as Intl.StringNumericLiteral,
 						)}
-					</div>
+					</p>
+					{hasDiscount && (
+						<span className="text-muted-foreground text-xs line-through">
+							{fmt.format(
+								formatPrice(
+									product.option.price,
+									product.option.scale,
+								) as Intl.StringNumericLiteral,
+							)}
+						</span>
+					)}
 				</div>
 			</div>
 
