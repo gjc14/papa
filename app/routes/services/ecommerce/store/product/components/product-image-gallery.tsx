@@ -16,7 +16,7 @@ const ProductImageGalleryWrapper = ({
 	children?: React.ReactNode
 }) => {
 	return (
-		<div className={`${sticky ? '@md:sticky @md:top-16' : ''} h-min`}>
+		<div className={`${sticky ? 'md:sticky md:top-16' : ''} h-min`}>
 			{children}
 		</div>
 	)

@@ -9,7 +9,7 @@ import { Header } from './components/header'
 export default function StoreLayout() {
 	return (
 		<Provider>
-			<MainWrapper className="@container">
+			<MainWrapper>
 				<Header />
 				<Outlet />
 			</MainWrapper>

@@ -1,16 +1,7 @@
 import React from 'react'
 
-import { useAtomValue } from 'jotai'
-
-import {
-	ResizableHandle,
-	ResizablePanel,
-	ResizablePanelGroup,
-} from '~/components/ui/resizable'
 import { useInPageNavigation } from '~/hooks/use-in-page-navigation'
 
-import { Header } from '../../../store/layout/components/header'
-import { StoreProductPage } from '../../../store/product/page'
 import { ProductAlerts } from './components/alerts'
 import { Attributes } from './components/attributes'
 import { Gallery } from './components/gallery'
@@ -23,7 +14,6 @@ import { Publishing } from './components/publishing'
 import { Seo } from './components/seo'
 import { Taxonomies } from './components/taxonomies'
 import { Variants } from './components/variants'
-import { livePreviewAtom } from './context'
 
 // Static sections definition
 const SECTIONS = [
@@ -40,8 +30,6 @@ const SECTIONS = [
 ]
 
 export function ProductEditPage() {
-	const livePreview = useAtomValue(livePreviewAtom)
-
 	const {
 		activeId,
 		scrollDir,
@@ -53,78 +41,53 @@ export function ProductEditPage() {
 	})
 
 	return (
-		<ResizablePanelGroup direction="horizontal">
+		<>
 			<ProductAlerts />
-			<ResizablePanel
-				className="@container"
-				defaultSize={livePreview ? 50 : 100}
-				minSize={30}
-				id="edit-panel"
-				order={0}
+
+			<section
+				ref={containerRef}
+				className="relative h-full w-full overflow-auto"
 			>
-				<section
-					ref={containerRef}
-					className="relative h-full w-full overflow-auto"
-				>
-					{/* Sticky Header */}
-					<ProductEditPageHeader />
+				{/* Sticky Header */}
+				<ProductEditPageHeader />
 
-					<div className="p-4">
-						<div className="grid grid-cols-3 gap-6">
-							{/* Left Column */}
-							<div className="col-span-2 space-y-6">
-								<GeneralInformation />
-								<Gallery />
-								<MainOption />
+				<div className="p-4">
+					<div className="grid grid-cols-3 gap-6">
+						{/* Left Column */}
+						<div className="col-span-3 space-y-6 md:col-span-2">
+							<GeneralInformation />
+							<Gallery />
+							<MainOption />
 
-								<Attributes />
-								<Variants />
+							<Attributes />
+							<Variants />
 
-								<Instructions />
+							<Instructions />
 
-								<LinkedProducts />
+							<LinkedProducts />
 
-								{/* Classification */}
-								<Taxonomies />
+							{/* Classification */}
+							<Taxonomies />
 
-								{/* Publishing */}
-								<Publishing />
-								<Seo />
+							{/* Publishing */}
+							<Publishing />
+							<Seo />
 
-								{/* TODO: AEO GEO */}
-							</div>
+							{/* TODO: AEO GEO */}
+						</div>
 
-							{/* Right Column */}
-							<div>
-								<Sidebar
-									sections={SECTIONS}
-									activeId={activeId}
-									containerRef={containerRef}
-								/>
-							</div>
+						{/* Right Column */}
+						<div className="col-span-0 md:col-span-1">
+							<Sidebar
+								sections={SECTIONS}
+								activeId={activeId}
+								containerRef={containerRef}
+							/>
 						</div>
 					</div>
-				</section>
-			</ResizablePanel>
-
-			{livePreview && (
-				<>
-					<ResizableHandle />
-					<ResizablePanel
-						className="@container"
-						defaultSize={50}
-						minSize={30}
-						id="dynamic-preview-panel"
-						order={1}
-					>
-						<section className="h-full w-full overflow-auto">
-							<Header />
-							<StoreProductPage />
-						</section>
-					</ResizablePanel>
-				</>
-			)}
-		</ResizablePanelGroup>
+				</div>
+			</section>
+		</>
 	)
 }
 
@@ -139,7 +102,7 @@ interface SidebarProps {
 	containerRef: React.RefObject<HTMLDivElement | null>
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
+const Sidebar: React.FC<SidebarProps> = ({
 	sections,
 	activeId,
 	containerRef,
@@ -168,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 							key={section.id}
 							href={`#${section.id}`}
 							onClick={e => handleLinkClick(e, section.id)}
-							className={`block truncate border-l-2 px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+							className={`block truncate border-l-5 px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
 								activeId === section.id
 									? 'border-brand bg-muted text-primary'
 									: 'text-muted-foreground hover:bg-muted hover:text-primary border-transparent'

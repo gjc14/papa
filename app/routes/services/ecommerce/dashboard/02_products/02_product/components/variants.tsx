@@ -193,7 +193,7 @@ function VariantCard({
 					})
 				)}
 			</CardContent>
-			<CardFooter className="flex-col gap-2 @md:flex-row">
+			<CardFooter className="flex-col gap-2 md:flex-row">
 				<Button
 					variant="outline"
 					size="sm"
