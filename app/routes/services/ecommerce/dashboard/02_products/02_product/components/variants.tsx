@@ -138,7 +138,7 @@ function VariantCard({
 					Manage detail of different variants of your product.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
+			<CardContent className="max-h-[360px] space-y-2">
 				{noVariants ? (
 					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
 						No variants available. Click "Add Variant" to create one.
@@ -155,7 +155,7 @@ function VariantCard({
 						return (
 							<div
 								key={v.id}
-								className="flex items-center justify-between rounded-md border p-3"
+								className="flex items-center justify-between gap-2 overflow-scroll rounded-md border p-3"
 							>
 								<div className="flex-1">
 									<p>
@@ -196,14 +196,17 @@ function VariantCard({
 			<CardFooter className="flex-col gap-2 @md:flex-row">
 				<Button
 					variant="outline"
-					className="flex-1"
+					size="sm"
+					className="w-full md:w-auto md:flex-1"
 					onClick={() => alert('Not implemented')}
 				>
 					<Plus />
 					Add Variant
 				</Button>
 				<Button
-					className="flex-1"
+					variant="secondary"
+					size="sm"
+					className="w-full border md:w-auto md:flex-1"
 					onClick={() => {
 						if (noVariants) return
 						onOpen()

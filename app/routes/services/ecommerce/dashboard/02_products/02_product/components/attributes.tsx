@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { Eye, EyeOff, ListChecksIcon, Plus } from 'lucide-react'
+import { Eye, EyeOff, ListChecksIcon, Plus, XIcon } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -181,15 +181,16 @@ export function Attributes() {
 				<Button
 					variant="outline"
 					size="sm"
-					className="flex-1"
+					className="w-full md:w-auto md:flex-1"
 					onClick={handleAddAttribute}
 				>
 					<Plus />
 					Add Attribute
 				</Button>
 				<Button
+					variant="secondary"
 					size="sm"
-					className="flex-1"
+					className="w-full border md:w-auto md:flex-1"
 					onClick={() => alert('not implemented')}
 				>
 					<ListChecksIcon />
@@ -216,8 +217,16 @@ function AttributeItem({
 	return (
 		<Item variant="outline">
 			{isEditing ? (
-				<FieldSet className="w-full">
+				<FieldSet className="relative w-full pt-2">
 					<FieldGroup>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() => onDelete(attribute.id)}
+							className="absolute top-0 right-0 ml-auto size-5"
+						>
+							<XIcon className="size-4" />
+						</Button>
 						<Field>
 							<FieldLabel htmlFor="name">Name</FieldLabel>
 							<Input
@@ -293,9 +302,10 @@ function AttributeItem({
 							</FieldContent>
 						</Field>
 
-						<div className="mt-2 flex gap-2">
+						<div className="mt-2 flex flex-col gap-1 md:flex-row-reverse">
 							<Button
 								size="sm"
+								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
 									onUpdate(editedAttribute)
 									setIsEditing(false)
@@ -306,20 +316,13 @@ function AttributeItem({
 							<Button
 								variant="outline"
 								size="sm"
+								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
 									setEditedAttribute(attribute) // Reset to original
 									setIsEditing(false)
 								}}
 							>
 								Cancel
-							</Button>
-							<Button
-								variant="destructive"
-								size="sm"
-								onClick={() => onDelete(attribute.id)}
-								className="ml-auto"
-							>
-								Delete
 							</Button>
 						</div>
 					</FieldGroup>

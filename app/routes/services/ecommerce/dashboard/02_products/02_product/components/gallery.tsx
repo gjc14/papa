@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react'
 import { useFetcher } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { Image, X } from 'lucide-react'
+import { Image, Plus, X } from 'lucide-react'
 
-import { Button } from '~/components/ui/button'
-import { Card } from '~/components/ui/card'
+import { Card, CardContent } from '~/components/ui/card'
 import { DialogTrigger } from '~/components/ui/dialog'
+import { Separator } from '~/components/ui/separator'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
-import { SeparatorWithText } from '~/components/separator-with-text'
 import type { loader } from '~/routes/papa/dashboard/assets/resource'
 import { assetResourceRoute } from '~/routes/papa/dashboard/assets/utils'
 
@@ -50,9 +49,7 @@ export function Gallery() {
 		if (fetcher.data) setAssets(fetcher.data)
 	}, [fetcher.data])
 
-	if (!productId || !productName || !productImage) return null
-
-	if (!gallery) return null // TODO: skeleton
+	if (!productId || !productName || !gallery) return null
 
 	const handleSetFeatureImage = () => {
 		if (!srcInput) return
@@ -66,6 +63,21 @@ export function Gallery() {
 					image: srcInput,
 					imageAlt: altInput,
 					imageTitle: titleInput,
+				},
+			}
+		})
+	}
+
+	const handleRemoveFeatureImage = () => {
+		setProduct(prev => {
+			if (!prev) return prev
+			return {
+				...prev,
+				option: {
+					...prev.option,
+					image: null,
+					imageAlt: null,
+					imageTitle: null,
 				},
 			}
 		})
@@ -86,126 +98,128 @@ export function Gallery() {
 	}
 
 	return (
-		<Card id="gallery" className="gap-3 p-3">
-			{productImage ? (
-				<img
-					src={productImage}
-					alt={productName}
-					className="aspect-square rounded-md object-cover"
-					onClick={() => {}}
-				/>
-			) : (
-				<div
-					onClick={() => {}}
-					className="flex aspect-square items-center justify-center rounded-md border"
-				>
-					🍌
+		<Card id="gallery">
+			<CardContent className="grid grid-cols-1 gap-3 md:grid-cols-3">
+				<div className="flex flex-col gap-2 md:col-span-1">
+					<h3 className="mb-1 text-sm font-medium">Feature Image</h3>
+
+					<AssetSelectionDialog
+						actionLabel="Set as Feature Image"
+						title="Image"
+						trigger={
+							<DialogTrigger
+								onClick={() => !assets && fetcher.load(assetResourceRoute)}
+								asChild
+							>
+								{productImage ? (
+									<div className="relative">
+										<button
+											type="button"
+											onClick={e => {
+												e.stopPropagation()
+												handleRemoveFeatureImage()
+											}}
+											className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+										>
+											<X size={12} />
+										</button>
+										<img
+											src={productImage}
+											alt={productName}
+											className="aspect-square h-full w-full cursor-pointer rounded-md object-cover"
+										/>
+									</div>
+								) : (
+									<div className="bg-accent flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed">
+										<Image />
+									</div>
+								)}
+							</DialogTrigger>
+						}
+						assets={assets}
+						isLoading={fetcher.state === 'loading'}
+						open={openSelectFeature}
+						onOpenChange={open => {
+							setOpenSelectFeature(open)
+							if (open) {
+								setSrcInput(productImage || '')
+								setAltInput(productImageAlt || '')
+								setTitleInput(productImageTitle || '')
+							} else {
+								setSrcInput('')
+								setAltInput('')
+								setTitleInput('')
+							}
+						}}
+						srcInput={srcInput}
+						setSrcInput={setSrcInput}
+						altInput={altInput}
+						setAltInput={setAltInput}
+						titleInput={titleInput}
+						setTitleInput={setTitleInput}
+						onAction={handleSetFeatureImage}
+					/>
 				</div>
-			)}
-			<AssetSelectionDialog
-				actionLabel="Set as Feature Image"
-				title="Image"
-				trigger={
-					<DialogTrigger asChild>
-						<Button
-							variant={'outline'}
-							size={'sm'}
-							className={`w-full`}
-							onClick={() => !assets && fetcher.load(assetResourceRoute)}
-						>
-							<Image />
-							Edit Feature Image
-						</Button>
-					</DialogTrigger>
-				}
-				assets={assets}
-				isLoading={fetcher.state === 'loading'}
-				open={openSelectFeature}
-				onOpenChange={open => {
-					setOpenSelectFeature(open)
-					if (open) {
-						setSrcInput(productImage || '')
-						setAltInput(productImageAlt || '')
-						setTitleInput(productImageTitle || '')
-					} else {
-						setSrcInput('')
-						setAltInput('')
-						setTitleInput('')
-					}
-				}}
-				srcInput={srcInput}
-				setSrcInput={setSrcInput}
-				altInput={altInput}
-				setAltInput={setAltInput}
-				titleInput={titleInput}
-				setTitleInput={setTitleInput}
-				onAction={handleSetFeatureImage}
-			/>
-			<SeparatorWithText text="Gallery" />
-			<div className="grid grid-cols-3 gap-2">
-				{gallery.length > 0 ? (
-					gallery
-						.sort((a, b) => a.order - b.order)
-						.map((item, i) => (
-							<div key={i} className="relative">
-								<img
-									key={i}
-									src={item.image}
-									alt={item.alt || productName}
-									title={item.title || productName}
-									className="aspect-square rounded object-cover"
-								/>
-								<button
-									type="button"
-									onClick={() => {
-										const newGallery = gallery.filter((_, index) => index !== i)
-										setGallery(newGallery)
-									}}
-									className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+
+				<div className="flex flex-col gap-2 md:col-span-2">
+					<h3 className="mb-1 text-sm font-medium">Gallery</h3>
+
+					<div className="grid grid-cols-3 gap-2">
+						{gallery
+							.sort((a, b) => a.order - b.order)
+							.map((item, i) => (
+								<div key={i} className="relative">
+									<img
+										src={item.image}
+										alt={item.alt || productName}
+										title={item.title || productName}
+										className="aspect-square rounded object-cover"
+									/>
+									<button
+										type="button"
+										onClick={() => {
+											const newGallery = gallery.filter(
+												(_, index) => index !== i,
+											)
+											setGallery(newGallery)
+										}}
+										className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+									>
+										<X size={12} />
+									</button>
+								</div>
+							))}
+						<AssetSelectionDialog
+							actionLabel="Insert"
+							title="Image"
+							trigger={
+								<DialogTrigger
+									className="bg-accent flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed"
+									onClick={() => !assets && fetcher.load(assetResourceRoute)}
 								>
-									<X size={12} />
-								</button>
-							</div>
-						))
-				) : (
-					<p className="text-muted-foreground col-span-3 rounded-md border border-dashed p-3 text-center text-sm">
-						No images yet. Click "Add Image" to create product gallery.
-					</p>
-				)}
-			</div>
-			<AssetSelectionDialog
-				actionLabel="Insert"
-				title="Image"
-				trigger={
-					<DialogTrigger asChild>
-						<Button
-							variant={'outline'}
-							size={'sm'}
-							className={`w-full`}
-							onClick={() => !assets && fetcher.load(assetResourceRoute)}
-						>
-							<Image />
-							Add Image
-						</Button>
-					</DialogTrigger>
-				}
-				assets={assets}
-				isLoading={fetcher.state === 'loading'}
-				open={openSelectGallery}
-				onOpenChange={open => {
-					setOpenSelectGallery(open)
-					setSrcInput('')
-					setAltInput('')
-					setTitleInput('')
-				}}
-				srcInput={srcInput}
-				setSrcInput={setSrcInput}
-				altInput={altInput}
-				setAltInput={setAltInput}
-				titleInput={titleInput}
-				setTitleInput={setTitleInput}
-				onAction={handleInsertGallery}
-			/>
+									<Plus />
+								</DialogTrigger>
+							}
+							assets={assets}
+							isLoading={fetcher.state === 'loading'}
+							open={openSelectGallery}
+							onOpenChange={open => {
+								setOpenSelectGallery(open)
+								setSrcInput('')
+								setAltInput('')
+								setTitleInput('')
+							}}
+							srcInput={srcInput}
+							setSrcInput={setSrcInput}
+							altInput={altInput}
+							setAltInput={setAltInput}
+							titleInput={titleInput}
+							setTitleInput={setTitleInput}
+							onAction={handleInsertGallery}
+						/>
+					</div>
+				</div>
+			</CardContent>
 		</Card>
 	)
 }
