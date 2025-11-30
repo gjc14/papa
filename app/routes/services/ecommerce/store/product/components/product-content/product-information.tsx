@@ -67,7 +67,7 @@ export const ProductInformation = () => {
 
 			{hasVariants && variantOptionsEntries.length > 0 && (
 				<>
-					{/* Attribute Selection */}
+					{/* Variant Selection (spread attribute options) */}
 					<div className="space-y-6">
 						{variantOptionsEntries.map(([name, valueSet]) => (
 							<div key={name} className="space-y-3">
@@ -115,15 +115,19 @@ export const ProductInformation = () => {
 									SKU: {selectedVariantOption.sku || 'N/A'}
 								</div>
 								<p className="text-muted-foreground text-sm">
-									{Object.entries(selectedVariant.combination).map(
-										([k, v], index) => (
-											<span key={k}>
-												{k}:{' '}
-												<span className="text-primary font-medium">{v}</span>
+									{variantOptionsEntries.map(([attrName], index) => {
+										// Render in order of attributeName keys
+										const value = selectedVariant.combination[attrName]
+										return (
+											<span key={attrName}>
+												{attrName}:{' '}
+												<span className="text-primary font-medium">
+													{value}
+												</span>
 												{index < variantOptionsEntries.length - 1 && ' ⨉ '}
 											</span>
-										),
-									)}
+										)
+									})}
 								</p>
 							</>
 						) : (

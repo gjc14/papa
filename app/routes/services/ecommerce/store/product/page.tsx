@@ -51,6 +51,8 @@ export function StoreProductPage() {
 					<ProductCrossSell />
 				)}
 			</div>
+
+			{/* TODO: Recent Viewed */}
 		</div>
 	)
 }
