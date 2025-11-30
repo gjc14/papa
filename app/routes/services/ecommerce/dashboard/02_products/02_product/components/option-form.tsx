@@ -1,7 +1,11 @@
-import { useAtomValue } from 'jotai'
+import { useEffect, useState } from 'react'
+import { useFetcher } from 'react-router'
+
+import { useAtom, useAtomValue } from 'jotai'
 import {
 	DownloadCloud,
 	DownloadIcon,
+	Image,
 	InfoIcon,
 	PackageIcon,
 	Plus,
@@ -12,6 +16,7 @@ import {
 
 import { Button } from '~/components/ui/button'
 import { CardTitle } from '~/components/ui/card'
+import { DialogTrigger } from '~/components/ui/dialog'
 import {
 	Field,
 	FieldContent,
@@ -37,7 +42,10 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '~/components/ui/tooltip'
+import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
 import { SeparatorWithText } from '~/components/separator-with-text'
+import type { loader } from '~/routes/papa/dashboard/assets/resource'
+import { assetResourceRoute } from '~/routes/papa/dashboard/assets/utils'
 import {
 	StockStatus,
 	type DownloadFile,
@@ -45,6 +53,7 @@ import {
 import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import { productAtom, storeConfigAtom } from '../../../../store/product/context'
+import { assetsAtom } from '../../../context'
 
 export type ProductOptionType = NonNullable<
 	ReturnType<typeof productAtom.read>
@@ -64,6 +73,13 @@ export function OptionForm({
 }: OptionFormProps) {
 	const storeConfig = useAtomValue(storeConfigAtom)
 
+	const fetcher = useFetcher<typeof loader>()
+	const [assets, setAssets] = useAtom(assetsAtom)
+	const [openSelectFeature, setOpenSelectFeature] = useState(false)
+	const [srcInput, setSrcInput] = useState('')
+	const [altInput, setAltInput] = useState('')
+	const [titleInput, setTitleInput] = useState('')
+
 	const isVariant = !!parentOption
 
 	const tabConfig = [
@@ -76,6 +92,10 @@ export function OptionForm({
 
 	const { hasDiscount, formattedPrice, formattedOriginalPrice } =
 		renderPrice(option)
+
+	useEffect(() => {
+		if (fetcher.data) setAssets(fetcher.data)
+	}, [fetcher.data])
 
 	return (
 		<FieldSet className="h-full w-full">
@@ -96,6 +116,7 @@ export function OptionForm({
 										<TabsTrigger
 											value={value}
 											className="h-9 w-9 cursor-pointer p-2"
+											disabled={isVariant ? !option.active : false}
 										>
 											<Icon size={16} />
 										</TabsTrigger>
@@ -138,203 +159,293 @@ export function OptionForm({
 								</Field>
 							)}
 
-							<FieldGroup className="@sm:flex-row">
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="price">Regular Price</FieldLabel>
-									<Input
-										id="price"
-										type="text"
-										value={option.price.toString()}
-										onChange={e => {
-											onChange({
-												price: e.target.value
-													? BigInt(e.target.value)
-													: BigInt(0),
-											})
-										}}
-										autoFocus={isVariant}
-									/>
-									<FieldDescription className="break-words">
-										Display: {formattedOriginalPrice}
-									</FieldDescription>
-								</Field>
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="sale-price">Sale Price</FieldLabel>
-									<Input
-										id="sale-price"
-										type="text"
-										placeholder={'999'}
-										value={option.salePrice?.toString() || ''}
-										onChange={e => {
-											onChange({
-												salePrice: e.target.value
-													? BigInt(e.target.value)
-													: null,
-											})
-										}}
-									/>
-									<FieldDescription className="break-words">
-										Display:{' '}
-										{option.salePrice && hasDiscount ? formattedPrice : '-'}
-									</FieldDescription>
-								</Field>
-							</FieldGroup>
+							{isVariant && !option.active ? null : (
+								<>
+									{isVariant && (
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="price">Variant Image</FieldLabel>
+											<AssetSelectionDialog
+												actionLabel="Set as Feature Image"
+												title="Image"
+												trigger={
+													<DialogTrigger
+														onClick={() =>
+															!assets && fetcher.load(assetResourceRoute)
+														}
+														asChild
+													>
+														{option.image ? (
+															<div className="relative w-[80px]!">
+																<button
+																	type="button"
+																	onClick={e => {
+																		e.stopPropagation()
+																		onChange({
+																			image: null,
+																			imageAlt: null,
+																			imageTitle: null,
+																		})
+																	}}
+																	className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+																>
+																	<X size={12} />
+																</button>
+																<img
+																	src={option.image}
+																	alt={option.imageAlt || ''}
+																	title={option.imageTitle || ''}
+																	className="aspect-square h-full w-full cursor-pointer rounded-md border object-cover"
+																/>
+															</div>
+														) : (
+															<div className="bg-accent flex aspect-square w-[80px]! cursor-pointer items-center justify-center rounded-md border border-dashed">
+																<Image />
+															</div>
+														)}
+													</DialogTrigger>
+												}
+												assets={assets}
+												isLoading={fetcher.state === 'loading'}
+												open={openSelectFeature}
+												onOpenChange={open => {
+													setOpenSelectFeature(open)
+													if (open) {
+														setSrcInput(option.image || '')
+														setAltInput(option.imageAlt || '')
+														setTitleInput(option.imageTitle || '')
+													} else {
+														setSrcInput('')
+														setAltInput('')
+														setTitleInput('')
+													}
+												}}
+												srcInput={srcInput}
+												setSrcInput={setSrcInput}
+												altInput={altInput}
+												setAltInput={setAltInput}
+												titleInput={titleInput}
+												setTitleInput={setTitleInput}
+												onAction={() => {
+													onChange({
+														image: srcInput,
+														imageAlt: altInput,
+														imageTitle: titleInput,
+													})
+													setOpenSelectFeature(false)
+												}}
+											/>
+										</Field>
+									)}
 
-							<FieldGroup className="@sm:flex-row">
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="sale-starts-at">
-										Sale Starts At
-									</FieldLabel>
-									<Input
-										id="sale-starts-at"
-										type="datetime-local"
-										value={
-											option.saleStartsAt
-												? option.saleStartsAt.toISOString().slice(0, 16)
-												: ''
-										}
-										onChange={e =>
-											onChange({
-												saleStartsAt: e.target.value
-													? new Date(e.target.value)
-													: undefined,
-											})
-										}
-										disabled={!option.salePrice}
-									/>
-								</Field>
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="sale-ends-at">Sale Ends At</FieldLabel>
-									<Input
-										id="sale-ends-at"
-										type="datetime-local"
-										value={
-											option.saleEndsAt
-												? option.saleEndsAt.toISOString().slice(0, 16)
-												: ''
-										}
-										onChange={e =>
-											onChange({
-												saleEndsAt: e.target.value
-													? new Date(e.target.value)
-													: undefined,
-											})
-										}
-										disabled={!option.salePrice}
-									/>
-								</Field>
-							</FieldGroup>
+									<FieldGroup className="sm:flex-row">
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="price">Regular Price</FieldLabel>
+											<Input
+												id="price"
+												type="text"
+												value={option.price.toString()}
+												onChange={e => {
+													onChange({
+														price: e.target.value
+															? BigInt(e.target.value)
+															: BigInt(0),
+													})
+												}}
+												autoFocus={isVariant}
+											/>
+											<FieldDescription className="break-words">
+												Display: {formattedOriginalPrice}
+											</FieldDescription>
+										</Field>
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="sale-price">Sale Price</FieldLabel>
+											<Input
+												id="sale-price"
+												type="text"
+												placeholder={'999'}
+												value={option.salePrice?.toString() || ''}
+												onChange={e => {
+													onChange({
+														salePrice: e.target.value
+															? BigInt(e.target.value)
+															: null,
+													})
+												}}
+											/>
+											<FieldDescription className="break-words">
+												Display:{' '}
+												{option.salePrice && hasDiscount ? formattedPrice : '-'}
+											</FieldDescription>
+										</Field>
+									</FieldGroup>
 
-							<SeparatorWithText text="Number Formatting" />
+									<FieldGroup className="sm:flex-row">
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="scale">Scale</FieldLabel>
+											<Input
+												id="scale"
+												type="number"
+												value={option.scale}
+												onChange={e => {
+													if (Number.isNaN(e.target.value)) return
+													if (Number(e.target.value) > 100) return
 
-							<FieldGroup className="@sm:flex-row">
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="scale">Scale</FieldLabel>
-									<Input
-										id="scale"
-										type="number"
-										value={option.scale}
-										onChange={e => {
-											if (Number.isNaN(e.target.value)) return
-											if (Number(e.target.value) > 100) return
+													onChange({
+														scale:
+															Math.abs(Number.parseInt(e.target.value)) || 0,
+													})
+												}}
+												min={0}
+												placeholder="2"
+											/>
+											<FieldDescription>
+												Number of decimal places for prices.
+											</FieldDescription>
+										</Field>
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="currency">Currency</FieldLabel>
+											<Select
+												value={option.currency}
+												onValueChange={value => onChange({ currency: value })}
+											>
+												<SelectTrigger>
+													<SelectValue placeholder="Choose currency" />
+												</SelectTrigger>
+												<SelectContent>
+													{Intl.supportedValuesOf('currency').map(
+														currencyCode => (
+															<SelectItem
+																key={currencyCode}
+																value={currencyCode}
+															>
+																{currencyCode}
+															</SelectItem>
+														),
+													)}
+												</SelectContent>
+											</Select>
+										</Field>
+									</FieldGroup>
 
-											onChange({
-												scale: Math.abs(Number.parseInt(e.target.value)) || 0,
-											})
-										}}
-										min={0}
-										placeholder="2"
-									/>
-									<FieldDescription>
-										Number of decimal places for prices.
-									</FieldDescription>
-								</Field>
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="currency">Currency</FieldLabel>
-									<Select
-										value={option.currency}
-										onValueChange={value => onChange({ currency: value })}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="Choose currency" />
-										</SelectTrigger>
-										<SelectContent>
-											{Intl.supportedValuesOf('currency').map(currencyCode => (
-												<SelectItem key={currencyCode} value={currencyCode}>
-													{currencyCode}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</Field>
-							</FieldGroup>
+									<SeparatorWithText text="Sale Period" />
 
-							<SeparatorWithText text="Quantity Limits" />
+									<FieldGroup className="sm:flex-row">
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="sale-starts-at">
+												Sale Starts At
+											</FieldLabel>
+											<Input
+												id="sale-starts-at"
+												type="datetime-local"
+												value={
+													option.saleStartsAt
+														? option.saleStartsAt.toISOString().slice(0, 16)
+														: ''
+												}
+												onChange={e =>
+													onChange({
+														saleStartsAt: e.target.value
+															? new Date(e.target.value)
+															: undefined,
+													})
+												}
+												disabled={!option.salePrice}
+											/>
+										</Field>
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="sale-ends-at">
+												Sale Ends At
+											</FieldLabel>
+											<Input
+												id="sale-ends-at"
+												type="datetime-local"
+												value={
+													option.saleEndsAt
+														? option.saleEndsAt.toISOString().slice(0, 16)
+														: ''
+												}
+												onChange={e =>
+													onChange({
+														saleEndsAt: e.target.value
+															? new Date(e.target.value)
+															: undefined,
+													})
+												}
+												disabled={!option.salePrice}
+											/>
+										</Field>
+									</FieldGroup>
 
-							<FieldGroup className="@sm:flex-row">
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="in-batch">In Batch Quantity</FieldLabel>
-									<Input
-										id="in-batch"
-										type="number"
-										value={option.step}
-										onChange={e =>
-											onChange({
-												step: e.target.value
-													? Math.abs(Number.parseInt(e.target.value))
-													: 1,
-											})
-										}
-										min={1}
-									/>
-									<FieldDescription>
-										Quantity increment/decrement step when adding to cart.
-									</FieldDescription>
-								</Field>
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="min-qty-allowed">
-										Min Quantity Allowed
-									</FieldLabel>
-									<Input
-										id="min-qty-allowed"
-										type="number"
-										value={option.minQtyAllowed}
-										onChange={e =>
-											onChange({
-												minQtyAllowed: e.target.value
-													? Math.abs(Number.parseInt(e.target.value))
-													: 1,
-											})
-										}
-										min={1}
-									/>
-									<FieldDescription>
-										Minimum quantity a customer can purchase.
-									</FieldDescription>
-								</Field>
-								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="max-qty-allowed">
-										Max Quantity Allowed
-									</FieldLabel>
-									<Input
-										id="max-qty-allowed"
-										type="number"
-										value={option.maxQtyAllowed || ''}
-										onChange={e =>
-											onChange({
-												maxQtyAllowed: e.target.value
-													? Math.abs(Number.parseInt(e.target.value))
-													: null,
-											})
-										}
-										min={0}
-										placeholder="Unlimited"
-									/>
-									<FieldDescription>
-										Maximum quantity a customer can purchase.
-									</FieldDescription>
-								</Field>
-							</FieldGroup>
+									<SeparatorWithText text="Quantity Limits" />
+
+									<FieldGroup className="sm:flex-row">
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="in-batch">
+												In Batch Quantity
+											</FieldLabel>
+											<Input
+												id="in-batch"
+												type="number"
+												value={option.step}
+												onChange={e =>
+													onChange({
+														step: e.target.value
+															? Math.abs(Number.parseInt(e.target.value))
+															: 1,
+													})
+												}
+												min={1}
+											/>
+											<FieldDescription>
+												Quantity increment/decrement step when adding to cart.
+											</FieldDescription>
+										</Field>
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="min-qty-allowed">
+												Min Quantity Allowed
+											</FieldLabel>
+											<Input
+												id="min-qty-allowed"
+												type="number"
+												value={option.minQtyAllowed}
+												onChange={e =>
+													onChange({
+														minQtyAllowed: e.target.value
+															? Math.abs(Number.parseInt(e.target.value))
+															: 1,
+													})
+												}
+												min={1}
+											/>
+											<FieldDescription>
+												Minimum quantity a customer can purchase.
+											</FieldDescription>
+										</Field>
+										<Field className="min-w-0 flex-1">
+											<FieldLabel htmlFor="max-qty-allowed">
+												Max Quantity Allowed
+											</FieldLabel>
+											<Input
+												id="max-qty-allowed"
+												type="number"
+												value={option.maxQtyAllowed || ''}
+												onChange={e =>
+													onChange({
+														maxQtyAllowed: e.target.value
+															? Math.abs(Number.parseInt(e.target.value))
+															: null,
+													})
+												}
+												min={0}
+												placeholder="Unlimited"
+											/>
+											<FieldDescription>
+												Maximum quantity a customer can purchase.
+											</FieldDescription>
+										</Field>
+									</FieldGroup>
+								</>
+							)}
 						</FieldGroup>
 					</TabsContent>
 
@@ -348,7 +459,7 @@ export function OptionForm({
 						<CardTitle className="my-1 mb-3">Inventory</CardTitle>
 
 						<FieldGroup>
-							<FieldGroup className="@sm:flex-row">
+							<FieldGroup className="sm:flex-row">
 								<Field className="min-w-0 flex-1">
 									<FieldLabel htmlFor="sku">SKU</FieldLabel>
 									<Input
@@ -390,7 +501,7 @@ export function OptionForm({
 										Stock quantity management will be available here once
 										implemented.
 									</Field>
-									<FieldGroup className="@sm:flex-row">
+									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
 											<FieldLabel>Quantity</FieldLabel>
 											<Input placeholder="0" disabled />
@@ -483,7 +594,7 @@ export function OptionForm({
 											<FieldLabel>
 												Dimensions ({storeConfig.inventory.unitSettings.length})
 											</FieldLabel>
-											<Field className="@sm:flex-row">
+											<Field className="sm:flex-row">
 												<Input
 													type="number"
 													value={option.dimension?.length || ''}
@@ -672,7 +783,7 @@ export function OptionForm({
 
 									<FieldSeparator />
 
-									<FieldGroup className="@sm:flex-row">
+									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
 											<FieldLabel htmlFor="downloadLimit">
 												Download Limit
