@@ -220,12 +220,12 @@ function AttributeItem({
 				<FieldSet className="relative w-full pt-2">
 					<FieldGroup>
 						<Button
-							variant="ghost"
+							variant="destructive"
 							size="icon"
 							onClick={() => onDelete(attribute.id)}
-							className="absolute top-0 right-0 ml-auto size-5"
+							className="absolute top-0 right-0 size-4 rounded-full"
 						>
-							<XIcon className="size-4" />
+							<XIcon className="size-3" />
 						</Button>
 						<Field>
 							<FieldLabel htmlFor="name">Name</FieldLabel>
@@ -244,6 +244,9 @@ function AttributeItem({
 						</Field>
 						<Field>
 							<FieldLabel htmlFor="value">Value</FieldLabel>
+							<FieldDescription>
+								Separate multiple values with a pipe (|). Example: A | B | C
+							</FieldDescription>
 							<Input
 								id="value"
 								value={editedAttribute.value || ''}
@@ -302,7 +305,7 @@ function AttributeItem({
 							</FieldContent>
 						</Field>
 
-						<div className="mt-2 flex flex-col gap-1 md:flex-row-reverse">
+						<div className="flex flex-col gap-1 md:flex-row-reverse">
 							<Button
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
