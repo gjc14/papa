@@ -6,7 +6,6 @@ import { Image, Plus, X } from 'lucide-react'
 
 import { Card, CardContent } from '~/components/ui/card'
 import { DialogTrigger } from '~/components/ui/dialog'
-import { Separator } from '~/components/ui/separator'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
 import type { loader } from '~/routes/papa/dashboard/assets/resource'
 import { assetResourceRoute } from '~/routes/papa/dashboard/assets/utils'
