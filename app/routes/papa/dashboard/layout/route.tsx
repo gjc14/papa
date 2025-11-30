@@ -1,13 +1,11 @@
 import type { Route } from './+types/route'
 import { memo, useEffect, useMemo, useState } from 'react'
 import {
-	isRouteErrorResponse,
 	Link,
 	redirect,
 	Outlet as RROutlet,
 	useLocation,
 	useNavigation,
-	useRouteError,
 } from 'react-router'
 
 import { Undo2 } from 'lucide-react'
@@ -19,7 +17,10 @@ import {
 	SidebarProvider,
 } from '~/components/ui/sidebar'
 import { Spinner } from '~/components/ui/spinner'
-import { statusCodeMap } from '~/lib/utils/status-code'
+import {
+	ErrorBoundaryTemplate,
+	type ErrorBoundaryTemplateProps,
+} from '~/components/error-boundary-template'
 
 import { validateAdminSession } from '../../auth/utils'
 import { getServiceDashboardConfigs } from '../../utils/service-configs'
@@ -161,74 +162,41 @@ const Outlet = () => {
 }
 
 export function ErrorBoundary() {
-	const error = useRouteError()
-
-	// Route throw new Response (404, etc.)
-	if (isRouteErrorResponse(error)) {
-		console.error('Admin Route Error Response:', error)
-
-		const statusMessage = statusCodeMap[error.status]
-		const errorMessage = error.data || statusMessage.text || 'Error Response'
-
-		return (
-			<ErrorTemplate
-				status={error.status}
-				statusText={errorMessage}
-				returnTo={'/dashboard'}
-			/>
-		)
-	} else if (error instanceof Error) {
-		// throw new Error('message')
-		console.error('Error:', error)
-
-		return (
-			<ErrorTemplate
-				status={500}
-				statusText={'Internal Error'}
-				returnTo={'/dashboard'}
-			/>
-		)
-	}
-
-	console.error('Unknown Error:', error)
-
 	return (
-		// Unknown error
-		<ErrorTemplate
-			status={'XXX'}
-			statusText={'Unknown Error'}
-			returnTo={'/dashboard'}
-		/>
+		<ErrorBoundaryTemplate>
+			{props => <ErrorTemplate {...props} returnTo={'/dashboard'} />}
+		</ErrorBoundaryTemplate>
 	)
 }
 
 const ErrorTemplate = ({
 	status,
-	statusText,
+	statusMessage,
+	errorMessage,
 	returnTo,
-}: {
-	status: string | number
-	statusText: string
+}: ErrorBoundaryTemplateProps & {
 	returnTo: string
 }) => {
 	return (
 		<main className="flex h-svh w-screen flex-col items-center justify-center">
-			<div className="fixed text-center">
-				<div className="mb-3 flex items-center justify-center">
+			<div className="fixed space-y-3 text-center">
+				<div className="flex items-center justify-center">
 					<h1 className="mr-5 inline-block border-r pr-5 text-3xl font-normal">
 						{status}
 					</h1>
-					<h2 className="text-base font-light">{statusText || 'Error Page'}</h2>
+					<h2 className="text-base font-light">
+						{statusMessage.text || 'Error Page'}
+					</h2>
 				</div>
 
-				<Link to={returnTo}>
-					<Button variant={'link'}>
+				<Button variant={'link'} asChild>
+					<Link to={returnTo} className="mt-5">
 						<span>
 							Return to <code>{returnTo}</code>
 						</span>
 						<Undo2 size={12} />
-					</Button>
-				</Link>
+					</Link>
+				</Button>
 			</div>
 
 			<div className="font-open-sans fixed bottom-8 flex items-center">

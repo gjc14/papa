@@ -2,19 +2,15 @@ import '@gjc14/sonner/dist/styles.css'
 import './app.css'
 
 import type { Route } from './+types/root'
-import {
-	isRouteErrorResponse,
-	Links,
-	Meta,
-	Outlet,
-	Scripts,
-	ScrollRestoration,
-	useRouteError,
-} from 'react-router'
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
 import { MotionConfig } from 'motion/react'
 import { ThemeProvider } from 'next-themes'
 
+import {
+	ErrorBoundaryTemplate,
+	type ErrorBoundaryTemplateProps,
+} from './components/error-boundary-template'
 import { FloatingToolkit } from './components/floating-toolkit'
 import { Toaster } from './components/ui/sonner'
 
@@ -110,41 +106,23 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
-	const error = useRouteError()
-
-	// Route throw new Response (404, etc.)
-	if (isRouteErrorResponse(error)) {
-		console.error('Root Route Error Response:', error)
-
-		return (
-			<main className="flex h-svh w-screen flex-col items-center justify-center">
-				<p>Root Error Boundary.</p>
-				<p>
-					Server Response <strong>{error.status}</strong>
-				</p>
-			</main>
-		)
-	} else if (error instanceof Error) {
-		// throw new Error('message')
-		console.error('Error:', error)
-
-		return (
-			<main className="flex h-svh w-screen flex-col items-center justify-center">
-				<p>Root Error Boundary.</p>
-				<p>
-					Error <strong>{error.message}</strong>
-				</p>
-			</main>
-		)
-	}
-
-	console.error('Unknown Error:', error)
-
 	return (
-		// Unknown error
+		<ErrorBoundaryTemplate>
+			{props => <ErrorTemplate {...props} />}
+		</ErrorBoundaryTemplate>
+	)
+}
+
+const ErrorTemplate = ({
+	status,
+	statusMessage,
+}: ErrorBoundaryTemplateProps) => {
+	return (
 		<main className="flex h-svh w-screen flex-col items-center justify-center">
-			<p>Root Error Boundary.</p>
-			<p>Unknown Error</p>
+			<p>
+				{status} {statusMessage.text}
+			</p>
+			<p className="text-muted-foreground">{statusMessage.description}</p>
 		</main>
 	)
 }
