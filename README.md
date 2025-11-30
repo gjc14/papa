@@ -336,6 +336,43 @@ export const config = {
 } satisfies Service
 ```
 
+### Construct `ErrorBoundary`
+
+ErrorBoundary catches route errors and display to user. You could export
+`ErrorBoundary()` in any route file just like `loader()` and `action()`
+
+- [Catching rendering errors with an Error Boundary](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)
+- [React Router Layout Export](https://reactrouter.com/api/framework-conventions/root.tsx#layout-export)
+
+```tsx
+import {
+	ErrorBoundaryTemplate,
+	type ErrorBoundaryTemplateProps,
+} from '~/components/error-boundary-template'
+
+export function ErrorBoundary() {
+	return (
+		<ErrorBoundaryTemplate>
+			{props => <ErrorTemplate {...props} />}
+		</ErrorBoundaryTemplate>
+	)
+}
+
+const ErrorTemplate = ({
+	status,
+	statusMessage,
+}: ErrorBoundaryTemplateProps) => {
+	return (
+		<main className="flex h-svh w-screen flex-col items-center justify-center">
+			<p>
+				{status} {statusMessage.text}
+			</p>
+			<p className="text-muted-foreground">{statusMessage.description}</p>
+		</main>
+	)
+}
+```
+
 ### Create Database Schema
 
 To facilitate develop process, we utilize
