@@ -1,4 +1,10 @@
-import type { Product, selectedVariantAttributesAtom } from '../context'
+import { useAtomValue } from 'jotai'
+
+import {
+	storeConfigAtom,
+	type Product,
+	type selectedVariantAttributesAtom,
+} from '../context'
 import {
 	getFilteredVariants,
 	getHasVariants,
@@ -33,7 +39,7 @@ function formatPrice(price: bigint, scale: number): string {
 /**
  * Get the lowest price from a list of variants
  */
-const getLowestPrice = (variants: NonNullable<Product>['variants']) => {
+const _getLowestPrice = (variants: NonNullable<Product>['variants']) => {
 	const prices = variants.map(variant => ({
 		price: formatPrice(
 			variant.option.salePrice || variant.option.price,
@@ -60,7 +66,7 @@ const getLowestPrice = (variants: NonNullable<Product>['variants']) => {
  * - If partial selection: show lowest price from filtered variants
  * - If no variants: show product price
  */
-const getDisplayPrice = (props: {
+const _getDisplayPrice = (props: {
 	product: NonNullable<Product>
 	selectedVariantAttributes: ReturnType<
 		typeof selectedVariantAttributesAtom.read
@@ -79,7 +85,7 @@ const getDisplayPrice = (props: {
 					currency: selectedVariant.option.currency,
 					scale: selectedVariant.option.scale,
 				}
-			: getLowestPrice(getFilteredVariants(props))
+			: _getLowestPrice(getFilteredVariants(props))
 	}
 	return {
 		price: formatPrice(
@@ -94,7 +100,7 @@ const getDisplayPrice = (props: {
 /**
  * Check if there's a discount on the displayed price
  */
-const getHasDiscount = (props: {
+const _getHasDiscount = (props: {
 	product: NonNullable<Product>
 	selectedVariantAttributes: ReturnType<
 		typeof selectedVariantAttributesAtom.read
@@ -121,7 +127,7 @@ const getHasDiscount = (props: {
 /**
  * Original price before discount (if applicable)
  */
-const getDisplayOriginalPrice = (props: {
+const _getDisplayOriginalPrice = (props: {
 	product: NonNullable<Product>
 	selectedVariantAttributes: ReturnType<
 		typeof selectedVariantAttributesAtom.read
@@ -161,16 +167,66 @@ const getPricing = (props: {
 	>
 }) => {
 	return {
-		displayPrice: getDisplayPrice(props),
-		hasDiscount: getHasDiscount(props),
-		displayOriginalPrice: getDisplayOriginalPrice(props),
+		displayPrice: _getDisplayPrice(props),
+		hasDiscount: _getHasDiscount(props),
+		displayOriginalPrice: _getDisplayOriginalPrice(props),
 	}
 }
 
-export {
-	formatPrice,
-	getDisplayOriginalPrice,
-	getDisplayPrice,
-	getHasDiscount,
-	getPricing,
+/**
+ * Render price with formatting by passing product option
+ *
+ * @example
+ * const PriceComponent = () => {
+ * 	const { hasDiscount, formattedPrice, formattedOriginalPrice } =
+ * 		renderPrice(product.option)
+ *
+ * 	return (
+ * 		<div className="flex flex-col">
+ * 			{formattedPrice}
+ * 			{hasDiscount && (
+ * 				<span className="text-muted-foreground text-xs line-through">
+ * 					{formattedOriginalPrice}
+ * 				</span>
+ * 			)}
+ * 		</div>
+ * 	)
+ *	}
+ */
+const renderPrice = (
+	option: {
+		price: bigint
+		salePrice: bigint | null
+		currency: string
+		scale: number
+	},
+	locales?: Intl.LocalesArgument,
+	options?: Intl.NumberFormatOptions,
+) => {
+	const { price, salePrice, currency, scale } = option
+	const storeConfig = useAtomValue(storeConfigAtom)
+
+	const displayPrice = salePrice || price
+	const hasDiscount = !!salePrice && salePrice < price
+
+	const fmt = new Intl.NumberFormat(locales || storeConfig.language, {
+		style: 'currency',
+		currency: currency,
+		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
+		minimumFractionDigits: scale,
+		maximumFractionDigits: scale,
+		...options,
+	})
+
+	return {
+		hasDiscount,
+		formattedPrice: fmt.format(
+			formatPrice(displayPrice, scale) as Intl.StringNumericLiteral,
+		),
+		formattedOriginalPrice: fmt.format(
+			formatPrice(price, scale) as Intl.StringNumericLiteral,
+		),
+	}
 }
+
+export { formatPrice, getPricing, renderPrice }
