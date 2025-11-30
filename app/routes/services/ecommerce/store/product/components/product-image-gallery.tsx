@@ -25,7 +25,8 @@ const ProductImageGalleryWrapper = ({
 export type ProductGallery = (typeof productGalleryTable.$inferSelect)[]
 
 export const ProductImageGallery = () => {
-	const { product, productGallery, hoveredAttributeImage } = useProductContext()
+	const { storeConfig, product, productGallery, hoveredAttributeImage } =
+		useProductContext()
 
 	const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
@@ -45,26 +46,11 @@ export const ProductImageGallery = () => {
 	]
 
 	const nextImage = () => {
-		if (!gallery) return
 		setCurrentImageIndex(prev => (prev + 1) % gallery.length)
 	}
 
 	const prevImage = () => {
-		if (!gallery) return
 		setCurrentImageIndex(prev => (prev - 1 + gallery.length) % gallery.length)
-	}
-
-	// Handle empty gallery
-	if (!gallery || gallery.length === 0) {
-		return (
-			<ProductImageGalleryWrapper sticky={true}>
-				<div className="bg-muted flex aspect-square w-full items-center justify-center">
-					<p className="text-muted-foreground text-center">
-						No images available
-					</p>
-				</div>
-			</ProductImageGalleryWrapper>
-		)
 	}
 
 	return (
@@ -74,17 +60,19 @@ export const ProductImageGallery = () => {
 					src={
 						hoveredAttributeImage
 							? hoveredAttributeImage.image
-							: gallery[currentImageIndex].image
+							: gallery.length
+								? gallery[currentImageIndex].image
+								: storeConfig.placeholderImage.image
 					}
 					alt={
 						hoveredAttributeImage?.imageAlt
 							? hoveredAttributeImage.imageAlt
-							: product.name
+							: storeConfig.placeholderImage.imageAlt || product.name
 					}
 					title={
 						hoveredAttributeImage?.imageTitle
 							? hoveredAttributeImage.imageTitle
-							: product.name
+							: storeConfig.placeholderImage.imageTitle || product.name
 					}
 					className="aspect-square w-full object-cover transition-all"
 				/>
