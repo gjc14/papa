@@ -4,8 +4,10 @@ import { Link, useFetcher } from 'react-router'
 
 import { type ColumnDef, type Table } from '@tanstack/react-table'
 import { useAtomValue } from 'jotai'
+import { PlusCircle } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import { DashboardDataTable } from '~/routes/papa/dashboard/components/dashboard-data-table'
@@ -21,7 +23,10 @@ import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/d
 
 import { getProducts } from '../../../lib/db/product.server'
 import { storeConfigAtom } from '../../../store/product/context'
-import { renderPrice } from '../../../store/product/utils/price'
+import {
+	renderPrice,
+	toScaledDecimalString,
+} from '../../../store/product/utils/price'
 
 export const loader = async () => {
 	const products = await getProducts({ relations: true, status: 'ALL' })
@@ -44,7 +49,13 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle title="Products"></DashboardTitle>
-				<DashboardActions>{/* Some action buttons here */}</DashboardActions>
+				<DashboardActions>
+					<Button asChild size={'sm'}>
+						<Link to="new">
+							<PlusCircle /> New Product
+						</Link>
+					</Button>
+				</DashboardActions>
 			</DashboardHeader>
 			<DashboardContent className="px-0 md:px-0">
 				<DashboardDataTable
@@ -76,7 +87,7 @@ export const columns: ColumnDef<Product>[] = [
 				<div className="flex items-center">
 					<Link
 						to={slug}
-						className="focus-visible:ring-ring/50 m-1 inline-block cursor-pointer hover:underline focus-visible:ring-2 focus-visible:outline-0"
+						className="focus-visible:ring-ring/50 inline-block cursor-pointer hover:underline focus-visible:ring-2 focus-visible:outline-0"
 					>
 						<img
 							src={image || storeConfig.placeholderImage.image}
@@ -109,7 +120,7 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'price',
+		accessorFn: originalRow => originalRow.option.price,
 		header: 'Price',
 		cell: ({ row }) => {
 			const { hasDiscount, formattedPrice, formattedOriginalPrice } =
@@ -126,13 +137,28 @@ export const columns: ColumnDef<Product>[] = [
 				</div>
 			)
 		},
+		sortingFn: (a, b) => {
+			const optA = a.original.option
+			const optB = b.original.option
+
+			const rawPriceA = toScaledDecimalString(optA.price, optA.scale)
+			const rawPriceB = toScaledDecimalString(optB.price, optB.scale)
+
+			const cA = optA.currency
+			const cB = optB.currency
+
+			// Step 1: compare currency
+			if (cA < cB) return -1
+			if (cA > cB) return 1
+
+			// Step 2: compare rawPrice if currency is the same
+			return Number(rawPriceA) - Number(rawPriceB)
+		},
 	},
 	{
-		accessorKey: 'sku',
+		accessorFn: originalRow => originalRow.option.sku,
 		header: 'SKU',
-		cell: ({ row }) => {
-			return row.original.option.sku || '—'
-		},
+		cell: ({ row }) => row.original.option.sku || '—',
 	},
 	{
 		accessorKey: 'status',
@@ -176,8 +202,7 @@ export const columns: ColumnDef<Product>[] = [
 		cell: ({ row }) => row.original.updatedAt.toLocaleString('zh-TW'),
 	},
 	{
-		accessorKey: 'id',
-		header: '',
+		id: '_actions',
 		cell: ({ row }) => {
 			const fetcher = useFetcher()
 			const { mutating } = useFetcherNotification(fetcher)
