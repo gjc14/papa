@@ -13,6 +13,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '~/components/ui/card'
+import { Field, FieldGroup, FieldLabel, FieldSet } from '~/components/ui/field'
 import { Input } from '~/components/ui/input'
 import {
 	Item,
@@ -102,14 +103,16 @@ export const Instructions = () => {
 			</CardHeader>
 			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
 				{instructionsWithIds.length > 0 ? (
-					instructionsWithIds.map(instruction => (
-						<InstructionItem
-							key={instruction._id}
-							instruction={instruction}
-							onUpdate={handleUpdateInstruction}
-							onDelete={handleDeleteInstruction}
-						/>
-					))
+					instructionsWithIds
+						.sort((a, b) => a.order - b.order)
+						.map(i => (
+							<InstructionItem
+								key={i._id}
+								instruction={i}
+								onUpdate={handleUpdateInstruction}
+								onDelete={handleDeleteInstruction}
+							/>
+						))
 				) : (
 					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
 						No instructions added yet. Click "Add Instruction" to create one.
@@ -146,60 +149,69 @@ function InstructionItem({
 	return (
 		<Item variant="outline" className="overflow-auto">
 			{isEditing ? (
-				<ItemContent>
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={() => onDelete(instruction._id)}
-						className="ml-auto size-5"
-					>
-						<XIcon className="size-4" />
-					</Button>
-					<Input
-						value={editedInstruction.title}
-						onChange={e =>
-							setEditedInstruction({
-								...editedInstruction,
-								title: e.target.value,
-							})
-						}
-						placeholder="Title"
-						autoFocus
-					/>
-					<Input
-						value={editedInstruction.content || ''}
-						onChange={e =>
-							setEditedInstruction({
-								...editedInstruction,
-								content: e.target.value,
-							})
-						}
-						placeholder="Content"
-					/>
-					<div className="mt-2 flex flex-col gap-1 md:flex-row-reverse">
+				<FieldSet className="relative w-full pt-2">
+					<FieldGroup>
 						<Button
-							size="sm"
-							className="w-full md:w-auto md:flex-1"
-							onClick={() => {
-								onUpdate(editedInstruction)
-								setIsEditing(false)
-							}}
+							variant="destructive"
+							size="icon"
+							onClick={() => onDelete(instruction._id)}
+							className="absolute top-0 right-0 size-4 rounded-full"
 						>
-							Save
+							<XIcon className="size-3" />
 						</Button>
-						<Button
-							variant="outline"
-							size="sm"
-							className="w-full md:w-auto md:flex-1"
-							onClick={() => {
-								setEditedInstruction(instruction) // Reset to original
-								setIsEditing(false)
-							}}
-						>
-							Cancel
-						</Button>
-					</div>
-				</ItemContent>
+						<Field>
+							<FieldLabel htmlFor="title">Title</FieldLabel>
+							<Input
+								id="title"
+								value={editedInstruction.title}
+								onChange={e =>
+									setEditedInstruction({
+										...editedInstruction,
+										title: e.target.value,
+									})
+								}
+								placeholder="Title"
+								autoFocus
+							/>
+							<FieldLabel htmlFor="content">Content</FieldLabel>
+							<Input
+								id="content"
+								value={editedInstruction.content || ''}
+								onChange={e =>
+									setEditedInstruction({
+										...editedInstruction,
+										content: e.target.value,
+									})
+								}
+								placeholder="Content"
+							/>
+						</Field>
+
+						<div className="flex flex-col gap-1 md:flex-row-reverse">
+							<Button
+								size="sm"
+								className="w-full md:w-auto md:flex-1"
+								onClick={() => {
+									onUpdate(editedInstruction)
+									setIsEditing(false)
+								}}
+							>
+								Save
+							</Button>
+							<Button
+								variant="outline"
+								size="sm"
+								className="w-full md:w-auto md:flex-1"
+								onClick={() => {
+									setEditedInstruction(instruction) // Reset to original
+									setIsEditing(false)
+								}}
+							>
+								Cancel
+							</Button>
+						</div>
+					</FieldGroup>
+				</FieldSet>
 			) : (
 				<>
 					<ItemContent>
