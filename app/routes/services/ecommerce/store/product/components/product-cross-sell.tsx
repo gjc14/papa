@@ -5,7 +5,9 @@ import { ProductCard, ProductCardSkeleton } from './product-card'
 
 function ProductCrossSellWrapper({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="grid grid-cols-2 gap-8 @lg:grid-cols-3">{children}</div>
+		<div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-4 lg:gap-8">
+			{children}
+		</div>
 	)
 }
 
