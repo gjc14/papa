@@ -1,6 +1,6 @@
 import type { Route } from './+types/route'
 import { useEffect } from 'react'
-import { isRouteErrorResponse, Link, useRouteError } from 'react-router'
+import { Link } from 'react-router'
 
 import { useSetAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
@@ -8,7 +8,10 @@ import { ArrowLeft, Store } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
-import { statusCodeMap } from '~/lib/utils/status-code'
+import {
+	ErrorBoundaryTemplate,
+	type ErrorBoundaryTemplateProps,
+} from '~/components/error-boundary-template'
 import { validateAdminSession } from '~/routes/papa/auth/utils'
 
 import {
@@ -97,54 +100,19 @@ export default function ProductRoute({ loaderData }: Route.ComponentProps) {
 }
 
 export function ErrorBoundary() {
-	const error = useRouteError()
-
-	// Route throw new Response (404, etc.)
-	if (isRouteErrorResponse(error)) {
-		console.error('Product Route Error Response:', error)
-
-		const statusMessage = statusCodeMap[error.status]
-		const errorMessage = error.data || statusMessage.text || 'Error Response'
-
-		return (
-			<ProductErrorTemplate
-				status={error.status}
-				statusText={errorMessage}
-				returnTo={'/store'}
-			/>
-		)
-	} else if (error instanceof Error) {
-		// throw new Error('message')
-		console.error('Error:', error)
-
-		return (
-			<ProductErrorTemplate
-				status={500}
-				statusText={'Internal Error'}
-				returnTo={'/store'}
-			/>
-		)
-	}
-
-	console.error('Unknown Error:', error)
-
 	return (
-		// Unknown error
-		<ProductErrorTemplate
-			status={'XXX'}
-			statusText={'Unknown Error'}
-			returnTo={'/store'}
-		/>
+		<ErrorBoundaryTemplate>
+			{props => <ProductErrorTemplate {...props} returnTo={'/store'} />}
+		</ErrorBoundaryTemplate>
 	)
 }
 
 const ProductErrorTemplate = ({
 	status,
-	statusText,
+	statusMessage,
+	errorMessage,
 	returnTo,
-}: {
-	status: string | number
-	statusText: string
+}: ErrorBoundaryTemplateProps & {
 	returnTo: string
 }) => {
 	// TODO: use store context to display store name, etc.
@@ -159,7 +127,7 @@ const ProductErrorTemplate = ({
 				<Separator className="mt-3 mb-6 w-20 md:w-36" />
 
 				<h2 className="text-base font-light">
-					{statusText || 'Product Error Page'}
+					{statusMessage.text || 'Product Error Page'}
 				</h2>
 
 				<div className="mt-12 mb-8 flex items-center gap-3">
