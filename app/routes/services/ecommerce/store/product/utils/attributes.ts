@@ -1,7 +1,7 @@
 import type { Product, selectedVariantAttributesAtom } from '../context'
 
 /**
- * Get variant attribute keys based on product attributes and variants
+ * Get ordered variant attribute keys based on product attributes and variants
  *
  * @example
  * const variantOptions = getVariantOptions(product.attributes, product.variants)
