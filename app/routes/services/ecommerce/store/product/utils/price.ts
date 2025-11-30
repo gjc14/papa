@@ -16,11 +16,11 @@ import {
 // ========================================
 
 /**
- * Format price for display, returns 0 when scale > 100
+ * Format price, returns 0 when scale > 100
  */
-function formatPrice(price: bigint, scale: number): string {
+function toScaledDecimalString(price: bigint, scale: number): string {
 	if (scale < 0) throw new Error('Scale must be non-negative')
-	if (price < 0n) return '-' + formatPrice(-price, scale)
+	if (price < 0n) return '-' + toScaledDecimalString(-price, scale)
 
 	const str = price.toString()
 
@@ -41,7 +41,7 @@ function formatPrice(price: bigint, scale: number): string {
  */
 const _getLowestPrice = (variants: NonNullable<Product>['variants']) => {
 	const prices = variants.map(variant => ({
-		price: formatPrice(
+		price: toScaledDecimalString(
 			variant.option.salePrice || variant.option.price,
 			variant.option.scale,
 		),
@@ -78,7 +78,7 @@ const _getDisplayPrice = (props: {
 		const selectedVariant = getSelectedVariant(props)
 		return selectedVariant
 			? {
-					price: formatPrice(
+					price: toScaledDecimalString(
 						selectedVariant.option.salePrice || selectedVariant.option.price,
 						selectedVariant.option.scale,
 					),
@@ -88,7 +88,7 @@ const _getDisplayPrice = (props: {
 			: _getLowestPrice(getFilteredVariants(props))
 	}
 	return {
-		price: formatPrice(
+		price: toScaledDecimalString(
 			props.product.option.salePrice || props.product.option.price,
 			props.product.option.scale,
 		),
@@ -139,7 +139,7 @@ const _getDisplayOriginalPrice = (props: {
 		const selectedVariant = getSelectedVariant(props)
 		return selectedVariant
 			? {
-					price: formatPrice(
+					price: toScaledDecimalString(
 						selectedVariant.option.price,
 						selectedVariant.option.scale,
 					),
@@ -150,7 +150,7 @@ const _getDisplayOriginalPrice = (props: {
 	}
 	return props.product.option.price
 		? {
-				price: formatPrice(
+				price: toScaledDecimalString(
 					props.product.option.price,
 					props.product.option.scale,
 				),
@@ -221,12 +221,12 @@ const renderPrice = (
 	return {
 		hasDiscount,
 		formattedPrice: fmt.format(
-			formatPrice(displayPrice, scale) as Intl.StringNumericLiteral,
+			toScaledDecimalString(displayPrice, scale) as Intl.StringNumericLiteral,
 		),
 		formattedOriginalPrice: fmt.format(
-			formatPrice(price, scale) as Intl.StringNumericLiteral,
+			toScaledDecimalString(price, scale) as Intl.StringNumericLiteral,
 		),
 	}
 }
 
-export { formatPrice, getPricing, renderPrice }
+export { getPricing, renderPrice, toScaledDecimalString }

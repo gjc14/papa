@@ -37,12 +37,9 @@ import {
 	SelectValue,
 } from '~/components/ui/select'
 import { cn } from '~/lib/utils'
-import {
-	productAtom,
-	storeConfigAtom,
-} from '~/routes/services/ecommerce/store/product/context'
+import { productAtom } from '~/routes/services/ecommerce/store/product/context'
 import { getVariantOptions } from '~/routes/services/ecommerce/store/product/utils/attributes'
-import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/price'
+import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import { OptionForm } from './option-form'
 
@@ -125,7 +122,6 @@ function VariantCard({
 	onEditVariant: (variantId: number) => void
 	onOpen: () => void
 }) {
-	const storeConfig = useAtomValue(storeConfigAtom)
 	const productVariants = useAtomValue(productVariantsAtom)
 
 	const noVariants = !productVariants || productVariants.length === 0
@@ -145,12 +141,7 @@ function VariantCard({
 					</p>
 				) : (
 					productVariants.map(v => {
-						const fmt = new Intl.NumberFormat(storeConfig.language, {
-							style: 'currency',
-							currency: v.option.currency,
-							minimumFractionDigits: v.option.scale,
-							maximumFractionDigits: v.option.scale,
-						})
+						const { formattedPrice } = renderPrice(v.option)
 
 						return (
 							<div
@@ -172,13 +163,7 @@ function VariantCard({
 										))}
 									</p>
 									<p className="text-muted-foreground mt-2 text-xs">
-										{v.option.sku || 'No SKU'} •{' '}
-										{fmt.format(
-											formatPrice(
-												v.option.price,
-												v.option.scale,
-											) as Intl.StringNumericLiteral,
-										)}
+										{v.option.sku || 'No SKU'} • {formattedPrice}
 									</p>
 								</div>
 								<Button

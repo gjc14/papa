@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { ExternalLink, Plus, X } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -32,10 +32,9 @@ import type {
 } from '~/routes/services/ecommerce/lib/db/product.server'
 import {
 	crossSellProductsAtom,
-	storeConfigAtom,
 	upsellProductsAtom,
 } from '~/routes/services/ecommerce/store/product/context'
-import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/price'
+import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import type { loader } from '../resource'
 
@@ -212,20 +211,9 @@ interface LinkedProductItemProps {
 }
 
 function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
-	const storeConfig = useAtomValue(storeConfigAtom)
-
-	const displayPrice = product.option.salePrice || product.option.price
-	const hasDiscount =
-		!!product.option.salePrice &&
-		product.option.salePrice < product.option.price
-
-	const fmt = new Intl.NumberFormat(storeConfig.language, {
-		style: 'currency',
-		currency: product.option.currency,
-		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
-		minimumFractionDigits: product.option.scale,
-		maximumFractionDigits: product.option.scale,
-	})
+	const { hasDiscount, formattedPrice, formattedOriginalPrice } = renderPrice(
+		product.option,
+	)
 
 	return (
 		<div className="flex items-center gap-3 overflow-auto rounded-lg border p-3">
@@ -248,22 +236,10 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 			<div className="flex flex-1 flex-col flex-wrap">
 				<div className="font-medium text-nowrap">{product.name}</div>
 				<div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-					<p className="text-sm">
-						{fmt.format(
-							formatPrice(
-								displayPrice,
-								product.option.scale,
-							) as Intl.StringNumericLiteral,
-						)}
-					</p>
+					<p className="text-sm">{formattedPrice}</p>
 					{hasDiscount && (
 						<span className="text-muted-foreground text-xs line-through">
-							{fmt.format(
-								formatPrice(
-									product.option.price,
-									product.option.scale,
-								) as Intl.StringNumericLiteral,
-							)}
+							{formattedOriginalPrice}
 						</span>
 					)}
 				</div>
@@ -427,21 +403,10 @@ function SelectableProductItem({
 	selectedOrder,
 	onToggle,
 }: SelectableProductItemProps) {
-	const storeConfig = useAtomValue(storeConfigAtom)
+	const { hasDiscount, formattedPrice, formattedOriginalPrice } = renderPrice(
+		product.option,
+	)
 	const isSelected = selectedOrder !== undefined
-
-	const displayPrice = product.option.salePrice || product.option.price
-	const hasDiscount =
-		!!product.option.salePrice &&
-		product.option.salePrice < product.option.price
-
-	const fmt = new Intl.NumberFormat(storeConfig.language, {
-		style: 'currency',
-		currency: product.option.currency,
-		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
-		minimumFractionDigits: product.option.scale,
-		maximumFractionDigits: product.option.scale,
-	})
 
 	return (
 		<div
@@ -477,22 +442,10 @@ function SelectableProductItem({
 			<div className="flex flex-1 flex-col flex-wrap">
 				<div className="font-medium text-nowrap">{product.name}</div>
 				<div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-					<p className="text-sm">
-						{fmt.format(
-							formatPrice(
-								displayPrice,
-								product.option.scale,
-							) as Intl.StringNumericLiteral,
-						)}
-					</p>
+					<p className="text-sm">{formattedPrice}</p>
 					{hasDiscount && (
 						<span className="text-muted-foreground text-xs line-through">
-							{fmt.format(
-								formatPrice(
-									product.option.price,
-									product.option.scale,
-								) as Intl.StringNumericLiteral,
-							)}
+							{formattedOriginalPrice}
 						</span>
 					)}
 				</div>
