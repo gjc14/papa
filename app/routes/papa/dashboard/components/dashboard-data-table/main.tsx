@@ -4,14 +4,17 @@ import {
 	flexRender,
 	getCoreRowModel,
 	getExpandedRowModel,
+	getFilteredRowModel,
 	getPaginationRowModel,
+	getSortedRowModel,
 	useReactTable,
 	type ColumnDef,
 	type Row,
 	type RowData,
+	type TableOptions,
 	type Table as TableType,
 } from '@tanstack/react-table'
-import { ChevronLeft, ChevronsLeft, Maximize } from 'lucide-react'
+import { ArrowUp, ChevronLeft, ChevronsLeft, Maximize } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -42,9 +45,10 @@ declare module '@tanstack/react-table' {
 // Give our default column cell renderer editing superpowers!
 function createDefaultColumn<TData>(
 	editable: boolean,
+	server: boolean = false,
 ): Partial<ColumnDef<TData, unknown>> {
 	return {
-		cell: ({ getValue, row: { index }, column: { id }, table }) => {
+		cell({ getValue, row: { index }, column: { id }, table }) {
 			const initialValue = getValue()
 
 			if (!editable) {
@@ -52,8 +56,8 @@ function createDefaultColumn<TData>(
 					typeof initialValue === 'object' && initialValue !== null ? (
 						Array.isArray(initialValue) ? (
 							<div className="flex items-center gap-1">
-								{initialValue.map(v => (
-									<Badge key={v.toString()} className="rounded-none">
+								{initialValue.map((v, i) => (
+									<Badge key={i} className="rounded-none">
 										{v}
 									</Badge>
 								))}
@@ -80,9 +84,7 @@ function createDefaultColumn<TData>(
 						(initialValue as React.ReactNode)
 					)
 				return (
-					<div className="flex h-12 items-center p-2 text-sm">
-						{displayValue}
-					</div>
+					<div className="flex h-12 items-center text-sm">{displayValue}</div>
 				)
 			}
 
@@ -104,7 +106,7 @@ function createDefaultColumn<TData>(
 					value={(value || '') as string}
 					onChange={e => setValue(e.target.value)}
 					onBlur={onBlur}
-					className="h-12 rounded-none border-0 focus-visible:ring-inset"
+					className="h-12 rounded-none border-0 px-2 py-1 focus-visible:ring-inset"
 				/>
 			)
 		},
@@ -120,6 +122,15 @@ interface DashboardDataTableProps<TData, TValue> {
 	 * if true, a select column will be shown on the left.
 	 * @default false
 	 */
+	/**
+	 * Server side table or not. If only tens of thousands of rows, you can take advantage of client side table features.
+	 * [Should You Use Client-Side Pagination?](https://tanstack.com/table/v8/docs/guide/pagination#should-you-use-client-side-pagination)
+	 * @default false
+	 */
+	server?: {
+		rowCount: TableOptions<TData>['rowCount']
+		pageCount?: TableOptions<TData>['pageCount']
+	}
 	selectable?: boolean
 	/**
 	 * Function to determine if a row is expandable
@@ -161,6 +172,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 	columns,
 	data,
 	setData,
+	server,
 	selectable = false,
 	editable = false,
 	enableRowSelection,
@@ -183,8 +195,8 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 
 	const selectColumn = React.useMemo(() => createSelectColumn<TData>(), [])
 	const defaultColumn = React.useMemo(
-		() => createDefaultColumn<TData>(editable),
-		[editable],
+		() => createDefaultColumn<TData>(editable, !!server),
+		[editable, server],
 	)
 
 	const table = useReactTable<TData>({
@@ -193,13 +205,29 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 		data,
 		getCoreRowModel: getCoreRowModel(),
 
-		getPaginationRowModel: getPaginationRowModel(),
+		// === pagination
+		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
+		manualFiltering: !!server, // turn off client-side pagination if is server-side table
+		/** @see https://tanstack.com/table/v8/docs/guide/pagination#manual-server-side-pagination */
+		getPaginationRowModel: !server ? getPaginationRowModel() : undefined, // not needed for server-side pagination
+		/** @see https://tanstack.com/table/v8/docs/guide/pagination#page-count-and-row-count */
+		rowCount: server?.rowCount,
+		pageCount: server?.pageCount,
+		/** @see https://tanstack.com/table/v8/docs/guide/pagination#auto-reset-page-index */
+		autoResetPageIndex: autoResetPageIndex ?? internalAutoResetPageIndex,
+
+		// === filtering & sorting
+		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
+		getFilteredRowModel: !server ? getFilteredRowModel() : undefined, // not needed for manual server-side filtering
+		/** @see https://tanstack.com/table/v8/docs/guide/sorting#manual-server-side-sorting */
+		getSortedRowModel: !server ? getSortedRowModel() : undefined, // not needed for manual server-side sorting
+
+		// ===
+
 		getExpandedRowModel: getExpandedRowModel(),
 		/** @see https://tanstack.com/table/latest/docs/framework/react/examples/expanding */
 		getRowCanExpand,
-		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
-		manualFiltering: true, // manual server-side filtering
-		autoResetPageIndex: autoResetPageIndex ?? internalAutoResetPageIndex,
+
 		enableRowSelection,
 
 		state: {
@@ -251,18 +279,46 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 												key={header.id}
 												colSpan={header.colSpan}
 												className={cn(
-													'text-muted-foreground bg-background h-10 border-b px-2 py-1 text-left text-sm font-medium whitespace-nowrap',
+													'text-muted-foreground bg-background border-primary h-10 border-b px-2 py-1 text-left text-sm font-medium whitespace-nowrap',
 													'[&:has([role=checkbox])]:px-1',
 												)}
 											>
 												{header.isPlaceholder ? null : (
-													<div>
-														{flexRender(
-															header.column.columnDef.header,
-															header.getContext(),
-														)}
-														{/* TODO: dropdown menu */}
-													</div>
+													<>
+														<div
+															className={`flex h-full items-center justify-between ${
+																header.column.getCanSort()
+																	? 'cursor-pointer select-none'
+																	: ''
+															}`}
+															onClick={header.column.getToggleSortingHandler()}
+															title={
+																header.column.getCanSort()
+																	? header.column.getNextSortingOrder() ===
+																		'asc'
+																		? 'Sort ascending'
+																		: header.column.getNextSortingOrder() ===
+																			  'desc'
+																			? 'Sort descending'
+																			: 'Clear sort'
+																	: undefined
+															}
+														>
+															<div className="flex items-center gap-1">
+																{header.column.getIsSorted() === 'asc' ? (
+																	<ArrowUp className="size-4" />
+																) : header.column.getIsSorted() === 'desc' ? (
+																	<ArrowUp className="size-4 rotate-180" />
+																) : null}
+																{flexRender(
+																	header.column.columnDef.header,
+																	header.getContext(),
+																)}
+															</div>
+
+															{/* TODO: DropdownMenu */}
+														</div>
+													</>
 												)}
 											</th>
 										)
@@ -278,7 +334,10 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 									<tr className="hover:bg-muted transition-colors">
 										{row.getVisibleCells().map(cell => {
 											return (
-												<td key={cell.id} className="border-b">
+												<td
+													key={cell.id}
+													className={`border-b ${editable ? '' : 'px-2 py-1'}`}
+												>
 													{flexRender(
 														cell.column.columnDef.cell,
 														cell.getContext(),
