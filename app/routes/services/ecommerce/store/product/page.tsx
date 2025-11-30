@@ -32,7 +32,7 @@ export function StoreProductPage() {
 			<div className="my-3 flex items-center justify-start gap-2">
 				<ProductBreadcrumb />
 			</div>
-			<div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-8 @lg:gap-16">
+			<div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-8 lg:gap-16">
 				{isResolving.productGallery ? (
 					<ProductImageGallerySkeleton />
 				) : (
