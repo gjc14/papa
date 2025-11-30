@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
 import { type ColumnDef, type Table } from '@tanstack/react-table'
+import { useAtomValue } from 'jotai'
 
 import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
@@ -19,6 +20,7 @@ import {
 import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
 
 import { getProducts } from '../../../lib/db/product.server'
+import { storeConfigAtom } from '../../../store/product/context'
 import { renderPrice } from '../../../store/product/utils/price'
 
 export const loader = async () => {
@@ -66,6 +68,7 @@ export const columns: ColumnDef<Product>[] = [
 		accessorKey: 'id',
 		header: 'Image',
 		cell: ({ row }) => {
+			const storeConfig = useAtomValue(storeConfigAtom)
 			const slug = row.original.slug
 			const name = row.original.name
 			const image = row.original.option.image
@@ -75,11 +78,15 @@ export const columns: ColumnDef<Product>[] = [
 						to={slug}
 						className="focus-visible:ring-ring/50 m-1 inline-block cursor-pointer hover:underline focus-visible:ring-2 focus-visible:outline-0"
 					>
-						{image ? (
-							<img src={image} alt={name} className="size-12 object-cover" />
-						) : (
-							<p className="flex size-12 items-center justify-center">⛰️</p>
-						)}
+						<img
+							src={image || storeConfig.placeholderImage.image}
+							alt={
+								name ||
+								storeConfig.placeholderImage.imageAlt ||
+								storeConfig.name
+							}
+							className="size-12 object-cover"
+						/>
 					</Link>
 				</div>
 			)

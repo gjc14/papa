@@ -32,6 +32,12 @@ type StoreConfig = {
 		}
 		lowStockThreshold: number
 	}
+	/** Placeholder image used when a product has no image */
+	placeholderImage: {
+		image: string
+		imageAlt: string | null
+		imageTitle: string | null
+	}
 }
 
 export const storeConfigAtom = atom<StoreConfig>({
@@ -46,6 +52,11 @@ export const storeConfigAtom = atom<StoreConfig>({
 			volume: 'l',
 		},
 		lowStockThreshold: 0,
+	},
+	placeholderImage: {
+		image: '/placeholders/image.webp',
+		imageAlt: null,
+		imageTitle: null,
 	},
 })
 

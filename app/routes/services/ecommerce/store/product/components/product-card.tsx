@@ -1,8 +1,11 @@
 import { Link } from 'react-router'
 
+import { useAtomValue } from 'jotai'
+
 import { Skeleton } from '~/components/ui/skeleton'
 
 import type { ProductListing } from '../../../lib/db/product.server'
+import { storeConfigAtom } from '../context'
 import { renderPrice } from '../utils/price'
 
 type ProductCardProps = {
@@ -10,6 +13,7 @@ type ProductCardProps = {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+	const storeConfig = useAtomValue(storeConfigAtom)
 	const { formattedPrice, formattedOriginalPrice, hasDiscount } = renderPrice(
 		product.option,
 	)
@@ -20,17 +24,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 			className="group cursor-pointer"
 		>
 			<div className="relative mb-4 aspect-square overflow-hidden">
-				{product.option.image ? (
-					<img
-						src={product.option.image}
-						alt={product.name}
-						className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-					/>
-				) : (
-					<div className="flex h-full w-full flex-1 items-center justify-center">
-						?
-					</div>
-				)}
+				<img
+					src={product.option.image || storeConfig.placeholderImage.image}
+					alt={
+						product.name ||
+						storeConfig.placeholderImage.imageAlt ||
+						storeConfig.name
+					}
+					title={
+						product.name ||
+						storeConfig.placeholderImage.imageTitle ||
+						storeConfig.name
+					}
+					className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+				/>
 				{hasDiscount && (
 					<div className="bg-primary-foreground border-primary/60 text-primary absolute top-2 right-2 border px-2 py-1 text-xs md:top-4 md:right-4">
 						SALE
