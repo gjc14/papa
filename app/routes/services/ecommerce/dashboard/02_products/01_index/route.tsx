@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
 import { type ColumnDef, type Table } from '@tanstack/react-table'
-import { useAtomValue } from 'jotai'
 
 import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
@@ -20,8 +19,7 @@ import {
 import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
 
 import { getProducts } from '../../../lib/db/product.server'
-import { storeConfigAtom } from '../../../store/product/context'
-import { formatPrice } from '../../../store/product/utils/price'
+import { renderPrice } from '../../../store/product/utils/price'
 
 export const loader = async () => {
 	const products = await getProducts({ relations: true, status: 'ALL' })
@@ -107,37 +105,15 @@ export const columns: ColumnDef<Product>[] = [
 		accessorKey: 'price',
 		header: 'Price',
 		cell: ({ row }) => {
-			const storeConfig = useAtomValue(storeConfigAtom)
-
-			const price = row.original.option.price
-			const salePrice = row.original.option.salePrice
-			const displayPrice = salePrice || price
-			const hasDiscount = !!salePrice && salePrice < price
-
-			const fmt = new Intl.NumberFormat(storeConfig.language, {
-				style: 'currency',
-				currency: row.original.option.currency,
-				// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
-				minimumFractionDigits: row.original.option.scale,
-				maximumFractionDigits: row.original.option.scale,
-			})
+			const { hasDiscount, formattedPrice, formattedOriginalPrice } =
+				renderPrice(row.original.option)
 
 			return (
 				<div className="flex flex-col">
-					{fmt.format(
-						formatPrice(
-							displayPrice,
-							row.original.option.scale,
-						) as Intl.StringNumericLiteral,
-					)}
+					{formattedPrice}
 					{hasDiscount && (
 						<span className="text-muted-foreground text-xs line-through">
-							{fmt.format(
-								formatPrice(
-									price,
-									row.original.option.scale,
-								) as Intl.StringNumericLiteral,
-							)}
+							{formattedOriginalPrice}
 						</span>
 					)}
 				</div>

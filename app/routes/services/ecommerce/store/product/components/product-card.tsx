@@ -1,32 +1,18 @@
 import { Link } from 'react-router'
 
-import { useAtomValue } from 'jotai'
-
 import { Skeleton } from '~/components/ui/skeleton'
 
 import type { ProductListing } from '../../../lib/db/product.server'
-import { storeConfigAtom } from '../context'
-import { formatPrice } from '../utils/price'
+import { renderPrice } from '../utils/price'
 
 type ProductCardProps = {
 	product: ProductListing
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-	const storeConfig = useAtomValue(storeConfigAtom)
-
-	const displayPrice = product.option.salePrice || product.option.price
-	const hasDiscount =
-		!!product.option.salePrice &&
-		product.option.salePrice < product.option.price
-
-	const fmt = new Intl.NumberFormat(storeConfig.language, {
-		style: 'currency',
-		currency: product.option.currency,
-		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
-		minimumFractionDigits: product.option.scale,
-		maximumFractionDigits: product.option.scale,
-	})
+	const { formattedPrice, formattedOriginalPrice, hasDiscount } = renderPrice(
+		product.option,
+	)
 
 	return (
 		<Link
@@ -53,22 +39,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 			</div>
 			<h3 className="mb-2 text-sm font-light">{product.name}</h3>
 			<div className="flex items-center gap-x-2">
-				<span className="text-base">
-					{fmt.format(
-						formatPrice(
-							displayPrice,
-							product.option.scale,
-						) as Intl.StringNumericLiteral,
-					)}
-				</span>
+				<span className="text-base">{formattedPrice}</span>
 				{hasDiscount && (
 					<span className="text-muted-foreground text-xs line-through">
-						{fmt.format(
-							formatPrice(
-								product.option.price,
-								product.option.scale,
-							) as Intl.StringNumericLiteral,
-						)}
+						{formattedOriginalPrice}
 					</span>
 				)}
 			</div>

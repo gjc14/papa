@@ -42,7 +42,7 @@ import {
 	StockStatus,
 	type DownloadFile,
 } from '~/routes/services/ecommerce/lib/db/schema/product'
-import { formatPrice } from '~/routes/services/ecommerce/store/product/utils/price'
+import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import { productAtom, storeConfigAtom } from '../../../../store/product/context'
 
@@ -74,13 +74,8 @@ export function OptionForm({
 		{ value: 'others', icon: InfoIcon, label: 'Others' },
 	] as const
 
-	const fmt = new Intl.NumberFormat(storeConfig.language, {
-		style: 'currency',
-		currency: option.currency,
-		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
-		minimumFractionDigits: option.scale,
-		maximumFractionDigits: option.scale,
-	})
+	const { hasDiscount, formattedPrice, formattedOriginalPrice } =
+		renderPrice(option)
 
 	return (
 		<FieldSet className="h-full w-full">
@@ -160,13 +155,7 @@ export function OptionForm({
 										autoFocus={isVariant}
 									/>
 									<FieldDescription className="break-words">
-										Display:{' '}
-										{fmt.format(
-											formatPrice(
-												option.price,
-												option.scale,
-											) as Intl.StringNumericLiteral,
-										)}
+										Display: {formattedOriginalPrice}
 									</FieldDescription>
 								</Field>
 								<Field className="min-w-0 flex-1">
@@ -186,14 +175,7 @@ export function OptionForm({
 									/>
 									<FieldDescription className="break-words">
 										Display:{' '}
-										{option.salePrice
-											? fmt.format(
-													formatPrice(
-														option.salePrice,
-														option.scale,
-													) as Intl.StringNumericLiteral,
-												)
-											: '-'}
+										{option.salePrice && hasDiscount ? formattedPrice : '-'}
 									</FieldDescription>
 								</Field>
 							</FieldGroup>
