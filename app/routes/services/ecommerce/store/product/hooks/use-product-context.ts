@@ -15,7 +15,7 @@ import {
 import {
 	getAttributeValueImage,
 	getIsAttributeValueAvailable,
-	getVariantOptions,
+	getVariantAttributes,
 } from '../utils/attributes'
 import { getPricing } from '../utils/price'
 import { getHasVariants, getSelectedVariant } from '../utils/variants'
@@ -55,8 +55,8 @@ export const useProductContext = () => {
 			})
 		: null
 
-	const variantOptions = product
-		? getVariantOptions(product.attributes, product.variants)
+	const variantAttributes = product
+		? getVariantAttributes(product.attributes, product.variants)
 		: null
 
 	const hasVariants = product ? getHasVariants(product) : false
@@ -137,7 +137,7 @@ export const useProductContext = () => {
 		hoveredAttributeImage,
 
 		// Derived
-		variantOptions,
+		variantAttributes,
 		hasVariants,
 		selectedVariant,
 		pricing,

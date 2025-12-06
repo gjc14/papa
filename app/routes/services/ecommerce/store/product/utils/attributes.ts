@@ -4,10 +4,10 @@ import type { Product, selectedVariantAttributesAtom } from '../context'
  * Get ordered variant attribute keys based on product attributes and variants
  *
  * @example
- * const variantOptions = getVariantOptions(product.attributes, product.variants)
- * console.log(variantOptions) // { color: Set{'black','white'}, size: Set{'S','M','L'} }
+ * const variantAttributes = getVariantAttributes(product.attributes, product.variants)
+ * console.log(variantAttributes) // { color: Set{'black','white'}, size: Set{'S','M','L'} }
  */
-const getVariantOptions = (
+const getVariantAttributes = (
 	attributes: NonNullable<Product>['attributes'],
 	variants?: NonNullable<Product>['variants'],
 ) => {
@@ -82,7 +82,7 @@ const getIsAttributeValueAvailable = (props: {
 /**
  * Get all variants that would match if a specific attribute value is selected
  */
-const getVariantsForAttributeValue = (props: {
+const getVariantsFromAttributeValue = (props: {
 	product: NonNullable<Product>
 	selectedVariantAttributes: ReturnType<
 		typeof selectedVariantAttributesAtom.read
@@ -117,7 +117,7 @@ const getAttributeValueImage = (props: {
 	attributeName: string
 	attributeValue: string
 }) => {
-	const variants = getVariantsForAttributeValue(props)
+	const variants = getVariantsFromAttributeValue(props)
 
 	// Find the first variant (after ordering) that has an image and return its image info
 	const match = variants
@@ -134,8 +134,8 @@ const getAttributeValueImage = (props: {
 }
 
 export {
-	getVariantOptions,
+	getVariantAttributes,
 	getIsAttributeValueAvailable,
-	getVariantsForAttributeValue,
+	getVariantsFromAttributeValue,
 	getAttributeValueImage,
 }
