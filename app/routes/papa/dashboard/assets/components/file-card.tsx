@@ -160,13 +160,13 @@ export const FileCard = ({
 					<Button
 						variant={'destructive'}
 						size={'sm'}
-						className="min-h-6 text-[10px]"
+						className="h-6 px-2 py-1.5 text-[10px]"
 						onClick={handleDelete}
 					>
 						Delete
 					</Button>
 					<button
-						className="cursor-pointer text-[10px] underline-offset-2 hover:underline"
+						className="h-6 cursor-pointer px-2 py-1.5 text-[10px] underline-offset-2 hover:underline"
 						onClick={() => setDeleteAlert(false)}
 					>
 						Cancel
@@ -177,7 +177,7 @@ export const FileCard = ({
 			<div
 				className={cn(
 					`hidden ${deleteAlert ? '' : 'group-hover:flex'}`,
-					'bg-primary-foreground absolute bottom-3 left-[50%] translate-x-[-50%]',
+					'bg-background absolute bottom-3 left-[50%] translate-x-[-50%]',
 					'items-center justify-center gap-1 rounded-lg border px-1 py-0.5',
 				)}
 			>
@@ -349,19 +349,17 @@ export const FileCard = ({
 	)
 }
 
-const ToolBarButton = forwardRef<
-	HTMLButtonElement,
-	React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, type, ...props }, ref) => {
+const ToolBarButton = ({
+	className,
+	...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 	return (
-		<button
-			ref={ref}
-			type={type || 'button'}
+		<Button
+			{...props}
 			className={cn(
-				'hover:bg-accent inline-flex size-6 cursor-pointer items-center justify-center gap-2 rounded-full p-1 whitespace-nowrap transition-colors',
+				'hover:bg-accent text-primary inline-flex size-6 cursor-pointer items-center justify-center gap-2 rounded-full bg-transparent p-1 whitespace-nowrap transition-colors',
 				className,
 			)}
-			{...props}
 		/>
 	)
-})
+}
