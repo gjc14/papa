@@ -253,8 +253,8 @@ export function OptionForm({
 												}}
 												autoFocus={isVariant}
 											/>
-											<FieldDescription className="break-words">
-												Display: {formattedOriginalPrice}
+											<FieldDescription className="bg-brand text-brand-foreground border px-1 py-0.5 break-words">
+												{formattedOriginalPrice}
 											</FieldDescription>
 										</Field>
 										<Field className="min-w-0 flex-1">
@@ -272,8 +272,7 @@ export function OptionForm({
 													})
 												}}
 											/>
-											<FieldDescription className="break-words">
-												Display:{' '}
+											<FieldDescription className="bg-brand text-brand-foreground border px-1 py-0.5 break-words">
 												{option.salePrice && hasDiscount ? formattedPrice : '-'}
 											</FieldDescription>
 										</Field>
