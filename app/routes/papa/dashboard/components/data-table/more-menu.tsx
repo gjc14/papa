@@ -72,7 +72,7 @@ export const DashboardDataTableMoreMenu = ({
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
 							onClick={() => setOpen(true)}
-							className="hover:bg-destructive/90 dark:hover:bg-destructive/90 hover:text-white"
+							className="focus:bg-destructive/90 focus:text-white"
 						>
 							{permanent ? 'Delete Permanently' : 'Move to Trash'}
 						</DropdownMenuItem>

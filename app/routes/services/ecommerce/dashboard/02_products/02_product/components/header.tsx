@@ -202,7 +202,7 @@ export function ProductEditPageHeader() {
 
 						{!isNew && (
 							<DropdownMenuItem
-								className="hover:bg-destructive dark:hover:bg-destructive focus-visible:bg-destructive flex items-center gap-2 hover:text-white focus-visible:text-white"
+								className="focus:bg-destructive/90 flex items-center gap-2 focus:text-white"
 								onClick={() => setToTrashOpen(true)}
 								disabled={isSaving || isMovingToTrash}
 							>
