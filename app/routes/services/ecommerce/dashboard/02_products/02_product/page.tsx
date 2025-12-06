@@ -30,15 +30,9 @@ const SECTIONS = [
 ]
 
 export function ProductEditPage() {
-	const {
-		activeId,
-		scrollDir,
-		containerRef,
-		DOWN_THRESHOLD_VH,
-		UP_THRESHOLD_VH,
-	} = useInPageNavigation({
-		SECTIONS,
-	})
+	const containerRef = React.useRef<HTMLDivElement | null>(null)
+
+	const MemoSidebar = React.memo(Sidebar)
 
 	return (
 		<>
@@ -78,11 +72,7 @@ export function ProductEditPage() {
 
 						{/* Right Column */}
 						<div className="col-span-0 md:col-span-1">
-							<Sidebar
-								sections={SECTIONS}
-								activeId={activeId}
-								containerRef={containerRef}
-							/>
+							<MemoSidebar sections={SECTIONS} containerRef={containerRef} />
 						</div>
 					</div>
 				</div>
@@ -98,15 +88,10 @@ interface Section {
 
 interface SidebarProps {
 	sections: Section[]
-	activeId: string
 	containerRef: React.RefObject<HTMLDivElement | null>
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
-	sections,
-	activeId,
-	containerRef,
-}) => {
+const Sidebar = ({ sections, containerRef }: SidebarProps) => {
 	const handleLinkClick = (e: React.MouseEvent, id: string) => {
 		e.preventDefault()
 		const el = document.getElementById(id)
@@ -120,6 +105,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 			container.scrollTo({ top, behavior: 'smooth' })
 		}
 	}
+
+	const { activeId, scrollDir, DOWN_THRESHOLD_VH, UP_THRESHOLD_VH } =
+		useInPageNavigation({
+			containerRef,
+			SECTIONS,
+		})
 
 	return (
 		<aside className="sticky top-20 z-5 hidden w-full flex-col overflow-y-auto border-r p-8 md:flex">

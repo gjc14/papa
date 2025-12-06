@@ -21,15 +21,16 @@ type Direction = 'up' | 'down'
  *	}
  */
 export function useInPageNavigation({
+	containerRef,
 	SECTIONS,
 	DOWN_THRESHOLD_VH = 0.75, // 75% down the viewport
 	UP_THRESHOLD_VH = 0.25, // 25% down the viewport
 }: {
+	containerRef: React.RefObject<HTMLDivElement | null>
 	SECTIONS: { id: string }[]
 	DOWN_THRESHOLD_VH?: number
 	UP_THRESHOLD_VH?: number
 }): {
-	containerRef: React.RefObject<HTMLDivElement | null>
 	activeId: string
 	scrollDir: Direction
 	DOWN_THRESHOLD_VH: number
@@ -38,7 +39,6 @@ export function useInPageNavigation({
 	const [activeId, setActiveId] = useState<string>(SECTIONS[0].id)
 	const [scrollDir, setScrollDir] = useState<Direction>('down')
 
-	const containerRef = useRef<HTMLDivElement | null>(null)
 	// Use a ref to track the last scroll position for direction calculation
 	const lastScrollY = useRef(0)
 
@@ -102,7 +102,6 @@ export function useInPageNavigation({
 	}, [handleScroll])
 
 	return {
-		containerRef,
 		activeId,
 		scrollDir,
 		DOWN_THRESHOLD_VH,
