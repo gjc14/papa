@@ -53,32 +53,13 @@ export const Instructions = () => {
 
 	// useMemo to ensure each instruction has a unique and stable _id
 	const instructionsWithIds = useMemo<InstructionWithId[]>(() => {
-		if (!productInstructions) return []
 		return productInstructions.map(d => ({
 			...d,
 			_id: (d as InstructionWithId)._id || nanoid(),
 		}))
 	}, [productInstructions])
 
-	const handleAddInstruction = () => {
-		if (!productInstructions) return
-		const newInstruction: InstructionWithId = {
-			order: instructionsWithIds.length,
-			title: 'New Instruction',
-			content: 'Content here',
-			_id: nanoid(),
-		}
-		setProduct(prev => {
-			if (!prev) return prev
-			return {
-				...prev,
-				instructions: [...instructionsWithIds, newInstruction],
-			}
-		})
-	}
-
 	const handleUpdateInstruction = (updatedInstruction: InstructionWithId) => {
-		if (!productInstructions) return
 		setProduct(prev => {
 			if (!prev) return prev
 			return {
@@ -91,7 +72,6 @@ export const Instructions = () => {
 	}
 
 	const handleDeleteInstruction = (id: string) => {
-		if (!productInstructions) return
 		setProduct(prev => {
 			if (!prev) return prev
 			return {
@@ -115,12 +95,48 @@ export const Instructions = () => {
 					instructionsWithIds
 						.sort((a, b) => a.order - b.order)
 						.map(i => (
-							<InstructionItem
+							<InstructionEditDialog
 								key={i._id}
 								instruction={i}
-								onUpdate={handleUpdateInstruction}
-								onDelete={handleDeleteInstruction}
-							/>
+								onSave={handleUpdateInstruction}
+							>
+								<Item variant="outline" className="overflow-auto">
+									<ItemContent>
+										<ItemTitle>{i.title || 'Untitled'}</ItemTitle>
+										<ItemDescription>
+											{i.content || 'No content'}
+										</ItemDescription>
+									</ItemContent>
+									<ItemActions>
+										<DialogTrigger asChild>
+											<Button variant="outline" size="sm">
+												Edit
+											</Button>
+										</DialogTrigger>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant="outline"
+													size="icon"
+													className="size-8"
+												>
+													<MoreVertical />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent>
+												<DropdownMenuLabel>Actions</DropdownMenuLabel>
+												<DropdownMenuSeparator />
+												<DropdownMenuItem
+													onClick={() => handleDeleteInstruction(i._id)}
+													className="focus:bg-destructive/90 focus:text-white"
+												>
+													Delete
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</ItemActions>
+								</Item>
+							</InstructionEditDialog>
 						))
 				) : (
 					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
@@ -129,66 +145,60 @@ export const Instructions = () => {
 				)}
 			</CardContent>
 			<CardFooter>
-				<Button
-					variant="outline"
-					size="sm"
-					className="w-full"
-					onClick={handleAddInstruction}
+				<InstructionEditDialog
+					instruction={createNewInstruction(instructionsWithIds)}
+					onSave={i =>
+						setProduct(prev => {
+							if (!prev) return prev
+							return {
+								...prev,
+								instructions: [...instructionsWithIds, i],
+							}
+						})
+					}
 				>
-					<Plus />
-					Add Instruction
-				</Button>
+					<Button variant="outline" size="sm" className="w-full" asChild>
+						<DialogTrigger>
+							<Plus />
+							Add Instruction
+						</DialogTrigger>
+					</Button>
+				</InstructionEditDialog>
 			</CardFooter>
 		</Card>
 	)
 }
 
-function InstructionItem({
+export function createNewInstruction(instructionsWithIds: InstructionWithId[]) {
+	return {
+		order: instructionsWithIds.length,
+		title: 'New Instruction',
+		content: 'Content here',
+		_id: nanoid(),
+	}
+}
+
+export function InstructionEditDialog({
 	instruction,
-	onUpdate,
-	onDelete,
+	onSave,
+	children,
 }: {
 	instruction: InstructionWithId
-	onUpdate: (updatedInstruction: InstructionWithId) => void
-	onDelete: (id: string) => void
+	onSave: (updatedInstruction: InstructionWithId) => void
+	children?: React.ReactNode
 }) {
 	const [open, setOpen] = useState(false)
 	const [editedInstruction, setEditedInstruction] = useState(instruction)
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<Item variant="outline" className="overflow-auto">
-				<ItemContent>
-					<ItemTitle>{instruction.title || 'Untitled'}</ItemTitle>
-					<ItemDescription>
-						{instruction.content || 'No content'}
-					</ItemDescription>
-				</ItemContent>
-				<ItemActions>
-					<DialogTrigger asChild>
-						<Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-							Edit
-						</Button>
-					</DialogTrigger>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="icon" className="size-8">
-								<MoreVertical />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							<DropdownMenuLabel>Actions</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => onDelete(instruction._id)}
-								className="focus:bg-destructive/90 focus:text-white"
-							>
-								Delete
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</ItemActions>
-			</Item>
+		<Dialog
+			open={open}
+			onOpenChange={open => {
+				open && setEditedInstruction(instruction)
+				setOpen(open)
+			}}
+		>
+			{children}
 			<DialogContent>
 				<FieldSet className="relative w-full">
 					<FieldGroup>
@@ -225,7 +235,7 @@ function InstructionItem({
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
-									onUpdate(editedInstruction)
+									onSave(editedInstruction)
 									setOpen(false)
 								}}
 							>
