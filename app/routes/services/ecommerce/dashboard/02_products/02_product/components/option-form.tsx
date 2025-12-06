@@ -7,6 +7,8 @@ import {
 	DownloadIcon,
 	Image,
 	InfoIcon,
+	Link2,
+	Link2Off,
 	PackageIcon,
 	Plus,
 	SettingsIcon,
@@ -59,11 +61,94 @@ export type ProductOptionType = NonNullable<
 	ReturnType<typeof productAtom.read>
 >['option']
 
+export function isFieldInherited<K extends keyof ProductOptionType>(
+	option: ProductOptionType,
+	parentOption: ProductOptionType | undefined,
+	field: K,
+): boolean {
+	if (!parentOption) return false
+
+	const optionValue = option[field]
+	const parentValue = parentOption[field]
+
+	if (typeof optionValue === 'bigint' && typeof parentValue === 'bigint') {
+		return optionValue === parentValue
+	}
+
+	if (optionValue instanceof Date && parentValue instanceof Date) {
+		return optionValue.getTime() === parentValue.getTime()
+	}
+
+	if (typeof optionValue === 'object' && typeof parentValue === 'object') {
+		return JSON.stringify(optionValue) === JSON.stringify(parentValue)
+	}
+
+	if (Array.isArray(optionValue) && Array.isArray(parentValue)) {
+		return JSON.stringify(optionValue) === JSON.stringify(parentValue)
+	}
+
+	return optionValue === parentValue
+}
+
+function handleInherit<K extends keyof ProductOptionType>(
+	field: K,
+	parentOption: ProductOptionType | undefined,
+	onChange: (field: Partial<ProductOptionType>) => void,
+) {
+	if (!parentOption) return
+	onChange({ [field]: parentOption[field] })
+}
+
+interface InheritButtonProps {
+	isInherited: boolean
+	onInherit: () => void
+	parentValue?: string | number | null
+}
+
+function InheritButton({
+	isInherited,
+	onInherit,
+	parentValue,
+}: InheritButtonProps) {
+	return (
+		<Tooltip delayDuration={0}>
+			<TooltipTrigger asChild>
+				<Button
+					type="button"
+					size="icon"
+					variant={isInherited ? 'secondary' : 'ghost'}
+					className="size-6"
+					onClick={onInherit}
+				>
+					{isInherited ? <Link2 /> : <Link2Off />}
+				</Button>
+			</TooltipTrigger>
+			<TooltipContent side="right">
+				<div className="text-xs">
+					{isInherited ? (
+						<>
+							<div className="font-medium">Inherited from product</div>
+							{!!parentValue && (
+								<div className="text-muted-foreground">
+									Value: {parentValue}
+								</div>
+							)}
+						</>
+					) : (
+						'Click to inherit from product'
+					)}
+				</div>
+			</TooltipContent>
+		</Tooltip>
+	)
+}
+
 interface OptionFormProps {
 	option: ProductOptionType
 	onChange: (field: Partial<ProductOptionType>) => void
 	/** Pass in parent option if this is a variant */
 	parentOption?: ProductOptionType
+	/** Pass in inherited fields if this is a variant */
 }
 
 export function OptionForm({
@@ -71,6 +156,8 @@ export function OptionForm({
 	onChange,
 	parentOption,
 }: OptionFormProps) {
+	const isVariant = !!parentOption
+
 	const storeConfig = useAtomValue(storeConfigAtom)
 
 	const fetcher = useFetcher<typeof loader>()
@@ -80,7 +167,11 @@ export function OptionForm({
 	const [altInput, setAltInput] = useState('')
 	const [titleInput, setTitleInput] = useState('')
 
-	const isVariant = !!parentOption
+	const checkInherited = (field: keyof ProductOptionType) =>
+		isVariant && isFieldInherited(option, parentOption, field)
+
+	const applyInherit = (field: keyof ProductOptionType) =>
+		handleInherit(field, parentOption, onChange)
 
 	const tabConfig = [
 		{ value: 'general', icon: SettingsIcon, label: 'General' },
@@ -134,9 +225,7 @@ export function OptionForm({
 					<TabsContent
 						tabIndex={-1}
 						value="general"
-						className={`m-0 flex ${
-							isVariant ? '' : 'h-[360px]'
-						} flex-col gap-3 overflow-y-scroll p-3 pb-12`}
+						className={`m-0 flex h-[360px] flex-col gap-3 overflow-y-scroll p-3 pb-12`}
 					>
 						<CardTitle className="my-1 mb-3">General</CardTitle>
 
@@ -239,7 +328,16 @@ export function OptionForm({
 
 									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="price">Regular Price</FieldLabel>
+											<FieldLabel htmlFor="price" className="items-center">
+												Regular Price
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('price')}
+														onInherit={() => applyInherit('price')}
+														parentValue={formattedOriginalPrice}
+													/>
+												)}
+											</FieldLabel>
 											<Input
 												id="price"
 												type="text"
@@ -252,13 +350,31 @@ export function OptionForm({
 													})
 												}}
 												autoFocus={isVariant}
+												className={
+													checkInherited('price')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription className="bg-brand text-brand-foreground border px-1 py-0.5 break-words">
 												{formattedOriginalPrice}
 											</FieldDescription>
 										</Field>
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="sale-price">Sale Price</FieldLabel>
+											<FieldLabel htmlFor="sale-price" className="items-center">
+												Sale Price
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('salePrice')}
+														onInherit={() => applyInherit('salePrice')}
+														parentValue={
+															parentOption?.salePrice
+																? parentOption.salePrice.toString()
+																: null
+														}
+													/>
+												)}
+											</FieldLabel>
 											<Input
 												id="sale-price"
 												type="text"
@@ -271,6 +387,11 @@ export function OptionForm({
 															: null,
 													})
 												}}
+												className={
+													checkInherited('salePrice')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription className="bg-brand text-brand-foreground border px-1 py-0.5 break-words">
 												{option.salePrice && hasDiscount ? formattedPrice : '-'}
@@ -280,7 +401,16 @@ export function OptionForm({
 
 									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="scale">Scale</FieldLabel>
+											<FieldLabel htmlFor="scale" className="items-center">
+												Scale
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('scale')}
+														onInherit={() => applyInherit('scale')}
+														parentValue={parentOption?.scale}
+													/>
+												)}
+											</FieldLabel>
 											<Input
 												id="scale"
 												type="number"
@@ -296,18 +426,38 @@ export function OptionForm({
 												}}
 												min={0}
 												placeholder="2"
+												className={
+													checkInherited('scale')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription>
 												Number of decimal places for prices.
 											</FieldDescription>
 										</Field>
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="currency">Currency</FieldLabel>
+											<FieldLabel htmlFor="currency" className="items-center">
+												Currency
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('currency')}
+														onInherit={() => applyInherit('currency')}
+														parentValue={parentOption?.currency}
+													/>
+												)}
+											</FieldLabel>
 											<Select
 												value={option.currency}
 												onValueChange={value => onChange({ currency: value })}
 											>
-												<SelectTrigger>
+												<SelectTrigger
+													className={
+														checkInherited('currency')
+															? 'text-muted-foreground border-dashed'
+															: ''
+													}
+												>
 													<SelectValue placeholder="Choose currency" />
 												</SelectTrigger>
 												<SelectContent>
@@ -330,8 +480,18 @@ export function OptionForm({
 
 									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="sale-starts-at">
+											<FieldLabel
+												htmlFor="sale-starts-at"
+												className="items-center"
+											>
 												Sale Starts At
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('saleStartsAt')}
+														onInherit={() => applyInherit('saleStartsAt')}
+														parentValue={parentOption?.saleStartsAt?.toLocaleString()}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="sale-starts-at"
@@ -349,11 +509,26 @@ export function OptionForm({
 													})
 												}
 												disabled={!option.salePrice}
+												className={
+													checkInherited('saleStartsAt')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 										</Field>
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="sale-ends-at">
+											<FieldLabel
+												htmlFor="sale-ends-at"
+												className="items-center"
+											>
 												Sale Ends At
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('saleEndsAt')}
+														onInherit={() => applyInherit('saleEndsAt')}
+														parentValue={parentOption?.saleEndsAt?.toLocaleString()}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="sale-ends-at"
@@ -371,6 +546,11 @@ export function OptionForm({
 													})
 												}
 												disabled={!option.salePrice}
+												className={
+													checkInherited('saleEndsAt')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 										</Field>
 									</FieldGroup>
@@ -379,8 +559,15 @@ export function OptionForm({
 
 									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="in-batch">
+											<FieldLabel htmlFor="in-batch" className="items-center">
 												In Batch Quantity
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('step')}
+														onInherit={() => applyInherit('step')}
+														parentValue={parentOption?.step}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="in-batch"
@@ -394,14 +581,29 @@ export function OptionForm({
 													})
 												}
 												min={1}
+												className={
+													checkInherited('step')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription>
 												Quantity increment/decrement step when adding to cart.
 											</FieldDescription>
 										</Field>
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="min-qty-allowed">
+											<FieldLabel
+												htmlFor="min-qty-allowed"
+												className="items-center"
+											>
 												Min Quantity Allowed
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('minQtyAllowed')}
+														onInherit={() => applyInherit('minQtyAllowed')}
+														parentValue={parentOption?.minQtyAllowed}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="min-qty-allowed"
@@ -415,14 +617,31 @@ export function OptionForm({
 													})
 												}
 												min={1}
+												className={
+													checkInherited('minQtyAllowed')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription>
 												Minimum quantity a customer can purchase.
 											</FieldDescription>
 										</Field>
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="max-qty-allowed">
+											<FieldLabel
+												htmlFor="max-qty-allowed"
+												className="items-center"
+											>
 												Max Quantity Allowed
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('maxQtyAllowed')}
+														onInherit={() => applyInherit('maxQtyAllowed')}
+														parentValue={
+															parentOption?.maxQtyAllowed || 'Unlimited'
+														}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="max-qty-allowed"
@@ -437,6 +656,11 @@ export function OptionForm({
 												}
 												min={0}
 												placeholder="Unlimited"
+												className={
+													checkInherited('maxQtyAllowed')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription>
 												Maximum quantity a customer can purchase.
@@ -460,23 +684,49 @@ export function OptionForm({
 						<FieldGroup>
 							<FieldGroup className="sm:flex-row">
 								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="sku">SKU</FieldLabel>
+									<FieldLabel htmlFor="sku" className="items-center">
+										SKU
+										{isVariant && (
+											<InheritButton
+												isInherited={checkInherited('sku')}
+												onInherit={() => applyInherit('sku')}
+												parentValue={parentOption?.sku}
+											/>
+										)}
+									</FieldLabel>
 									<Input
 										id="sku"
 										value={option.sku || ''}
 										onChange={e => onChange({ sku: e.target.value })}
 										placeholder="e.g., IPH14PRO128"
+										className={
+											checkInherited('sku')
+												? 'text-muted-foreground border-dashed'
+												: ''
+										}
 									/>
 								</Field>
 								<Field className="min-w-0 flex-1">
-									<FieldLabel htmlFor="identifier">
+									<FieldLabel htmlFor="identifier" className="items-center">
 										Identifier (Barcode/EAN)
+										{isVariant && (
+											<InheritButton
+												isInherited={checkInherited('identifier')}
+												onInherit={() => applyInherit('identifier')}
+												parentValue={parentOption?.identifier}
+											/>
+										)}
 									</FieldLabel>
 									<Input
 										id="identifier"
 										value={option.identifier || ''}
 										onChange={e => onChange({ identifier: e.target.value })}
 										placeholder="e.g., 190199000001"
+										className={
+											checkInherited('identifier')
+												? 'text-muted-foreground border-dashed'
+												: ''
+										}
 									/>
 								</Field>
 							</FieldGroup>
@@ -484,7 +734,20 @@ export function OptionForm({
 							<FieldSeparator />
 
 							<Field orientation={'horizontal'}>
-								<FieldLabel htmlFor="manageStock">Manage Stock</FieldLabel>
+								<FieldContent>
+									<FieldLabel htmlFor="manageStock" className="items-center">
+										Manage Stock
+										{isVariant && (
+											<InheritButton
+												isInherited={checkInherited('manageStock')}
+												onInherit={() => applyInherit('manageStock')}
+												parentValue={
+													parentOption?.manageStock === 1 ? 'On' : 'Off'
+												}
+											/>
+										)}
+									</FieldLabel>
+								</FieldContent>
 								<Switch
 									id="manageStock"
 									checked={option.manageStock === 1}
@@ -517,14 +780,30 @@ export function OptionForm({
 								</>
 							) : (
 								<Field>
-									<FieldLabel htmlFor="stockStatus">Stock Status</FieldLabel>
+									<FieldLabel htmlFor="stockStatus" className="items-center">
+										Stock Status
+										{isVariant && (
+											<InheritButton
+												isInherited={checkInherited('stockStatus')}
+												onInherit={() => applyInherit('stockStatus')}
+												parentValue={parentOption?.stockStatus}
+											/>
+										)}
+									</FieldLabel>
 									<Select
 										value={option.stockStatus}
 										onValueChange={(value: StockStatus) =>
 											onChange({ stockStatus: value })
 										}
 									>
-										<SelectTrigger id="stockStatus">
+										<SelectTrigger
+											id="stockStatus"
+											className={
+												checkInherited('stockStatus')
+													? 'text-muted-foreground border-dashed'
+													: ''
+											}
+										>
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -556,7 +835,18 @@ export function OptionForm({
 
 						<FieldGroup>
 							<Field orientation={'horizontal'}>
-								<FieldLabel htmlFor="virtual">Virtual Product</FieldLabel>
+								<FieldContent>
+									<FieldLabel htmlFor="virtual" className="items-center">
+										Virtual Product
+										{isVariant && (
+											<InheritButton
+												isInherited={checkInherited('virtual')}
+												onInherit={() => applyInherit('virtual')}
+												parentValue={parentOption?.virtual === 1 ? 'Yes' : 'No'}
+											/>
+										)}
+									</FieldLabel>
+								</FieldContent>
 								<Switch
 									id="virtual"
 									checked={option.virtual === 1}
@@ -571,8 +861,15 @@ export function OptionForm({
 									<FieldSeparator />
 									<FieldGroup>
 										<Field>
-											<FieldLabel htmlFor="weight">
+											<FieldLabel htmlFor="weight" className="items-center">
 												Weight ({storeConfig.inventory.unitSettings.weight})
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('weight')}
+														onInherit={() => applyInherit('weight')}
+														parentValue={parentOption?.weight}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="weight"
@@ -586,12 +883,28 @@ export function OptionForm({
 													})
 												}
 												placeholder="206"
+												className={
+													checkInherited('weight')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 										</Field>
 
 										<FieldGroup>
-											<FieldLabel>
+											<FieldLabel className="items-center">
 												Dimensions ({storeConfig.inventory.unitSettings.length})
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('dimension')}
+														onInherit={() => applyInherit('dimension')}
+														parentValue={
+															parentOption?.dimension
+																? `${parentOption.dimension.length}×${parentOption.dimension.width}×${parentOption.dimension.height}`
+																: null
+														}
+													/>
+												)}
 											</FieldLabel>
 											<Field className="sm:flex-row">
 												<Input
@@ -609,6 +922,11 @@ export function OptionForm({
 														})
 													}
 													placeholder="L"
+													className={
+														checkInherited('dimension')
+															? 'text-muted-foreground border-dashed'
+															: ''
+													}
 												/>
 												<Input
 													type="number"
@@ -625,6 +943,11 @@ export function OptionForm({
 														})
 													}
 													placeholder="W"
+													className={
+														checkInherited('dimension')
+															? 'text-muted-foreground border-dashed'
+															: ''
+													}
 												/>
 												<Input
 													type="number"
@@ -641,6 +964,11 @@ export function OptionForm({
 														})
 													}
 													placeholder="H"
+													className={
+														checkInherited('dimension')
+															? 'text-muted-foreground border-dashed'
+															: ''
+													}
 												/>
 											</Field>
 										</FieldGroup>
@@ -683,7 +1011,20 @@ export function OptionForm({
 
 						<FieldGroup>
 							<Field orientation="horizontal">
-								<FieldLabel htmlFor="downloadable">Downloadable</FieldLabel>
+								<FieldContent>
+									<FieldLabel htmlFor="downloadable" className="items-center">
+										Downloadable
+										{isVariant && (
+											<InheritButton
+												isInherited={checkInherited('downloadable')}
+												onInherit={() => applyInherit('downloadable')}
+												parentValue={
+													parentOption?.downloadable === 1 ? 'Yes' : 'No'
+												}
+											/>
+										)}
+									</FieldLabel>
+								</FieldContent>
 								<Switch
 									id="downloadable"
 									checked={option.downloadable === 1}
@@ -784,8 +1125,20 @@ export function OptionForm({
 
 									<FieldGroup className="sm:flex-row">
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="downloadLimit">
+											<FieldLabel
+												htmlFor="downloadLimit"
+												className="items-center"
+											>
 												Download Limit
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('downloadLimit')}
+														onInherit={() => applyInherit('downloadLimit')}
+														parentValue={
+															parentOption?.downloadLimit || 'Unlimited'
+														}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="downloadLimit"
@@ -800,14 +1153,31 @@ export function OptionForm({
 												}
 												placeholder="Unlimited"
 												min={0}
+												className={
+													checkInherited('downloadLimit')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription>
 												Number of times a customer can download the file.
 											</FieldDescription>
 										</Field>
 										<Field className="min-w-0 flex-1">
-											<FieldLabel htmlFor="downloadExpiry">
+											<FieldLabel
+												htmlFor="downloadExpiry"
+												className="items-center"
+											>
 												Download Expiry (seconds)
+												{isVariant && (
+													<InheritButton
+														isInherited={checkInherited('downloadExpiry')}
+														onInherit={() => applyInherit('downloadExpiry')}
+														parentValue={
+															parentOption?.downloadExpiry || 'Never'
+														}
+													/>
+												)}
 											</FieldLabel>
 											<Input
 												id="downloadExpiry"
@@ -822,6 +1192,11 @@ export function OptionForm({
 												}
 												placeholder="Never expires"
 												min={0}
+												className={
+													checkInherited('downloadExpiry')
+														? 'text-muted-foreground border-dashed'
+														: ''
+												}
 											/>
 											<FieldDescription>
 												Time period after purchase when the download link
@@ -850,13 +1225,27 @@ export function OptionForm({
 
 						<FieldGroup>
 							<Field>
-								<FieldLabel htmlFor="note">Additional Note</FieldLabel>
+								<FieldLabel htmlFor="note" className="items-center">
+									Additional Note
+									{isVariant && (
+										<InheritButton
+											isInherited={checkInherited('note')}
+											onInherit={() => applyInherit('note')}
+											parentValue={parentOption?.note}
+										/>
+									)}
+								</FieldLabel>
 								<Textarea
 									id="note"
 									value={option.note || ''}
 									onChange={e => onChange({ note: e.target.value })}
 									placeholder="Add any additional notes about this product option..."
 									rows={4}
+									className={
+										checkInherited('note')
+											? 'text-muted-foreground border-dashed'
+											: ''
+									}
 								/>
 								<FieldDescription>
 									Note for your own reference, not visible to customers.
