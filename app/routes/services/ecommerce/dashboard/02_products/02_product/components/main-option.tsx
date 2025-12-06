@@ -9,7 +9,11 @@ import {
 } from '~/components/ui/card'
 
 import { productAtom } from '../../../../store/product/context'
-import { OptionForm, type ProductOptionType } from './option-form'
+import {
+	isFieldInherited,
+	OptionForm,
+	type ProductOptionType,
+} from './option-form'
 
 const productNameAtom = atom(get => get(productAtom)?.name || null)
 const productOptionAtom = atom(get => get(productAtom)?.option || null)
@@ -21,10 +25,41 @@ export function MainOption() {
 
 	if (!productName || !productOption) return null
 
-	const handleOptionChange = (field: Partial<ProductOptionType>) => {
+	const handleOptionChange = (optionUpdated: Partial<ProductOptionType>) => {
 		setProduct(prev => {
 			if (!prev) return prev
-			return { ...prev, option: { ...prev.option, ...field } }
+			const prevOption = prev.option
+			const newOption = { ...prevOption, ...optionUpdated }
+
+			// Update variants that have inherited fields
+			const updatedVariants = prev.variants.map(variant => {
+				const updatedVariantOption: Partial<ProductOptionType> = {}
+
+				// Check each field in optionUpdated to see if variant inherited it
+				for (const key of Object.keys(
+					optionUpdated,
+				) as (keyof ProductOptionType)[]) {
+					if (isFieldInherited(variant.option, prevOption, key)) {
+						updatedVariantOption[key] = newOption[key] as any
+					}
+				}
+
+				// Only update if there are inherited fields to update
+				if (Object.keys(updatedVariantOption).length > 0) {
+					return {
+						...variant,
+						option: { ...variant.option, ...updatedVariantOption },
+					}
+				}
+
+				return variant
+			})
+
+			return {
+				...prev,
+				option: newOption,
+				variants: updatedVariants,
+			}
 		})
 	}
 
