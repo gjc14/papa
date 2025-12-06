@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { Plus, XIcon } from 'lucide-react'
+import { MoreVertical, Plus, XIcon } from 'lucide-react'
 import { nanoid } from 'nanoid'
 
 import { Button } from '~/components/ui/button'
@@ -13,6 +13,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from '~/components/ui/card'
+import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 import { Field, FieldGroup, FieldLabel, FieldSet } from '~/components/ui/field'
 import { Input } from '~/components/ui/input'
 import {
@@ -143,22 +152,46 @@ function InstructionItem({
 	onUpdate: (updatedInstruction: InstructionWithId) => void
 	onDelete: (id: string) => void
 }) {
-	const [isEditing, setIsEditing] = useState(false)
+	const [open, setOpen] = useState(false)
 	const [editedInstruction, setEditedInstruction] = useState(instruction)
 
 	return (
-		<Item variant="outline" className="overflow-auto">
-			{isEditing ? (
-				<FieldSet className="relative w-full pt-2">
-					<FieldGroup>
-						<Button
-							variant="destructive"
-							size="icon"
-							onClick={() => onDelete(instruction._id)}
-							className="absolute top-0 right-0 size-4 rounded-full"
-						>
-							<XIcon className="size-3" />
+		<Dialog open={open} onOpenChange={setOpen}>
+			<Item variant="outline" className="overflow-auto">
+				<ItemContent>
+					<ItemTitle>{instruction.title || 'Untitled'}</ItemTitle>
+					<ItemDescription>
+						{instruction.content || 'No content'}
+					</ItemDescription>
+				</ItemContent>
+				<ItemActions>
+					<DialogTrigger asChild>
+						<Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+							Edit
 						</Button>
+					</DialogTrigger>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" size="icon" className="size-8">
+								<MoreVertical />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuLabel>Actions</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								onClick={() => onDelete(instruction._id)}
+								className="focus:bg-destructive/90 focus:text-white"
+							>
+								Delete
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</ItemActions>
+			</Item>
+			<DialogContent>
+				<FieldSet className="relative w-full">
+					<FieldGroup>
 						<Field>
 							<FieldLabel htmlFor="title">Title</FieldLabel>
 							<Input
@@ -187,13 +220,13 @@ function InstructionItem({
 							/>
 						</Field>
 
-						<div className="flex flex-col gap-1 md:flex-row-reverse">
+						<div className="flex flex-col gap-2 md:flex-row-reverse">
 							<Button
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
 									onUpdate(editedInstruction)
-									setIsEditing(false)
+									setOpen(false)
 								}}
 							>
 								Save
@@ -203,8 +236,7 @@ function InstructionItem({
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
-									setEditedInstruction(instruction) // Reset to original
-									setIsEditing(false)
+									setOpen(false)
 								}}
 							>
 								Cancel
@@ -212,25 +244,7 @@ function InstructionItem({
 						</div>
 					</FieldGroup>
 				</FieldSet>
-			) : (
-				<>
-					<ItemContent>
-						<ItemTitle>{instruction.title || 'Untitled'}</ItemTitle>
-						<ItemDescription>
-							{instruction.content || 'No content'}
-						</ItemDescription>
-					</ItemContent>
-					<ItemActions>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => setIsEditing(true)}
-						>
-							Edit
-						</Button>
-					</ItemActions>
-				</>
-			)}
-		</Item>
+			</DialogContent>
+		</Dialog>
 	)
 }

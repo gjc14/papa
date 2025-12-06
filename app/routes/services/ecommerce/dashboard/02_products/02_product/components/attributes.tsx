@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { Eye, EyeOff, ListChecksIcon, Plus, XIcon } from 'lucide-react'
+import { Eye, EyeOff, ListChecksIcon, MoreVertical, Plus } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -14,6 +14,15 @@ import {
 	CardTitle,
 } from '~/components/ui/card'
 import { Checkbox } from '~/components/ui/checkbox'
+import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 import {
 	Field,
 	FieldContent,
@@ -211,22 +220,57 @@ function AttributeItem({
 	onUpdate: (updatedAttribute: AttributeType) => void
 	onDelete: (id: number) => void
 }) {
-	const [isEditing, setIsEditing] = useState(false)
+	const [open, setOpen] = useState(false)
 	const [editedAttribute, setEditedAttribute] = useState(attribute)
 
 	return (
-		<Item variant="outline">
-			{isEditing ? (
-				<FieldSet className="relative w-full pt-2">
-					<FieldGroup>
+		<Dialog open={open} onOpenChange={setOpen}>
+			<Item variant="outline" className="relative">
+				<ItemContent>
+					<ItemTitle>
+						{attribute.visible ? <Eye size={16} /> : <EyeOff size={16} />}
+						{attribute.name || 'Untitled'}
+					</ItemTitle>
+					<ItemDescription>{attribute.value || 'No content'}</ItemDescription>
+					<ItemDescription>
+						<Badge className="rounded-none">{attribute.selectType}</Badge>
+					</ItemDescription>
+				</ItemContent>
+				<ItemActions>
+					<DialogTrigger asChild>
 						<Button
-							variant="destructive"
-							size="icon"
-							onClick={() => onDelete(attribute.id)}
-							className="absolute top-0 right-0 size-4 rounded-full"
+							variant="outline"
+							size="sm"
+							onClick={() => {
+								setEditedAttribute(attribute) // Reset to original;
+								setOpen(true)
+							}}
 						>
-							<XIcon className="size-3" />
+							Edit
 						</Button>
+					</DialogTrigger>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" size="icon" className="size-8">
+								<MoreVertical />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuLabel>Actions</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								onClick={() => onDelete(attribute.id)}
+								className="focus:bg-destructive/90 focus:text-white"
+							>
+								Delete
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</ItemActions>
+			</Item>
+			<DialogContent>
+				<FieldSet className="relative w-full">
+					<FieldGroup>
 						<Field>
 							<FieldLabel htmlFor="name">Name</FieldLabel>
 							<Input
@@ -305,13 +349,20 @@ function AttributeItem({
 							</FieldContent>
 						</Field>
 
-						<div className="flex flex-col gap-1 md:flex-row-reverse">
+						<div className="flex flex-col gap-2 md:flex-row-reverse">
 							<Button
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
-									onUpdate(editedAttribute)
-									setIsEditing(false)
+									onUpdate({
+										...editedAttribute,
+										value:
+											editedAttribute.value
+												?.split('|')
+												.map(v => v.trim())
+												.join(' | ') || '',
+									})
+									setOpen(false)
 								}}
 							>
 								Save
@@ -321,8 +372,7 @@ function AttributeItem({
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
-									setEditedAttribute(attribute) // Reset to original
-									setIsEditing(false)
+									setOpen(false)
 								}}
 							>
 								Cancel
@@ -330,32 +380,7 @@ function AttributeItem({
 						</div>
 					</FieldGroup>
 				</FieldSet>
-			) : (
-				<>
-					<ItemContent>
-						<ItemTitle>
-							{attribute.visible ? <Eye size={16} /> : <EyeOff size={16} />}
-							{attribute.name || 'Untitled'}
-						</ItemTitle>
-						<ItemDescription>{attribute.value || 'No content'}</ItemDescription>
-						<ItemDescription>
-							<Badge className="rounded-none">{attribute.selectType}</Badge>
-						</ItemDescription>
-					</ItemContent>
-					<ItemActions>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => {
-								setEditedAttribute(attribute) // Reset to original;
-								setIsEditing(true)
-							}}
-						>
-							Edit
-						</Button>
-					</ItemActions>
-				</>
-			)}
-		</Item>
+			</DialogContent>
+		</Dialog>
 	)
 }
