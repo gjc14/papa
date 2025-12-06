@@ -9,7 +9,7 @@ export const ProductInformation = () => {
 
 		// Derived
 		pricing,
-		variantOptions,
+		variantAttributes,
 		hasVariants,
 		selectedVariant,
 
@@ -20,11 +20,11 @@ export const ProductInformation = () => {
 		displayAttributeImage,
 	} = useProductContext()
 
-	if (!product || !pricing || !variantOptions) return null
+	if (!product || !pricing || !variantAttributes) return null
 
 	const { displayPrice, displayOriginalPrice, hasDiscount } = pricing
 
-	const variantOptionsEntries = Object.entries(variantOptions)
+	const variantAttributeEntries = Object.entries(variantAttributes)
 
 	const selectedVariantOption = selectedVariant?.option || product.option
 
@@ -65,11 +65,11 @@ export const ProductInformation = () => {
 				)}
 			</div>
 
-			{hasVariants && variantOptionsEntries.length > 0 && (
+			{hasVariants && variantAttributeEntries.length > 0 && (
 				<>
 					{/* Variant Selection (spread attribute options) */}
 					<div className="space-y-6">
-						{variantOptionsEntries.map(([name, valueSet]) => (
+						{variantAttributeEntries.map(([name, valueSet]) => (
 							<div key={name} className="space-y-3">
 								<h3 className="text-sm font-medium tracking-wide uppercase">
 									{name}
@@ -115,7 +115,7 @@ export const ProductInformation = () => {
 									SKU: {selectedVariantOption.sku || 'N/A'}
 								</div>
 								<p className="text-muted-foreground text-sm">
-									{variantOptionsEntries.map(([attrName], index) => {
+									{variantAttributeEntries.map(([attrName], index) => {
 										// Render in order of attributeName keys
 										const value = selectedVariant.combination[attrName]
 										return (
@@ -124,7 +124,7 @@ export const ProductInformation = () => {
 												<span className="text-primary font-medium">
 													{value}
 												</span>
-												{index < variantOptionsEntries.length - 1 && ' ⨉ '}
+												{index < variantAttributeEntries.length - 1 && ' ⨉ '}
 											</span>
 										)
 									})}

@@ -38,7 +38,7 @@ import {
 } from '~/components/ui/select'
 import { cn } from '~/lib/utils'
 import { productAtom } from '~/routes/services/ecommerce/store/product/context'
-import { getVariantOptions } from '~/routes/services/ecommerce/store/product/utils/attributes'
+import { getVariantAttributes } from '~/routes/services/ecommerce/store/product/utils/attributes'
 import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import { OptionForm } from './option-form'
@@ -223,7 +223,7 @@ function VariantDialog({
 	const attrOptions = useMemo(() => {
 		if (!productAttributes) return null
 
-		return getVariantOptions(productAttributes)
+		return getVariantAttributes(productAttributes)
 	}, [productAttributes])
 
 	const columns: ColumnDef<VariantType>[] = useMemo(() => {
@@ -249,14 +249,14 @@ function VariantDialog({
 				size: 50,
 			},
 			...(attrOptions
-				? Object.keys(attrOptions).map(attrKey => ({
-						id: attrKey,
-						header: attrKey,
+				? Object.entries(attrOptions).map(([attr, optSet]) => ({
+						id: attr,
+						header: attr,
 						cell: ({ row }: { row: Row<VariantType> }) => {
 							const setProduct = useSetAtom(productAtom)
 							const variant = row.original
-							const currentValue = variant.combination[attrKey]
-							const options = Array.from(attrOptions[attrKey]) || []
+							const currentValue = variant.combination[attr]
+							const options = Array.from(optSet)
 
 							const handleCombinationChange = (value: string) => {
 								setProduct(prev => {
@@ -268,7 +268,7 @@ function VariantDialog({
 											v.id === variant.id
 												? {
 														...v,
-														combination: { ...v.combination, [attrKey]: value },
+														combination: { ...v.combination, [attr]: value },
 													}
 												: v,
 										),
@@ -282,7 +282,7 @@ function VariantDialog({
 									onValueChange={handleCombinationChange}
 								>
 									<SelectTrigger className="h-8 w-full rounded-none">
-										<SelectValue placeholder={`Select ${attrKey}`} />
+										<SelectValue placeholder={`Select ${attr}`} />
 									</SelectTrigger>
 									<SelectContent className="rounded-none">
 										{options.map(option => {
@@ -290,7 +290,7 @@ function VariantDialog({
 												? productVariants.some(v => {
 														const currentVCombination = {
 															...variant.combination,
-															[attrKey]: option,
+															[attr]: option,
 														}
 														// Check if there are variant that matches this option
 														return Object.entries(currentVCombination).every(
