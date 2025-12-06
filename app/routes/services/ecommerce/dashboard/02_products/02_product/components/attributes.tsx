@@ -58,45 +58,26 @@ const productVariantsAtom = atom(
 )
 
 type AttributeType = NonNullable<
-	NonNullable<ReturnType<typeof productAtom.read>>['attributes']
->[number]
+	ReturnType<typeof productAtom.read>
+>['attributes'][number]
+
+type VariantType = NonNullable<
+	ReturnType<typeof productAtom.read>
+>['variants'][number]
 
 export function Attributes() {
 	const attributes = useAtomValue(productAttributesAtom)
 	const variants = useAtomValue(productVariantsAtom)
 	const setProduct = useSetAtom(productAtom)
 
-	if (!attributes) return null
+	if (!attributes || !variants) return null
 
-	/**
-	 * Attributes made up variants, so
-	 * when attribute name updated,
-	 * key in "variant combination" matching the old attribute name should update as well
-	 */
 	const handleUpdateAttribute = (updatedAttribute: AttributeType) => {
-		if (!updatedAttribute.name) return
-		const newAttrName = updatedAttribute.name.trim()
-
-		const oldAttr = attributes.find(attr => attr.id === updatedAttribute.id)
-		if (!oldAttr) return
-
-		const updatedAttributes = attributes.map(attr =>
-			attr.id === updatedAttribute.id ? updatedAttribute : attr,
+		const { updatedAttributes, updatedVariants } = updateAttribute(
+			updatedAttribute,
+			attributes,
+			variants,
 		)
-
-		const updatedVariants = variants
-			? variants.map(variant => {
-					if (!oldAttr.name || newAttrName === oldAttr.name) return variant
-
-					// Update key in combination
-					const newCombination = { ...variant.combination }
-					if (newCombination.hasOwnProperty(oldAttr.name)) {
-						newCombination[newAttrName] = newCombination[oldAttr.name]
-						delete newCombination[oldAttr.name]
-					}
-					return { ...variant, combination: newCombination }
-				})
-			: []
 
 		setProduct(prev => {
 			if (!prev) return prev
@@ -137,28 +118,6 @@ export function Attributes() {
 		})
 	}
 
-	const handleAddAttribute = () => {
-		setProduct(prev => {
-			if (!prev) return prev
-			return {
-				...prev,
-				attributes: [
-					...attributes,
-					{
-						// postgres integer -2147483648 to +2147483647
-						id: -(Math.floor(Math.random() * 2147483648) + 1), // id doesn't matter, backend will delete all and recreate
-						name: '',
-						value: 'A | B | C',
-						order: attributes.length + 1,
-						selectType: 'SELECTOR',
-						visible: 1,
-						attributeId: null,
-					},
-				],
-			}
-		})
-	}
-
 	return (
 		<Card id="attributes">
 			<CardHeader>
@@ -173,12 +132,52 @@ export function Attributes() {
 					attributes
 						.sort((a, b) => a.order - b.order)
 						.map(a => (
-							<AttributeItem
+							<AttributeEditDialog
 								key={a.id}
 								attribute={a}
-								onUpdate={handleUpdateAttribute}
-								onDelete={handleDeleteAttribute}
-							/>
+								onSave={handleUpdateAttribute}
+							>
+								<Item variant="outline" className="relative">
+									<ItemContent>
+										<ItemTitle>
+											{a.visible ? <Eye size={16} /> : <EyeOff size={16} />}
+											{a.name || 'Untitled'}
+										</ItemTitle>
+										<ItemDescription>{a.value || 'No content'}</ItemDescription>
+										<ItemDescription>
+											<Badge className="rounded-none">{a.selectType}</Badge>
+										</ItemDescription>
+									</ItemContent>
+									<ItemActions>
+										<DialogTrigger asChild>
+											<Button variant="outline" size="sm">
+												Edit
+											</Button>
+										</DialogTrigger>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant="outline"
+													size="icon"
+													className="size-8"
+												>
+													<MoreVertical />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent>
+												<DropdownMenuLabel>Actions</DropdownMenuLabel>
+												<DropdownMenuSeparator />
+												<DropdownMenuItem
+													onClick={() => handleDeleteAttribute(a.id)}
+													className="focus:bg-destructive/90 focus:text-white"
+												>
+													Delete
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</ItemActions>
+								</Item>
+							</AttributeEditDialog>
 						))
 				) : (
 					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
@@ -187,15 +186,30 @@ export function Attributes() {
 				)}
 			</CardContent>
 			<CardFooter className="flex-col gap-2 md:flex-row">
-				<Button
-					variant="outline"
-					size="sm"
-					className="w-full md:w-auto md:flex-1"
-					onClick={handleAddAttribute}
+				<AttributeEditDialog
+					attribute={createNewAttribute(attributes)}
+					onSave={a => {
+						setProduct(prev => {
+							if (!prev) return prev
+							return {
+								...prev,
+								attributes: [...prev.attributes, a],
+							}
+						})
+					}}
 				>
-					<Plus />
-					Add Attribute
-				</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						className="w-full md:w-auto md:flex-1"
+						asChild
+					>
+						<DialogTrigger>
+							<Plus />
+							Add Attribute
+						</DialogTrigger>
+					</Button>
+				</AttributeEditDialog>
 				<Button
 					variant="secondary"
 					size="sm"
@@ -211,63 +225,88 @@ export function Attributes() {
 	)
 }
 
-function AttributeItem({
+export function createNewAttribute(attributes: AttributeType[]): AttributeType {
+	return {
+		// postgres integer -2147483648 to +2147483647
+		id: -(Math.floor(Math.random() * 2147483648) + 1), // id doesn't matter, backend will delete all and recreate
+		name: 'Untitled',
+		value: 'A | B | C',
+		order: attributes.length + 1,
+		selectType: 'SELECTOR',
+		visible: 1,
+		attributeId: null,
+	}
+}
+
+/**
+ * Attributes made up variants, so
+ * when attribute name updated,
+ * key in "variant combination" matching the old attribute name should update as well
+ */
+export function updateAttribute(
+	updatedAttribute: AttributeType,
+	attributes: AttributeType[],
+	variants: VariantType[],
+): {
+	updatedAttributes: AttributeType[]
+	updatedVariants: VariantType[]
+} {
+	if (!updatedAttribute.name)
+		return {
+			updatedAttributes: attributes,
+			updatedVariants: variants,
+		}
+	const newAttrName = updatedAttribute.name.trim()
+
+	const oldAttr = attributes.find(attr => attr.id === updatedAttribute.id)
+	if (!oldAttr)
+		return {
+			updatedAttributes: attributes,
+			updatedVariants: variants,
+		}
+
+	const updatedAttributes: AttributeType[] = attributes.map(attr =>
+		attr.id === updatedAttribute.id ? updatedAttribute : attr,
+	)
+
+	const updatedVariants: VariantType[] = variants
+		? variants.map(variant => {
+				if (!oldAttr.name || newAttrName === oldAttr.name) return variant
+
+				// Update key in combination
+				const newCombination = { ...variant.combination }
+				if (newCombination.hasOwnProperty(oldAttr.name)) {
+					newCombination[newAttrName] = newCombination[oldAttr.name]
+					delete newCombination[oldAttr.name]
+				}
+				return { ...variant, combination: newCombination }
+			})
+		: []
+
+	return { updatedAttributes, updatedVariants }
+}
+
+export function AttributeEditDialog({
 	attribute,
-	onUpdate,
-	onDelete,
+	onSave,
+	children,
 }: {
 	attribute: AttributeType
-	onUpdate: (updatedAttribute: AttributeType) => void
-	onDelete: (id: number) => void
+	onSave: (updatedAttribute: AttributeType) => void
+	children?: React.ReactNode
 }) {
 	const [open, setOpen] = useState(false)
 	const [editedAttribute, setEditedAttribute] = useState(attribute)
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<Item variant="outline" className="relative">
-				<ItemContent>
-					<ItemTitle>
-						{attribute.visible ? <Eye size={16} /> : <EyeOff size={16} />}
-						{attribute.name || 'Untitled'}
-					</ItemTitle>
-					<ItemDescription>{attribute.value || 'No content'}</ItemDescription>
-					<ItemDescription>
-						<Badge className="rounded-none">{attribute.selectType}</Badge>
-					</ItemDescription>
-				</ItemContent>
-				<ItemActions>
-					<DialogTrigger asChild>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => {
-								setEditedAttribute(attribute) // Reset to original;
-								setOpen(true)
-							}}
-						>
-							Edit
-						</Button>
-					</DialogTrigger>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="icon" className="size-8">
-								<MoreVertical />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent>
-							<DropdownMenuLabel>Actions</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => onDelete(attribute.id)}
-								className="focus:bg-destructive/90 focus:text-white"
-							>
-								Delete
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</ItemActions>
-			</Item>
+		<Dialog
+			open={open}
+			onOpenChange={open => {
+				open && setEditedAttribute(attribute)
+				setOpen(open)
+			}}
+		>
+			{children}
 			<DialogContent>
 				<FieldSet className="relative w-full">
 					<FieldGroup>
@@ -354,7 +393,7 @@ function AttributeItem({
 								size="sm"
 								className="w-full md:w-auto md:flex-1"
 								onClick={() => {
-									onUpdate({
+									onSave({
 										...editedAttribute,
 										value:
 											editedAttribute.value
