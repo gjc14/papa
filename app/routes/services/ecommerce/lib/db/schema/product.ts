@@ -203,6 +203,8 @@ export const productOption = pgTable(
 		// }),
 
 		note: text('note'),
+
+		...timestampAttributes,
 	},
 	t => [
 		check('scale_non_negative', sql`${t.scale} >= 0`),
