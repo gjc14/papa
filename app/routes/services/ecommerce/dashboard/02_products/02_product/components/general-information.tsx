@@ -34,7 +34,7 @@ export function GeneralInformation() {
 		})
 	}
 
-	if (!productName) return null
+	if (productName === null) return null
 
 	return (
 		<Card id="general-information">

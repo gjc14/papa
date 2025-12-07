@@ -21,12 +21,12 @@ import { Separator } from '~/components/ui/separator'
 import { ProductStatus, ProductVisibility } from '../../../../lib/db/schema'
 import { productAtom } from '../../../../store/product/context'
 
-const productStatusAtom = atom(get => get(productAtom)?.status || null)
+const productStatusAtom = atom(get => get(productAtom)?.status ?? null)
 const productPublishedAtAtom = atom(
-	get => get(productAtom)?.publishedAt || null,
+	get => get(productAtom)?.publishedAt ?? null,
 )
-const productVisibilityAtom = atom(get => get(productAtom)?.visibility || null)
-const productPasswordAtom = atom(get => get(productAtom)?.password || null)
+const productVisibilityAtom = atom(get => get(productAtom)?.visibility ?? null)
+const productPasswordAtom = atom(get => get(productAtom)?.password ?? null)
 
 export function Publishing() {
 	const setProduct = useSetAtom(productAtom)
