@@ -43,9 +43,9 @@ import {
 } from '../context'
 import type { action } from '../resource'
 
-const productIdAtom = atom(get => get(productAtom)?.id || null)
-const productNameAtom = atom(get => get(productAtom)?.name || null)
-const productSlugAtom = atom(get => get(productAtom)?.slug || null)
+const productIdAtom = atom(get => get(productAtom)?.id ?? null)
+const productNameAtom = atom(get => get(productAtom)?.name ?? null)
+const productSlugAtom = atom(get => get(productAtom)?.slug ?? null)
 
 export function ProductEditPageHeader() {
 	const fetcher = useFetcher<typeof action>()
@@ -67,7 +67,7 @@ export function ProductEditPageHeader() {
 
 	useEffect(() => setIsSaving(isSubmitting), [fetcher.state])
 
-	if (!productId || !productName || !productSlug) return null
+	if (!productId || productName === null || productSlug === null) return null
 
 	const isNew = productId === -1
 

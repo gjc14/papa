@@ -15,15 +15,15 @@ import {
 	type ProductOptionType,
 } from './option-form'
 
-const productNameAtom = atom(get => get(productAtom)?.name || null)
-const productOptionAtom = atom(get => get(productAtom)?.option || null)
+const productNameAtom = atom(get => get(productAtom)?.name ?? null)
+const productOptionAtom = atom(get => get(productAtom)?.option ?? null)
 
 export function MainOption() {
 	const setProduct = useSetAtom(productAtom)
 	const productName = useAtomValue(productNameAtom)
 	const productOption = useAtomValue(productOptionAtom)
 
-	if (!productName || !productOption) return null
+	if (productName === null || !productOption) return null
 
 	const handleOptionChange = (optionUpdated: Partial<ProductOptionType>) => {
 		setProduct(prev => {

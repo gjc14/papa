@@ -31,9 +31,9 @@ import type { action as tAction } from '../../05_tags/resource'
 import type { loader as tLoader } from '../../05_tags/route'
 import { CreateTaxonomyPopover } from './create-taxonomy-popover'
 
-const productTagsAtom = atom(get => get(productAtom)?.tags || null)
-const productCategoriesAtom = atom(get => get(productAtom)?.categories || null)
-const productBrandsAtom = atom(get => get(productAtom)?.brands || null)
+const productTagsAtom = atom(get => get(productAtom)?.tags ?? null)
+const productCategoriesAtom = atom(get => get(productAtom)?.categories ?? null)
+const productBrandsAtom = atom(get => get(productAtom)?.brands ?? null)
 
 const generateTaxonomy = (name: string) => {
 	const slug = generateSlug(name, { fallbackPrefix: 'new classification' })

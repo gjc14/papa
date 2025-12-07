@@ -181,11 +181,11 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 
 		// Add optional fields based on config
 		if (config.hasDescription) {
-			taxonomyData.description = (formData.get('description') as string) || null
+			taxonomyData.description = (formData.get('description') as string) ?? null
 		}
 
 		if (config.hasImage) {
-			taxonomyData.image = (formData.get('image') as string) || null
+			taxonomyData.image = (formData.get('image') as string) ?? null
 		}
 
 		if (config.hasParent) {
@@ -196,7 +196,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		}
 
 		if (config.hasValue) {
-			taxonomyData.value = (formData.get('value') as string) || null
+			taxonomyData.value = (formData.get('value') as string) ?? null
 		}
 
 		fetcher.submit(taxonomyData, {

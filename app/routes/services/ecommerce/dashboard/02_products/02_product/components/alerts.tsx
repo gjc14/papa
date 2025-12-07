@@ -25,8 +25,8 @@ import {
 	isToTrashAlertOpenAtom as isToTrashOpenAtom,
 } from '../context'
 
-const productIdAtom = atom(get => get(productAtom)?.id || null)
-const productNameAtom = atom(get => get(productAtom)?.name || null)
+const productIdAtom = atom(get => get(productAtom)?.id ?? null)
+const productNameAtom = atom(get => get(productAtom)?.name ?? null)
 
 export function ProductAlerts() {
 	const fetcher = useFetcher<typeof action>()
@@ -50,7 +50,7 @@ export function ProductAlerts() {
 		navigate('..')
 	}, [fetcher.data])
 
-	if (!productId || !productName) return null
+	if (!productId || productName === null) return null
 
 	const onDelete = () => {
 		if (isMovingToTrash) return

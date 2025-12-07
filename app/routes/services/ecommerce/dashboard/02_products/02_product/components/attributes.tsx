@@ -51,10 +51,10 @@ import { ProductAttributeSelectType } from '~/routes/services/ecommerce/lib/db/s
 import { productAtom } from '../../../../store/product/context'
 
 const productAttributesAtom = atom(
-	get => get(productAtom)?.attributes.sort((a, b) => a.order - b.order) || null,
+	get => get(productAtom)?.attributes.sort((a, b) => a.order - b.order) ?? null,
 )
 const productVariantsAtom = atom(
-	get => get(productAtom)?.variants.sort((a, b) => a.order - b.order) || null,
+	get => get(productAtom)?.variants.sort((a, b) => a.order - b.order) ?? null,
 )
 
 type AttributeType = NonNullable<

@@ -16,15 +16,15 @@ import {
 } from '../../../../store/product/context'
 import { assetsAtom } from '../../../context'
 
-const productImageAtom = atom(get => get(productAtom)?.option.image || null)
+const productImageAtom = atom(get => get(productAtom)?.option.image ?? null)
 const productImageAltAtom = atom(
-	get => get(productAtom)?.option.imageAlt || null,
+	get => get(productAtom)?.option.imageAlt ?? null,
 )
 const productImageTitleAtom = atom(
-	get => get(productAtom)?.option.imageTitle || null,
+	get => get(productAtom)?.option.imageTitle ?? null,
 )
-const productIdAtom = atom(get => get(productAtom)?.id || null)
-const productNameAtom = atom(get => get(productAtom)?.name || null)
+const productIdAtom = atom(get => get(productAtom)?.id ?? null)
+const productNameAtom = atom(get => get(productAtom)?.name ?? null)
 
 export function Gallery() {
 	const fetcher = useFetcher<typeof loader>()
@@ -48,7 +48,7 @@ export function Gallery() {
 		if (fetcher.data) setAssets(fetcher.data)
 	}, [fetcher.data])
 
-	if (!productId || !productName || !gallery) return null
+	if (!productId || productName === null || !gallery) return null
 
 	const handleSetFeatureImage = () => {
 		if (!srcInput) return

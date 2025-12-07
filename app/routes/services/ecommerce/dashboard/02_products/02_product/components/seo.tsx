@@ -43,11 +43,11 @@ import {
 
 import { assetsAtom } from '../../../context'
 
-const productSeoAtom = atom(get => get(productAtom)?.seo || null)
-const productNameAtom = atom(get => get(productAtom)?.name || null)
-const productSlugAtom = atom(get => get(productAtom)?.slug || null)
+const productSeoAtom = atom(get => get(productAtom)?.seo ?? null)
+const productNameAtom = atom(get => get(productAtom)?.name ?? null)
+const productSlugAtom = atom(get => get(productAtom)?.slug ?? null)
 const productDescriptionAtom = atom(
-	get => get(productAtom)?.description || null,
+	get => get(productAtom)?.description ?? null,
 )
 
 export function Seo() {
@@ -276,15 +276,11 @@ export function Seo() {
 									aspectRatio: aspectRatio.replace('x', '/'),
 								}}
 							>
-								{seo?.ogImage ? (
-									<img
-										src={seo.ogImage}
-										alt={seo?.metaTitle || 'SEO Open Graph Image'}
-										className="object-cover"
-									/>
-								) : (
-									'⛰️'
-								)}
+								<img
+									src={seo.ogImage || '/placeholders/image.webp'}
+									alt={seo?.metaTitle || 'OG Image Preview'}
+									className="object-cover"
+								/>
 							</div>
 						</div>
 					</Field>
