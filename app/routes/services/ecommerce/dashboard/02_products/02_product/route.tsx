@@ -54,11 +54,23 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 
 // To prevent revalidation when fetchers are called (taxonomies, brands, etc.)
 // Please call revalidate() manually when updating product
+// To prevent revalidation when fetchers are called (taxonomies, brands, etc.)
+// Please call revalidate() manually when updating product
 export const shouldRevalidate = ({
+	currentUrl,
 	currentParams,
 	nextParams,
+	formAction,
 }: ShouldRevalidateFunctionArgs) => {
-	return currentParams !== nextParams
+	// POST, PUT, DELETE
+	if (formAction === `${new URL(currentUrl).pathname}/resource`) return true
+
+	// GET
+	if (currentParams !== nextParams) {
+		return true
+	} else {
+		return false
+	}
 }
 
 export default function ECProduct({ loaderData }: Route.ComponentProps) {
