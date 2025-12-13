@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useFetcher } from 'react-router'
+import { Link, useFetcher, useNavigate } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import { ExternalLink, MoreVertical, RefreshCcw, Trash } from 'lucide-react'
@@ -48,9 +48,6 @@ const productNameAtom = atom(get => get(productAtom)?.name ?? null)
 const productSlugAtom = atom(get => get(productAtom)?.slug ?? null)
 
 export function ProductEditPageHeader() {
-	const fetcher = useFetcher<typeof action>()
-	const { isSubmitting } = useFetcherNotification(fetcher)
-
 	const store = useStore()
 	const [isSaving, setIsSaving] = useAtom(isSavingAtom)
 	const storeConfig = useAtomValue(storeConfigAtom)
@@ -62,14 +59,22 @@ export function ProductEditPageHeader() {
 	const setToTrashOpen = useSetAtom(isToTrashAlertOpenAtom)
 	const setProduct = useSetAtom(productAtom)
 
+	const isNew = productId === -1
+
 	const [slugInput, setSlugInput] = useState(productSlug || '')
 	const [editSlug, setEditSlug] = useState(false)
 
+	const fetcher = useFetcher<typeof action>()
+	const navigate = useNavigate()
+	const { isSubmitting } = useFetcherNotification(fetcher, {
+		onSuccess: () => {
+			if (isNew) {
+				navigate(`../${productSlug}`)
+			}
+		},
+	})
+
 	useEffect(() => setIsSaving(isSubmitting), [fetcher.state])
-
-	if (!productId || productName === null || productSlug === null) return null
-
-	const isNew = productId === -1
 
 	const handleSave = useCallback(() => {
 		const product = store.get(productAtom)
@@ -103,6 +108,8 @@ export function ProductEditPageHeader() {
 			encType: 'application/json',
 		})
 	}, [store])
+
+	if (!productId || productName === null || productSlug === null) return null
 
 	return (
 		<Item className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b-border sticky top-0 z-10 overflow-auto rounded-none py-2 backdrop-blur">
