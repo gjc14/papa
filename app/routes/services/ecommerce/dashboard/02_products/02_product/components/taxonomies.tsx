@@ -31,9 +31,9 @@ import type { action as tAction } from '../../05_tags/resource'
 import type { loader as tLoader } from '../../05_tags/route'
 import { CreateTaxonomyPopover } from './create-taxonomy-popover'
 
+const productBrandsAtom = atom(get => get(productAtom)?.brands ?? null)
 const productTagsAtom = atom(get => get(productAtom)?.tags ?? null)
 const productCategoriesAtom = atom(get => get(productAtom)?.categories ?? null)
-const productBrandsAtom = atom(get => get(productAtom)?.brands ?? null)
 
 const generateTaxonomy = (name: string) => {
 	const slug = generateSlug(name, { fallbackPrefix: 'new classification' })
@@ -51,48 +51,42 @@ const generateTaxonomy = (name: string) => {
 }
 
 export function Taxonomies() {
+	const bFetcher = useFetcher<typeof bLoader>()
 	const cFetcher = useFetcher<typeof cLoader>()
 	const tFetcher = useFetcher<typeof tLoader>()
-	const bFetcher = useFetcher<typeof bLoader>()
 
-	const cCreateFetcher = useFetcher<typeof cAction>()
-	const { isLoading: cIsLoading, isSubmitting: cSubmitting } =
-		useFetcherNotification(cCreateFetcher)
 	const bCreateFetcher = useFetcher<typeof bAction>()
 	const { isLoading: bIsLoading, isSubmitting: bSubmitting } =
 		useFetcherNotification(bCreateFetcher)
+	const cCreateFetcher = useFetcher<typeof cAction>()
+	const { isLoading: cIsLoading, isSubmitting: cSubmitting } =
+		useFetcherNotification(cCreateFetcher)
 	const tCreateFetcher = useFetcher<typeof tAction>()
 	const { isLoading: tIsLoading, isIdle: tIsIdle } =
 		useFetcherNotification(tCreateFetcher)
 
 	const setProduct = useSetAtom(productAtom)
-	const productTags = useAtomValue(productTagsAtom)
-	const productCategories = useAtomValue(productCategoriesAtom)
 	const productBrands = useAtomValue(productBrandsAtom)
+	const productCategories = useAtomValue(productCategoriesAtom)
+	const productTags = useAtomValue(productTagsAtom)
+	const [brands, setBrands] = useAtom(brandsAtom)
 	const [categories, setCategories] = useAtom(categoriesAtom)
 	const [tags, setTags] = useAtom(tagsAtom)
-	const [brands, setBrands] = useAtom(brandsAtom)
-	const [categoriesFilter, setCategoriesFilter] = useState('')
 	const [brandsFilter, setBrandsFilter] = useState('')
+	const [categoriesFilter, setCategoriesFilter] = useState('')
 
-	const topLevelCategories = categories.filter(c => !c.parentId)
 	const topLevelBrands = brands.filter(b => !b.parentId)
+	const topLevelCategories = categories.filter(c => !c.parentId)
 
-	const [selectedCIds, setSelectedCIds] = useState<Set<string>>(
-		new Set(productCategories ? productCategories.map(c => String(c.id)) : []),
-	)
 	const [selectedBIds, setSelectedBIds] = useState<Set<string>>(
 		new Set(productBrands ? productBrands.map(b => String(b.id)) : []),
 	)
+	const [selectedCIds, setSelectedCIds] = useState<Set<string>>(
+		new Set(productCategories ? productCategories.map(c => String(c.id)) : []),
+	)
 
-	const cTreeData = taxonomiesToTree(categories)
 	const bTreeData = taxonomiesToTree(brands)
-
-	const filteredCTreeData = categoriesFilter
-		? cTreeData.filter(node =>
-				node.label.toLowerCase().includes(categoriesFilter.toLowerCase()),
-			)
-		: cTreeData
+	const cTreeData = taxonomiesToTree(categories)
 
 	const filteredBTreeData = brandsFilter
 		? bTreeData.filter(node =>
@@ -100,24 +94,33 @@ export function Taxonomies() {
 			)
 		: bTreeData
 
-	const [tPending, setTPending] = useState<typeof tags>([])
+	const filteredCTreeData = categoriesFilter
+		? cTreeData.filter(node =>
+				node.label.toLowerCase().includes(categoriesFilter.toLowerCase()),
+			)
+		: cTreeData
 
 	const [dataInitialized, setDataInitialized] = useState({
-		tags: false,
-		categories: false,
 		brands: false,
+		categories: false,
+		tags: false,
 	})
 
 	useEffect(() => {
-		!dataInitialized.categories &&
-			cFetcher.load('/dashboard/ecommerce/products/categories')
 		!dataInitialized.brands &&
 			bFetcher.load('/dashboard/ecommerce/products/brands')
+		!dataInitialized.categories &&
+			cFetcher.load('/dashboard/ecommerce/products/categories')
 
 		// Handle taxonomies response
+		const bData = bFetcher.data
 		const cData = cFetcher.data
 		const tData = tFetcher.data
-		const bData = bFetcher.data
+
+		if (bData && 'brands' in bData) {
+			setBrands(bData.brands)
+			setDataInitialized(prev => ({ ...prev, brands: true }))
+		}
 
 		if (cData && 'categories' in cData) {
 			setCategories(cData.categories)
@@ -128,12 +131,7 @@ export function Taxonomies() {
 			setTags(tData.tags)
 			setDataInitialized(prev => ({ ...prev, tags: true }))
 		}
-
-		if (bData && 'brands' in bData) {
-			setBrands(bData.brands)
-			setDataInitialized(prev => ({ ...prev, brands: true }))
-		}
-	}, [cFetcher.data, tFetcher.data, bFetcher.data])
+	}, [bFetcher.data, cFetcher.data, tFetcher.data])
 
 	// Sync selected categories/brands with product
 	useEffect(() => {
@@ -141,98 +139,125 @@ export function Taxonomies() {
 			if (!prev) return prev
 			return {
 				...prev,
-				categories: categories.filter(c => selectedCIds.has(String(c.id))),
 				brands: brands.filter(b => selectedBIds.has(String(b.id))),
+				categories: categories.filter(c => selectedCIds.has(String(c.id))),
 			}
 		})
-	}, [selectedCIds, selectedBIds])
+	}, [selectedBIds, selectedCIds])
 
-	// Handle category creation
-	useEffect(() => {
-		if (
-			cIsLoading &&
-			cCreateFetcher.data &&
-			'data' in cCreateFetcher.data &&
-			cCreateFetcher.data.data
-		) {
-			const createdCategory = cCreateFetcher.data.data
-
-			setCategories(prev => [...prev, { ...createdCategory, children: [] }])
-			setProduct(prev => {
-				if (!prev) return prev
-				return { ...prev, categories: [...prev.categories, createdCategory] }
+	const tSelected = productTags
+		? productTags.map(t => {
+				// If tag is pending (id < 0), check if it has been created (exists in tags)
+				// This prevents the "gap" where the tag exists but isn't selected yet
+				if (t.id < 0) {
+					const realTag = tags.find(rt => rt.slug === t.slug)
+					if (realTag) {
+						return {
+							label: realTag.name,
+							value: String(realTag.id),
+							className: '',
+						}
+					}
+				}
+				return {
+					label: t.name,
+					value: String(t.id),
+					className: t.id > 0 ? '' : 'opacity-50',
+				}
 			})
-		}
-	}, [cCreateFetcher.state, cCreateFetcher.data])
+		: []
 
-	// Handle tag creation
-	useEffect(() => {
-		if (
-			tIsLoading &&
-			tCreateFetcher.data &&
-			'data' in tCreateFetcher.data &&
-			tCreateFetcher.data.data
-		) {
-			const createdTag = tCreateFetcher.data.data
-
-			setTPending(prev => prev.filter(t => t.slug !== createdTag.slug))
-			setTags(prev => [...prev, createdTag])
-			setProduct(prev => {
-				if (!prev) return prev
-				return { ...prev, tags: [...prev.tags, createdTag] }
-			})
-		}
-	}, [tCreateFetcher.state, tCreateFetcher.data])
-
-	// Handle brand creation
-	useEffect(() => {
-		if (
-			bIsLoading &&
-			bCreateFetcher.data &&
-			'data' in bCreateFetcher.data &&
-			bCreateFetcher.data.data
-		) {
-			const createdBrand = bCreateFetcher.data.data
-
-			setBrands(prev => [...prev, { ...createdBrand, children: [] }])
-			setProduct(prev => {
-				if (!prev) return prev
-				return { ...prev, brands: [...prev.brands, createdBrand] }
-			})
-		}
-	}, [bCreateFetcher.state, bCreateFetcher.data])
+	const tPending = productTags?.filter(t => t.id < 0) ?? []
 
 	// Auto-submit pending items
+	// 1. Execute when tIsIdle and tPending has items
+	// 2. Debounce submit
+	// 3. Auto revalidate and remove existing from pending
 	useEffect(() => {
 		if (tPending.length > 0 && tIsIdle) {
 			const [first] = tPending
-			tCreateFetcher.submit(
-				{ name: first.name, slug: first.slug },
-				{
-					method: 'post',
-					action: '/dashboard/ecommerce/products/tags/resource',
-					encType: 'application/json',
-				},
-			)
-		}
-	}, [tPending, tCreateFetcher.state])
+			const existingRealTag = tags.find(t => t.slug === first.slug)
 
-	const tSelected = productTags
-		? [
-				...productTags.map(t => ({
-					label: t.name,
-					value: String(t.id),
-				})),
-				...tPending.map(t => ({
-					label: t.name,
-					value: t.name,
-					className: t.id > 0 ? '' : 'opacity-50',
-				})),
-			]
-		: []
+			if (existingRealTag) {
+				// Replace pending tag with real tag
+				setProduct(prev => {
+					if (!prev) return prev
+					return {
+						...prev,
+						tags: prev.tags.map(t => (t.id === first.id ? existingRealTag : t)),
+					}
+				})
+				return
+			}
+
+			const timer = setTimeout(() => {
+				tCreateFetcher.submit(
+					{ name: first.name, slug: first.slug },
+					{
+						method: 'post',
+						action: '/dashboard/ecommerce/products/tags/resource',
+						encType: 'application/json',
+					},
+				)
+			}, 600)
+			return () => clearTimeout(timer)
+		}
+	}, [tPending, tIsIdle, tags])
 
 	return (
 		<div id="taxonomies" className="space-y-6">
+			<Card className="gap-4 pt-6 pb-5">
+				<CardHeader>
+					<CardTitle>Brands</CardTitle>
+					<CardDescription>
+						Organize products by brand or manufacturer.
+					</CardDescription>
+				</CardHeader>
+				<div className="flex w-full items-center justify-center px-6">
+					{!dataInitialized.brands ? (
+						<Spinner />
+					) : bTreeData.length > 0 ? (
+						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
+							<div className="m-2 mt-1">
+								<Input
+									value={brandsFilter}
+									onChange={e => setBrandsFilter(e.target.value)}
+									placeholder="Filter brands"
+								/>
+							</div>
+							{filteredBTreeData.length > 0 ? (
+								<CheckboxTree
+									data={filteredBTreeData}
+									selectedIds={Array.from(selectedBIds)}
+									onSelectionChange={s => setSelectedBIds(new Set(s))}
+								/>
+							) : (
+								<div className="text-muted-foreground w-full p-2 text-center text-sm">
+									No brands match the filter
+								</div>
+							)}
+						</div>
+					) : (
+						<div className="text-muted-foreground my-3 w-full rounded-md border border-dashed p-2 text-center text-sm">
+							Please add brands to see options
+						</div>
+					)}
+				</div>
+				<CardFooter className="w-full">
+					<CreateTaxonomyPopover
+						taxonomyType="Brand"
+						parentOptions={topLevelBrands}
+						onCreate={data => {
+							bCreateFetcher.submit(data, {
+								method: 'post',
+								action: '/dashboard/ecommerce/products/brands/resource',
+								encType: 'application/json',
+							})
+						}}
+						isSubmitting={!dataInitialized.brands || bSubmitting}
+					/>
+				</CardFooter>
+			</Card>
 			<Card className="gap-4 pt-6 pb-5">
 				<CardHeader>
 					<CardTitle>Categories</CardTitle>
@@ -253,14 +278,20 @@ export function Taxonomies() {
 									placeholder="Filter categories"
 								/>
 							</div>
-							<CheckboxTree
-								data={filteredCTreeData}
-								selectedIds={Array.from(selectedCIds)}
-								onSelectionChange={s => setSelectedCIds(new Set(s))}
-							/>
+							{filteredCTreeData.length > 0 ? (
+								<CheckboxTree
+									data={filteredCTreeData}
+									selectedIds={Array.from(selectedCIds)}
+									onSelectionChange={s => setSelectedCIds(new Set(s))}
+								/>
+							) : (
+								<div className="text-muted-foreground w-full p-2 text-center text-sm">
+									No categories match the filter
+								</div>
+							)}
 						</div>
 					) : (
-						<div className="text-muted-foreground my-3 rounded-md border border-dashed p-2 text-center text-sm">
+						<div className="text-muted-foreground my-3 w-full rounded-md border border-dashed p-2 text-center text-sm">
 							Please add categories to see options
 						</div>
 					)}
@@ -295,27 +326,27 @@ export function Taxonomies() {
 						}))}
 						selected={tSelected}
 						onSelectedChange={areSelected => {
-							const { existing, notExisting } = areSelected.reduce(
-								(acc, selected) => {
-									const found = tags.find(t => String(t.id) === selected.value)
-									if (found) {
-										acc.existing.push(found)
-									} else {
-										acc.notExisting.push(generateTaxonomy(selected.label))
-									}
-									return acc
-								},
-								{
-									existing: [] as typeof tags,
-									notExisting: [] as typeof tags,
-								},
-							)
+							const newTags = areSelected.map(selected => {
+								// 1. Try to find in global tags by ID
+								const existingGlobal = tags.find(
+									t => String(t.id) === selected.value,
+								)
+								if (existingGlobal) return existingGlobal
+
+								// 2. Try to find in current product.tags (for pending items)
+								const existingLocal = productTags?.find(
+									t => String(t.id) === selected.value,
+								)
+								if (existingLocal) return existingLocal
+
+								// 3. Create new
+								return generateTaxonomy(selected.label)
+							})
 
 							setProduct(prev => {
 								if (!prev) return prev
-								return { ...prev, tags: existing }
+								return { ...prev, tags: newTags }
 							})
-							setTPending(notExisting)
 						}}
 						onInitSearch={() =>
 							!dataInitialized.tags &&
@@ -324,52 +355,6 @@ export function Taxonomies() {
 						isSearching={!dataInitialized.tags}
 					/>
 				</div>
-			</Card>
-			<Card className="gap-4 pt-6 pb-5">
-				<CardHeader>
-					<CardTitle>Brands</CardTitle>
-					<CardDescription>
-						Organize products by brand or manufacturer.
-					</CardDescription>
-				</CardHeader>
-				<div className="flex w-full items-center justify-center px-6">
-					{!dataInitialized.brands ? (
-						<Spinner />
-					) : bTreeData.length > 0 ? (
-						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
-							<div className="m-2 mt-1">
-								<Input
-									value={brandsFilter}
-									onChange={e => setBrandsFilter(e.target.value)}
-									placeholder="Filter brands"
-								/>
-							</div>
-							<CheckboxTree
-								data={filteredBTreeData}
-								selectedIds={Array.from(selectedBIds)}
-								onSelectionChange={s => setSelectedBIds(new Set(s))}
-							/>
-						</div>
-					) : (
-						<div className="text-muted-foreground my-3 rounded-md border border-dashed p-2 text-center text-sm">
-							Please add brands to see options
-						</div>
-					)}
-				</div>
-				<CardFooter className="w-full">
-					<CreateTaxonomyPopover
-						taxonomyType="Brand"
-						parentOptions={topLevelBrands}
-						onCreate={data => {
-							bCreateFetcher.submit(data, {
-								method: 'post',
-								action: '/dashboard/ecommerce/products/brands/resource',
-								encType: 'application/json',
-							})
-						}}
-						isSubmitting={!dataInitialized.brands || bSubmitting}
-					/>
-				</CardFooter>
 			</Card>
 		</div>
 	)
