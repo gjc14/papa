@@ -15,8 +15,8 @@ import {
 import { Skeleton } from '~/components/ui/skeleton'
 
 import { editorAtom } from '../../../context'
-import { TooltipWrapper } from '../components/tooltip-wrapper'
 import { type EditOptionProps } from '../edit-options'
+import { TooltipWrapper } from './tooltip-wrapper'
 
 export function SelectDropdownMenu({
 	options,

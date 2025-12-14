@@ -7,10 +7,10 @@ import { useAtom } from 'jotai'
 import { Label } from '~/components/ui/label'
 import { Spinner } from '~/components/ui/spinner'
 import { MultiSelect } from '~/components/multi-select'
-import { generateNewCategory } from '~/routes/papa/dashboard/blog/taxonomy/components/category'
-import { generateNewTag } from '~/routes/papa/dashboard/blog/taxonomy/components/tag'
 
 import { categoriesAtom, editorAtom, postAtom, tagsAtom } from '../../context'
+import { generateNewCategory } from '../../taxonomy/components/category'
+import { generateNewTag } from '../../taxonomy/components/tag'
 
 export const TaxonomyPart = () => {
 	const [post, setPost] = useAtom(postAtom)

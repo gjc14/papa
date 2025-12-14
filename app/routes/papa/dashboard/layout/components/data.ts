@@ -2,8 +2,6 @@ import {
 	Building,
 	Cloud,
 	LifeBuoy,
-	Pen,
-	Plus,
 	Send,
 	TextSearch,
 	UserCog2,
@@ -22,20 +20,7 @@ export const DEFAULT_SERVICE: ServiceDashboardConfig = {
 }
 
 export const DEFAULT_MAIN_NAV_ITEMS: DashboardMenuItem[] = [
-	{
-		icon: UserRound,
-		title: 'Users',
-		pathname: 'users',
-	},
-	{
-		icon: Pen,
-		title: 'Blog',
-		pathname: 'blog',
-		sub: [
-			{ title: 'Create Post', pathname: 'new' },
-			{ title: 'Categories / Tags', pathname: 'taxonomy' },
-		],
-	},
+	{ icon: UserRound, title: 'Users', pathname: 'users' },
 	{ icon: Cloud, title: 'Assets', pathname: 'assets' },
 	{ icon: TextSearch, title: 'SEO', pathname: 'seo' },
 ]

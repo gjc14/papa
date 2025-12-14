@@ -21,19 +21,6 @@ export const dashboardRoutes = () =>
 				route('resource', './routes/papa/dashboard/assets/resource.ts'),
 			]),
 
-			// Blog
-			route('blog', './routes/papa/dashboard/blog/layout.tsx', [
-				index('./routes/papa/dashboard/blog/index/route.tsx'),
-				route(':postSlug', './routes/papa/dashboard/blog/post-slug/route.tsx'),
-				route('resource', './routes/papa/dashboard/blog/resource.ts'),
-				...prefix('taxonomy', [
-					index('./routes/papa/dashboard/blog/taxonomy/index.tsx'),
-					route(
-						'resource',
-						'./routes/papa/dashboard/blog/taxonomy/resource.ts',
-					),
-				]),
-			]),
 			// SEO
 			...prefix('seo', [
 				index('./routes/papa/dashboard/seo/index.tsx'),

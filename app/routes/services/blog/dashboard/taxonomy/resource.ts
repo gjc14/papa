@@ -59,7 +59,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	switch (data) {
 		case 'category': {
 			const deleteMesage = (name: string) => {
-				return '類別 ' + name + ' 已刪除'
+				return `Category ${name} deleted`
 			}
 
 			try {
@@ -95,7 +95,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 		case 'child-category': {
 			const deleteMesage = (name: string) => {
-				return '子類別 ' + name + ' 已刪除'
+				return `Child category ${name} deleted`
 			}
 
 			try {
@@ -133,7 +133,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 		case 'tag': {
 			const deleteMesage = (name: string) => {
-				return '標籤 ' + name + ' 已刪除'
+				return `Tag ${name} deleted`
 			}
 
 			try {

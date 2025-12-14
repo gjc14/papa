@@ -93,14 +93,14 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col rounded-lg border p-4 shadow-xs lg:h-full lg:flex-none">
 			<div className="mb-4 flex items-center justify-between">
-				<h2 className="text-xl font-semibold">標籤</h2>
+				<h2 className="text-xl font-semibold">Tags</h2>
 				<Dialog>
 					<DialogTrigger className="cursor-pointer">
 						<PlusCircle size={20} />
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>新增標籤</DialogTitle>
+							<DialogTitle>Add tag</DialogTitle>
 							<DialogDescription></DialogDescription>
 						</DialogHeader>
 						<Form
@@ -111,7 +111,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 							className="flex items-center gap-2"
 						>
 							<Input
-								placeholder="新增標籤名稱"
+								placeholder="New tag name..."
 								value={newTagName}
 								onChange={e => setNewTagName(e.target.value)}
 								className="flex-1"
@@ -119,7 +119,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 							<DialogClose asChild>
 								<Button type="submit" size="sm">
 									<PlusCircle />
-									新增
+									Create
 								</Button>
 							</DialogClose>
 						</Form>
@@ -128,7 +128,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 			</div>
 
 			<Input
-				placeholder="篩選"
+				placeholder="Filter tags..."
 				value={filter}
 				onChange={e => setFilter(e.target.value)}
 				className="mb-4"
@@ -140,7 +140,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 						filteredTags.map(tag => <TagComponent tag={tag} key={tag.id} />)
 					) : (
 						<div className="text-muted-foreground py-8 text-center">
-							{filter ? '查無標籤' : '尚無標籤'}
+							{filter ? 'No tags found' : 'No tags yet'}
 						</div>
 					)}
 				</div>

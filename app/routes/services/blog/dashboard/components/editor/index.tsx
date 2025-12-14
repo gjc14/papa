@@ -16,8 +16,11 @@ import debounce from 'lodash/debounce'
 
 import { ExtensionKit } from '~/components/editor/extension-kit'
 import { authClient } from '~/lib/auth/auth-client'
+import {
+	useFileUpload,
+	type FileWithFileMetadata,
+} from '~/routes/papa/dashboard/assets/utils'
 
-import { useFileUpload, type FileWithFileMetadata } from '../../../assets/utils'
 import { editorAtom, editorContentAtom, serverPostAtom } from '../../context'
 import { defaultContent } from '../../post-slug/utils'
 

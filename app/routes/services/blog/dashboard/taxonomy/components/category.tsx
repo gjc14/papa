@@ -50,7 +50,7 @@ const CategoryComponent = ({
 			<div className="font-medium">
 				{cat.name}
 				<p className="text-muted-foreground text-sm">
-					{cat.children?.length || 0} 個子類別
+					{cat.children?.length || 0} children
 				</p>
 			</div>
 			<CircleX
@@ -173,14 +173,14 @@ export const CategoriesSection = ({
 	return (
 		<div className="flex min-h-0 flex-1 flex-col rounded-lg border p-4 shadow-xs lg:h-full lg:flex-none">
 			<div className="mb-4 flex items-center justify-between">
-				<h2 className="text-xl font-semibold">類別</h2>
+				<h2 className="text-xl font-semibold">Categories</h2>
 				<Dialog>
 					<DialogTrigger className="cursor-pointer">
 						<PlusCircle size={20} />
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>新增類別</DialogTitle>
+							<DialogTitle>Add category</DialogTitle>
 							<DialogDescription></DialogDescription>
 						</DialogHeader>
 						<Form
@@ -192,7 +192,7 @@ export const CategoriesSection = ({
 							className="flex items-center gap-2"
 						>
 							<Input
-								placeholder="新增類別名稱"
+								placeholder="New category name..."
 								value={newCategoryName}
 								onChange={e => setNewCategoryName(e.target.value)}
 								className="flex-1"
@@ -200,7 +200,7 @@ export const CategoriesSection = ({
 							<DialogClose asChild>
 								<Button type="submit" size="sm">
 									<PlusCircle />
-									新增
+									Create
 								</Button>
 							</DialogClose>
 						</Form>
@@ -209,7 +209,7 @@ export const CategoriesSection = ({
 			</div>
 
 			<Input
-				placeholder="篩選"
+				placeholder="Filter categories..."
 				value={filter}
 				onChange={e => setFilter(e.target.value)}
 				className="mb-4"
@@ -230,7 +230,7 @@ export const CategoriesSection = ({
 						))
 					) : (
 						<div className="text-muted-foreground py-8 text-center">
-							{filter ? '查無類別' : '尚無類別'}
+							{filter ? 'No categories found' : 'No categories yet'}
 						</div>
 					)}
 				</div>
@@ -293,7 +293,14 @@ export const CategoryHierarchySection = ({
 		<div className="flex min-h-0 flex-1 flex-col rounded-lg border p-4 shadow-xs lg:h-full lg:flex-none">
 			<div className="mb-4 flex items-center justify-between">
 				<h2 className="text-xl font-semibold">
-					{category ? `${category?.name} 的子類別` : '子類別'}
+					{category ? (
+						<>
+							{category?.name}{' '}
+							<span className="text-muted-foreground text-sm">children</span>
+						</>
+					) : (
+						'Children categories'
+					)}
 				</h2>
 				<Dialog>
 					<DialogTrigger
@@ -304,7 +311,7 @@ export const CategoryHierarchySection = ({
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>新增子類別</DialogTitle>
+							<DialogTitle>Add child category</DialogTitle>
 							<DialogDescription></DialogDescription>
 						</DialogHeader>
 						<Form
@@ -315,7 +322,7 @@ export const CategoryHierarchySection = ({
 							className="mb-4 flex items-center gap-2"
 						>
 							<Input
-								placeholder="新增子類別名稱"
+								placeholder="New child category name..."
 								value={newChildCategoryName}
 								onChange={e => setNewChildCategoryName(e.target.value)}
 								className="flex-1"
@@ -323,7 +330,7 @@ export const CategoryHierarchySection = ({
 							<DialogClose asChild>
 								<Button type="submit" size="sm">
 									<PlusCircle />
-									新增
+									Create
 								</Button>
 							</DialogClose>
 						</Form>
@@ -334,7 +341,7 @@ export const CategoryHierarchySection = ({
 			{category ? (
 				<>
 					<Input
-						placeholder="篩選"
+						placeholder="Filter child categories..."
 						value={filter}
 						onChange={e => setFilter(e.target.value)}
 						className="mb-4"
@@ -351,7 +358,9 @@ export const CategoryHierarchySection = ({
 								))
 							) : (
 								<div className="text-muted-foreground py-8 text-center">
-									{filter ? '查無子類別' : '尚無子類別'}
+									{filter
+										? 'No child categories found'
+										: 'No child categories yet'}
 								</div>
 							)}
 						</div>
@@ -359,7 +368,7 @@ export const CategoryHierarchySection = ({
 				</>
 			) : (
 				<div className="text-muted-foreground flex h-[400px] items-center justify-center">
-					請選擇一個類別以查看或新增子類別
+					Please select a category to view its children
 				</div>
 			)}
 		</div>
