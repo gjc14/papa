@@ -1,7 +1,8 @@
 import type { Route } from './+types/route'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { data, Link, useFetcher } from 'react-router'
 
+import type { Table } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -13,8 +14,9 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
-import { DataTable } from '~/routes/papa/dashboard/components/data-table'
 
+import { DashboardDataTable } from '../../components/dashboard-data-table'
+import { useSkipper } from '../../components/dashboard-data-table/hooks'
 import type { action } from '../resource'
 import { BulkDeleteAlertDialog } from './bulk-delete'
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
@@ -64,59 +66,55 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 }
 
 export default function DashboardPost({ loaderData }: Route.ComponentProps) {
-	const { posts, categoryFilter, tagFilter, q } = loaderData
+	const { categoryFilter, tagFilter, q } = loaderData
 	const fetcher = useFetcher<typeof action>()
 	const { mutating } = useFetcherNotification(fetcher)
 
-	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
-	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
+	const tableRef = useRef<Table<(typeof loaderData.posts)[0]>>(null)
+	const [shouldSkip, skip] = useSkipper()
+	const [state, setState] = useState(loaderData.posts)
 
-	const numberOfRowsSelected = Object.keys(rowSelection).length
-
-	const tableData = useMemo(() => {
-		return posts.map(p => {
-			return { ...p, setRowsDeleting }
-		})
-	}, [posts])
+	useEffect(() => {
+		skip()
+		setState(loaderData.posts)
+	}, [loaderData])
 
 	useEffect(() => {
 		if (!mutating && fetcher.data && 'msg' in fetcher.data) {
-			// Clear selection after successful delete
-			setRowSelection({})
-			// Remove deleted rows from deleting state
-			setRowsDeleting(prev => {
-				const newSet = new Set(prev)
-				Object.keys(rowSelection).forEach(id => newSet.delete(id))
-				return newSet
-			})
+			// // Clear selection after successful delete
+			// setRowSelection({})
+			// // Remove deleted rows from deleting state
+			// setRowsDeleting(prev => {
+			// 	const newSet = new Set(prev)
+			// 	Object.keys(rowSelection).forEach(id => newSet.delete(id))
+			// 	return newSet
+			// })
 		}
 	}, [fetcher.state])
 
 	const handleBulkDelete = async () => {
-		// Display deleting state
-		setRowsDeleting(prev => {
-			const newSet = new Set(prev)
-			Object.keys(rowSelection).forEach(id => newSet.add(id))
-			return newSet
-		})
-
-		// Get post ids
-		const postIds = Object.keys(rowSelection).map(rawId => {
-			if (Number.isNaN(rawId)) console.warn('Invalid rawId:', rawId)
-			const postId = posts[Number(rawId)].id
-			if (!postId) console.warn('Post not found for rowId:', Number(rawId))
-			return postId
-		})
-
-		// Submit bulk delete request
-		fetcher.submit(
-			{ ids: postIds },
-			{
-				method: 'DELETE',
-				action: `/dashboard/blog/resource`,
-				encType: 'application/json',
-			},
-		)
+		// // Display deleting state
+		// setRowsDeleting(prev => {
+		// 	const newSet = new Set(prev)
+		// 	Object.keys(rowSelection).forEach(id => newSet.add(id))
+		// 	return newSet
+		// })
+		// // Get post ids
+		// const postIds = Object.keys(rowSelection).map(rawId => {
+		// 	if (Number.isNaN(rawId)) console.warn('Invalid rawId:', rawId)
+		// 	const postId = posts[Number(rawId)].id
+		// 	if (!postId) console.warn('Post not found for rowId:', Number(rawId))
+		// 	return postId
+		// })
+		// // Submit bulk delete request
+		// fetcher.submit(
+		// 	{ ids: postIds },
+		// 	{
+		// 		method: 'DELETE',
+		// 		action: `/dashboard/blog/resource`,
+		// 		encType: 'application/json',
+		// 	},
+		// )
 	}
 
 	return (
@@ -124,13 +122,13 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 			<DashboardHeader>
 				<DashboardTitle title="Posts"></DashboardTitle>
 				<DashboardActions>
-					{numberOfRowsSelected > 0 && (
+					{/* {numberOfRowsSelected > 0 && (
 						<BulkDeleteAlertDialog
 							numberOfRowsDeleting={numberOfRowsSelected}
 							onDelete={handleBulkDelete}
 							isDeleting={mutating}
 						/>
-					)}
+					)} */}
 					<Filter q={q} tagFilter={tagFilter} categoryFilter={categoryFilter} />
 					<Button size={'sm'} asChild>
 						<Link to="/dashboard/blog/new">
@@ -140,19 +138,16 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 					</Button>
 				</DashboardActions>
 			</DashboardHeader>
-			<DashboardContent>
-				<DataTable
+			<DashboardContent className="px-0 md:px-0">
+				<DashboardDataTable
 					columns={columns}
-					data={tableData}
-					hideColumnFilter
-					rowSelection={rowSelection}
-					setRowSelection={setRowSelection}
-					rowGroupStyle={[
-						{
-							rowIds: rowsDeleting,
-							className: 'opacity-50 pointer-events-none',
-						},
-					]}
+					data={state}
+					setData={setState}
+					ref={tableRef}
+					autoResetPageIndex={shouldSkip}
+					skipAutoResetPageIndex={skip}
+					className="px-2 md:px-3"
+					initialPageSize={20}
 				/>
 			</DashboardContent>
 		</DashboardLayout>

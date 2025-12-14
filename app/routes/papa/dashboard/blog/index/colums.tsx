@@ -7,41 +7,46 @@ import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import type { PostWithRelations } from '~/lib/db/post.server'
-import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
+import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/dashboard-data-table'
 
-import { SimpleSortHeader } from '../../components/data-table/simple-sort-header'
-
-export const columns: ColumnDef<
-	PostWithRelations & {
-		setRowsDeleting: React.Dispatch<React.SetStateAction<Set<string>>>
-	}
->[] = [
+export const columns: ColumnDef<PostWithRelations>[] = [
 	{
 		accessorKey: 'title',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Title</SimpleSortHeader>
-		},
-		cell(props) {
-			const slug = props.row.original.slug
-			const title = props.row.original.title
+		header: 'Title',
+		cell: ({ row }) => {
+			const slug = row.original.slug
+			const title = row.original.title
 			return (
-				<Link to={slug} className="cursor-pointer hover:underline">
-					{title}
-				</Link>
+				<div className="py-2">
+					<Link
+						to={slug}
+						className="line-clamp-3 cursor-pointer break-words whitespace-normal hover:underline"
+					>
+						{title}
+					</Link>
+				</div>
 			)
 		},
 	},
 	{
 		accessorKey: 'excerpt',
 		header: 'Excerpt',
+		cell: ({ row }) => {
+			const excerpt = row.original.excerpt
+			return (
+				<div className="py-2">
+					<p className="line-clamp-3 text-sm break-words whitespace-normal">
+						{excerpt || '-'}
+					</p>
+				</div>
+			)
+		},
 	},
 	{
 		accessorKey: 'status',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Status</SimpleSortHeader>
-		},
-		cell(props) {
-			const status = props.row.original.status
+		header: 'Status',
+		cell: ({ row }) => {
+			const status = row.original.status
 			let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
 				'default'
 			switch (status.toLowerCase()) {
@@ -75,23 +80,16 @@ export const columns: ColumnDef<
 	},
 	{
 		accessorKey: 'author',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Author</SimpleSortHeader>
-		},
-		accessorFn: row => row.author?.name || 'author',
+		header: 'Author',
+		cell: ({ row }) => row.original.author?.name || '—',
 	},
 	{
-		id: 'Updated At',
 		accessorKey: 'updatedAt',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Updated At</SimpleSortHeader>
-		},
-		cell: info => info.getValue<Date>().toLocaleString('zh-TW'),
-		accessorFn: row => new Date(row.updatedAt),
+		header: 'Updated At',
+		cell: ({ row }) => row.original.updatedAt.toLocaleString('zh-TW'),
 	},
 	{
-		accessorKey: 'id',
-		header: 'Edit',
+		id: '_actions',
 		cell: props => {
 			const row = props.row
 			const fetcher = useFetcher()
@@ -104,17 +102,17 @@ export const columns: ColumnDef<
 
 			useEffect(() => {
 				if (mutating) {
-					row.original.setRowsDeleting(prev => {
-						const newSet = new Set(prev)
-						newSet.add(rowId)
-						return newSet
-					})
+					// row.original.setRowsDeleting(prev => {
+					// 	const newSet = new Set(prev)
+					// 	newSet.add(rowId)
+					// 	return newSet
+					// })
 				} else {
-					row.original.setRowsDeleting(prev => {
-						const newSet = new Set(prev)
-						newSet.delete(rowId)
-						return newSet
-					})
+					// row.original.setRowsDeleting(prev => {
+					// 	const newSet = new Set(prev)
+					// 	newSet.delete(rowId)
+					// 	return newSet
+					// })
 				}
 			}, [mutating])
 

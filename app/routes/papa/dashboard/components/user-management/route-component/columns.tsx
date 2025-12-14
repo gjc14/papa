@@ -8,21 +8,15 @@ import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import type { user as userTable } from '~/lib/db/schema'
-import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
+import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/dashboard-data-table'
 
-import { SimpleSortHeader } from '../../data-table/simple-sort-header'
 import { UserContent } from '../user-content'
 
 type User = typeof userTable.$inferSelect
 
-export const columns: ColumnDef<
-	User & {
-		setRowsDeleting: React.Dispatch<React.SetStateAction<Set<string>>>
-	}
->[] = [
+export const columns: ColumnDef<User>[] = [
 	{
-		accessorKey: 'image',
-		header: '🙂',
+		id: '_avatar',
 		cell: ({ row }) => {
 			return (
 				<div className="flex items-center justify-center">
@@ -39,15 +33,11 @@ export const columns: ColumnDef<
 	},
 	{
 		accessorKey: 'email',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Email</SimpleSortHeader>
-		},
+		header: 'Email',
 	},
 	{
 		accessorKey: 'name',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Name</SimpleSortHeader>
-		},
+		header: 'Name',
 	},
 	{
 		accessorKey: 'role',
@@ -55,9 +45,7 @@ export const columns: ColumnDef<
 	},
 	{
 		accessorKey: 'emailVerified',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Email Verified</SimpleSortHeader>
-		},
+		header: 'Email Verified',
 		cell: ({ row }) => {
 			return (
 				<Badge
@@ -70,9 +58,7 @@ export const columns: ColumnDef<
 	},
 	{
 		accessorKey: 'banned',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Banned</SimpleSortHeader>
-		},
+		header: 'Banned',
 		cell: ({ row }) => {
 			return (
 				<Badge variant={row.original.banned ? 'destructive' : 'secondary'}>
@@ -83,15 +69,12 @@ export const columns: ColumnDef<
 	},
 	{
 		accessorKey: 'updatedAt',
-		header: ({ column }) => {
-			return <SimpleSortHeader column={column}>Updated At</SimpleSortHeader>
-		},
-		accessorFn: row => new Date(row.updatedAt).toLocaleString('zh-TW'),
+		header: 'Updated At',
+		cell: ({ row }) => row.original.updatedAt.toLocaleString('zh-TW'),
 	},
 	{
-		accessorKey: 'id',
-		header: 'Edit',
-		cell: ({ row }) => {
+		id: '_actions',
+		cell: ({ row, table }) => {
 			const fetcher = useFetcher()
 			const { mutating, isSubmitting } = useFetcherNotification(fetcher)
 			const [open, setOpen] = useState(false)
@@ -102,17 +85,17 @@ export const columns: ColumnDef<
 
 			useEffect(() => {
 				if (mutating) {
-					row.original.setRowsDeleting(prev => {
-						const newSet = new Set(prev)
-						newSet.add(rowId)
-						return newSet
-					})
+					// row.original.setRowsDeleting(prev => {
+					// 	const newSet = new Set(prev)
+					// 	newSet.add(rowId)
+					// 	return newSet
+					// })
 				} else {
-					row.original.setRowsDeleting(prev => {
-						const newSet = new Set(prev)
-						newSet.delete(rowId)
-						return newSet
-					})
+					// row.original.setRowsDeleting(prev => {
+					// 	const newSet = new Set(prev)
+					// 	newSet.delete(rowId)
+					// 	return newSet
+					// })
 				}
 			}, [mutating])
 

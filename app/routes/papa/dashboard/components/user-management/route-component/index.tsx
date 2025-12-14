@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFetcher } from 'react-router'
 
-import { type RowSelectionState } from '@tanstack/react-table'
+import { type RowSelectionState, type Table } from '@tanstack/react-table'
 import { ChevronDown, Loader2, PlusCircle } from 'lucide-react'
 
 import {
@@ -42,8 +42,9 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
-import { DataTable } from '~/routes/papa/dashboard/components/data-table'
 
+import { DashboardDataTable } from '../../dashboard-data-table'
+import { useSkipper } from '../../dashboard-data-table/hooks'
 import { UserBulkEditDialog } from '../user-content'
 import { columns } from './columns'
 
@@ -59,45 +60,39 @@ export const UserManagementRoute = ({
 	const fetcher = useFetcher()
 	const { isLoading, isSubmitting } = useFetcherNotification(fetcher)
 
-	const [rowsDeleting, setRowsDeleting] = useState<Set<string>>(new Set())
-	// The ids selected returned by setRowSelection
-	// are the same as index of the raw data passed in to the table
-	const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+	const tableRef = useRef<Table<User>>(null)
+	const [shouldSkip, skip] = useSkipper()
+	const [state, setState] = useState(users)
+
+	useEffect(() => {
+		skip()
+		setState(users)
+	}, [users])
+
 	const [openInviteDialog, setOpenInviteDialog] = useState(false)
 	const [openBulkEdit, setOpenBulkEdit] = useState(false)
 	const [openBulkDeleteAlert, setOpenBulkDeleteAlert] = useState(false)
 
-	const selectedUsers = useMemo(() => {
-		const selectedRows = Object.keys(rowSelection).filter(
-			key => rowSelection[key],
-		)
-		return users.filter((_, i) => selectedRows.includes(i.toString()))
-	}, [rowSelection, users])
-
-	const tableData = useMemo(() => {
-		return users.map(u => ({ ...u, setRowsDeleting }))
-	}, [users])
-
 	const onBulkDelete = () => {
-		if (selectedUsers.length === 0) return
-		const idsToDelete = selectedUsers.map(user => user.id)
-		fetcher.submit(
-			{ id: idsToDelete },
-			{
-				method: 'DELETE',
-				action: '/dashboard/user/resource',
-			},
-		)
+		// if (selectedUsers.length === 0) return
+		// const idsToDelete = selectedUsers.map(user => user.id)
+		// fetcher.submit(
+		// 	{ id: idsToDelete },
+		// 	{
+		// 		method: 'DELETE',
+		// 		action: '/dashboard/user/resource',
+		// 	},
+		// )
 	}
 
 	const onBulkEdit = (formData: FormData) => {
-		if (selectedUsers.length === 0) return
-		const idsToEdit = selectedUsers.map(user => user.id).join(',')
-		formData.set('id', idsToEdit)
-		fetcher.submit(formData, {
-			method: 'PUT',
-			action: '/dashboard/user/resource',
-		})
+		// if (selectedUsers.length === 0) return
+		// const idsToEdit = selectedUsers.map(user => user.id).join(',')
+		// formData.set('id', idsToEdit)
+		// fetcher.submit(formData, {
+		// 	method: 'PUT',
+		// 	action: '/dashboard/user/resource',
+		// })
 	}
 
 	useEffect(() => {
@@ -139,21 +134,8 @@ export const UserManagementRoute = ({
 					</Button>
 				</DashboardActions>
 			</DashboardHeader>
-			<DashboardContent>
-				<DataTable
-					columns={columns}
-					data={tableData}
-					rowSelection={rowSelection}
-					setRowSelection={setRowSelection}
-					rowGroupStyle={[
-						{
-							rowIds: rowsDeleting,
-							className: 'opacity-50 pointer-events-none',
-						},
-					]}
-					hideColumnFilter
-				>
-					{table => (
+			<DashboardContent className="px-0 md:px-0">
+				{/* {table => (
 						<div className="flex w-full items-center justify-between gap-2">
 							<Input
 								placeholder="Filter email..."
@@ -189,8 +171,17 @@ export const UserManagementRoute = ({
 								</DropdownMenuContent>
 							</DropdownMenu>
 						</div>
-					)}
-				</DataTable>
+					)} */}
+				<DashboardDataTable
+					columns={columns}
+					data={state}
+					setData={setState}
+					ref={tableRef}
+					autoResetPageIndex={shouldSkip}
+					skipAutoResetPageIndex={skip}
+					className="px-2 md:px-3"
+					initialPageSize={20}
+				/>
 
 				<Dialog open={openInviteDialog} onOpenChange={setOpenInviteDialog}>
 					<DialogContent>
@@ -245,7 +236,7 @@ export const UserManagementRoute = ({
 					</DialogContent>
 				</Dialog>
 
-				{selectedUsers.length > 0 && (
+				{/* {selectedUsers.length > 0 && (
 					<UserBulkEditDialog
 						user={selectedUsers[0]}
 						open={openBulkEdit}
@@ -254,9 +245,9 @@ export const UserManagementRoute = ({
 						onSubmit={formData => onBulkEdit(formData)}
 						isSubmitting={isSubmitting && fetcher.formMethod === 'PUT'}
 					/>
-				)}
+				)} */}
 
-				<AlertDialog
+				{/* <AlertDialog
 					open={openBulkDeleteAlert}
 					onOpenChange={setOpenBulkDeleteAlert}
 				>
@@ -288,7 +279,7 @@ export const UserManagementRoute = ({
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
-				</AlertDialog>
+				</AlertDialog> */}
 			</DashboardContent>
 		</DashboardLayout>
 	)

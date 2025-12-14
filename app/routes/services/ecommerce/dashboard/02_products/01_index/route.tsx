@@ -10,7 +10,10 @@ import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { useFetcherNotification } from '~/hooks/use-notification'
-import { DashboardDataTable } from '~/routes/papa/dashboard/components/dashboard-data-table'
+import {
+	DashboardDataTable,
+	DashboardDataTableMoreMenu,
+} from '~/routes/papa/dashboard/components/dashboard-data-table'
 import { useSkipper } from '~/routes/papa/dashboard/components/dashboard-data-table/hooks'
 import {
 	DashboardActions,
@@ -19,7 +22,6 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from '~/routes/papa/dashboard/components/dashboard-wrapper'
-import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/data-table'
 
 import { getProducts } from '../../../lib/db/product.server'
 import { storeConfigAtom } from '../../../store/product/context'
