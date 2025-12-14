@@ -5,7 +5,8 @@ import { ChevronLeftIcon } from '@radix-ui/react-icons'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
-import type { PostWithRelations } from '~/lib/db/post.server'
+
+import type { PostWithRelations } from '../../../lib/db/post.server'
 
 export const PostFooter = ({
 	post,

@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm'
 
-import { db } from '~/lib/db/db.server'
+import { generateSlug } from '~/lib/utils/seo'
 
-import { generateSlug } from '../utils/seo'
-import type { Category, Tag } from './schema'
+import { dbBlog as db } from './db.server'
 import { category as categoryTable, tag as tagTable } from './schema'
+import type { Category, Tag } from './schema'
 
 /**
  * Tag and Category functions

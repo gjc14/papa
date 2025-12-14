@@ -1,6 +1,7 @@
-import { getPosts } from '~/lib/db/post.server'
 import { getSEO } from '~/lib/db/seo.server'
 import { createMeta } from '~/lib/utils/seo'
+
+import { getPosts } from '../../lib/db/post.server'
 
 type PostPromise = ReturnType<typeof fetchPosts> // Promise<{ meta, post, ... }>
 type PostPayload = Awaited<PostPromise> // { meta, post, ... }

@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 
 import { useAtom } from 'jotai'
 
-import type { PostWithRelations } from '~/lib/db/post.server'
-
+import type { PostWithRelations } from '../../lib/db/post.server'
 import {
 	editorContentAtom,
 	hasChangesAtom,

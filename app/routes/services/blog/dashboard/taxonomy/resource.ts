@@ -2,16 +2,17 @@ import { redirect, type ActionFunctionArgs } from 'react-router'
 
 import { z } from 'zod'
 
+import { type ActionResponse } from '~/lib/utils'
+import { handleError } from '~/lib/utils/server'
+import { validateAdminSession } from '~/routes/papa/auth/utils'
+
 import {
 	createCategory,
 	createChildCategory,
 	createTag,
 	deleteCategory,
 	deleteTag,
-} from '~/lib/db/taxonomy.server'
-import { type ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/papa/auth/utils'
+} from '../../lib/db/taxonomy.server'
 
 const intentSchema = z.enum(['category', 'child-category', 'tag'])
 export type Intents = z.infer<typeof intentSchema>

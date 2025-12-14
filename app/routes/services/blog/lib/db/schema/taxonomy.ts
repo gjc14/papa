@@ -9,7 +9,8 @@ import {
 	varchar,
 } from 'drizzle-orm/pg-core'
 
-import { pgTable } from './helpers'
+import { pgTable } from '~/lib/db/schema/helpers'
+
 import { post } from './post'
 
 export type Tag = InferSelectModel<typeof tag>

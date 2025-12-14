@@ -3,9 +3,9 @@ import { data, Link, useLocation } from 'react-router'
 
 import { ArrowLeft, HeartCrack } from 'lucide-react'
 
-import { getPostBySlug } from '~/lib/db/post.server'
 import { createMeta } from '~/lib/utils/seo'
 
+import { getPostBySlug } from '../../lib/db/post.server'
 import { Post } from '../components/post'
 import { fetchPost, headers, postServerMemoryCache, TTL } from './cache'
 

@@ -10,9 +10,9 @@ import { Label } from '~/components/ui/label'
 import { Spinner } from '~/components/ui/spinner'
 import { Textarea } from '~/components/ui/textarea'
 import { MultiSelect } from '~/components/multi-select'
-import type { PostWithRelations } from '~/lib/db/post.server'
 import { generateSeoDescription } from '~/lib/utils/seo'
 
+import type { PostWithRelations } from '../../../lib/db/post.server'
 import { editorAtom, postAtom } from '../../context'
 import { TinyLinkButton } from './tiny-link-button'
 

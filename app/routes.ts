@@ -6,7 +6,6 @@ import {
 	servicesRoutes,
 } from './routes/papa/utils/service-configs'
 import {
-	blogRoute,
 	indexRoute,
 	robotsRoute,
 	sitemapRoute,
@@ -21,10 +20,6 @@ const webRoutes: RouteConfig = []
 
 if (webFallbacks.shouldIncludeIndex) {
 	webRoutes.push(indexRoute())
-}
-
-if (webFallbacks.shouldIncludeBlog) {
-	webRoutes.push(blogRoute())
 }
 
 if (webFallbacks.shouldIncludeSplat) {

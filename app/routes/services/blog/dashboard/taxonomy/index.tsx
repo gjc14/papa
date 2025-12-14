@@ -11,8 +11,8 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from '~/components/dashboard/dashboard-wrapper'
-import { getPosts } from '~/lib/db/post.server'
 
+import { getPosts } from '../../lib/db/post.server'
 import { categoriesAtom, tagsAtom } from '../context'
 import {
 	CategoriesSection,

@@ -11,9 +11,9 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '~/components/ui/alert-dialog'
-import type { PostWithRelations } from '~/lib/db/post.server'
 import { convertDateFields } from '~/lib/db/utils'
 
+import type { PostWithRelations } from '../../../lib/db/post.server'
 import {
 	editorAtom,
 	isDraftCheckCompleteAtom,

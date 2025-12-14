@@ -1,6 +1,8 @@
 import type { Session } from '~/lib/auth/auth-client'
-import type { PostWithRelations } from '~/lib/db/post.server'
-import { PostStatus, type user as userTable } from '~/lib/db/schema'
+import { type user as userTable } from '~/lib/db/schema'
+
+import type { PostWithRelations } from '../../lib/db/post.server'
+import { PostStatus } from '../../lib/db/schema'
 
 export const postLocalStorageKey = (id: number) => `papa:blog:draft:${id}`
 

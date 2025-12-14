@@ -1,9 +1,10 @@
 import { relations, sql, type InferSelectModel } from 'drizzle-orm'
 import { check, integer, serial, text, varchar } from 'drizzle-orm/pg-core'
 
-import { user } from './auth'
-import { pgTable, timestampAttributes } from './helpers'
-import { seo } from './seo'
+import { user } from '~/lib/db/schema/auth'
+import { pgTable, timestampAttributes } from '~/lib/db/schema/helpers'
+import { seo } from '~/lib/db/schema/seo'
+
 import { postToCategory, postToTag } from './taxonomy'
 
 export const PostStatus = [

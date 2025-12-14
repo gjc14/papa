@@ -12,8 +12,8 @@ import hljs from 'highlight.js'
 import { Spinner } from '~/components/ui/spinner'
 import { ExtensionKit } from '~/components/editor/extension-kit'
 import { useHydrated } from '~/hooks/use-hydrated'
-import type { PostWithRelations } from '~/lib/db/post.server'
 
+import type { PostWithRelations } from '../../../lib/db/post.server'
 import { PostFooter } from './post-footer'
 import { PostMeta } from './post-meta'
 

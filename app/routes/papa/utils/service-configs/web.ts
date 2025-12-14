@@ -4,7 +4,7 @@ import { index, layout, prefix, route } from '@react-router/dev/routes'
 import { getServiceRoutesModules } from './helpers'
 
 /**
- * Check if a route path matches index, blog, or splat patterns
+ * Check if a route path matches index, or splat patterns
  */
 const isWebFallbackRoute = (routePath: string): boolean => {
 	// Remove leading slash for consistent comparison
@@ -12,11 +12,6 @@ const isWebFallbackRoute = (routePath: string): boolean => {
 
 	// Check for index route (empty path or just '/')
 	if (normalizedPath === '' || normalizedPath === '/') {
-		return true
-	}
-
-	// Check for blog routes
-	if (normalizedPath === 'blog' || normalizedPath.startsWith('blog/')) {
 		return true
 	}
 
@@ -69,13 +64,12 @@ const extractRoutePaths = (routes: RouteConfig): string[] => {
 }
 
 /**
- * Check if services have defined web fallback routes (index, blog, splat)
+ * Check if services have defined web fallback routes (index, splat)
  */
 const hasWebRoutes = () => {
 	const modules = getServiceRoutesModules()
 	const webRouteTypes = {
 		hasIndex: false,
-		hasBlog: false,
 		hasSplat: false,
 		hasRobots: false,
 		hasSitemap: false,
@@ -100,11 +94,6 @@ const hasWebRoutes = () => {
 
 				if (normalizedPath === '' || normalizedPath === '/') {
 					webRouteTypes.hasIndex = true
-				} else if (
-					normalizedPath === 'blog' ||
-					normalizedPath.startsWith('blog/')
-				) {
-					webRouteTypes.hasBlog = true
 				} else if (normalizedPath.includes('*') || normalizedPath === '$') {
 					webRouteTypes.hasSplat = true
 				} else if (normalizedPath === 'robots.txt') {
@@ -123,7 +112,7 @@ const hasWebRoutes = () => {
 
 /**
  * Get web fallback routes based on what services haven't defined
- * This function checks which web routes (index, blog, splat) are not defined
+ * This function checks which web routes (index, splat) are not defined
  * by services and returns the appropriate fallback routes
  */
 export const getWebFallbackRoutes = () => {
@@ -131,7 +120,6 @@ export const getWebFallbackRoutes = () => {
 
 	return {
 		shouldIncludeIndex: !webRouteStatus.hasIndex,
-		shouldIncludeBlog: !webRouteStatus.hasBlog,
 		shouldIncludeSplat: !webRouteStatus.hasSplat,
 		shouldIncludeRobots: !webRouteStatus.hasRobots,
 		shouldIncludeSitemap: !webRouteStatus.hasSitemap,

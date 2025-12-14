@@ -1,20 +1,21 @@
 import camelcaseKeys from 'camelcase-keys'
 import { eq, inArray, sql } from 'drizzle-orm'
 
-import { db, type TransactionType } from '~/lib/db/db.server'
-import type { Category, Post, Seo, Tag } from '~/lib/db/schema'
+import { seo as seoTable, user, type Seo } from '~/lib/db/schema'
+
+import { convertDateFields } from '../../../../../lib/db/utils'
+import { dbBlog as db, type TransactionType } from './db.server'
 import {
 	category as categoryTable,
-	PostStatus,
 	post as postTable,
 	postToCategory,
 	postToTag,
-	seo as seoTable,
 	tag as tagTable,
-	user,
-} from '~/lib/db/schema'
-
-import { convertDateFields } from './utils'
+	type Category,
+	type Post,
+	type PostStatus,
+	type Tag,
+} from './schema'
 
 type User = typeof user.$inferSelect
 

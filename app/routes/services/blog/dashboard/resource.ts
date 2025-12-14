@@ -3,17 +3,17 @@ import { type ActionFunctionArgs } from 'react-router'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
+import { type ActionResponse } from '~/lib/utils'
+import { handleError } from '~/lib/utils/server'
+import { validateAdminSession } from '~/routes/papa/auth/utils'
 import {
 	createPost,
 	deletePost,
 	deletePosts,
 	updatePost,
-} from '~/lib/db/post.server'
-import { category, post, tag } from '~/lib/db/schema'
-import { type ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/papa/auth/utils'
+} from '~/routes/services/blog/lib/db/post.server'
 
+import { category, post, tag } from '../lib/db/schema'
 import { postsServerMemoryCache } from './index/cache'
 
 /**

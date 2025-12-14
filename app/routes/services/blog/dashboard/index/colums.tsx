@@ -7,7 +7,8 @@ import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
 import { DashboardDataTableMoreMenu } from '~/components/dashboard/dashboard-data-table'
 import { useFetcherNotification } from '~/hooks/use-notification'
-import type { PostWithRelations } from '~/lib/db/post.server'
+
+import type { PostWithRelations } from '../../lib/db/post.server'
 
 export const columns: ColumnDef<PostWithRelations>[] = [
 	{

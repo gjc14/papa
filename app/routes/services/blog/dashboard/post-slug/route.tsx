@@ -6,9 +6,9 @@ import { useHydrateAtoms } from 'jotai/utils'
 import { HeartCrack } from 'lucide-react'
 
 import { useIsMobile } from '~/hooks/use-mobile'
-import { getPostBySlug } from '~/lib/db/post.server'
-import { Post } from '~/routes/web/blog/components/post'
 
+import { getPostBySlug } from '../../lib/db/post.server'
+import { Post } from '../../web/components/post'
 import { ContentEditor } from '../components/editor'
 import { Toolbar } from '../components/editor/editor-toolbar'
 import { PostDeleteAlert } from '../components/post/delete-alert'

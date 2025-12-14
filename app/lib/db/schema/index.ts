@@ -1,5 +1,3 @@
 export * from './auth'
 export * from './file'
-export * from './post'
 export * from './seo'
-export * from './taxonomy'

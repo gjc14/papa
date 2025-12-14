@@ -31,7 +31,17 @@ export const config = {
 			]),
 		],
 	},
-	routes: ({ route, index }) => [],
+	routes: ({ route, index }) => [
+		route('/blog', './routes/services/blog/web/layout.tsx', [
+			index('./routes/services/blog/web/index/route.tsx'),
+			route(':postSlug', './routes/services/blog/web/post-slug/route.tsx'),
+			route(
+				':postSlug/edit',
+				'./routes/services/blog/web/post-slug-edit/route.tsx',
+			),
+			route('subscribe', './routes/services/blog/web/subscribe/route.tsx'),
+		]),
+	],
 	sitemap: url => [
 		{
 			loc: `${url.origin}/store`,

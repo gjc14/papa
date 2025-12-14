@@ -20,10 +20,10 @@ import {
 import { Spinner } from '~/components/ui/spinner'
 import { Textarea } from '~/components/ui/textarea'
 import { SeparatorWithText } from '~/components/separator-with-text'
-import { PostStatus } from '~/lib/db/schema'
 import { generateSeoDescription, generateSlug } from '~/lib/utils/seo'
 import { FileGrid } from '~/routes/papa/dashboard/assets/components/file-grid'
 
+import { PostStatus } from '../../../lib/db/schema'
 import { editorAtom, postAtom } from '../../context'
 import { useAssetsContext } from '../../hooks'
 import { TinyLinkButton } from './tiny-link-button'

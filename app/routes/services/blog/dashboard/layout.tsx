@@ -4,9 +4,8 @@ import { Outlet } from 'react-router'
 
 import { Provider, useAtom } from 'jotai'
 
-import type { Category, Tag } from '~/lib/db/schema'
-import { getCategories, getTags } from '~/lib/db/taxonomy.server'
-
+import type { Category, Tag } from '../lib/db/schema'
+import { getCategories, getTags } from '../lib/db/taxonomy.server'
 import { categoriesAtom, tagsAtom } from './context'
 
 export const loader = async () => {

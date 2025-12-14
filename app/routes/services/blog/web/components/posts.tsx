@@ -17,7 +17,8 @@ import { motion } from 'motion/react'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
 import { Badge } from '~/components/ui/badge'
 import { InputSearch } from '~/components/ui/input-search'
-import type { PostWithRelations } from '~/lib/db/post.server'
+
+import type { PostWithRelations } from '../..//lib/db/post.server'
 
 export const PostCollection = ({
 	title,

@@ -10,8 +10,8 @@ import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
 import ExtensionKit from '~/components/editor/extension-kit'
 import { useHydrated } from '~/hooks/use-hydrated'
-import type { PostWithRelations } from '~/lib/db/post.server'
 
+import type { PostWithRelations } from '../../../lib/db/post.server'
 import { estimateReadingTime } from '../../utils'
 
 export function PostMeta({ post }: { post: PostWithRelations }) {
