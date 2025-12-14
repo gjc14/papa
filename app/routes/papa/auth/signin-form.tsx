@@ -4,6 +4,7 @@ import { Form, useNavigate } from 'react-router'
 import { toast } from '@gjc14/sonner'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
 import {
 	Card,
@@ -24,16 +25,26 @@ import { Label } from '~/components/ui/label'
 import { Spinner } from '~/components/ui/spinner'
 import { authClient } from '~/lib/auth/auth-client'
 
-export const SignInForm = () => {
+export const SignInForm = ({
+	user,
+}: {
+	user?: {
+		email: string
+		name: string
+		image?: string | null
+		role?: string | null
+	}
+}) => {
 	const navigate = useNavigate()
 
-	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [isSigningIn, setIsSigningIn] = useState(false)
+	const [isSendingOtp, setIsSendingOtp] = useState(false)
 	const [countDown, setCountDown] = useState(0)
 	const [showOtpInput, setShowOtpInput] = useState(false)
 	const [email, setEmail] = useState('')
 	const [otp, setOtp] = useState('')
 
-	const sendDisabled = countDown > 0 || isSubmitting
+	const sendDisabled = countDown > 0 || isSigningIn || isSendingOtp
 	const otpLength = 6
 
 	useEffect(() => {
@@ -54,7 +65,7 @@ export const SignInForm = () => {
 			return
 		}
 
-		setIsSubmitting(true)
+		setIsSendingOtp(true)
 
 		await authClient.emailOtp.sendVerificationOtp(
 			{
@@ -74,37 +85,69 @@ export const SignInForm = () => {
 			},
 		)
 
-		setIsSubmitting(false)
+		setIsSendingOtp(false)
 	}
 
 	const handleSignIn = async () => {
-		if (isSubmitting) return
+		if (isSigningIn || isSendingOtp) return
 
 		if (!otp || otp.length !== 6) {
 			alert('Please enter a valid OTP code')
 			return
 		}
 
-		setIsSubmitting(true)
+		setIsSigningIn(true)
 
-		await authClient.signIn.emailOtp(
-			{
-				email: email,
-				otp: otp,
-			},
-			{
-				onSuccess: () => {
-					toast.success('Successfully signed in!')
-					navigate('/dashboard')
-				},
-				onError: ctx => {
-					alert('Error verifying OTP: ' + ctx.error.message)
-					console.error(ctx.error)
-				},
-			},
+		const { error } = await authClient.signIn.emailOtp(
+			{ email, otp },
+			{ onSuccess: () => navigate('/dashboard') },
 		)
 
-		setIsSubmitting(false)
+		if (error) {
+			alert('Error verifying OTP: ' + error.message)
+			console.error(error)
+		}
+
+		setIsSigningIn(false)
+	}
+
+	const handleSignOut = async () => {
+		await authClient.signOut()
+		navigate(0)
+	}
+
+	if (user) {
+		return (
+			<Card className="w-full max-w-sm">
+				<CardHeader>
+					<CardTitle className="text-2xl">Welcome back</CardTitle>
+					<CardDescription>You are already signed in</CardDescription>
+				</CardHeader>
+				<CardContent className="flex flex-col items-center justify-center gap-3">
+					<Avatar className="size-28">
+						<AvatarImage
+							src={user.image ?? '/placeholders/avatar.png'}
+							alt={user.name || 'User'}
+						/>
+						<AvatarFallback>{user.name?.[0] ?? 'U'}</AvatarFallback>
+					</Avatar>
+					<div className="flex flex-col items-center gap-1">
+						<p className="text-lg font-semibold">{user.name || user.email}</p>
+						<p className="text-muted-foreground text-sm">{user.email}</p>
+						{user.role && (
+							<p className="text-primary text-xs font-medium capitalize">
+								{user.role}
+							</p>
+						)}
+					</div>
+				</CardContent>
+				<CardFooter>
+					<Button className="w-full" onClick={handleSignOut}>
+						Sign Out
+					</Button>
+				</CardFooter>
+			</Card>
+		)
 	}
 
 	return (
@@ -127,7 +170,7 @@ export const SignInForm = () => {
 				{!showOtpInput ? (
 					<Form
 						id="send-otp"
-						className="grid gap-2"
+						className="my-2 grid gap-2"
 						onSubmit={e => {
 							e.preventDefault()
 							handleSendOTP()
@@ -151,7 +194,7 @@ export const SignInForm = () => {
 				) : (
 					<Form
 						id="sign-in"
-						className="grid items-center justify-center gap-4"
+						className="my-3 grid items-center justify-center gap-4"
 						onSubmit={e => {
 							e.preventDefault()
 							handleSignIn()
@@ -168,15 +211,15 @@ export const SignInForm = () => {
 							}}
 						>
 							<InputOTPGroup>
-								<InputOTPSlot index={0} />
-								<InputOTPSlot index={1} />
-								<InputOTPSlot index={2} />
+								<InputOTPSlot index={0} className="size-12" />
+								<InputOTPSlot index={1} className="size-12" />
+								<InputOTPSlot index={2} className="size-12" />
 							</InputOTPGroup>
 							<InputOTPSeparator />
 							<InputOTPGroup>
-								<InputOTPSlot index={3} />
-								<InputOTPSlot index={4} />
-								<InputOTPSlot index={5} />
+								<InputOTPSlot index={3} className="size-12" />
+								<InputOTPSlot index={4} className="size-12" />
+								<InputOTPSlot index={5} className="size-12" />
 							</InputOTPGroup>
 						</InputOTP>
 					</Form>
@@ -190,7 +233,7 @@ export const SignInForm = () => {
 						type="submit"
 						form="send-otp"
 					>
-						{isSubmitting ? (
+						{isSendingOtp ? (
 							<Spinner />
 						) : countDown > 0 ? (
 							<span>Wait {countDown}s to sign in again</span>
@@ -202,11 +245,11 @@ export const SignInForm = () => {
 					<>
 						<Button
 							className="w-full"
-							disabled={isSubmitting}
+							disabled={isSigningIn || isSendingOtp}
 							type="submit"
 							form="sign-in"
 						>
-							{isSubmitting ? <Spinner /> : 'Verify & Sign In'}
+							{isSigningIn ? <Spinner /> : 'Verify & Sign In'}
 						</Button>
 						<Button
 							variant="outline"
