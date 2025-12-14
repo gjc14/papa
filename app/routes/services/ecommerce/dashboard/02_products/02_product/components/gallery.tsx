@@ -6,6 +6,7 @@ import { Image, Plus, X } from 'lucide-react'
 
 import { Card, CardContent } from '~/components/ui/card'
 import { DialogTrigger } from '~/components/ui/dialog'
+import { Skeleton } from '~/components/ui/skeleton'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
 import type { loader } from '~/routes/papa/dashboard/assets/resource'
 import { assetResourceRoute } from '~/routes/papa/dashboard/assets/utils'
@@ -48,7 +49,7 @@ export function Gallery() {
 		if (fetcher.data) setAssets(fetcher.data)
 	}, [fetcher.data])
 
-	if (!productId || productName === null || !gallery) return null
+	if (!productId || productName === null) return null
 
 	const handleSetFeatureImage = () => {
 		if (!srcInput) return
@@ -83,7 +84,7 @@ export function Gallery() {
 	}
 
 	const handleInsertGallery = () => {
-		if (!srcInput) return
+		if (!gallery || !srcInput) return
 
 		const newImage = {
 			image: srcInput,
@@ -95,6 +96,8 @@ export function Gallery() {
 
 		setGallery(prev => [...(prev ? prev : []), newImage])
 	}
+
+	const galleryPending = gallery === null
 
 	return (
 		<Card id="gallery">
@@ -129,7 +132,7 @@ export function Gallery() {
 										/>
 									</div>
 								) : (
-									<div className="bg-accent flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed">
+									<div className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed">
 										<Image />
 									</div>
 								)}
@@ -164,37 +167,42 @@ export function Gallery() {
 					<h3 className="mb-1 text-sm font-medium">Gallery</h3>
 
 					<div className="grid grid-cols-3 gap-2">
-						{gallery
-							.sort((a, b) => a.order - b.order)
-							.map((item, i) => (
-								<div key={i} className="relative">
-									<img
-										src={item.image}
-										alt={item.alt || productName}
-										title={item.title || productName}
-										className="aspect-square rounded object-cover"
-									/>
-									<button
-										type="button"
-										onClick={() => {
-											const newGallery = gallery.filter(
-												(_, index) => index !== i,
-											)
-											setGallery(newGallery)
-										}}
-										className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
-									>
-										<X size={12} />
-									</button>
-								</div>
-							))}
+						{!galleryPending ? (
+							gallery
+								.sort((a, b) => a.order - b.order)
+								.map((item, i) => (
+									<div key={i} className="relative">
+										<img
+											src={item.image}
+											alt={item.alt || productName}
+											title={item.title || productName}
+											className="aspect-square rounded object-cover"
+										/>
+										<button
+											type="button"
+											onClick={() => {
+												const newGallery = gallery.filter(
+													(_, index) => index !== i,
+												)
+												setGallery(newGallery)
+											}}
+											className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+										>
+											<X size={12} />
+										</button>
+									</div>
+								))
+						) : (
+							<Skeleton className="bg-accent border-muted-foreground flex aspect-square items-center justify-center rounded-md border border-dashed" />
+						)}
 						<AssetSelectionDialog
 							actionLabel="Insert"
 							title="Image"
 							trigger={
 								<DialogTrigger
-									className="bg-accent flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed"
+									className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed"
 									onClick={() => !assets && fetcher.load(assetResourceRoute)}
+									hidden={galleryPending}
 								>
 									<Plus />
 								</DialogTrigger>

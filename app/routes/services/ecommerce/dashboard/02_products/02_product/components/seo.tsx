@@ -155,17 +155,17 @@ export function Seo() {
 							</div>
 
 							<div className="flex min-w-0 items-center gap-1">
-								<span className="truncate">
+								<span className="truncate text-[12px]">
 									{`${import.meta.env.VITE_BASE_URL} › ${storeConfig.storeFrontPath.slice(1)} › product › ${slug} `}
 								</span>
 								<MoreVertical
-									size={10}
+									size={16}
 									className="text-muted-foreground flex-shrink-0"
 								/>
 							</div>
-							<p className="min-w-0 cursor-pointer truncate text-xl font-normal text-[#1a0dab] hover:underline dark:text-[#99c3ff]">
+							<h3 className="mt-1 min-w-0 cursor-pointer truncate text-xl font-normal text-[#1a0dab] hover:underline dark:text-[#99c3ff]">
 								{seo.metaTitle || name}
-							</p>
+							</h3>
 							<div className="mt-1 line-clamp-2 text-sm text-[#474747] dark:text-[#bfbfbf]">
 								{seo.metaDescription || description}
 							</div>

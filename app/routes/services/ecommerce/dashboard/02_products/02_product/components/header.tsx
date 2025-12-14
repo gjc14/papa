@@ -2,7 +2,15 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useFetcher, useNavigate } from 'react-router'
 
 import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
-import { ExternalLink, MoreVertical, RefreshCcw, Trash } from 'lucide-react'
+import {
+	Check,
+	ExternalLink,
+	MoreVertical,
+	Pencil,
+	RefreshCcw,
+	Trash,
+	X,
+} from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -123,56 +131,68 @@ export function ProductEditPageHeader() {
 						<span className="text-muted-foreground">ID: {productId}</span>
 					)}
 				</ItemTitle>
-				<ItemDescription className="truncate overflow-visible whitespace-nowrap">
-					Path:{' '}
+				<ItemDescription className="flex items-center gap-1 truncate overflow-visible whitespace-nowrap">
 					{editSlug ? (
 						<>
-							{storeConfig.storeFrontPath}/product/
+							<span className="text-muted-foreground text-sm">
+								{storeConfig.storeFrontPath}/product/
+							</span>
 							<Input
+								className="text-primary h-7 w-fit px-2"
+								type="text"
+								placeholder="enter slug..."
 								value={slugInput}
 								onChange={e => setSlugInput(e.target.value)}
-								className="text-primary ml-2 h-8 w-fit"
 								autoFocus
 							/>
 							<Button
-								className="text-primary-foreground ml-2 h-8"
-								size="sm"
+								size="icon"
+								className="size-7"
 								onClick={() => {
 									setProduct(pv => (pv ? { ...pv, slug: slugInput } : pv))
 									setEditSlug(false)
 								}}
 							>
-								Save
+								<Check />
 							</Button>
 							<Button
-								className="text-primary ml-2 h-8"
-								variant="outline"
-								size="sm"
+								variant="ghost"
+								size="icon"
+								className="size-7"
 								onClick={() => {
 									setSlugInput(productSlug)
 									setEditSlug(false)
 								}}
 							>
-								Cancel
+								<X />
 							</Button>
 						</>
 					) : (
 						<>
-							<Link
-								to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
-								target="_blank"
-								rel="noreferrer"
-							>
+							<span className="text-muted-foreground truncate text-sm">
 								{storeConfig.storeFrontPath}/product/{productSlug}
-								<ExternalLink className="ml-1 inline-block size-3.5" />
-							</Link>
+							</span>
 							<Button
-								className="ml-2 h-fit px-0"
-								variant="link"
-								size="sm"
+								variant="ghost"
+								size="icon"
+								className="text-muted-foreground hover:text-foreground size-6"
 								onClick={() => setEditSlug(true)}
 							>
-								Edit
+								<Pencil />
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="text-muted-foreground hover:text-foreground size-6"
+								asChild
+							>
+								<Link
+									to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
+									target="_blank"
+									rel="noreferrer"
+								>
+									<ExternalLink />
+								</Link>
 							</Button>
 						</>
 					)}
