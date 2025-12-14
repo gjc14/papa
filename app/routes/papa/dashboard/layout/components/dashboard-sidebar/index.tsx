@@ -6,11 +6,11 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 } from '~/components/ui/sidebar'
-import type { Session } from '~/lib/auth/auth.server'
 import {
 	ServiceSwitcher,
 	type ServiceDashboardConfig,
-} from '~/routes/papa/dashboard/components/service-swicher'
+} from '~/components/dashboard/service-swicher'
+import type { Session } from '~/lib/auth/auth.server'
 
 import { NavMenu, type DashboardMenuItem } from './nav-menu'
 import { NavSecondary, type NavSecondaryItem } from './nav-secondary'

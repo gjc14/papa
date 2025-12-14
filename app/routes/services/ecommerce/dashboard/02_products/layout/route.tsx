@@ -2,14 +2,14 @@ import type { Route } from './+types/route'
 import { Outlet } from 'react-router'
 
 import {
-	ErrorBoundaryTemplate,
-	type ErrorBoundaryTemplateProps,
-} from '~/components/error-boundary-template'
-import {
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
+import {
+	ErrorBoundaryTemplate,
+	type ErrorBoundaryTemplateProps,
+} from '~/components/error-boundary-template'
 
 export default function ECProductsLayout({}: Route.ComponentProps) {
 	return <Outlet />

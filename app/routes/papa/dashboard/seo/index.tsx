@@ -7,32 +7,32 @@ import { PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import { getSEOs } from '~/lib/db/seo.server'
-import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/dashboard-data-table'
+import { DashboardDataTableMoreMenu } from '~/components/dashboard/dashboard-data-table'
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
-import { SeoContent } from '~/routes/papa/dashboard/components/seo-content'
+} from '~/components/dashboard/dashboard-wrapper'
+import { useFetcherNotification } from '~/hooks/use-notification'
+import { getSEOs } from '~/lib/db/seo.server'
+import { SeoContent } from '~/routes/papa/dashboard/seo/seo-content'
 
-import { DashboardDataTable } from '../components/dashboard-data-table'
-import { useSkipper } from '../components/dashboard-data-table/hooks'
+import { DashboardDataTable } from '../../../../components/dashboard/dashboard-data-table'
+import { useSkipper } from '../../../../components/dashboard/dashboard-data-table/hooks'
 
 export const loader = async () => {
 	const { seos } = await getSEOs()
 	return { seos }
 }
 
-export type SeoLoaderType = Awaited<ReturnType<typeof loader>>['seos'][number]
+export type SEOType = Awaited<ReturnType<typeof getSEOs>>['seos'][number]
 
 export default function SEO({ loaderData }: Route.ComponentProps) {
 	const [open, setOpen] = useState(false)
 
-	const tableRef = useRef<Table<SeoLoaderType>>(null)
+	const tableRef = useRef<Table<SEOType>>(null)
 	const [shouldSkip, skip] = useSkipper()
 	const [state, setState] = useState(loaderData.seos)
 
@@ -77,7 +77,7 @@ export default function SEO({ loaderData }: Route.ComponentProps) {
 	)
 }
 
-export const columns: ColumnDef<SeoLoaderType>[] = [
+export const columns: ColumnDef<SEOType>[] = [
 	{
 		accessorKey: 'route',
 		header: 'Route',

@@ -16,7 +16,7 @@ import {
 	useSidebar,
 } from '~/components/ui/sidebar'
 
-import { renderServiceLogo } from '../../utils/render-service-logo'
+import { renderServiceLogo } from '../../routes/papa/utils/render-service-logo'
 
 export interface ServiceDashboardConfig {
 	/**

@@ -10,7 +10,7 @@ import {
 	UserRound,
 } from 'lucide-react'
 
-import type { ServiceDashboardConfig } from '../../components/service-swicher'
+import type { ServiceDashboardConfig } from '../../../../../components/dashboard/service-swicher'
 import type { DashboardMenuItem } from './dashboard-sidebar/nav-menu'
 import type { NavSecondaryItem } from './dashboard-sidebar/nav-secondary'
 

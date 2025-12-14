@@ -11,13 +11,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '~/components/ui/select'
-import { capitalize } from '~/lib/utils'
 import {
 	DashboardActions,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
+import { capitalize } from '~/lib/utils'
 
 import { FileGrid } from './components/file-grid'
 import type { loader } from './resource'

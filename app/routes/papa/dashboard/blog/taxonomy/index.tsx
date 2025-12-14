@@ -4,14 +4,14 @@ import { useMemo, useState } from 'react'
 import { useAtom } from 'jotai'
 
 import { Button } from '~/components/ui/button'
-import { getPosts } from '~/lib/db/post.server'
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
+import { getPosts } from '~/lib/db/post.server'
 
 import { categoriesAtom, tagsAtom } from '../context'
 import {

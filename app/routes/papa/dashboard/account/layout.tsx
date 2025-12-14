@@ -10,7 +10,7 @@ import {
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
 
 import { useNavigationMetadata } from '../layout/context'
 

@@ -3,15 +3,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ColumnDef, Table } from '@tanstack/react-table'
 
-import { DashboardDataTable } from '~/routes/papa/dashboard/components/dashboard-data-table'
-import { useSkipper } from '~/routes/papa/dashboard/components/dashboard-data-table/hooks'
+import { DashboardDataTable } from '~/components/dashboard/dashboard-data-table'
+import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
 
 import { getEcTags } from '../../../lib/db/taxonomy.server'
 import { CreateTaxonomyDialog } from '../../components/taxonomy/create-taxonomy-dialog'

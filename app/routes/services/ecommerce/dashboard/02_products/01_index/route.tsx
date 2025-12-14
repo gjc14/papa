@@ -9,19 +9,19 @@ import { PlusCircle } from 'lucide-react'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { useFetcherNotification } from '~/hooks/use-notification'
 import {
 	DashboardDataTable,
 	DashboardDataTableMoreMenu,
-} from '~/routes/papa/dashboard/components/dashboard-data-table'
-import { useSkipper } from '~/routes/papa/dashboard/components/dashboard-data-table/hooks'
+} from '~/components/dashboard/dashboard-data-table'
+import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
+import { useFetcherNotification } from '~/hooks/use-notification'
 
 import { getProducts } from '../../../lib/db/product.server'
 import { storeConfigAtom } from '../../../store/product/context'

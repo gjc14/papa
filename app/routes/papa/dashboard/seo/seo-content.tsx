@@ -17,7 +17,7 @@ import { Label } from '~/components/ui/label'
 import { Textarea } from '~/components/ui/textarea'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import { isActionSuccess } from '~/lib/utils'
-import { type SeoLoaderType } from '~/routes/papa/dashboard/seo'
+import { type SEOType } from '~/routes/papa/dashboard/seo'
 
 export const SeoContent = ({
 	seo,
@@ -26,7 +26,7 @@ export const SeoContent = ({
 	action,
 	method,
 }: {
-	seo?: SeoLoaderType
+	seo?: SEOType
 	open: boolean
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>
 	action: string

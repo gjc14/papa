@@ -7,7 +7,7 @@ import {
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
 
 export default function ECOverview() {
 	return (

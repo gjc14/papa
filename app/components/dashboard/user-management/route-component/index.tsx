@@ -33,15 +33,15 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import type { user as userTable } from '~/lib/db/schema'
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
+import { useFetcherNotification } from '~/hooks/use-notification'
+import type { user as userTable } from '~/lib/db/schema'
 
 import { DashboardDataTable } from '../../dashboard-data-table'
 import { useSkipper } from '../../dashboard-data-table/hooks'

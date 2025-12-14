@@ -6,9 +6,9 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Badge } from '~/components/ui/badge'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import { DashboardDataTableMoreMenu } from '~/components/dashboard/dashboard-data-table'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import type { user as userTable } from '~/lib/db/schema'
-import { DashboardDataTableMoreMenu } from '~/routes/papa/dashboard/components/dashboard-data-table'
 
 import { UserContent } from '../user-content'
 

@@ -1,4 +1,4 @@
-import type { ServiceDashboardConfig } from '../../dashboard/components/service-swicher'
+import type { ServiceDashboardConfig } from '../../../../components/dashboard/service-swicher'
 import type { DashboardMenuItem } from '../../dashboard/layout/components/dashboard-sidebar/nav-menu'
 import { getServiceRoutesModules } from './helpers'
 

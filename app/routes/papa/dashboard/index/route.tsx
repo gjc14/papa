@@ -12,7 +12,7 @@ import {
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
 
 import { renderServiceLogo } from '../../utils/render-service-logo'
 import { getServiceDashboardConfigs } from '../../utils/service-configs'
@@ -94,7 +94,7 @@ export default function DashboardIndex() {
 										{service.description && (
 											<Tooltip>
 												<TooltipTrigger asChild>
-													<p className="text-muted-foreground line-clamp-3 flex-1 text-pretty text-start text-sm">
+													<p className="text-muted-foreground line-clamp-3 flex-1 text-start text-sm text-pretty">
 														{service.description}
 													</p>
 												</TooltipTrigger>

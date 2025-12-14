@@ -6,7 +6,7 @@ import type {
 	RouteConfig,
 } from '@react-router/dev/routes'
 
-import type { ServiceDashboardConfig } from '~/routes/papa/dashboard/components/service-swicher'
+import type { ServiceDashboardConfig } from '~/components/dashboard/service-swicher'
 
 import type { DashboardMenuItem } from '../../dashboard/layout/components/dashboard-sidebar/nav-menu'
 import type { SitemapURL } from '../to-xml-url-tags'

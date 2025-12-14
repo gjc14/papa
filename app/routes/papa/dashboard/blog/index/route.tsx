@@ -6,17 +6,17 @@ import type { Table } from '@tanstack/react-table'
 import { PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
-import { useFetcherNotification } from '~/hooks/use-notification'
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/routes/papa/dashboard/components/dashboard-wrapper'
+} from '~/components/dashboard/dashboard-wrapper'
+import { useFetcherNotification } from '~/hooks/use-notification'
 
-import { DashboardDataTable } from '../../components/dashboard-data-table'
-import { useSkipper } from '../../components/dashboard-data-table/hooks'
+import { DashboardDataTable } from '../../../../../components/dashboard/dashboard-data-table'
+import { useSkipper } from '../../../../../components/dashboard/dashboard-data-table/hooks'
 import type { action } from '../resource'
 import { BulkDeleteAlertDialog } from './bulk-delete'
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
