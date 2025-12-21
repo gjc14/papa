@@ -13,6 +13,7 @@ import {
 } from '~/components/ui/select'
 import {
 	DashboardActions,
+	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
@@ -79,30 +80,32 @@ export default function DashboardAsset() {
 					</Select>
 				</DashboardActions>
 			</DashboardHeader>
-			{hasObjectStorage ? (
-				<FileGrid
-					files={filesDisplayed}
-					onFileUpdate={fileMeta => {
-						setFilesState(
-							filesState.map(file =>
-								file.id === fileMeta.id ? fileMeta : file,
-							),
-						)
-					}}
-					onFileDeleted={fileMeta => {
-						setFilesState(filesState.filter(file => file.id !== fileMeta.id))
-					}}
-					onUpload={() => revalidate()}
-					origin={origin}
-				/>
-			) : (
-				<div className="flex h-full min-h-60 w-full grow flex-col items-center justify-center gap-3 rounded-xl border">
-					<CloudAlert size={50} />
-					<p className="max-w-sm text-center">
-						Please setup your S3 Object Storage to start uploading assets
-					</p>
-				</div>
-			)}
+			<DashboardContent className="mb-2 md:mb-3">
+				{hasObjectStorage ? (
+					<FileGrid
+						files={filesDisplayed}
+						onFileUpdate={fileMeta => {
+							setFilesState(
+								filesState.map(file =>
+									file.id === fileMeta.id ? fileMeta : file,
+								),
+							)
+						}}
+						onFileDeleted={fileMeta => {
+							setFilesState(filesState.filter(file => file.id !== fileMeta.id))
+						}}
+						onUpload={() => revalidate()}
+						origin={origin}
+					/>
+				) : (
+					<div className="flex h-full min-h-60 w-full grow flex-col items-center justify-center gap-3 rounded-xl border">
+						<CloudAlert size={50} />
+						<p className="max-w-sm text-center">
+							Please setup your S3 Object Storage to start uploading assets
+						</p>
+					</div>
+				)}
+			</DashboardContent>
 		</DashboardLayout>
 	)
 }

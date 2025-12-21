@@ -106,13 +106,6 @@ export const NavUser = ({ user }: NavUserProps) => {
 						</DropdownMenuLabel>
 
 						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							<ActionButton
-								icon={User2}
-								title="My Profile"
-								route="/dashboard/profile"
-							/>
-						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
 							<ActionButton
@@ -155,14 +148,9 @@ export const NavUser = ({ user }: NavUserProps) => {
 
 const DefaultUserOptions: ActionButtonProps[] = [
 	{
-		title: 'Account',
-		icon: BadgeCheck,
+		title: 'My Profile',
+		icon: User2,
 		route: '/dashboard/account',
-	},
-	{
-		title: 'Security',
-		icon: Shield,
-		route: '/dashboard/account/security',
 	},
 	{
 		title: 'Billing',
@@ -173,6 +161,11 @@ const DefaultUserOptions: ActionButtonProps[] = [
 		title: 'Notification',
 		icon: Bell,
 		route: '/dashboard/account/notification',
+	},
+	{
+		title: 'Security',
+		icon: Shield,
+		route: '/dashboard/account/security',
 	},
 ]
 

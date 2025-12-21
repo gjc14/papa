@@ -118,7 +118,7 @@ export default function DashboardTaxonomy({
 				<DashboardActions></DashboardActions>
 			</DashboardHeader>
 
-			<DashboardContent className="hidden gap-6 lg:grid lg:grid-cols-3 lg:grid-rows-1">
+			<DashboardContent className="mb-3 hidden gap-3 md:mb-5 md:gap-5 lg:grid lg:grid-cols-3 lg:grid-rows-1">
 				{/* Tags Section (Left) */}
 				<TagsSection tags={tags} />
 
