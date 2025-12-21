@@ -4,7 +4,7 @@ import { eq, inArray, sql } from 'drizzle-orm'
 import { seo as seoTable, user, type Seo } from '~/lib/db/schema'
 
 import { convertDateFields } from '../../../../../lib/db/utils'
-import { dbBlog as db, type TransactionType } from './db.server'
+import { dbBlog as db } from './db.server'
 import {
 	category as categoryTable,
 	post as postTable,
@@ -18,6 +18,8 @@ import {
 } from './schema'
 
 type User = typeof user.$inferSelect
+
+type TransactionType = Parameters<Parameters<(typeof db)['transaction']>[0]>[0]
 
 export type PostWithRelations = Post & {
 	seo: Seo

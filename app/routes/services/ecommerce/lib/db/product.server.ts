@@ -5,7 +5,7 @@ import { seo, type Seo } from '~/lib/db/schema'
 import { convertDateFields } from '~/lib/db/utils'
 import { handleError } from '~/lib/utils/server'
 
-import { dbStore, type TransactionType } from './db.server'
+import { dbStore } from './db.server'
 import {
 	product,
 	productAttribute,
@@ -20,6 +20,10 @@ import {
 	type ProductStatus,
 } from './schema/product'
 import { ecAttribute, ecBrand, ecCategory, ecTag } from './schema/taxonomy'
+
+type TransactionType = Parameters<
+	Parameters<(typeof dbStore)['transaction']>[0]
+>[0]
 
 type Product = typeof product.$inferSelect
 type ProductOption = typeof productOption.$inferSelect

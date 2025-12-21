@@ -11,14 +11,20 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 
 import * as schema from './schema'
 
-if (!process.env.DATABASE_URL) {
-	throw new Error('DATABASE_URL is not defined')
+export function createDB<T extends Record<string, unknown> = {}>(
+	serviceSchema?: T,
+) {
+	if (!process.env.DATABASE_URL) {
+		throw new Error('DATABASE_URL is not defined')
+	}
+
+	return drizzle(process.env.DATABASE_URL, {
+		schema: { ...schema, ...serviceSchema } as typeof schema & T,
+		casing: 'snake_case',
+	})
 }
 
-export const db = drizzle(process.env.DATABASE_URL, {
-	schema,
-	casing: 'snake_case',
-})
+export const db = createDB()
 
 export type TransactionType = Parameters<
 	Parameters<(typeof db)['transaction']>[0]
