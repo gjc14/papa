@@ -10,7 +10,7 @@ import {
 	robotsRoute,
 	sitemapRoute,
 	splatRoute,
-} from './routes/web/papa.routes'
+} from './routes/web/default.routes'
 
 // Check what web routes need fallbacks
 const webFallbacks = getWebFallbackRoutes()
