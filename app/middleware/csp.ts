@@ -31,7 +31,7 @@ export function getContentSecurityPolicy(nonce: string) {
 		// `connect-src 'none' <source-expression-list>`,
 		`font-src 'self' https://fonts.gstatic.com`,
 		// `frame-src 'none' <source-expression-list>`,
-		`img-src 'self' data: https://images.unsplash.com https://placecats.com`,
+		// `img-src 'self' data: https://images.unsplash.com`,
 		// `manifest-src 'none' <source-expression-list>`,
 		// `media-src 'none' <source-expression-list>`,
 		// `object-src 'none' <source-expression-list>`,

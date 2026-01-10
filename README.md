@@ -307,7 +307,7 @@ export const config = {
 		// The name displayed in the dropdown menu in `/dashboard`
 		name: 'Example Service',
 		description: 'This is an example service for demonstration purposes.',
-		logo: 'https://placecats.com/64/64',
+		logo: 'https://example.com/logo.webp',
 		url: '/dashboard/example-service', // dashboard route to your service
 		routes: ({ route, index }) => [
 			route(
