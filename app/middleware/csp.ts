@@ -1,11 +1,11 @@
 import { randomBytes } from 'node:crypto'
-import { unstable_createContext } from 'react-router'
+import { createContext } from 'react-router'
 
 export function generateNonce() {
 	return randomBytes(16).toString('base64')
 }
 
-export const nonceContext = unstable_createContext<string>()
+export const nonceContext = createContext<string>()
 
 /**
  * Generates a Content Security Policy (CSP) header with nonce.
