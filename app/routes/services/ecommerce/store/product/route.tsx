@@ -12,7 +12,7 @@ import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
-import { validateAdminSession } from '~/routes/papa/auth/utils'
+import { validateAdminSession } from '~/routes/auth/utils'
 
 import {
 	getCrossSellProducts,

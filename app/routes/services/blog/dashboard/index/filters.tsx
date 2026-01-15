@@ -21,7 +21,7 @@ import {
 } from '~/components/ui/popover'
 import type { Category, Tag } from '~/lib/db/schema'
 import { cn } from '~/lib/utils'
-import { useNavigationMetadata } from '~/routes/papa/dashboard/layout/context'
+import { useNavigationMetadata } from '~/routes/dashboard/layout/context'
 
 import { categoriesAtom, tagsAtom } from '../context'
 

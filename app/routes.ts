@@ -1,10 +1,10 @@
 import { layout, route, type RouteConfig } from '@react-router/dev/routes'
 
-import { dashboardRoutes } from './routes/papa/dashboard/routes'
+import { dashboardRoutes } from './routes/dashboard/routes'
 import {
 	getWebFallbackRoutes,
 	servicesRoutes,
-} from './routes/papa/utils/service-configs'
+} from './routes/utils/service-configs'
 import {
 	indexRoute,
 	robotsRoute,
@@ -45,10 +45,10 @@ export default [
 	route('/api/auth/*', './routes/auth.ts'),
 
 	// PAPA assets resource route
-	route('assets/:assetId', './routes/papa/assets/route.tsx'),
+	route('assets/:assetId', './routes/assets/route.tsx'),
 
 	// Auth Page
-	route('/dashboard/portal', './routes/papa/auth/portal.tsx'),
+	route('/dashboard/portal', './routes/auth/portal.tsx'),
 
 	// Dashboard route
 	...dashboardRoutes(),

@@ -1,6 +1,6 @@
 import { List, Pen, Plus, Rss } from 'lucide-react'
 
-import type { Service } from '../../papa/utils/service-configs'
+import type { Service } from '../../utils/service-configs'
 
 export const config = {
 	dashboard: {

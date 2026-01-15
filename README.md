@@ -300,7 +300,7 @@ For example:
 // /app/routes/services
 import { Apple, Command } from 'lucide-react'
 
-import type { Service } from '../../papa/utils/service-configs'
+import type { Service } from '../../utils/service-configs'
 
 export const config = {
 	dashboard: {

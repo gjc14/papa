@@ -14,8 +14,8 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Separator } from '~/components/ui/separator'
 import { cn, defaultValidUrlProtocols, isValidUrl } from '~/lib/utils'
-import { FileGrid } from '~/routes/papa/dashboard/assets/components/file-grid'
-import type { loader } from '~/routes/papa/dashboard/assets/resource'
+import { FileGrid } from '~/routes/dashboard/assets/components/file-grid'
+import type { loader } from '~/routes/dashboard/assets/resource'
 
 type AssetSelectionDialogProps = {
 	/** @link [DialogTrigger](./ui/dialog.tsx) */

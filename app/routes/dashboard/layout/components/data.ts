@@ -8,9 +8,9 @@ import {
 	UserRound,
 } from 'lucide-react'
 
-import type { ServiceDashboardConfig } from '../../../../../components/dashboard/service-swicher'
-import type { DashboardMenuItem } from './dashboard-sidebar/nav-menu'
-import type { NavSecondaryItem } from './dashboard-sidebar/nav-secondary'
+import type { ServiceDashboardConfig } from '~/components/dashboard/service-swicher'
+import type { DashboardMenuItem } from '~/components/dashboard/sidebar/nav-menu'
+import type { NavSecondaryItem } from '~/components/dashboard/sidebar/nav-secondary'
 
 // Default services and navigation items
 export const DEFAULT_SERVICE: ServiceDashboardConfig = {

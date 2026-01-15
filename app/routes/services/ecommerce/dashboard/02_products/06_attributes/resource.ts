@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 import type { ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/papa/auth/utils'
+import { validateAdminSession } from '~/routes/auth/utils'
 
 import { ecAttribute } from '../../../lib/db/schema'
 import {

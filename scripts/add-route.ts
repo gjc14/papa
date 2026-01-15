@@ -6,7 +6,7 @@ import { generateSlug } from '~/lib/utils/seo'
 
 const createTemplates = (routeName: string) => {
 	const serviceConfig = `
-import type { Service } from '../../papa/utils/service-configs'
+import type { Service } from '../../utils/service-configs'
 
 export const config = {
     routes: ({ route }) => [route('/${routeName}', './routes/services/${routeName}/route.tsx')],

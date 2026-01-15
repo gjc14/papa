@@ -3,8 +3,8 @@ import { useFetcher } from 'react-router'
 
 import { useAtom } from 'jotai'
 
-import type { loader } from '~/routes/papa/dashboard/assets/resource'
-import { assetResourceRoute } from '~/routes/papa/dashboard/assets/utils'
+import type { loader } from '~/routes/dashboard/assets/resource'
+import { assetResourceRoute } from '~/routes/dashboard/assets/utils'
 
 import { assetsAtom } from './context'
 

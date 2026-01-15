@@ -19,7 +19,7 @@ import { authClient } from '~/lib/auth/auth-client'
 import {
 	useFileUpload,
 	type FileWithFileMetadata,
-} from '~/routes/papa/dashboard/assets/utils'
+} from '~/routes/dashboard/assets/utils'
 
 import { editorAtom, editorContentAtom, serverPostAtom } from '../../context'
 import { defaultContent } from '../../post-slug/utils'

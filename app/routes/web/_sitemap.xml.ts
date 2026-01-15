@@ -8,8 +8,8 @@ import * as serverBuild from 'virtual:react-router/server-build'
 
 import { db } from '~/lib/db/db.server'
 
-import { getBlogPrefixes, getSitemapUrls } from '../papa/utils/service-configs'
-import { toXmlUrlTagss, type SitemapURL } from '../papa/utils/to-xml-url-tags'
+import { getBlogPrefixes, getSitemapUrls } from '../utils/service-configs'
+import { toXmlUrlTagss, type SitemapURL } from '../utils/to-xml-url-tags'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
@@ -68,9 +68,9 @@ function sitemapUrlsFromServerBuild(
 
 	for (const key in routes) {
 		/**
-		 * 'routes/papa/dashboard/assets/resource': {
-		 *   id: 'routes/papa/dashboard/assets/resource',
-		 *   parentId: 'routes/papa/dashboard/layout/route',
+		 * 'routes/dashboard/assets/resource': {
+		 *   id: 'routes/dashboard/assets/resource',
+		 *   parentId: 'routes/dashboard/layout/route',
 		 *   path: 'assets/resource',
 		 *   index: undefined,
 		 *   caseSensitive: undefined,

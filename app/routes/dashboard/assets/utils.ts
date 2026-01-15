@@ -9,7 +9,7 @@ import { isActionSuccess } from '~/lib/utils'
 import {
 	presignUrlResponseSchema,
 	type PresignRequest,
-} from '~/routes/papa/dashboard/assets/schema'
+} from './schema'
 
 export type FileWithFileMetadata = FileMetadata & { file: File }
 

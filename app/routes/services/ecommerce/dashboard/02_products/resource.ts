@@ -18,7 +18,7 @@ import type { Route } from './+types/resource'
 import z from 'zod'
 
 import type { ActionResponse } from '~/lib/utils'
-import { validateAdminSession } from '~/routes/papa/auth/utils'
+import { validateAdminSession } from '~/routes/auth/utils'
 
 import { moveProductsToTrash } from '../../lib/db/product.server'
 

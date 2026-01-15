@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/core'
 import { atom } from 'jotai'
 
-import type { loader } from '~/routes/papa/dashboard/assets/resource'
+import type { loader } from '~/routes/dashboard/assets/resource'
 
 import type { PostWithRelations } from '../lib/db/post.server'
 import type { Category, Tag } from '../lib/db/schema'

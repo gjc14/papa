@@ -22,11 +22,11 @@ import {
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
 
-import { DashboardLayout } from '../../../../components/dashboard/dashboard-wrapper'
-import type { ServiceDashboardConfig } from '../../../../components/dashboard/service-swicher'
+import { DashboardLayout } from '~/components/dashboard/dashboard-wrapper'
+import type { ServiceDashboardConfig } from '~/components/dashboard/service-swicher'
 import { validateAdminSession } from '../../auth/utils'
 import { getServiceDashboardConfigs } from '../../utils/service-configs'
-import { DashboardSidebar } from './components/dashboard-sidebar'
+import { DashboardSidebar } from '~/components/dashboard/sidebar'
 import {
 	DEFAULT_MAIN_NAV_ITEMS,
 	DEFAULT_SECONDARY_NAV_ITEMS,

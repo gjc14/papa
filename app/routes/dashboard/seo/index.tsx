@@ -17,10 +17,10 @@ import {
 } from '~/components/dashboard/dashboard-wrapper'
 import { useFetcherNotification } from '~/hooks/use-notification'
 import { getSEOs } from '~/lib/db/seo.server'
-import { SeoContent } from '~/routes/papa/dashboard/seo/seo-content'
+import { SeoContent } from '~/routes/dashboard/seo/seo-content'
 
-import { DashboardDataTable } from '../../../../components/dashboard/dashboard-data-table'
-import { useSkipper } from '../../../../components/dashboard/dashboard-data-table/hooks'
+import { DashboardDataTable } from '~/components/dashboard/dashboard-data-table'
+import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
 
 export const loader = async () => {
 	const { seos } = await getSEOs()
