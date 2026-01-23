@@ -14,8 +14,8 @@ import {
 	DashboardTitle,
 } from '~/components/dashboard/dashboard-wrapper'
 
-import { renderServiceLogo } from '../../utils/render-service-logo'
-import { getServiceDashboardConfigs } from '../../utils/service-configs'
+import { renderServiceLogo } from '../../../lib/utils/render-service-logo'
+import { getServiceDashboardConfigs } from '../../../lib/utils/service-configs'
 
 export default function DashboardIndex() {
 	const services = getServiceDashboardConfigs()

@@ -7,7 +7,7 @@ import type { Service } from './type'
  */
 export const getServiceRoutesModules = () => {
 	// This will be resolved at build time by Vite
-	const modules = import.meta.glob('../../../services/*/config.tsx', {
+	const modules = import.meta.glob('../../../routes/services/*/config.tsx', {
 		eager: true, // Ensure we load the modules at build time
 		import: 'config', // Import the named export 'config'
 	}) as Record<string, Service>

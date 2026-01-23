@@ -8,8 +8,11 @@ import * as serverBuild from 'virtual:react-router/server-build'
 
 import { db } from '~/lib/db/db.server'
 
-import { getBlogPrefixes, getSitemapUrls } from '../utils/service-configs'
-import { toXmlUrlTagss, type SitemapURL } from '../utils/to-xml-url-tags'
+import {
+	getBlogPrefixes,
+	getSitemapUrls,
+} from '../../lib/utils/service-configs'
+import { toXmlUrlTagss, type SitemapURL } from '../../lib/utils/to-xml-url-tags'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)

@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 const websiteServiceConfig = `
-import type { Service } from '../../utils/service-configs'
+import type { Service } from '~/lib/utils/service-configs'
 
 export const config = {
 	routes: ({ route, index }) => [

@@ -5,7 +5,7 @@ import {
 	type RouteConfig,
 } from '@react-router/dev/routes'
 
-import { servicesDashboardRoutes } from '../utils/service-configs'
+import { servicesDashboardRoutes } from '../../lib/utils/service-configs'
 
 export const dashboardRoutes = () =>
 	[

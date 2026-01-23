@@ -25,8 +25,8 @@ import {
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
 
+import { getServiceDashboardConfigs } from '../../../lib/utils/service-configs'
 import { validateAdminSession } from '../../auth/utils'
-import { getServiceDashboardConfigs } from '../../utils/service-configs'
 import {
 	DEFAULT_MAIN_NAV_ITEMS,
 	DEFAULT_SECONDARY_NAV_ITEMS,

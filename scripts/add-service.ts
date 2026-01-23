@@ -4,7 +4,7 @@ import { join } from 'path'
 const exampleServiceConfig = `
 import { Apple, Command } from 'lucide-react'
 
-import type { Service } from '../../utils/service-configs'
+import type { Service } from '~/lib/utils/service-configs'
 
 export const config = {
 	dashboard: {

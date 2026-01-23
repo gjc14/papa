@@ -1,10 +1,10 @@
 import { layout, route, type RouteConfig } from '@react-router/dev/routes'
 
-import { dashboardRoutes } from './routes/dashboard/routes'
 import {
 	getWebFallbackRoutes,
 	servicesRoutes,
-} from './routes/utils/service-configs'
+} from './lib/utils/service-configs'
+import { dashboardRoutes } from './routes/dashboard/routes'
 import {
 	indexRoute,
 	robotsRoute,
