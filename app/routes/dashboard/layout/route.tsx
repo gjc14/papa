@@ -17,16 +17,16 @@ import {
 	SidebarProvider,
 } from '~/components/ui/sidebar'
 import { Spinner } from '~/components/ui/spinner'
+import { DashboardLayout } from '~/components/dashboard/dashboard-wrapper'
+import type { ServiceDashboardConfig } from '~/components/dashboard/service-swicher'
+import { DashboardSidebar } from '~/components/dashboard/sidebar'
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
 
-import { DashboardLayout } from '~/components/dashboard/dashboard-wrapper'
-import type { ServiceDashboardConfig } from '~/components/dashboard/service-swicher'
 import { validateAdminSession } from '../../auth/utils'
 import { getServiceDashboardConfigs } from '../../utils/service-configs'
-import { DashboardSidebar } from '~/components/dashboard/sidebar'
 import {
 	DEFAULT_MAIN_NAV_ITEMS,
 	DEFAULT_SECONDARY_NAV_ITEMS,
@@ -34,18 +34,6 @@ import {
 } from './components/data'
 import { HeaderWithBreadcrumbs } from './components/header-breadcrumbs'
 import { NavigationProvider, useNavigationMetadata } from './context'
-
-export const meta = ({ error }: Route.MetaArgs) => {
-	if (!error) {
-		return [
-			{ title: 'Papa Open Source CMS' },
-			{
-				name: 'description',
-				content: 'This is the admin page of Papa Open Source CMS',
-			},
-		]
-	}
-}
 
 const MemoDashboardSidebar = memo(DashboardSidebar)
 const MemoHeaderWithBreadcrumb = memo(HeaderWithBreadcrumbs)
@@ -129,6 +117,11 @@ export default function Admin({ loaderData }: Route.ComponentProps) {
 				<SidebarInset className="h-[calc(100svh-(--spacing(4)))] overflow-hidden">
 					<MemoHeaderWithBreadcrumb />
 
+					<title>{`${currentService.name} - Papa CMS`}</title>
+					<meta
+						name="description"
+						content={`Dashboard for ${currentService.name}`}
+					/>
 					<Outlet />
 				</SidebarInset>
 			</SidebarProvider>

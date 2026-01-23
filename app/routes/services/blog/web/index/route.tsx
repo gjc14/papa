@@ -6,13 +6,6 @@ import { Badge } from '~/components/ui/badge'
 import { PostCollection } from '../components/posts'
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
 
-export const meta = ({ data }: Route.MetaArgs) => {
-	if (!data || !data.meta) {
-		return [{ name: 'title', content: 'Blog' }]
-	}
-	return data.meta.metaTags
-}
-
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const { searchParams } = url
@@ -99,6 +92,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<>
+			{meta?.metaTags.map((t, i) =>
+				t.title ? <title key={i}>{t.title}</title> : <meta key={i} {...t} />,
+			)}
 			<h1 className="visually-hidden">{meta?.seo.metaTitle}</h1>
 
 			<PostCollection

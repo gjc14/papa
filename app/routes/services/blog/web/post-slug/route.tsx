@@ -9,13 +9,6 @@ import { getPostBySlug } from '../../lib/db/post.server'
 import { Post } from '../components/post'
 import { fetchPost, headers, postServerMemoryCache, TTL } from './cache'
 
-export const meta = ({ data }: Route.MetaArgs) => {
-	if (!data || !data.post || !data.meta) {
-		return [{ name: 'title', content: 'Post - Not Found' }]
-	}
-	return data.meta.metaTags
-}
-
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const { searchParams } = url
@@ -67,11 +60,13 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 export default function BlogPost({ loaderData }: Route.ComponentProps) {
 	const { search } = useLocation()
 
-	const { post, nextPost, prevPost } = loaderData
+	const { post, nextPost, prevPost, meta } = loaderData
 
 	if (!post) {
 		return (
 			<div className="mx-auto flex flex-1 flex-col items-center justify-center space-y-6">
+				<title>Post Not Found</title>
+
 				<HeartCrack className="size-36" />
 				<h1>Post Not found</h1>
 			</div>
@@ -80,6 +75,10 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<div className="mx-auto w-full max-w-prose px-3">
+			{meta?.metaTags.map((t, i) =>
+				t.title ? <title key={i}>{t.title}</title> : <meta key={i} {...t} />,
+			)}
+
 			<Link
 				to={'..' + search}
 				className="mb-3 inline-flex"

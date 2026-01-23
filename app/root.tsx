@@ -1,7 +1,6 @@
 import '@gjc14/sonner/dist/styles.css'
 import './app.css'
 
-import type { Route } from './+types/root'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
 import { MotionConfig } from 'motion/react'
@@ -34,30 +33,6 @@ export function links() {
 	]
 }
 
-export const meta = ({ error }: Route.MetaArgs) => {
-	if (!error) {
-		return [
-			{ title: 'Papa Open Source CMS' },
-			{
-				name: 'description',
-				content: 'MIT Open Source Personal CMS.',
-			},
-			{
-				name: 'og:title',
-				content: 'Papa Open Source CMS',
-			},
-			{
-				name: 'og:description',
-				content: 'MIT Open Source Personal CMS.',
-			},
-			{
-				name: 'og:image',
-				content: '/papa-logo-100.png',
-			},
-		]
-	}
-}
-
 /**
  * @see https://reactrouter.com/api/framework-conventions/root.tsx#layout-export
  * Because your <Layout> component is used for rendering the ErrorBoundary,
@@ -69,6 +44,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+				<title>Papa Open Source CMS</title>
+				<meta name="description" content="MIT Open Source Personal CMS." />
+				<meta property="og:title" content="Papa Open Source CMS" />
+				<meta
+					property="og:description"
+					content="MIT Open Source Personal CMS."
+				/>
+				<meta property="og:image" content="/papa-logo-100.png" />
 				<Meta />
 				<Links />
 			</head>

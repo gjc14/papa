@@ -23,10 +23,6 @@ import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
 import { columns } from './colums'
 import { Filter } from './filters'
 
-export const meta = () => {
-	return [{ name: 'title', content: 'Dashboard Blog' }]
-}
-
 /**
  * @link [web blog index route](../../../../web/blog/index/route.tsx)
  */

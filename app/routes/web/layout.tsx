@@ -16,42 +16,18 @@ import {
 import { fade } from '~/components/motions'
 import { statusCodeMap } from '~/lib/utils/status-code'
 
-export const meta: MetaFunction = ({ error }) => {
-	if (!error) {
-		return [
-			{ title: 'Papa Open Source CMS' },
-			{
-				name: 'description',
-				content: 'This is Website for Papa Open Source CMS',
-			},
-		]
-	}
-
-	if (isRouteErrorResponse(error)) {
-		const statusMessage = statusCodeMap[error.status]
-		const errorMessage = error.data || statusMessage.text || 'Error Response'
-		return [
-			{
-				title: `${error.status} - ${errorMessage}`,
-			},
-			{
-				name: 'description',
-				content: statusMessage?.description || 'Route Error Response',
-			},
-		]
-	} else {
-		return [
-			{ title: 'Error' },
-			{
-				name: 'description',
-				content: 'An unexpected error occurred.',
-			},
-		]
-	}
-}
-
 export default function Web() {
-	return <Outlet />
+	return (
+		<>
+			<title>Papa Open Source CMS</title>
+			<meta
+				name="description"
+				content="This is Website for Papa Open Source CMS"
+			/>
+
+			<Outlet />
+		</>
+	)
 }
 
 export function ErrorBoundary() {
@@ -70,6 +46,12 @@ const ErrorTemplate = ({
 	if (status === 404) {
 		return (
 			<main className="flex h-svh w-screen flex-col items-center justify-center">
+				<title>404 - Page Not Found</title>
+				<meta
+					name="description"
+					content="Sorry, we couldn't find the page you're looking for."
+				/>
+
 				<motion.h1
 					className="mb-2 text-[8rem] leading-none tracking-tight sm:text-[10rem] md:text-[15rem]"
 					{...fade()}
@@ -97,6 +79,12 @@ const ErrorTemplate = ({
 	if (status === 500) {
 		return (
 			<main className="flex h-svh w-screen flex-col items-center justify-center">
+				<title>500 - Internal Server Error</title>
+				<meta
+					name="description"
+					content="Something went wrong on our servers."
+				/>
+
 				<motion.h1
 					className="mb-2 text-[8rem] leading-none tracking-tight sm:text-[10rem] md:text-[15rem]"
 					{...fade()}
@@ -132,6 +120,14 @@ const ErrorTemplate = ({
 
 	return (
 		<main className="flex h-svh w-screen flex-col items-center justify-center">
+			<title>
+				{status} - {statusMessage.text}
+			</title>
+			<meta
+				name="description"
+				content={statusMessage.description || 'Route Error Response'}
+			/>
+
 			<a
 				className="z-10 text-sm underline underline-offset-4"
 				href={`https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/${status}`}
