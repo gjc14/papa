@@ -1,18 +1,34 @@
 import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
-import readline from 'readline'
 
-import { generateSlug } from '~/lib/utils/seo'
+import { askInput } from './utils'
+
+const createPaths = (routeName: string) => {
+	return {
+		serviceRoutesPath: join(
+			process.cwd(),
+			`app/routes/services/${routeName}/service.routes.ts`,
+		),
+		routeFilePath: join(
+			process.cwd(),
+			`app/routes/services/${routeName}/route.tsx`,
+		),
+	}
+}
 
 const createTemplates = (routeName: string) => {
-	const serviceConfig = `
-import type { Service } from '~/lib/utils/service-configs'
+	const serviceRoutes = `
+// Please do not use alias "~", use relative path instead
+// Because route registration runs at the same level as \`vite.config.ts\`, and not as part of the bundled code.
+import { registerServiceRoutes } from '../../../lib/service/routes-registry'
 
-export const config = {
-    routes: ({ route }) => [route('/${routeName}', './routes/services/${routeName}/route.tsx')],
-} satisfies Service
+registerServiceRoutes({
+	routes: ({ route }) => [
+		route('/${routeName}', './routes/services/${routeName}/route.tsx'),
+	],
+})
 
-`.trim()
+`
 
 	const routeFile = `
 import type { Route } from './+types/route'
@@ -37,57 +53,34 @@ export default function Component({
     )
 }
 
-`.trim()
+`
 
-	return { serviceConfig, routeFile }
-}
-
-// File paths for service
-const filePathServiceConfig = (routeName: string) =>
-	join(process.cwd(), `app/routes/services/${routeName}/config.tsx`)
-
-const filePathIndex = (routeName: string) =>
-	join(process.cwd(), `app/routes/services/${routeName}/route.tsx`)
-
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-})
-
-const askRouteName = (defaultName = 'new-route'): Promise<string> => {
-	return new Promise(resolve => {
-		rl.question(`Route name (default: ${defaultName}): `, answer => {
-			rl.close()
-			const raw = (answer ?? defaultName).trim()
-			const lowered = raw.length ? raw.toLowerCase() : defaultName
-			const sanitized = generateSlug(lowered)
-			resolve(sanitized || defaultName)
-		})
-	})
+	return { serviceRoutes, routeFile }
 }
 
 try {
-	const routeName = await askRouteName('new-route')
-
-	const { serviceConfig, routeFile } = createTemplates(routeName)
+	const newRoute = await askInput('Create new route', 'new-route')
 
 	// Create directories
-	await mkdir(join(process.cwd(), `app/routes/services/${routeName}`), {
+	await mkdir(join(process.cwd(), `app/routes/services/${newRoute}`), {
 		recursive: true,
 	})
 
+	const { serviceRoutesPath, routeFilePath } = createPaths(newRoute)
+	const { serviceRoutes, routeFile } = createTemplates(newRoute)
+
 	// Write all service files
-	await writeFile(filePathServiceConfig(routeName), serviceConfig)
-	await writeFile(filePathIndex(routeName), routeFile)
+	await writeFile(serviceRoutesPath, serviceRoutes.trim())
+	await writeFile(routeFilePath, routeFile.trim())
 
 	console.log(
-		`🎉 Service named ${routeName} files created successfully!
+		`🎉 Route [${newRoute}] created successfully!
 
-		📁 Created 2 files:
-		1️⃣ ${filePathServiceConfig(routeName).split('app/routes')[1]}
-		2️⃣ ${filePathIndex(routeName).split('app/routes')[1]}
+		+ 2 files created:
+		1️⃣ ${serviceRoutesPath.split('app/routes')[1]}
+		2️⃣ ${routeFilePath.split('app/routes')[1]}
 
-        🌐 Navigate to '/${routeName}' to see the new service in action
+        -> Navigate to '/${newRoute}' to see the new route
         `.replace(/^[ \t]+/gm, ''),
 	)
 } catch (err) {

@@ -251,89 +251,144 @@ ffmpeg -i logo.png -vf "scale=32:32:force_original_aspect_ratio=decrease,pad=32:
 
 ## Service
 
-In Papa, you could easily extend routes by adding files in `services` folder.
-Please structured as following:
-
-```
-routes
-└── services
-└── └── my-route1
-└── └── └── layout.tsx
-└── └── └── index.tsx
-└── └── └── about.tsx
-└── └── └── config.tsx
-└── └── my-route2
-└── └── └── layout.tsx
-└── └── └── index.tsx
-└── └── └── about.tsx
-└── └── └── config.tsx
-```
+In Papa, you could easily extend services by adding files in `services` folder.
 
 <!-- prettier-ignore -->
 > [!NOTE]
-> tip: You may run `pnpm run add:website` to see an easy example of how files
-> structures.
+> tip: You may run `pnpm run add:route`, `pnpm run add:website`, or `pnpm run add:service`
+> to see an easy example of how files structures.
 
-**Config files:**
+Extended services are structured as following:
 
-Run `pnpm run add:service` to generate example routes, including independent
-routes and those under dashboard.
+```
+routes/
+└── services/
+    ├── my-service1/
+    │   ├── layout.tsx
+    │   ├── index.tsx
+    │   ├── about.tsx
+    │   ├── service.routes.ts
+    │   ├── service.dashboard.ts
+    │   └── service.sitemap.ts
+    └── my-service2/
+        ├── layout.tsx
+        ├── index.tsx
+        ├── about.tsx
+        ├── service.routes.ts
+        ├── service.dashboard.ts
+        └── service.sitemap.ts
+```
 
-The following 8 files will be created:
+**Service config files:**
 
-1. /services/example-service/config.tsx
-2. /services/example-service/dashboard/index.tsx
-3. /services/example-service/dashboard/layout.tsx
-4. /services/example-service/dashboard/product/route.tsx
-5. /services/example-service/shop/index.tsx
-6. /services/example-service/shop/layout.tsx
-7. /services/example-service/shop/data.ts
-8. /services/example-service/shop/product/route.tsx
+There are three files needed, `service.routes.ts`, `service.dashboard.ts`,
+`service.sitemap.ts`, both `.ts` and `.tsx` are supported.
 
-In `/app/routes/services` create a new folder to host your new service. Under
-each service, there should be one `config.tsx` file to configure **routes**,
-**dashboard**, and **sidebar** details.
+**Routes configurations**
 
-For example:
+<!-- prettier-ignore -->
+> [!IMPORTANT]
+> The `service.routes.tsx` or `service.routes.ts` will run at the same level as
+> `vite.config.ts` to generate routes, so please use relative path instead of
+> alias `~` to import functions.
+
+The `registerServiceRoutes` function will run on build time, just like how you
+[counfigure routes](<(https://reactrouter.com/start/framework/routing)>) in
+rrv7.
 
 ```tsx
-// /app/routes/services
+// /app/routes/services/my-service/service.routes.ts
+
+// Please do not use alias "~", use relative path instead
+// Because service registration runs at the same level as \`vite.config.ts\`, and not as part of the bundled code.
+import { registerServiceRoutes } from '../../../lib/service/routes-registry'
+
+registerServiceRoutes({
+	dashboardRoutes: ({ route, index }) => [
+		route('my-route', './routes/services/my-route/dashboard/layout.tsx', [
+			index('./routes/services/my-route/dashboard/index.tsx'),
+			route(
+				':productId',
+				'./routes/services/my-route/dashboard/product/route.tsx',
+			),
+		]),
+	],
+
+	routes: ({ route, index }) => [
+		route('/frontend', './routes/services/my-route/frontend/layout.tsx', [
+			index('./routes/services/my-route/frontend/index.tsx'),
+			route(
+				':productId',
+				'./routes/services/my-route/frontend/product/route.tsx',
+			),
+		]),
+	],
+})
+```
+
+**Dashboard configurations**
+
+Here, you could configure details to be displayed in the dashboard, mainly on
+the sidebar, such as service name, logo, etc.
+
+```tsx
+// /app/routes/services/my-service/service.dashboard.ts
 import { Apple, Command } from 'lucide-react'
 
-import type { Service } from '../../lib/utils/service-configs'
+import { registerServiceDashboard } from '~/lib/service/dashboard-registry'
 
-export const config = {
-	dashboard: {
-		// The name displayed in the dropdown menu in `/dashboard`
-		name: 'Example Service',
-		description: 'This is an example service for demonstration purposes.',
-		logo: 'https://example.com/logo.webp',
-		url: '/dashboard/example-service', // dashboard route to your service
-		routes: ({ route, index }) => [
-			route(
-				'/dashboard/example-service', // should be under `/dashboard` route, only given `example-service` as relative route will also work
-				'./routes/services/example-service/dashboard/layout.tsx',
-				[index('./routes/services/example-service/dashboard/index.tsx')],
-			),
+registerServiceDashboard({
+	name: 'my-service',
+	description: 'This is an example service for demonstration purposes.',
+	logo: Command,
+	pathname: '/dashboard/my-service',
+	// sidebar config is how you set sidebar in /dashboard, if you're not using /dashboard, this could be omitted.
+	sidebar: {
+		primary: [
+			{
+				icon: Apple,
+				title: 'Products',
+				pathname: 'my-service',
+				sub: [
+					{
+						title: 'たいわんラーメン',
+						pathname: 'たいわんラーメン',
+					},
+				],
+			},
 		],
+		// Secondary sidebar will appears under primary and stick to the bottom.
+		// secondary: []
 	},
-	// Routes independent from any route, but should be careful conflix with `/dashboard`
-	routes: ({ route, index }) => [
-		route(
-			'/example-shop',
-			'./routes/services/example-service/shop/layout.tsx',
-			[
-				index('./routes/services/example-service/shop/index.tsx'),
-				route(
-					':productId',
-					'./routes/services/example-service/shop/product/route.tsx',
-				),
-			],
-		),
-	],
-	// sitemap: url => []
-	// blogUrls: ['/blog']
-} satisfies Service
+})
+```
+
+**Sitemap configurations**
+
+You could easily configure your sitemap by `registerServiceSitemap` function.
+The function will run on server side, so you could query data from the database
+to dynamically generate sitemap.
+
+```tsx
+// /app/routes/services/my-service/service.sitemap.ts
+import { registerServiceSitemap } from '~/lib/service/sitemap-registry'
+
+import { products } from './data'
+
+// Simulate async data fetching
+const getProducts = async () => products
+
+registerServiceSitemap(async url => {
+	const products = await getProducts()
+
+	return products.map(product => ({
+		loc: \`/${frontendRouteName}/\${product.id}\`,
+		lastmod: new Date(),
+		changefreq: 'weekly',
+		priority: 0.5,
+	}))
+})
+
 ```
 
 ### Construct `ErrorBoundary`
