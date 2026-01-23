@@ -16,7 +16,7 @@ import {
 	useSidebar,
 } from '~/components/ui/sidebar'
 
-import { renderServiceLogo } from '../../lib/utils/render-service-logo'
+import { renderServiceLogo } from '../../../lib/utils/render-service-logo'
 
 export interface ServiceDashboardConfig {
 	/**
@@ -53,7 +53,7 @@ export interface ServiceDashboardConfig {
 	description?: string
 }
 
-export function ServiceSwitcher({
+export function SidebarService({
 	services,
 	currentService,
 }: {

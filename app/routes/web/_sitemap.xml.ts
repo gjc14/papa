@@ -6,34 +6,27 @@ import type { LoaderFunctionArgs } from 'react-router'
 
 import * as serverBuild from 'virtual:react-router/server-build'
 
-import { db } from '~/lib/db/db.server'
+import { getAllServiceSitemapUrls } from '~/lib/service/sitemap.server'
 
 import {
-	getBlogPrefixes,
-	getSitemapUrls,
-} from '../../lib/utils/service-configs'
-import { toXmlUrlTagss, type SitemapURL } from '../../lib/utils/to-xml-url-tags'
+	sitemapToXmlUrlTags,
+	type SitemapURL,
+} from '../../lib/utils/sitemap-to-xml'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
 	const origin = url.origin
 
 	const systemSitemaps = sitemapUrlsFromServerBuild(origin, serverBuild.routes)
-	const serviceSitemapUrls = getSitemapUrls(url)
-	const serviceBlogPrefix = await getBlogSitemapUrls(origin, getBlogPrefixes())
+	const serviceSitemapUrls = await getAllServiceSitemapUrls(url)
 
-	const urlTags = toXmlUrlTagss([
+	const urlTags = sitemapToXmlUrlTags([
 		{
 			loc: origin,
 			lastmod: new Date(),
 		},
 		...systemSitemaps,
-		...serviceSitemapUrls.map(url => ({
-			...url,
-			loc: url.loc.startsWith('/') ? `${origin}${url.loc}` : url.loc,
-			lastmod: url.lastmod ?? new Date(),
-		})),
-		...serviceBlogPrefix,
+		...serviceSitemapUrls,
 	])
 
 	try {
@@ -115,43 +108,6 @@ function sitemapUrlsFromServerBuild(
 			urls.push({
 				loc: `${origin}${fullPath}`,
 				lastmod: now,
-			})
-		}
-	}
-
-	return urls
-}
-
-/**
- * Generate blog sitemap URLs using posts from the database
- */
-async function getBlogSitemapUrls(
-	origin: string,
-	blogUrls: string[],
-): Promise<SitemapURL[]> {
-	const urls: SitemapURL[] = []
-	const now = new Date()
-
-	const posts = await db.query.post.findMany({
-		where(fields, { eq }) {
-			return eq(fields.status, 'PUBLISHED')
-		},
-		columns: {
-			slug: true,
-			updatedAt: true,
-		},
-	})
-
-	for (const blogUrl of blogUrls) {
-		urls.push({
-			loc: `${origin}${blogUrl}`,
-			lastmod: now,
-		})
-
-		for (const post of posts) {
-			urls.push({
-				loc: `${origin}${blogUrl}/${post.slug}`,
-				lastmod: post.updatedAt,
 			})
 		}
 	}

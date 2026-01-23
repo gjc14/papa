@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router'
 
 import { toast } from '@gjc14/sonner'
 import {
-	BadgeCheck,
 	Bell,
 	ChevronRight,
 	CreditCard,
@@ -27,7 +26,6 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
 } from '~/components/ui/sidebar'
 import {
 	CurrentThemeIcon,
@@ -36,12 +34,11 @@ import {
 import { authClient } from '~/lib/auth/auth-client'
 import type { Session } from '~/lib/auth/auth.server'
 
-interface NavUserProps {
+interface SidebarUserProps {
 	user: Session['user']
 }
 
-export const NavUser = ({ user }: NavUserProps) => {
-	const { isMobile } = useSidebar()
+export const SidebarUser = ({ user }: SidebarUserProps) => {
 	const navigate = useNavigate()
 
 	const handleSignOut = async () => {

@@ -1,10 +1,15 @@
-import { layout, route, type RouteConfig } from '@react-router/dev/routes'
+import {
+	index,
+	layout,
+	prefix,
+	route,
+	type RouteConfig,
+} from '@react-router/dev/routes'
 
 import {
-	getWebFallbackRoutes,
-	servicesRoutes,
-} from './lib/utils/service-configs'
-import { dashboardRoutes } from './routes/dashboard/routes'
+	getAllServiceDashboardRoutes,
+	getAllServiceRoutes,
+} from './lib/service/routes'
 import {
 	indexRoute,
 	robotsRoute,
@@ -12,47 +17,78 @@ import {
 	splatRoute,
 } from './routes/web/default.routes'
 
-// Check what web routes need fallbacks
-const webFallbacks = getWebFallbackRoutes()
-
-// Build web routes array based on what's needed as fallback
-const webRoutes: RouteConfig = []
-
-if (webFallbacks.shouldIncludeIndex) {
-	webRoutes.push(indexRoute())
-}
-
-if (webFallbacks.shouldIncludeSplat) {
-	webRoutes.push(splatRoute())
-}
-
-if (webFallbacks.shouldIncludeRobots) {
-	webRoutes.push(robotsRoute())
-}
-
-if (webFallbacks.shouldIncludeSitemap) {
-	webRoutes.push(sitemapRoute())
-}
-
-const webRoutesConfig =
-	webRoutes.length > 0 ? [layout('./routes/web/layout.tsx', webRoutes)] : []
-
 export default [
 	// Only add layout with web routes if we have any fallback routes needed
-	...webRoutesConfig,
+
+	layout('./routes/web/layout.tsx', [
+		indexRoute(),
+		splatRoute(),
+		robotsRoute(),
+		sitemapRoute(),
+	]),
 
 	// Auth API
 	route('/api/auth/*', './routes/auth.ts'),
 
-	// PAPA assets resource route
+	// Assets resource route
 	route('assets/:assetId', './routes/assets/route.tsx'),
 
-	// Auth Page
+	///////////////
+	// Dashboard //
+	///////////////
 	route('/dashboard/portal', './routes/auth/portal.tsx'),
 
-	// Dashboard route
-	...dashboardRoutes(),
+	route('/dashboard', './routes/dashboard/layout/route.tsx', [
+		index('./routes/dashboard/index/route.tsx'),
 
-	// Service routes (dynamically loaded)
-	...servicesRoutes(),
+		// Dashboard API
+		...prefix('api', []),
+
+		// Assets
+		...prefix('assets', [
+			index('./routes/dashboard/assets/index.tsx'),
+			route('resource', './routes/dashboard/assets/resource.ts'),
+		]),
+
+		// SEO
+		...prefix('seo', [
+			index('./routes/dashboard/seo/index.tsx'),
+			route('resource', './routes/dashboard/seo/resource.ts'),
+		]),
+
+		// Account
+		route('account', './routes/dashboard/account/layout.tsx', [
+			index('./routes/dashboard/account/index/route.tsx'),
+			route('billing', './routes/dashboard/account/billing/route.tsx'),
+			route(
+				'notification',
+				'./routes/dashboard/account/notification/route.tsx',
+			),
+			route('security', './routes/dashboard/account/security/route.tsx'),
+		]),
+
+		// Company
+		route('company', './routes/dashboard/company/layout.tsx', [
+			index('./routes/dashboard/company/index/route.tsx'),
+			route('billing', './routes/dashboard/company/billing/route.tsx'),
+			route(
+				'notification',
+				'./routes/dashboard/company/notification/route.tsx',
+			),
+			route('security', './routes/dashboard/company/security/route.tsx'),
+		]),
+
+		route('user/resource', './routes/dashboard/user/resource.ts'),
+		route('users', './routes/dashboard/user/users.tsx'),
+		route('admins', './routes/dashboard/user/admins.tsx'),
+
+		route('*', './routes/dashboard/$/route.tsx'),
+
+		...getAllServiceDashboardRoutes(),
+	]),
+
+	/////////////////////
+	// Services Routes //
+	/////////////////////
+	...getAllServiceRoutes(),
 ] satisfies RouteConfig

@@ -7,51 +7,58 @@ import {
 	SidebarHeader,
 } from '~/components/ui/sidebar'
 import {
-	ServiceSwitcher,
+	SidebarService,
 	type ServiceDashboardConfig,
-} from '~/components/dashboard/service-swicher'
+} from '~/components/dashboard/sidebar/sidebar-service'
 import type { Session } from '~/lib/auth/auth.server'
 
-import { NavMenu, type DashboardMenuItem } from './nav-menu'
-import { NavSecondary, type NavSecondaryItem } from './nav-secondary'
-import { NavUser } from './nav-user'
+import { SidebarUser } from './sidebar-footer'
+import { SidebarPrimary, type SidebarPrimaryItem } from './sidebar-primary'
+import {
+	SidebarSecondary,
+	type SidebarSecondaryItem,
+} from './sidebar-secondary'
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 	user: Session['user']
 	services?: ServiceDashboardConfig[]
 	currentService?: ServiceDashboardConfig
-	mainNavItems?: DashboardMenuItem[]
-	secondaryNavItems?: NavSecondaryItem[]
+	sidebarPrimaryItems?: SidebarPrimaryItem[]
+	sidebarSecondaryItems?: SidebarSecondaryItem[]
 }
 
 export function DashboardSidebar({
 	user,
 	services,
 	currentService,
-	mainNavItems,
-	secondaryNavItems,
+	sidebarPrimaryItems,
+	sidebarSecondaryItems,
 	...props
 }: AppSidebarProps) {
 	return (
 		<Sidebar variant="inset" {...props}>
 			{services && (
 				<SidebarHeader>
-					<ServiceSwitcher
-						services={services}
-						currentService={currentService}
-					/>
+					<SidebarService services={services} currentService={currentService} />
 				</SidebarHeader>
 			)}
-			{(mainNavItems || secondaryNavItems) && (
+
+			{(sidebarPrimaryItems || sidebarSecondaryItems) && (
 				<SidebarContent>
-					{mainNavItems && <NavMenu items={mainNavItems} />}
-					{secondaryNavItems && (
-						<NavSecondary items={secondaryNavItems} className="mt-auto" />
+					{sidebarPrimaryItems && (
+						<SidebarPrimary items={sidebarPrimaryItems} />
+					)}
+					{sidebarSecondaryItems && (
+						<SidebarSecondary
+							items={sidebarSecondaryItems}
+							className="mt-auto"
+						/>
 					)}
 				</SidebarContent>
 			)}
+
 			<SidebarFooter>
-				<NavUser user={user} />
+				<SidebarUser user={user} />
 			</SidebarFooter>
 		</Sidebar>
 	)

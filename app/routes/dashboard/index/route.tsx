@@ -13,12 +13,12 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from '~/components/dashboard/dashboard-wrapper'
+import { getAllServiceDashboards } from '~/lib/service/dashboard'
 
 import { renderServiceLogo } from '../../../lib/utils/render-service-logo'
-import { getServiceDashboardConfigs } from '../../../lib/utils/service-configs'
 
 export default function DashboardIndex() {
-	const services = getServiceDashboardConfigs()
+	const services = getAllServiceDashboards()
 
 	return (
 		<DashboardLayout>

@@ -1,5 +1,5 @@
 import type { Route } from './+types/route'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo } from 'react'
 import {
 	Link,
 	redirect,
@@ -18,20 +18,15 @@ import {
 } from '~/components/ui/sidebar'
 import { Spinner } from '~/components/ui/spinner'
 import { DashboardLayout } from '~/components/dashboard/dashboard-wrapper'
-import type { ServiceDashboardConfig } from '~/components/dashboard/service-swicher'
 import { DashboardSidebar } from '~/components/dashboard/sidebar'
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
+import { getAllServiceDashboards } from '~/lib/service/dashboard'
 
-import { getServiceDashboardConfigs } from '../../../lib/utils/service-configs'
 import { validateAdminSession } from '../../auth/utils'
-import {
-	DEFAULT_MAIN_NAV_ITEMS,
-	DEFAULT_SECONDARY_NAV_ITEMS,
-	DEFAULT_SERVICE,
-} from './components/data'
+import { DEFAULT_SERVICE } from './components/data'
 import { HeaderWithBreadcrumbs } from './components/header-breadcrumbs'
 import { NavigationProvider, useNavigationMetadata } from './context'
 
@@ -55,12 +50,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 	}
 }
 
-export default function Admin({ loaderData }: Route.ComponentProps) {
+export default function Dashboard({
+	loaderData,
+	matches,
+}: Route.ComponentProps) {
 	const { admin, defaultSidebarOpen } = loaderData
 	const location = useLocation()
-	const [isDashboard, setIsDashboard] = useState(true)
-	const [currentService, setCurrentService] =
-		useState<ServiceDashboardConfig>(DEFAULT_SERVICE)
 
 	const memoizedUser = useMemo(
 		() => ({
@@ -72,46 +67,31 @@ export default function Admin({ loaderData }: Route.ComponentProps) {
 		[admin],
 	)
 
-	const serviceDashboardConfigs = useMemo(
-		() => getServiceDashboardConfigs(),
+	const services = useMemo(
+		() => [DEFAULT_SERVICE, ...getAllServiceDashboards()],
 		[],
 	)
 
-	const availableServices = useMemo(() => {
-		const services: ServiceDashboardConfig[] = [
-			DEFAULT_SERVICE,
-			...serviceDashboardConfigs,
-		]
-		return services
-	}, [serviceDashboardConfigs])
-
-	const currentSidebarItems = useMemo(() => {
-		const currentService = serviceDashboardConfigs.find(service =>
-			location.pathname.startsWith(service.pathname),
-		)
-
-		if (currentService?.sidebar) {
-			setIsDashboard(false)
-			setCurrentService(currentService)
-			return currentService.sidebar
+	const currentService = (() => {
+		for (const m of [...matches].reverse()) {
+			if (!m) continue
+			const serviceMatch = services.find(s => s.pathname === m.pathname)
+			if (serviceMatch) return serviceMatch
 		}
+		return DEFAULT_SERVICE
+	})()
 
-		setIsDashboard(true)
-		setCurrentService(DEFAULT_SERVICE)
-		return DEFAULT_MAIN_NAV_ITEMS
-	}, [location.pathname, serviceDashboardConfigs])
+	if (!currentService) throw new Error('No Service Found (even default one)')
 
 	return (
 		<NavigationProvider>
 			<SidebarProvider defaultOpen={defaultSidebarOpen}>
 				<MemoDashboardSidebar
 					user={memoizedUser}
-					services={availableServices}
+					services={services}
 					currentService={currentService}
-					mainNavItems={currentSidebarItems}
-					secondaryNavItems={
-						isDashboard ? DEFAULT_SECONDARY_NAV_ITEMS : undefined
-					}
+					sidebarPrimaryItems={currentService.sidebar?.primary}
+					sidebarSecondaryItems={currentService.sidebar?.secondary}
 				/>
 
 				<SidebarInset className="h-[calc(100svh-(--spacing(4)))] overflow-hidden">

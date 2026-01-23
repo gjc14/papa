@@ -53,7 +53,7 @@ export interface SitemapURL {
  * @param urls - Array of `SitemapURL` to convert to XML format.
  * @returns XML url tag strings representation of the URLs.
  */
-export const toXmlUrlTagss = (urls: SitemapURL[]): string[] => {
+export const sitemapToXmlUrlTags = (urls: SitemapURL[]): string[] => {
 	const xmlUrlTags = urls.map(url =>
 		`
             <url>

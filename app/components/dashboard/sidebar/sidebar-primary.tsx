@@ -19,7 +19,7 @@ import {
 	SidebarMenuSubItem,
 } from '~/components/ui/sidebar'
 
-export interface DashboardMenuItem {
+export interface SidebarPrimaryItem {
 	title: string
 	icon: React.ElementType
 	/**
@@ -37,12 +37,12 @@ export interface DashboardMenuItem {
 	}[]
 }
 
-interface NavMenuProps {
-	items: DashboardMenuItem[]
+interface SidebarPrimaryProps {
+	items: SidebarPrimaryItem[]
 }
 
 // Separate component for each navigation item to handle individual state
-function NavMenuItem({ item }: { item: DashboardMenuItem }) {
+function SidebarPrimaryItem({ item }: { item: SidebarPrimaryItem }) {
 	const [open, setOpen] = useState(false)
 
 	return (
@@ -121,12 +121,12 @@ function NavMenuItem({ item }: { item: DashboardMenuItem }) {
 	)
 }
 
-export function NavMenu({ items }: NavMenuProps) {
+export function SidebarPrimary({ items }: SidebarPrimaryProps) {
 	return (
 		<SidebarGroup>
 			<SidebarMenu>
 				{items.map(item => (
-					<NavMenuItem key={item.title} item={item} />
+					<SidebarPrimaryItem key={item.title} item={item} />
 				))}
 			</SidebarMenu>
 		</SidebarGroup>
