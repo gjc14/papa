@@ -17,27 +17,47 @@ import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
+import { auth } from '~/lib/auth/auth.server'
+import { authContext } from '~/middleware/context/auth'
 
-import { validateAdminSession } from '../../auth/utils'
 import { HeaderWithBreadcrumbs } from './components/header-breadcrumbs'
 import { NavigationProvider, useNavigationMetadata } from './context'
 
 const MemoDashboardSidebar = memo(DashboardSidebar)
 const MemoHeaderWithBreadcrumb = memo(HeaderWithBreadcrumbs)
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-	const usesrSession = await validateAdminSession(request)
-
-	if (!usesrSession) {
+const authMiddleware: Route.MiddlewareFunction = async (
+	{ request, context },
+	next,
+) => {
+	const { response: session, headers } = await auth.api.getSession({
+		headers: request.headers,
+		returnHeaders: true,
+	})
+	if (!session || session.user.role !== 'admin') {
 		throw redirect('/dashboard/portal')
 	}
+	context.set(authContext, session)
+
+	// Merge better auth set cookies with downstream
+	const res = await next()
+	const cookies = headers.getSetCookie()
+	for (const c of cookies) res.headers.append('Set-Cookie', c)
+
+	return res
+}
+
+export const middleware = [authMiddleware]
+
+export const loader = async ({ request, context }: Route.LoaderArgs) => {
+	const adminSession = context.get(authContext)
 
 	const defaultSidebarOpen = new RegExp(`${SIDEBAR_COOKIE_NAME}=true`).test(
 		request.headers.get('cookie') || '',
 	)
 
 	return {
-		admin: usesrSession.user,
+		admin: adminSession.user,
 		defaultSidebarOpen,
 	}
 }
