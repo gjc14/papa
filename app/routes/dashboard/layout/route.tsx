@@ -1,12 +1,6 @@
 import type { Route } from './+types/route'
 import { memo, useEffect, useMemo } from 'react'
-import {
-	Link,
-	redirect,
-	Outlet as RROutlet,
-	useLocation,
-	useNavigation,
-} from 'react-router'
+import { Link, redirect, Outlet as RROutlet, useNavigation } from 'react-router'
 
 import { Undo2 } from 'lucide-react'
 
@@ -23,10 +17,8 @@ import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
-import { getAllServiceDashboards } from '~/lib/service/dashboard'
 
 import { validateAdminSession } from '../../auth/utils'
-import { DEFAULT_SERVICE } from './components/data'
 import { HeaderWithBreadcrumbs } from './components/header-breadcrumbs'
 import { NavigationProvider, useNavigationMetadata } from './context'
 
@@ -36,13 +28,13 @@ const MemoHeaderWithBreadcrumb = memo(HeaderWithBreadcrumbs)
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const usesrSession = await validateAdminSession(request)
 
-	const defaultSidebarOpen = new RegExp(`${SIDEBAR_COOKIE_NAME}=true`).test(
-		request.headers.get('cookie') || '',
-	)
-
 	if (!usesrSession) {
 		throw redirect('/dashboard/portal')
 	}
+
+	const defaultSidebarOpen = new RegExp(`${SIDEBAR_COOKIE_NAME}=true`).test(
+		request.headers.get('cookie') || '',
+	)
 
 	return {
 		admin: usesrSession.user,
@@ -50,58 +42,27 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 	}
 }
 
-export default function Dashboard({
-	loaderData,
-	matches,
-}: Route.ComponentProps) {
+export default function Dashboard({ loaderData }: Route.ComponentProps) {
 	const { admin, defaultSidebarOpen } = loaderData
-	const location = useLocation()
 
 	const memoizedUser = useMemo(
 		() => ({
 			...admin,
-			name: admin.name ?? 'Papa Fritas',
+			name: admin.name ?? 'User',
 			image: admin.image ?? '/placeholders/avatar.png',
 			role: admin.role ?? 'admin',
 		}),
 		[admin],
 	)
 
-	const services = useMemo(
-		() => [DEFAULT_SERVICE, ...getAllServiceDashboards()],
-		[],
-	)
-
-	const currentService = (() => {
-		for (const m of [...matches].reverse()) {
-			if (!m) continue
-			const serviceMatch = services.find(s => s.pathname === m.pathname)
-			if (serviceMatch) return serviceMatch
-		}
-		return DEFAULT_SERVICE
-	})()
-
-	if (!currentService) throw new Error('No Service Found (even default one)')
-
 	return (
 		<NavigationProvider>
 			<SidebarProvider defaultOpen={defaultSidebarOpen}>
-				<MemoDashboardSidebar
-					user={memoizedUser}
-					services={services}
-					currentService={currentService}
-					sidebarPrimaryItems={currentService.sidebar?.primary}
-					sidebarSecondaryItems={currentService.sidebar?.secondary}
-				/>
+				<MemoDashboardSidebar user={memoizedUser} />
 
 				<SidebarInset className="h-[calc(100svh-(--spacing(4)))] overflow-hidden">
 					<MemoHeaderWithBreadcrumb />
 
-					<title>{`${currentService.name} - Papa CMS`}</title>
-					<meta
-						name="description"
-						content={`Dashboard for ${currentService.name}`}
-					/>
 					<Outlet />
 				</SidebarInset>
 			</SidebarProvider>
