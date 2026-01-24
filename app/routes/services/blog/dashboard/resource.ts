@@ -5,7 +5,6 @@ import { z } from 'zod'
 
 import { type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/auth/utils'
 import {
 	createPost,
 	deletePost,
@@ -35,8 +34,6 @@ const seoInsertUpdateSchema = z.object({
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-	await validateAdminSession(request)
-
 	const jsonData = (await request.json()) as unknown
 
 	switch (request.method) {

@@ -6,8 +6,6 @@ import { createSEO, deleteSEO, updateSEO } from '~/lib/db/seo.server'
 import { type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
 
-import { validateAdminSession } from '../../auth/utils'
-
 const insertSchmea = z.object({
 	metaTitle: z.string(),
 	metaDescription: z.string(),
@@ -32,7 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		} satisfies ActionResponse
 	}
 
-	await validateAdminSession(request)
+	console.log('action')
 
 	const formData = await request.formData()
 	const seoRequested = Object.fromEntries(formData)

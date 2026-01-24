@@ -5,7 +5,6 @@ import z from 'zod'
 
 import type { ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/auth/utils'
 
 import { ecTag } from '../../../lib/db/schema'
 import { createEcTag, deleteEcTags } from '../../../lib/db/taxonomy.server'
@@ -13,8 +12,6 @@ import { createEcTag, deleteEcTags } from '../../../lib/db/taxonomy.server'
 const tagInsertUpdateSchema = createInsertSchema(ecTag)
 
 export const action = async ({ request }: Route.ActionArgs) => {
-	await validateAdminSession(request)
-
 	const jsonData = (await request.json()) as unknown
 
 	try {

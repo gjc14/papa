@@ -14,7 +14,6 @@ import z from 'zod'
 import { seo } from '~/lib/db/schema'
 import type { ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/auth/utils'
 
 import {
 	createProduct,
@@ -109,8 +108,6 @@ const insertUpdateSchema = createSelectSchema(product).extend({
 })
 
 export const action = async ({ request }: Route.ActionArgs) => {
-	const { user } = await validateAdminSession(request)
-
 	const jsonData = await request.json()
 
 	switch (request.method) {

@@ -18,7 +18,6 @@ import type { Route } from './+types/resource'
 import z from 'zod'
 
 import type { ActionResponse } from '~/lib/utils'
-import { validateAdminSession } from '~/routes/auth/utils'
 
 import { moveProductsToTrash } from '../../lib/db/product.server'
 
@@ -30,7 +29,6 @@ const mTTSchema = z.array(
 )
 
 export const action = async ({ request }: Route.ActionArgs) => {
-	const { user } = await validateAdminSession(request)
 	const jsonData = await request.json()
 
 	switch (request.method) {

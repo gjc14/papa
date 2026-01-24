@@ -5,7 +5,6 @@ import { z } from 'zod'
 
 import type { ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/auth/utils'
 
 import { ecAttribute } from '../../../lib/db/schema'
 import {
@@ -16,8 +15,6 @@ import {
 const attributeInsertUpdateSchema = createInsertSchema(ecAttribute)
 
 export const action = async ({ request }: Route.ActionArgs) => {
-	await validateAdminSession(request)
-
 	const jsonData = (await request.json()) as unknown
 
 	try {

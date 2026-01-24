@@ -10,8 +10,8 @@ import type { FileMetadata } from '~/lib/db/schema'
 import { file as fileTable } from '~/lib/db/schema'
 import { type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
+import { authContext } from '~/middleware/context/auth'
 
-import { validateAdminSession } from '../../auth/utils'
 import { presignUrlRequestSchema, type PresignResponse } from './schema'
 
 const fileMetadataInsertUpdateSchema = createInsertSchema(fileTable)
@@ -24,14 +24,14 @@ const fileMetadataInsertUpdateSchema = createInsertSchema(fileTable)
 		deletedAt: z.coerce.date().nullable(),
 	})
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, context }: ActionFunctionArgs) => {
 	if (!S3) {
 		return {
 			err: 'Object storage not configured',
 		} satisfies ActionResponse
 	}
 
-	const adminSession = await validateAdminSession(request)
+	const adminSession = context.get(authContext)
 
 	const jsonData = await request.json()
 
@@ -163,8 +163,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 /**
  * Returns all file metadata belongs to user
  */
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	const adminSession = await validateAdminSession(request)
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
+	const adminSession = context.get(authContext)
 
 	if (!S3)
 		return {

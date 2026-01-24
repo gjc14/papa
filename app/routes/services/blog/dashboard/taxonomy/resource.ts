@@ -4,7 +4,6 @@ import { z } from 'zod'
 
 import { type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-import { validateAdminSession } from '~/routes/auth/utils'
 
 import {
 	createCategory,
@@ -39,8 +38,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	if (request.method !== 'POST' && request.method !== 'DELETE') {
 		throw new Response('', { status: 405 })
 	}
-
-	await validateAdminSession(request)
 
 	const formData = await request.formData()
 	const intent = formData.get('intent')

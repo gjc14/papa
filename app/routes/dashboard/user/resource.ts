@@ -8,8 +8,7 @@ import { user } from '~/lib/db/schema'
 import { deleteUser, updateUser } from '~/lib/db/user.server'
 import { isValidEmail, type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
-
-import { validateAdminSession } from '../../auth/utils'
+import { authContext } from '~/middleware/context/auth'
 
 const userUpdateSchema = createUpdateSchema(user).omit({
 	id: true, // id will be checked separately, may be a string or comma-separated string of IDs
@@ -34,14 +33,14 @@ const userUpdateSchema = createUpdateSchema(user).omit({
  * ```
  * @returns
  */
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, context }: ActionFunctionArgs) => {
 	if (!['POST', 'PUT', 'DELETE'].includes(request.method)) {
 		return {
 			err: 'Method not allowed',
 		} satisfies ActionResponse
 	}
 
-	const adminSession = await validateAdminSession(request)
+	const adminSession = context.get(authContext)
 
 	const formData = await request.formData()
 	const userData: Record<string, string | boolean | File> = {}
