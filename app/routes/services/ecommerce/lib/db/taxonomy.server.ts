@@ -1,17 +1,17 @@
 import { inArray, type InferInsertModel } from 'drizzle-orm'
 
-import { dbStore } from './db.server'
+import { dbEcommerce } from './db.server'
 import * as schema from './schema'
 
 export const createEcTag = async (
 	props: InferInsertModel<typeof schema.ecTag>,
 ) => {
-	const [tag] = await dbStore.insert(schema.ecTag).values(props).returning()
+	const [tag] = await dbEcommerce.insert(schema.ecTag).values(props).returning()
 	return tag
 }
 
 export const getEcTags = async () => {
-	const tags = await dbStore.query.ecTag.findMany()
+	const tags = await dbEcommerce.query.ecTag.findMany()
 
 	return tags
 }
@@ -19,7 +19,7 @@ export const getEcTags = async () => {
 export const deleteEcTags = async (
 	ids: (typeof schema.ecCategory.$inferSelect)['id'][],
 ) => {
-	await dbStore
+	await dbEcommerce
 		.delete(schema.ecCategory)
 		.where(inArray(schema.ecCategory.id, ids))
 }
@@ -27,7 +27,7 @@ export const deleteEcTags = async (
 export const createEcCategory = async (
 	props: InferInsertModel<typeof schema.ecCategory>,
 ) => {
-	const [category] = await dbStore
+	const [category] = await dbEcommerce
 		.insert(schema.ecCategory)
 		.values(props)
 		.returning()
@@ -35,7 +35,7 @@ export const createEcCategory = async (
 }
 
 export const getEcCategories = async () => {
-	const categories = await dbStore.query.ecCategory.findMany()
+	const categories = await dbEcommerce.query.ecCategory.findMany()
 
 	return categories
 }
@@ -43,18 +43,23 @@ export const getEcCategories = async () => {
 export const deleteEcCategories = async (
 	ids: (typeof schema.ecBrand.$inferSelect)['id'][],
 ) => {
-	await dbStore.delete(schema.ecBrand).where(inArray(schema.ecBrand.id, ids))
+	await dbEcommerce
+		.delete(schema.ecBrand)
+		.where(inArray(schema.ecBrand.id, ids))
 }
 
 export const createEcBrand = async (
 	props: InferInsertModel<typeof schema.ecBrand>,
 ) => {
-	const [brand] = await dbStore.insert(schema.ecBrand).values(props).returning()
+	const [brand] = await dbEcommerce
+		.insert(schema.ecBrand)
+		.values(props)
+		.returning()
 	return brand
 }
 
 export const getEcBrands = async () => {
-	const brands = await dbStore.query.ecBrand.findMany()
+	const brands = await dbEcommerce.query.ecBrand.findMany()
 
 	return brands
 }
@@ -62,13 +67,15 @@ export const getEcBrands = async () => {
 export const deleteEcBrands = async (
 	ids: (typeof schema.ecBrand.$inferSelect)['id'][],
 ) => {
-	await dbStore.delete(schema.ecBrand).where(inArray(schema.ecBrand.id, ids))
+	await dbEcommerce
+		.delete(schema.ecBrand)
+		.where(inArray(schema.ecBrand.id, ids))
 }
 
 export const createEcAttribute = async (
 	props: InferInsertModel<typeof schema.ecAttribute>,
 ) => {
-	const [attribute] = await dbStore
+	const [attribute] = await dbEcommerce
 		.insert(schema.ecAttribute)
 		.values(props)
 		.returning()
@@ -76,7 +83,7 @@ export const createEcAttribute = async (
 }
 
 export const getEcAttributes = async () => {
-	const attributes = await dbStore.query.ecAttribute.findMany()
+	const attributes = await dbEcommerce.query.ecAttribute.findMany()
 
 	return attributes
 }
@@ -84,7 +91,7 @@ export const getEcAttributes = async () => {
 export const deleteEcAttributes = async (
 	ids: (typeof schema.ecAttribute.$inferSelect)['id'][],
 ) => {
-	await dbStore
+	await dbEcommerce
 		.delete(schema.ecAttribute)
 		.where(inArray(schema.ecAttribute.id, ids))
 }

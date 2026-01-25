@@ -1,7 +1,7 @@
 import { registerServiceSitemap } from '~/lib/service/sitemap-registry'
 import type { SitemapURL } from '~/lib/utils/sitemap-to-xml'
 
-import { dbStore as db } from './lib/db/db.server'
+import { dbEcommerce as db } from './lib/db/db.server'
 
 registerServiceSitemap(url => getStoreSitemapUrls(url.origin))
 

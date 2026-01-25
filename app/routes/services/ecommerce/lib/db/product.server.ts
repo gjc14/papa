@@ -5,7 +5,7 @@ import { seo, type Seo } from '~/lib/db/schema'
 import { convertDateFields } from '~/lib/db/utils'
 import { handleError } from '~/lib/utils/server'
 
-import { dbStore } from './db.server'
+import { dbEcommerce } from './db.server'
 import {
 	product,
 	productAttribute,
@@ -22,7 +22,7 @@ import {
 import { ecAttribute, ecBrand, ecCategory, ecTag } from './schema/taxonomy'
 
 type TransactionType = Parameters<
-	Parameters<(typeof dbStore)['transaction']>[0]
+	Parameters<(typeof dbEcommerce)['transaction']>[0]
 >[0]
 
 type Product = typeof product.$inferSelect
@@ -114,7 +114,7 @@ export async function getProducts({
 	relations = false,
 }: GetProductsParamsBase & { relations?: boolean } = {}) {
 	console.time('getProducts')
-	const products = await dbStore.execute<
+	const products = await dbEcommerce.execute<
 		ProductListing | ProductListingWithRelations
 	>(sql`
 		SELECT
@@ -274,7 +274,7 @@ export const getProduct = async ({
 	status?: ProductStatus
 }) => {
 	console.time('getProduct')
-	const products = await dbStore.execute<
+	const products = await dbEcommerce.execute<
 		ProductWithOption & {
 			categories: Category[]
 			tags: Tag[]
@@ -467,7 +467,7 @@ export const getProduct = async ({
 }
 
 export const getProductGallery = async (productId: number) => {
-	const gallery = await dbStore.query.productGallery.findMany({
+	const gallery = await dbEcommerce.query.productGallery.findMany({
 		where: (gallery, { eq }) => eq(gallery.productId, productId),
 	})
 	return gallery
@@ -479,7 +479,7 @@ export type CrossSellProduct = ProductListing &
 export const getCrossSellProducts = async (
 	productId: number,
 ): Promise<CrossSellProduct[]> => {
-	const crossSells = await dbStore.execute<CrossSellProduct>(sql`
+	const crossSells = await dbEcommerce.execute<CrossSellProduct>(sql`
 		SELECT
 		DISTINCT ON (p.id)
 			p.id,
@@ -526,7 +526,7 @@ export type UpsellProduct = ProductListing &
 export const getUpsellProducts = async (
 	productId: number,
 ): Promise<UpsellProduct[]> => {
-	const upsells = await dbStore.execute<UpsellProduct>(sql`
+	const upsells = await dbEcommerce.execute<UpsellProduct>(sql`
 		SELECT
 		DISTINCT ON (p.id)
 			p.id,
@@ -603,7 +603,7 @@ export const createProduct = async (
 
 	console.time('createProduct')
 
-	await dbStore.transaction(async tx => {
+	await dbEcommerce.transaction(async tx => {
 		const promiseProductOption = async () => {
 			console.time('productOption insert')
 			const rows = await tx
@@ -698,7 +698,7 @@ export const updateProduct = async (
 
 	console.time('updateProduct')
 
-	await dbStore.transaction(async tx => {
+	await dbEcommerce.transaction(async tx => {
 		const promiseProduct = async () => {
 			console.time('product')
 			await tx
@@ -1046,7 +1046,7 @@ export async function deleteProducts(
 		return result
 	}
 
-	await dbStore.transaction(async tx => {
+	await dbEcommerce.transaction(async tx => {
 		// 1. Query existing products
 		const existingProducts = await tx
 			.select({
@@ -1114,7 +1114,7 @@ export async function moveProductsToTrash(
 
 	// Soft delete
 	try {
-		const deletedProducts = await dbStore
+		const deletedProducts = await dbEcommerce
 			.update(product)
 			.set({ status: 'TRASHED', deletedAt: new Date() })
 			.where(inArray(product.id, productIds))
