@@ -49,15 +49,17 @@ export const Instructions = () => {
 	const setProduct = useSetAtom(productAtom)
 	const productInstructions = useAtomValue(productInstructionsAtom)
 
-	if (!productInstructions) return null
-
 	// useMemo to ensure each instruction has a unique and stable _id
 	const instructionsWithIds = useMemo<InstructionWithId[]>(() => {
-		return productInstructions.map(d => ({
-			...d,
-			_id: (d as InstructionWithId)._id || nanoid(),
-		}))
+		return productInstructions
+			? productInstructions.map(d => ({
+					...d,
+					_id: (d as InstructionWithId)._id || nanoid(),
+				}))
+			: []
 	}, [productInstructions])
+
+	if (!productInstructions) return null
 
 	const handleUpdateInstruction = (updatedInstruction: InstructionWithId) => {
 		setProduct(prev => {
