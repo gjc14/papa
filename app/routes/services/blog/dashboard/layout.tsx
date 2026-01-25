@@ -2,7 +2,7 @@ import type { Route } from './+types/layout'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router'
 
-import { Provider, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 
 import type { Category, Tag } from '../lib/db/schema'
 import { getCategories, getTags } from '../lib/db/taxonomy.server'
@@ -18,13 +18,13 @@ export default function DashboardBlog({ loaderData }: Route.ComponentProps) {
 	const { tagsPromise, categoriesPromise } = loaderData
 
 	return (
-		<Provider>
+		<>
 			<TaxonomiesLoader
 				tagsPromise={tagsPromise}
 				categoriesPromise={categoriesPromise}
 			/>
 			<Outlet />
-		</Provider>
+		</>
 	)
 }
 
