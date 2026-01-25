@@ -78,6 +78,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<SidebarProvider defaultOpen={defaultSidebarOpen}>
+			{/* Re-render only when user reference changes */}
 			<MemoDashboardSidebar user={memoizedUser} />
 
 			<SidebarInset className="h-[calc(100svh-(--spacing(4)))] overflow-hidden">

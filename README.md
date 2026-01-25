@@ -279,12 +279,12 @@ routes/
         └── service.sitemap.ts
 ```
 
-**Service config files:**
+### Service config files
 
 There are three files needed, `service.routes.ts`, `service.dashboard.ts`,
 `service.sitemap.ts`, both `.ts` and `.tsx` are supported.
 
-**Routes configurations**
+#### Routes configuration
 
 <!-- prettier-ignore -->
 > [!IMPORTANT]
@@ -326,10 +326,14 @@ registerServiceRoutes({
 })
 ```
 
-**Dashboard configurations**
+#### Dashboard configuration
 
-Here, you could configure details to be displayed in the dashboard, mainly on
-the sidebar, such as service name, logo, etc.
+Here you could configure details to be displayed in the dashboard, mainly on the
+sidebar, such as service name, logo, etc.
+
+This is where you configure service dashboard in build time. You could also
+configure it in the runtime using dashboard context, please refer to
+[sidebar section](#sidebar).
 
 ```tsx
 // /app/routes/services/my-service/service.dashboard.ts
@@ -363,7 +367,7 @@ registerServiceDashboard({
 })
 ```
 
-**Sitemap configurations**
+#### Sitemap configuration
 
 You could easily configure your sitemap by `registerServiceSitemap` function.
 The function will run on server side, so you could query data from the database
@@ -593,7 +597,30 @@ export default function DashboardExample() {
 
 ### Sidebar
 
-TODO
+Configure service sidebar in the runtime. To configure dashboard in build time,
+please refer to [Service Dashboard Configuration](#dashboard-configuration).
+
+```tsx
+export default function Component() {
+	const setDashboardContext = useSetAtom(dashboardContextAtom)
+
+	return (
+		<button
+			onClick={() =>
+				setDashboardContext(prev => ({
+					...prev,
+					services: prev.services.map(s => {
+						if (s.name === 'Blog') return DEFAULT_SERVICE
+						return s
+					}),
+				}))
+			}
+		>
+			Click me
+		</button>
+	)
+}
+```
 
 #### Navigation Indicator
 

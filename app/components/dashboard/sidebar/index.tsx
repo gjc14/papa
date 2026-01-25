@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
-import { useLocation, useMatches } from 'react-router'
+import { useMatches } from 'react-router'
+
+import { useAtomValue } from 'jotai'
 
 import {
 	Sidebar,
@@ -9,8 +10,8 @@ import {
 } from '~/components/ui/sidebar'
 import { SidebarService } from '~/components/dashboard/sidebar/sidebar-service'
 import type { Session } from '~/lib/auth/auth.server'
-import { getAllServiceDashboards } from '~/lib/service/dashboard'
 import { DEFAULT_SERVICE } from '~/lib/service/data'
+import { dashboardContextAtom } from '~/routes/dashboard/layout/context'
 
 import { SidebarUser } from './sidebar-footer'
 import { SidebarPrimary } from './sidebar-primary'
@@ -19,10 +20,9 @@ import { SidebarSecondary } from './sidebar-secondary'
 export function DashboardSidebar({ user }: { user: Session['user'] }) {
 	const matches = useMatches()
 
-	const services = useMemo(
-		() => [DEFAULT_SERVICE, ...getAllServiceDashboards()],
-		[],
-	)
+	const dashboardContext = useAtomValue(dashboardContextAtom)
+
+	const services = dashboardContext.services
 
 	const currentService = (() => {
 		for (const m of [...matches].reverse()) {
