@@ -15,7 +15,7 @@ import { post } from './post'
 
 export type Tag = InferSelectModel<typeof tag>
 
-export const tag = pgTable('tag', {
+export const tag = pgTable('blog_tag', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 100 }).notNull(),
 	slug: varchar('slug', { length: 100 }).notNull().unique(),
@@ -25,7 +25,7 @@ export const tag = pgTable('tag', {
 export type Category = InferSelectModel<typeof category>
 
 export const category = pgTable(
-	'category',
+	'blog_category',
 	{
 		id: serial('id').primaryKey(),
 		name: varchar('name', { length: 100 }).notNull(),
@@ -51,7 +51,7 @@ export const category = pgTable(
 export type PostToTag = InferSelectModel<typeof postToTag>
 
 export const postToTag = pgTable(
-	'post_to_tag',
+	'blog_post_to_tag',
 	{
 		postId: integer('post_id')
 			.notNull()
@@ -73,7 +73,7 @@ export const postToTag = pgTable(
 export type PostToCategory = InferSelectModel<typeof postToCategory>
 
 export const postToCategory = pgTable(
-	'post_to_category',
+	'blog_post_to_category',
 	{
 		postId: integer('post_id')
 			.notNull()

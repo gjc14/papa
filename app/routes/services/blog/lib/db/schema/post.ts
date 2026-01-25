@@ -20,7 +20,7 @@ export type PostStatus = (typeof PostStatus)[number]
 export type Post = InferSelectModel<typeof post>
 
 export const post = pgTable(
-	'post',
+	'blog_post',
 	{
 		id: serial('id').primaryKey(),
 		status: varchar('status', { length: 20 }).notNull(),
