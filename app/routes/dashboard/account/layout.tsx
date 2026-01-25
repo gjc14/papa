@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router'
 
+import { useAtom } from 'jotai'
+
 import { Spinner } from '~/components/ui/spinner'
 import {
 	AnimatedNav,
@@ -12,7 +14,7 @@ import {
 	DashboardTitle,
 } from '~/components/dashboard/dashboard-wrapper'
 
-import { useNavigationMetadata } from '../layout/context'
+import { dashboardContextAtom } from '../layout/context'
 
 const DashboardAccountRoutes: RouteButton[] = [
 	{ to: '/dashboard/account', title: 'Profile' },
@@ -22,8 +24,8 @@ const DashboardAccountRoutes: RouteButton[] = [
 ]
 
 export default function DashboardAccount() {
-	const { navMetadata, setNavMetadata } = useNavigationMetadata()
-	const navigating = navMetadata.showGlobalLoader === false
+	const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom)
+	const navigating = dashboardContext.navigation.showGlobalLoader === false
 
 	return (
 		<DashboardLayout>
@@ -32,7 +34,11 @@ export default function DashboardAccount() {
 					<AnimatedNav
 						routes={DashboardAccountRoutes.map(route => ({
 							...route,
-							onClick: () => setNavMetadata({ showGlobalLoader: false }),
+							onClick: () =>
+								setDashboardContext(prev => ({
+									...prev,
+									navigation: { showGlobalLoader: false },
+								})),
 						}))}
 					/>
 				</DashboardTitle>

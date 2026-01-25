@@ -1,30 +1,16 @@
-import { createContext, useContext, useState } from 'react'
+import { atom } from 'jotai'
 
-export type NavMetadata = {
+export type DashboardContextData = {
+	navigation: NavigationConfig
+}
+
+////////////////////
+// child contexts //
+////////////////////
+export type NavigationConfig = {
 	showGlobalLoader: boolean
 }
 
-const NavigationContext = createContext({
-	navMetadata: { showGlobalLoader: true },
-	setNavMetadata: (m: NavMetadata) => {},
+export const dashboardContextAtom = atom<DashboardContextData>({
+	navigation: { showGlobalLoader: true },
 })
-
-export function NavigationProvider({
-	children,
-}: {
-	children: React.ReactNode
-}) {
-	const [navMetadata, setNavMetadata] = useState<NavMetadata>({
-		showGlobalLoader: true,
-	})
-
-	return (
-		<NavigationContext.Provider value={{ navMetadata, setNavMetadata }}>
-			{children}
-		</NavigationContext.Provider>
-	)
-}
-
-export function useNavigationMetadata() {
-	return useContext(NavigationContext)
-}

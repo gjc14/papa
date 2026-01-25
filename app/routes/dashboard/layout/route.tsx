@@ -2,6 +2,7 @@ import type { Route } from './+types/route'
 import { memo, useEffect, useMemo } from 'react'
 import { Link, redirect, Outlet as RROutlet, useNavigation } from 'react-router'
 
+import { useAtom } from 'jotai'
 import { Undo2 } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -21,7 +22,7 @@ import { auth } from '~/lib/auth/auth.server'
 import { authContext } from '~/middleware/context/auth'
 
 import { HeaderWithBreadcrumbs } from './components/header-breadcrumbs'
-import { NavigationProvider, useNavigationMetadata } from './context'
+import { dashboardContextAtom } from './context'
 
 const MemoDashboardSidebar = memo(DashboardSidebar)
 const MemoHeaderWithBreadcrumb = memo(HeaderWithBreadcrumbs)
@@ -76,33 +77,35 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 	)
 
 	return (
-		<NavigationProvider>
-			<SidebarProvider defaultOpen={defaultSidebarOpen}>
-				<MemoDashboardSidebar user={memoizedUser} />
+		<SidebarProvider defaultOpen={defaultSidebarOpen}>
+			<MemoDashboardSidebar user={memoizedUser} />
 
-				<SidebarInset className="h-[calc(100svh-(--spacing(4)))] overflow-hidden">
-					<MemoHeaderWithBreadcrumb />
+			<SidebarInset className="h-[calc(100svh-(--spacing(4)))] overflow-hidden">
+				<MemoHeaderWithBreadcrumb />
 
-					<Outlet />
-				</SidebarInset>
-			</SidebarProvider>
-		</NavigationProvider>
+				<Outlet />
+			</SidebarInset>
+		</SidebarProvider>
 	)
 }
 
 const Outlet = () => {
 	const navigation = useNavigation()
-	const { navMetadata, setNavMetadata } = useNavigationMetadata()
+	const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom)
 
 	// Use context during 'loading', fall back to location.state after loader completes
 	const shouldShowLoader =
-		navigation.state === 'loading' && navMetadata.showGlobalLoader
+		navigation.state === 'loading' &&
+		dashboardContext.navigation.showGlobalLoader
 
 	useEffect(() => {
 		if (navigation.state === 'idle') {
-			setNavMetadata({ showGlobalLoader: true }) // Reset to default
+			setDashboardContext(prev => ({
+				...prev,
+				navigation: { showGlobalLoader: true },
+			})) // Reset to default
 		}
-	}, [navigation.state, setNavMetadata])
+	}, [navigation.state, setDashboardContext])
 
 	if (shouldShowLoader) {
 		return (

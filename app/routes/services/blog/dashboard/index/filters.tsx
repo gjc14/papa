@@ -20,7 +20,7 @@ import {
 	PopoverTrigger,
 } from '~/components/ui/popover'
 import { cn } from '~/lib/utils'
-import { useNavigationMetadata } from '~/routes/dashboard/layout/context'
+import { dashboardContextAtom } from '~/routes/dashboard/layout/context'
 
 import type { Category, Tag } from '../../lib/db/schema'
 import { categoriesAtom, tagsAtom } from '../context'
@@ -35,8 +35,8 @@ export const Filter = ({
 	categoryFilter?: Pick<Category, 'id' | 'slug' | 'name'>[]
 }) => {
 	const [params, setSearchParams] = useSearchParams()
-	const { navMetadata, setNavMetadata } = useNavigationMetadata()
-	const searching = navMetadata.showGlobalLoader === false
+	const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom)
+	const searching = dashboardContext.navigation.showGlobalLoader === false
 
 	const [tags] = useAtom(tagsAtom)
 	const [categories] = useAtom(categoriesAtom)
@@ -78,7 +78,10 @@ export const Filter = ({
 			params.delete('category')
 		}
 
-		setNavMetadata({ showGlobalLoader: false })
+		setDashboardContext(prev => ({
+			...prev,
+			navigation: { showGlobalLoader: false },
+		}))
 		setSearchParams(params, {
 			replace: true,
 		})

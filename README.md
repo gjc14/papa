@@ -589,42 +589,54 @@ export default function DashboardExample() {
 }
 ```
 
-### Global Navigating UI
+### Dashboard Context
 
-Displaying when navigating using `useNavigation` hook. The UI is written in
-[layout](./layout/route.tsx).
+### Sidebar
 
-#### Prevent Navigating UI
+TODO
 
-To prevent displaying the UI, utilize `useNavigationMetadata` hook. When
-navigating over, `navMetadata.showGlobalLoader` will be set to true.
+#### Navigation Indicator
 
-1. Manually set `showGlobalLoader` to false
-   (`setNavMetadata({ showGlobalLoader: false })`)
-2. Navigate starts
-3. Navigate ends
-4. `showGlobalLoader` is set to true automatically
+There are default navigation indicator for dashboard when navigating
+(`useNavigation().state === 'loading'`). The UI is written in
+[dashboard layout](./app/routes/dashboard/layout/route.tsx).
+
+##### Disable Navigation Indicator
+
+To prevent indicator from display, utilize `dashboardContextAtom`. By default
+`dashboardContext.navigation.showGlobalLoader` will be reset to true when idle.
+
+**Process**
+
+1. Manually set `showGlobalLoader` to false before navigating
+   (`setDashboardContext(...)`)
+2. Navigation starts
+3. Navigation ends
+4. `showGlobalLoader` reset to true automatically. (see <Outlet> in
+   [dashboard layout](./app/routes/dashboard/layout/route.tsx).)
 
 ```tsx
 const Component = () => {
-	const { navMetadata, setNavMetadata } = useNavigationMetadata()
+	const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom)
+	const navigating = dashboardContext.navigation.showGlobalLoader === false // when it set to false by the function below
+
 	const navigate = useNavigate()
 	const [, setSearchParams] = useSearchParams()
 
-	const isNavigating = navMetadata.showGlobalLoader === false
-
-	const goToSomewhere = () => {
+	const navigateToSomewhere = () => {
 		// Set showGlobalLoader to false first
-		setNavMetadata({ showGlobalLoader: false })
+		setDashboardContext(prev => ({
+			...prev,
+			navigation: { showGlobalLoader: false },
+		}))
 
 		// a. navigate to destination
-		navigate('/path/to/destination', { replace: true })
+		navigate('/path/to/destination')
 
-		// or
-		// b. Update search params
+		// or b. Update search params
 		setSearchParams(params, { replace: true })
 	}
 
-	return <button onClick={goToSomewhere}>Go to Somewhere</button>
+	return <button onClick={navigateToSomewhere}>Go to Somewhere</button>
 }
 ```
