@@ -19,10 +19,10 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '~/components/ui/popover'
-import type { Category, Tag } from '~/lib/db/schema'
 import { cn } from '~/lib/utils'
 import { useNavigationMetadata } from '~/routes/dashboard/layout/context'
 
+import type { Category, Tag } from '../../lib/db/schema'
 import { categoriesAtom, tagsAtom } from '../context'
 
 export const Filter = ({
