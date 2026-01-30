@@ -1,13 +1,11 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { DashboardIcon } from '@radix-ui/react-icons'
 import {
 	ChevronUp,
-	Expand,
 	HelpCircle,
+	LayoutDashboard,
 	LogOut,
-	Minimize2,
 	PanelTop,
 	PencilLine,
 } from 'lucide-react'
@@ -27,92 +25,148 @@ import {
 } from '~/components/theme-toggle'
 import { authClient } from '~/lib/auth/auth-client'
 
+type ToolkitPosition = 'right' | 'left' | 'center'
+
+function getPositionClass(position: ToolkitPosition) {
+	switch (position) {
+		case 'left':
+			return 'fixed left-6 bottom-6'
+		case 'center':
+			return 'fixed left-1/2 bottom-6 -translate-x-1/2'
+		case 'right':
+		default:
+			return 'fixed right-6 bottom-6'
+	}
+}
+
+const TOOLKIT_POSITION_COOKIE = 'toolkit-position'
+const TOOLKIT_POSITION_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
+
 export function FloatingToolkit() {
-	const [isMinimized, setIsMinumized] = useState(false)
+	const [position, setPosition] = useState<ToolkitPosition>(() => {
+		if (typeof document === 'undefined') return 'right'
+
+		const match = document.cookie
+			.split('; ')
+			.find(row => row.startsWith(`${TOOLKIT_POSITION_COOKIE}=`))
+
+		const value = match?.split('=')[1]
+
+		if (value === 'left' || value === 'center' || value === 'right') {
+			return value
+		}
+
+		return 'right'
+	})
+
 	const navigate = useNavigate()
 	const { data } = authClient.useSession()
 
-	if (data?.user.role === 'admin') {
-		return (
-			<>
-				{!isMinimized ? (
-					<div className="fixed right-6 bottom-6 z-99999">
-						<Minimize2
-							className="bg-primary-foreground absolute -top-1 -right-1 size-5 cursor-pointer rounded-full border p-0.75"
-							onClick={() => setIsMinumized(true)}
-						/>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									size="icon"
-									className="h-12 w-12 rounded-full bg-black text-white shadow-lg hover:bg-gray-800 dark:bg-white dark:text-black hover:dark:bg-gray-200"
-								>
-									<ChevronUp size={20} />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								align="start"
-								side="top"
-								className="mb-2 w-56"
-							>
-								<DropdownMenuLabel>Quick Toolkit</DropdownMenuLabel>
-								<DropdownMenuItem onClick={() => navigate('/')}>
-									<PanelTop className="mr-2 size-4" />
-									<span>View Website</span>
-								</DropdownMenuItem>
+	const setPositionWithCookie = useCallback(
+		(value: ToolkitPosition | ((v: ToolkitPosition) => ToolkitPosition)) => {
+			const next = typeof value === 'function' ? value(position) : value
 
-								<DropdownMenuItem onClick={() => navigate('/dashboard')}>
-									<DashboardIcon className="mr-2 size-4" />
-									<span>Go to Dashboard</span>
-								</DropdownMenuItem>
+			setPosition(next)
 
-								<DropdownMenuItem
-									onClick={() => navigate('/dashboard/blog/new')}
-								>
-									<PencilLine className="mr-2 size-4" />
-									<span>New Post</span>
-								</DropdownMenuItem>
+			document.cookie = `${TOOLKIT_POSITION_COOKIE}=${next}; path=/; max-age=${TOOLKIT_POSITION_COOKIE_MAX_AGE}`
+		},
+		[position],
+	)
 
-								<DropdownMenuSeparator />
+	if (data?.user.role !== 'admin') return null
 
-								<DropdownMenuItem
-									onClick={() =>
-										window.open(
-											'https://github.com/gjc14/papa/discussions',
-											'_blank',
-											'noopener,noreferrer',
-										)
-									}
-								>
-									<HelpCircle className="mr-2 size-4" />
-									<span>Help & Resources</span>
-								</DropdownMenuItem>
+	return (
+		<div className={`${getPositionClass(position)} z-99999`}>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button size={'icon'} className="size-7">
+						<ChevronUp />
+					</Button>
+				</DropdownMenuTrigger>
 
-								<DropdownMenuSeparator />
+				<DropdownMenuContent align="start" side="top" className="mb-2 w-64">
+					<DropdownMenuLabel>Quick Toolkit</DropdownMenuLabel>
 
-								<ThemeDropdownMenuSubTrigger className="cursor-pointer">
-									<CurrentThemeIcon className="mr-2 size-4" />
-									Change Theme
-								</ThemeDropdownMenuSubTrigger>
+					<DropdownMenuSeparator />
 
-								<DropdownMenuSeparator />
+					<DropdownMenuItem onClick={() => navigate('/')}>
+						<PanelTop className="mr-2 size-4" />
+						<span>View Website</span>
+					</DropdownMenuItem>
 
-								<DropdownMenuItem onClick={() => authClient.signOut()}>
-									<LogOut className="mr-2 size-4" />
-									<span>Sign Out</span>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
-				) : (
-					<div
-						className="bg-primary text-primary-foreground fixed right-6 bottom-6 z-99999 cursor-pointer rounded-full p-0.75"
-						onClick={() => setIsMinumized(false)}
+					<DropdownMenuItem onClick={() => navigate('/dashboard')}>
+						<LayoutDashboard className="mr-2 size-4" />
+						<span>Go to Dashboard</span>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem onClick={() => navigate('/dashboard/blog/new')}>
+						<PencilLine className="mr-2 size-4" />
+						<span>New Post</span>
+					</DropdownMenuItem>
+
+					<DropdownMenuSeparator />
+
+					<DropdownMenuItem
+						onClick={() =>
+							window.open(
+								'https://github.com/gjc14/papa/discussions',
+								'_blank',
+								'noopener,noreferrer',
+							)
+						}
 					>
-						<Expand className="size-3" />
+						<HelpCircle className="mr-2 size-4" />
+						<span>Help & Resources</span>
+					</DropdownMenuItem>
+
+					<DropdownMenuSeparator />
+
+					<ThemeDropdownMenuSubTrigger className="cursor-pointer">
+						<CurrentThemeIcon className="mr-2 size-4" />
+						Change Theme
+					</ThemeDropdownMenuSubTrigger>
+
+					{/* Position toggle */}
+					<DropdownMenuSeparator />
+
+					<div className="grid grid-cols-3 gap-1.5 p-2">
+						<Button
+							type="button"
+							variant={position === 'left' ? 'default' : 'outline'}
+							size="sm"
+							className="h-7"
+							onClick={() => setPositionWithCookie('left')}
+						>
+							Left
+						</Button>
+						<Button
+							type="button"
+							variant={position === 'center' ? 'default' : 'outline'}
+							size="sm"
+							className="h-7"
+							onClick={() => setPositionWithCookie('center')}
+						>
+							Center
+						</Button>
+						<Button
+							type="button"
+							variant={position === 'right' ? 'default' : 'outline'}
+							size="sm"
+							className="h-7"
+							onClick={() => setPositionWithCookie('right')}
+						>
+							Right
+						</Button>
 					</div>
-				)}
-			</>
-		)
-	}
+
+					<DropdownMenuSeparator />
+
+					<DropdownMenuItem onClick={() => authClient.signOut()}>
+						<LogOut className="mr-2 size-4" />
+						<span>Sign Out</span>
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
+	)
 }
