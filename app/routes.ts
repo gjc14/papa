@@ -1,31 +1,17 @@
 import {
 	index,
-	layout,
 	prefix,
 	route,
 	type RouteConfig,
 } from '@react-router/dev/routes'
 
-import {
-	getAllServiceDashboardRoutes,
-	getAllServiceRoutes,
-} from './lib/service/routes'
-import {
-	indexRoute,
-	robotsRoute,
-	sitemapRoute,
-	splatRoute,
-} from './routes/web/default.routes'
+import { getServicesDashboardRoutes, getWebRoutes } from './lib/service/routes'
 
 export default [
-	// Only add layout with web routes if we have any fallback routes needed
-
-	layout('./routes/web/layout.tsx', [
-		indexRoute(),
-		splatRoute(),
-		robotsRoute(),
-		sitemapRoute(),
-	]),
+	///////////////////
+	// Public Routes //
+	///////////////////
+	...getWebRoutes(),
 
 	// Auth API
 	route('/api/auth/*', './routes/auth.ts'),
@@ -84,11 +70,6 @@ export default [
 
 		route('*', './routes/dashboard/$/route.tsx'),
 
-		...getAllServiceDashboardRoutes(),
+		...getServicesDashboardRoutes(),
 	]),
-
-	/////////////////////
-	// Services Routes //
-	/////////////////////
-	...getAllServiceRoutes(),
 ] satisfies RouteConfig
