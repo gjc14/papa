@@ -1,9 +1,4 @@
-import {
-	isRouteErrorResponse,
-	Link,
-	Outlet,
-	type MetaFunction,
-} from 'react-router'
+import { Link, Outlet } from 'react-router'
 
 import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { motion } from 'motion/react'
@@ -14,9 +9,8 @@ import {
 	type ErrorBoundaryTemplateProps,
 } from '~/components/error-boundary-template'
 import { fade } from '~/components/motions'
-import { statusCodeMap } from '~/lib/utils/status-code'
 
-export default function Web() {
+export default function WebLayout() {
 	return (
 		<>
 			<title>Papa Open Source CMS</title>

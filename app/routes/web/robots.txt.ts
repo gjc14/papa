@@ -1,10 +1,9 @@
 /**
  * @see https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt?hl=zh-tw
  */
+import type { Route } from './+types/robots.txt'
 
-import type { LoaderFunctionArgs } from 'react-router'
-
-export const loader = ({ request }: LoaderFunctionArgs) => {
+export const loader = ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const robotText = `
 User-agent: *

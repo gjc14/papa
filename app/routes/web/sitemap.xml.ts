@@ -2,7 +2,7 @@
  * @see https://developers.google.com/search/docs/advanced/sitemaps/build-sitemap
  * @see https://www.sitemaps.org/protocol.html
  */
-import type { LoaderFunctionArgs } from 'react-router'
+import type { Route } from './+types/sitemap.xml'
 
 import * as serverBuild from 'virtual:react-router/server-build'
 
@@ -13,7 +13,7 @@ import {
 	type SitemapURL,
 } from '../../lib/utils/sitemap-to-xml'
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const origin = url.origin
 

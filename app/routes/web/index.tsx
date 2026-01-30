@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 
 import { Button } from '~/components/ui/button'
 
-export default function Index() {
+export default function WebIndex() {
 	return (
 		<div className="flex h-svh flex-1 flex-col items-center justify-center">
 			<p className="p-5">Welcome to ButterEMS. Modern EMS for SMEs.</p>
