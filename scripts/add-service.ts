@@ -14,9 +14,9 @@ const createPaths = (serviceName: string, frontendRouteName: string) => {
 		`app/routes/services/${serviceName}/service.dashboard.ts`,
 	)
 
-	const serviceSitemapPath = join(
+	const serviceSystemEndpointsPath = join(
 		process.cwd(),
-		`app/routes/services/${serviceName}/service.sitemap.ts`,
+		`app/routes/services/${serviceName}/service.system-endpoints.ts`,
 	)
 
 	const dashboardLayoutPath = join(
@@ -57,7 +57,7 @@ const createPaths = (serviceName: string, frontendRouteName: string) => {
 	return {
 		serviceRoutesPath,
 		serviceDashboardPath,
-		serviceSitemapPath,
+		serviceSystemEndpointsPath,
 		dashboardLayoutPath,
 		dashboardIndexPath,
 		dashboardProductRoutePath,
@@ -137,22 +137,24 @@ registerServiceDashboard({
 `
 
 	const serviceSitemap = `
-import { registerServiceSitemap } from '~/lib/service/sitemap-registry'
+import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
 
 import { products } from './data'
 
 // Simulate async data fetching
 const getProducts = async () => products
 
-registerServiceSitemap(async url => {
-	const products = await getProducts()
+registerSystemEndpoints({
+	sitemap: async url => {
+		const products = await getProducts()
 
-	return products.map(product => ({
-		loc: \`/${frontendRouteName}/\${product.id}\`,
-		lastmod: new Date(),
-		changefreq: 'weekly',
-		priority: 0.5,
-	}))
+		return products.map(product => ({
+			loc: \`/${frontendRouteName}/\${product.id}\`,
+			lastmod: new Date(),
+			changefreq: 'weekly',
+			priority: 0.5,
+		}))
+	},
 })
 
 `
@@ -424,7 +426,7 @@ try {
 	const {
 		serviceRoutesPath,
 		serviceDashboardPath,
-		serviceSitemapPath,
+		serviceSystemEndpointsPath,
 		dashboardLayoutPath,
 		dashboardIndexPath,
 		dashboardProductRoutePath,
@@ -450,7 +452,7 @@ try {
 	// Write all service files
 	await writeFile(serviceRoutesPath, serviceRoutes.trim())
 	await writeFile(serviceDashboardPath, serviceDashboard.trim())
-	await writeFile(serviceSitemapPath, serviceSitemap.trim())
+	await writeFile(serviceSystemEndpointsPath, serviceSitemap.trim())
 	await writeFile(dashboardLayoutPath, dashboardLayout.trim())
 	await writeFile(dashboardIndexPath, dashboardIndex.trim())
 	await writeFile(dashboardProductRoutePath, dashboardProductRoute.trim())
@@ -465,7 +467,7 @@ try {
 		+ 10 files created:
 		1️⃣ ${serviceRoutesPath.split('app/routes')[1]}
 		2️⃣ ${serviceDashboardPath.split('app/routes')[1]}
-		3️⃣ ${serviceSitemapPath.split('app/routes')[1]}
+		3️⃣ ${serviceSystemEndpointsPath.split('app/routes')[1]}
 		4️⃣ ${dashboardLayoutPath.split('app/routes')[1]}
 		5️⃣ ${dashboardIndexPath.split('app/routes')[1]}
 		6️⃣ ${dashboardProductRoutePath.split('app/routes')[1]}

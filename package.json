@@ -14,6 +14,7 @@
 		"add:service": "tsx scripts/add-service.ts",
 		"add:website": "tsx scripts/add-website.ts",
 		"add:route": "tsx scripts/add-route.ts",
+		"add:system-endpoints": "tsx scripts/add-system-endpoints.ts",
 		"db:studio": "pnpm exec drizzle-kit studio",
 		"db:push": "pnpm exec drizzle-kit push",
 		"db:generate": "pnpm exec drizzle-kit generate",

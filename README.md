@@ -255,7 +255,7 @@ In Papa, you could easily extend services by adding files in `services` folder.
 
 <!-- prettier-ignore -->
 > [!NOTE]
-> tip: You may run `pnpm run add:route`, `pnpm run add:website`, or `pnpm run add:service`
+> tip: You may run `pnpm run add:route`, `pnpm run add:website`, `pnpm run add:service`, or `pnpm run add:system-endpoints`
 > to see an easy example of how files structures.
 
 Extended services are structured as following:
@@ -269,22 +269,30 @@ routes/
     │   ├── about.tsx
     │   ├── service.routes.ts
     │   ├── service.dashboard.ts
-    │   └── service.sitemap.ts
+    │   └── service.system-endpoints.ts
     └── my-service2/
         ├── layout.tsx
         ├── index.tsx
         ├── about.tsx
         ├── service.routes.ts
         ├── service.dashboard.ts
-        └── service.sitemap.ts
+        └── service.system-endpoints.ts
 ```
 
 ### Service config files
 
 There are three files needed, `service.routes.ts`, `service.dashboard.ts`,
-`service.sitemap.ts`, both `.ts` and `.tsx` are supported.
+`service.system-endpoints.ts`, both `.ts` and `.tsx` are supported.
 
 #### Routes configuration
+
+There are 4 default routes: `'/'`, `'/*'`, `'/robots.txt'`, and
+`'/sitemap.xml'`. To override any of these, just specify another file pointing
+to the route in ther Service configuration. To be specific, add
+`index('/', './routes/services/my-route/index.tsx')` in file `service.routes.ts`
+to replace `/` route; or
+`route('/robots.txt', './routes/services/my-route/_robots.txt.tsx')` to replace
+`/robots.txt`.
 
 <!-- prettier-ignore -->
 > [!IMPORTANT]
@@ -367,32 +375,45 @@ registerServiceDashboard({
 })
 ```
 
-#### Sitemap configuration
+#### System Endpoints configuration
 
-You could easily configure your sitemap by `registerServiceSitemap` function.
-The function will run on server side, so you could query data from the database
-to dynamically generate sitemap.
+You could easily configure the system endpoints like `robots.txt` &
+`sitemap.xml` by `registerServiceSitemap` function. The function will run on
+server side, so you could query data from the database to dynamically generate
+sitemap.
 
 ```tsx
-// /app/routes/services/my-service/service.sitemap.ts
-import { registerServiceSitemap } from '~/lib/service/sitemap-registry'
+// /app/routes/services/my-service/service.system-endpoints.ts
+import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
 
 import { products } from './data'
 
 // Simulate async data fetching
 const getProducts = async () => products
 
-registerServiceSitemap(async url => {
-	const products = await getProducts()
+registerSystemEndpoints({
+	sitemap: async url => {
+		const products = await getProducts()
 
-	return products.map(product => ({
-		loc: \`/${frontendRouteName}/\${product.id}\`,
-		lastmod: new Date(),
-		changefreq: 'weekly',
-		priority: 0.5,
-	}))
+		return products.map(product => ({
+			loc: `/${frontendRouteName}/${product.id}`,
+			lastmod: new Date(),
+			changefreq: 'weekly',
+			priority: 0.5,
+		}))
+	},
+	robots: url => ({
+		groups: [
+			{
+				userAgents: ['*'],
+				allow: ['/store/'],
+				disallow: ['/dashboard/', '/api/', '/auth/'],
+				crawlDelay: 30,
+			},
+		],
+		sitemaps: [`${url.origin}/sitemap.xml`],
+	}),
 })
-
 ```
 
 ### Construct `ErrorBoundary`
