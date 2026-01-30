@@ -5,6 +5,20 @@ import { dbEcommerce as db } from './lib/db/db.server'
 
 registerSystemEndpoints({
 	sitemap: url => getStoreSitemap(url.origin),
+	robots: () => {
+		// TODO: Now there are duplicate `/store` loc. Add store routes from db (configurable store base path)
+		const storeUrls = ['/store']
+
+		return {
+			groups: [
+				{
+					userAgents: ['*'],
+					allow: storeUrls.map(p => (p.endsWith('/') ? p : p + '/')),
+					crawlDelay: 300,
+				},
+			],
+		}
+	},
 })
 
 /**

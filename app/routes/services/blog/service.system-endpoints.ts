@@ -5,6 +5,20 @@ import { dbBlog as db } from './lib/db/db.server'
 
 registerSystemEndpoints({
 	sitemap: async url => getBlogSitemap(url.origin),
+	robots: () => {
+		// TODO: Now there are duplicate `/blog` loc. Add blog routes from db (configurable blog base path)
+		const blogUrls = ['/blog']
+
+		return {
+			groups: [
+				{
+					userAgents: ['*'],
+					allow: blogUrls.map(p => (p.endsWith('/') ? p : p + '/')),
+					crawlDelay: 300,
+				},
+			],
+		}
+	},
 })
 
 /**
