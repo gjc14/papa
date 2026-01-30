@@ -1,15 +1,17 @@
-import { registerServiceSitemap } from '~/lib/service/sitemap-registry'
-import type { SitemapURL } from '~/lib/utils/sitemap-to-xml'
+import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
+import type { SitemapUrlConfig } from '~/lib/service/utils'
 
 import { dbBlog as db } from './lib/db/db.server'
 
-registerServiceSitemap(async url => getBlogSitemapUrls(url.origin))
+registerSystemEndpoints({
+	sitemap: async url => getBlogSitemap(url.origin),
+})
 
 /**
  * Generate blog sitemap URLs using posts from the database
  */
-async function getBlogSitemapUrls(origin: string): Promise<SitemapURL[]> {
-	const urls: SitemapURL[] = []
+async function getBlogSitemap(origin: string): Promise<SitemapUrlConfig[]> {
+	const urls: SitemapUrlConfig[] = []
 	const now = new Date()
 
 	const posts = await db.query.post.findMany({

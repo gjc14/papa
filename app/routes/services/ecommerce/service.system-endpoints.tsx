@@ -1,15 +1,17 @@
-import { registerServiceSitemap } from '~/lib/service/sitemap-registry'
-import type { SitemapURL } from '~/lib/utils/sitemap-to-xml'
+import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
+import type { SitemapUrlConfig } from '~/lib/service/utils'
 
 import { dbEcommerce as db } from './lib/db/db.server'
 
-registerServiceSitemap(url => getStoreSitemapUrls(url.origin))
+registerSystemEndpoints({
+	sitemap: url => getStoreSitemap(url.origin),
+})
 
 /**
  * Generate store sitemap URLs using products from the database
  */
-async function getStoreSitemapUrls(origin: string): Promise<SitemapURL[]> {
-	const urls: SitemapURL[] = []
+async function getStoreSitemap(origin: string): Promise<SitemapUrlConfig[]> {
+	const urls: SitemapUrlConfig[] = []
 	const now = new Date()
 
 	const products = await db.query.product.findMany({

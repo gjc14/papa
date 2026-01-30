@@ -1,7 +1,7 @@
 /**
  * @see https://www.sitemaps.org/protocol.html#sitemapElement
  */
-export interface SitemapURL {
+export interface SitemapUrlConfig {
 	/** URL of the page. This URL must begin with the protocol (such as http) and end with a trailing slash, if your web server requires it. This value must be less than 2,048 characters. */
 	loc: string
 	/**
@@ -49,12 +49,12 @@ export interface SitemapURL {
 }
 
 /**
- * Converts an array of SitemapURL objects to XML format.
- * @param urls - Array of `SitemapURL` to convert to XML format.
+ * Converts an array of SitemapUrlConfig objects to XML format.
+ * @param configs - Array of `SitemapUrlConfig` to convert to XML format.
  * @returns XML url tag strings representation of the URLs.
  */
-export const sitemapToXmlUrlTags = (urls: SitemapURL[]): string[] => {
-	const xmlUrlTags = urls.map(url =>
+export const configsToSitemapXml = (configs: SitemapUrlConfig[]): string[] => {
+	const xmlUrlTags = configs.map(url =>
 		`
             <url>
                 <loc>${url.loc}</loc>
@@ -68,4 +68,115 @@ export const sitemapToXmlUrlTags = (urls: SitemapURL[]): string[] => {
 	)
 
 	return xmlUrlTags
+}
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/Security/Practical_implementation_guides/Robots_txt
+ */
+export interface RobotsConfig {
+	groups?: {
+		userAgents: string[] // ["*"]
+		allow?: string[]
+		disallow?: string[]
+		crawlDelay?: number
+	}[]
+	sitemaps?: string[]
+}
+
+type CanonicalGroup = {
+	userAgent: string // single UA
+	allow: Set<string>
+	disallow: Set<string>
+	crawlDelay?: number
+}
+
+function sanitizedPath(path: string): string {
+	const p = path.trim()
+	if (!p) return ''
+	// with leading `/`
+	return p.startsWith('/') ? p : '/' + p
+}
+
+function sortedString(s: Set<string>): string[] {
+	return Array.from(s).sort((a, b) => a.localeCompare(b))
+}
+
+export function mergeRobotsConfigs(configs: RobotsConfig[]) {
+	const sitemapSet = new Set<string>()
+	const uaMap = new Map<string, CanonicalGroup>()
+
+	for (const config of configs) {
+		if (config.sitemaps) {
+			for (const sm of config.sitemaps) {
+				const s = sm.trim()
+				if (s) sitemapSet.add(s)
+			}
+		}
+
+		if (config.groups) {
+			for (const g of config.groups) {
+				for (const uaRaw of g.userAgents) {
+					const ua = uaRaw.trim()
+					if (!ua) continue
+
+					// Get entry
+					let entry = uaMap.get(ua)
+					if (!entry) {
+						entry = { userAgent: ua, allow: new Set(), disallow: new Set() }
+						uaMap.set(ua, entry)
+					}
+
+					// Merge allow and disallow
+					for (const a of g.allow ?? []) {
+						const sa = sanitizedPath(a)
+						if (sa) entry.allow.add(sa)
+						else continue
+					}
+					for (const d of g.disallow ?? []) {
+						const sd = sanitizedPath(d)
+						if (sd) entry.disallow.add(sd)
+						else continue
+					}
+
+					if (g.crawlDelay !== undefined) {
+						// Keep larger delay
+						entry.crawlDelay = Math.max(entry.crawlDelay ?? 0, g.crawlDelay)
+					}
+				}
+			}
+		}
+	}
+
+	// * last
+	const groups = Array.from(uaMap.values()).sort((a, b) => {
+		if (a.userAgent === '*' && b.userAgent !== '*') return 1
+		if (b.userAgent === '*' && a.userAgent !== '*') return -1
+		return a.userAgent.localeCompare(b.userAgent)
+	})
+
+	return { groups, sitemaps: sitemapSet }
+}
+
+export function configsToRobotsTxt(configs: RobotsConfig[]): string {
+	const { groups, sitemaps } = mergeRobotsConfigs(configs)
+	const lines: string[] = []
+
+	for (const g of groups) {
+		lines.push(`User-agent: ${g.userAgent}`)
+
+		for (const p of sortedString(g.allow)) lines.push(`Allow: ${p}`)
+		for (const p of sortedString(g.disallow)) lines.push(`Disallow: ${p}`)
+
+		if (g.crawlDelay !== undefined) {
+			lines.push(`Crawl-delay: ${g.crawlDelay}`)
+		}
+
+		lines.push('') // blank line between groups
+	}
+
+	for (const sm of sortedString(sitemaps)) {
+		lines.push(`Sitemap: ${sm}`)
+	}
+
+	return lines.join('\n').trim()
 }

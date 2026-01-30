@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { getAllServiceDashboards } from '~/lib/service/dashboard'
+import { getServicesDashboards } from '~/lib/service/dashboard'
 import { DEFAULT_SERVICE } from '~/lib/service/data'
 import type { ServiceDashboard } from '~/lib/service/type'
 
@@ -20,5 +20,5 @@ export type ServiceDashboards = ServiceDashboard[]
 
 export const dashboardContextAtom = atom<DashboardContextData>({
 	navigation: { showGlobalLoader: true },
-	services: [DEFAULT_SERVICE, ...getAllServiceDashboards()],
+	services: [DEFAULT_SERVICE, ...getServicesDashboards()],
 })

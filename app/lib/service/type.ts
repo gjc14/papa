@@ -10,7 +10,7 @@ import type { SidebarPrimaryItem } from '~/components/dashboard/sidebar/sidebar-
 import type { SidebarSecondaryItem } from '~/components/dashboard/sidebar/sidebar-secondary'
 import type { ServiceDashboardConfig } from '~/components/dashboard/sidebar/sidebar-service'
 
-import type { SitemapURL } from '../utils/sitemap-to-xml'
+import type { RobotsConfig, SitemapUrlConfig } from './utils'
 
 type RouteHelper = {
 	index: typeof index
@@ -77,17 +77,22 @@ interface ServiceRoutesModule {
 	dashboardRoutes?: (helper: RouteHelper) => RouteConfig
 }
 
+type ServiceSystemEndpoints = {
+	sitemap?: ServiceSitemapConfig
+	robots?: ServiceRobotsConfig
+}
+
 /**
  * By default, sitemap will generate all routes defined, except `/api/*`, `/dashboard/*`, `/sitemap.xml`, and `/robots.txt`.
- * Therefore only dynamic or extra URLs need to be defined here.
+ * Therefore **only dynamic or extra URLs** need to be defined here.
  *
  * If absolute URLs are provided or value does not start with `url.origin` in `loc`, it will automatically prefixed with `url.origin`.
  *
  * @example
  * ```ts
- * const getBlogSitemapUrls = async (origin: string): Promise<SitemapURL[]> => {
+ * const getBlogSitemapUrls = async (origin: string): Promise<SitemapUrlConfig[]> => {
  * 		const { dbBlog: db } = await import('./lib/db/db.server')
- * 		const urls: SitemapURL[] = []
+ * 		const urls: SitemapUrlConfig[] = []
  *
  * 		const posts = await db.query.post.findMany()
  *
@@ -102,12 +107,12 @@ interface ServiceRoutesModule {
  *
  * 		return urls
  * }
- * registerService({
+ * registerSystemEndpoints({
  * 		// ...
  * 		sitemap: async url => await getBlogSitemapUrls(url.origin)
  * })
  * // or
- * registerService({
+ * registerSystemEndpoints({
  * 		// ...
  *  	sitemap: url => [
  * 			{
@@ -126,9 +131,32 @@ interface ServiceRoutesModule {
  * })
  *	```
  */
-type ServiceSitemap =
-	| SitemapURL[]
-	| ((url: URL) => SitemapURL[])
-	| ((url: URL) => Promise<SitemapURL[]>)
+type ServiceSitemapConfig =
+	| SitemapUrlConfig[]
+	| ((url: URL) => SitemapUrlConfig[])
+	| ((url: URL) => Promise<SitemapUrlConfig[]>)
 
-export type { ServiceRoutesModule, ServiceDashboard, ServiceSitemap }
+/**
+ * @example
+ * ```ts
+ * registerSystemEndpoints({
+ * 	robots: url => {
+ * 		groups: [
+ * 			{
+ * 				userAgents: ['*'],
+ * 				allow: ['/'],
+ * 				disallow: ['/dashboard/', '/api/', '/auth/'],
+ * 				crawlDelay: 30,
+ * 			},
+ * 		]
+ * 		sitemaps: [`${url.origin}/sitemap.xml`]
+ * 	},
+ * })
+ * ```
+ */
+type ServiceRobotsConfig =
+	| RobotsConfig
+	| ((url: URL) => RobotsConfig)
+	| ((url: URL) => Promise<RobotsConfig>)
+
+export type { ServiceRoutesModule, ServiceDashboard, ServiceSystemEndpoints }

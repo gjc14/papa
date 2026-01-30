@@ -6,21 +6,21 @@ import type { Route } from './+types/sitemap.xml'
 
 import * as serverBuild from 'virtual:react-router/server-build'
 
-import { getAllServiceSitemapUrls } from '~/lib/service/sitemap.server'
+import { getServiceSitemapUrlConfigs } from '~/lib/service/system-endpoints.server'
 
 import {
-	sitemapToXmlUrlTags,
-	type SitemapURL,
-} from '../../lib/utils/sitemap-to-xml'
+	configsToSitemapXml,
+	type SitemapUrlConfig,
+} from '../../lib/service/utils'
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const origin = url.origin
 
 	const systemSitemaps = sitemapUrlsFromServerBuild(origin, serverBuild.routes)
-	const serviceSitemapUrls = await getAllServiceSitemapUrls(url)
+	const serviceSitemapUrls = await getServiceSitemapUrlConfigs(url)
 
-	const urlTags = sitemapToXmlUrlTags([
+	const urlTags = configsToSitemapXml([
 		{
 			loc: origin,
 			lastmod: new Date(),
@@ -58,8 +58,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 function sitemapUrlsFromServerBuild(
 	origin: string,
 	routes: typeof serverBuild.routes,
-): SitemapURL[] {
-	const urls: SitemapURL[] = []
+): SitemapUrlConfig[] {
+	const urls: SitemapUrlConfig[] = []
 	const now = new Date()
 
 	for (const key in routes) {
