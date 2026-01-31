@@ -10,14 +10,14 @@ export const ProductAction = () => {
 			<Button
 				variant={'ghost'}
 				disabled={hasVariants ? !selectedVariant : false}
-				className="text-primary-foreground bg-primary hover:bg-accent hover:text-accent-foreground hover:border-accent-foreground h-12 w-full rounded-none border-1 border-transparent"
+				className="text-background bg-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary-foreground h-12 w-full border border-transparent"
 			>
 				Buy Now
 			</Button>
 			<Button
 				variant={'ghost'}
 				disabled={hasVariants ? !selectedVariant : false}
-				className="text-primary bg-primary-foreground hover:border-accent-foreground h-12 w-full rounded-none border-1"
+				className="text-accent-foreground bg-accent hover:border-accent-foreground h-12 w-full border border-transparent"
 			>
 				Add to Cart
 			</Button>

@@ -120,18 +120,18 @@ export function Gallery() {
 													e.stopPropagation()
 													handleRemoveFeatureImage()
 												}}
-												className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+												className="bg-destructive absolute top-1 right-1 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
 											>
 												<X size={12} />
 											</button>
 											<img
 												src={productImage}
 												alt={productName}
-												className="aspect-square h-full w-full cursor-pointer rounded-md object-cover"
+												className="aspect-square h-full w-full cursor-pointer object-cover"
 											/>
 										</div>
 									) : (
-										<div className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed">
+										<div className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center border border-dashed">
 											<Image />
 										</div>
 									)
@@ -176,7 +176,7 @@ export function Gallery() {
 											src={item.image}
 											alt={item.alt || productName}
 											title={item.title || productName}
-											className="aspect-square rounded object-cover"
+											className="aspect-square object-cover"
 										/>
 										<button
 											type="button"
@@ -186,21 +186,21 @@ export function Gallery() {
 												)
 												setGallery(newGallery)
 											}}
-											className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+											className="bg-destructive absolute top-1 right-1 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
 										>
 											<X size={12} />
 										</button>
 									</div>
 								))
 						) : (
-							<Skeleton className="bg-accent border-muted-foreground flex aspect-square items-center justify-center rounded-md border border-dashed" />
+							<Skeleton className="bg-accent border-muted-foreground flex aspect-square items-center justify-center border border-dashed" />
 						)}
 						<AssetSelectionDialog
 							actionLabel="Insert"
 							title="Image"
 							trigger={
 								<DialogTrigger
-									className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed"
+									className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center border border-dashed"
 									onClick={() => !assets && fetcher.load(assetResourceRoute)}
 									hidden={galleryPending}
 								>

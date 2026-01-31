@@ -131,7 +131,7 @@ export const YoutubeButton = () => {
 					/>
 				}
 			/>
-			<PopoverContent className="flex w-80 flex-col gap-2 rounded-xl px-4 py-3">
+			<PopoverContent className="flex w-80 flex-col gap-2 px-4 py-3">
 				<div className="w-full">
 					<Label htmlFor="yt-src">URL *</Label>
 					<Input

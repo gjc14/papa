@@ -135,13 +135,12 @@ export default function DashboardTaxonomy({
 
 			<DashboardContent className="flex min-h-0 flex-1 flex-col gap-3 lg:hidden">
 				{/* Tabs */}
-				<div className="border-primary/20 grid h-fit w-full grid-cols-3 rounded-full border p-1">
+				<div className="grid h-fit w-full grid-cols-3 border p-0.5">
 					<Button
 						variant={activePanel === 'tags' ? 'default' : 'ghost'}
 						size={'sm'}
 						onClick={() => setActivePanel('tags')}
 						aria-pressed={activePanel === 'tags'}
-						className="rounded-full"
 					>
 						<span className="truncate">Tags</span>
 					</Button>
@@ -150,7 +149,6 @@ export default function DashboardTaxonomy({
 						size={'sm'}
 						onClick={() => setActivePanel('categories')}
 						aria-pressed={activePanel === 'categories'}
-						className="rounded-full"
 					>
 						<span className="truncate">Categories</span>
 					</Button>
@@ -159,7 +157,6 @@ export default function DashboardTaxonomy({
 						size={'sm'}
 						onClick={() => setActivePanel('hierarchy')}
 						aria-pressed={activePanel === 'hierarchy'}
-						className="rounded-full"
 					>
 						<span className="truncate">Subcategories</span>
 					</Button>

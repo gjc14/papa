@@ -128,6 +128,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 					<Filter q={q} tagFilter={tagFilter} categoryFilter={categoryFilter} />
 					<Button
 						size={'sm'}
+						nativeButton={false}
 						render={
 							<Link to="/dashboard/blog/new">
 								<PlusCircle size={16} />

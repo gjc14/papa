@@ -100,10 +100,11 @@ export const Filter = ({
 			<PopoverTrigger
 				render={
 					<Button
-						variant="outline"
+						variant={'outline'}
+						size={'sm'}
 						role="combobox"
 						aria-expanded={open}
-						className="h-8.5 justify-between text-xs"
+						className="justify-between"
 					>
 						{searching ? <Loader2 className="animate-spin" /> : null}
 						Filters
@@ -117,7 +118,7 @@ export const Filter = ({
 
 			<PopoverContent className="w-[360px] p-2">
 				{/* Search input */}
-				<div className="mb-2">
+				<div>
 					<Command>
 						<CommandInput
 							placeholder="Post title..."
@@ -129,7 +130,7 @@ export const Filter = ({
 				</div>
 
 				{/* Buttons that open inner popovers for Tags and Categories */}
-				<div className="mb-2 flex items-center gap-2">
+				<div className="flex items-center gap-2">
 					{/* Tags popover */}
 					<Popover open={tagsOpen} onOpenChange={setTagsOpen}>
 						<PopoverTrigger

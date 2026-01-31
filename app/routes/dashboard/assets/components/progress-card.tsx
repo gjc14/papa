@@ -61,7 +61,7 @@ export const ProgressCard = ({
 					return (
 						<div
 							key={key}
-							className="bg-muted flex items-center rounded-md border px-5 py-3.5"
+							className="bg-muted flex items-center border px-5 py-3.5"
 						>
 							<div className="min-w-0 flex-1 pr-3">
 								{/* File name */}

@@ -28,7 +28,7 @@ const TagComponent = ({ tag }: { tag: TagType & { _isPending?: true } }) => {
 
 	return (
 		<div
-			className={`bg-muted flex items-center justify-between rounded-md p-3 ${
+			className={`bg-muted flex items-center justify-between p-3 ${
 				mutating ? 'opacity-50' : ''
 			}`}
 		>
@@ -91,7 +91,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 	)
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col rounded-lg border p-4 shadow-xs lg:h-full lg:flex-none">
+		<div className="flex min-h-0 flex-1 flex-col border p-4 shadow-xs lg:h-full lg:flex-none">
 			<div className="mb-4 flex items-center justify-between">
 				<h2 className="text-xl font-semibold">Tags</h2>
 				<Dialog>

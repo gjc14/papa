@@ -8,7 +8,7 @@ export const TinyLinkButton = ({
 	return (
 		<button
 			type="button"
-			className="text-muted-foreground hover:text-primary ml-2 cursor-pointer text-sm underline"
+			className="text-muted-foreground hover:text-foreground ml-2 cursor-pointer text-xs underline"
 			onClick={onClick}
 		>
 			{title}

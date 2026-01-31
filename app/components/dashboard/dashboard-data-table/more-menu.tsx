@@ -79,8 +79,8 @@ export const DashboardDataTableMoreMenu = ({
 						<>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
+								variant="destructive"
 								onClick={() => setOpen(true)}
-								className="focus:bg-destructive/90 focus:text-white"
 							>
 								{permanent ? 'Delete Permanently' : 'Move to Trash'}
 							</DropdownMenuItem>
@@ -98,7 +98,10 @@ export const DashboardDataTableMoreMenu = ({
 						<AlertDialogDescription>
 							{permanent ? (
 								<>
-									Your about to PERMANENTLY delete
+									Your about to
+									<span className="text-foreground font-bold uppercase">
+										{` permanently delete `}
+									</span>
 									<span className="text-primary font-bold">
 										{` ${deleteTarget} `}
 									</span>
@@ -106,7 +109,7 @@ export const DashboardDataTableMoreMenu = ({
 							) : (
 								<>
 									Are you sure you want to move
-									<span className="text-primary font-bold">
+									<span className="text-foreground font-bold">
 										{` ${deleteTarget} `}
 									</span>
 									to trash?
@@ -117,10 +120,7 @@ export const DashboardDataTableMoreMenu = ({
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							className="bg-destructive hover:bg-destructive/90 text-white"
-							onClick={onDelete}
-						>
+						<AlertDialogAction variant={'destructive'} onClick={onDelete}>
 							{mutating && <Spinner />}
 							{permanent ? 'Delete Permanently' : 'Move to Trash'}
 						</AlertDialogAction>

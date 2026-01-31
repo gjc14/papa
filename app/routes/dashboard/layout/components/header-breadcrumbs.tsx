@@ -60,7 +60,7 @@ const DashboardBreadcrumbs = () => {
 											<NavLink
 												to={link}
 												className={({ isActive }) =>
-													`${isActive ? 'text-primary' : 'hover:text-primary'} max-w-20 overflow-hidden text-sm text-nowrap text-ellipsis md:max-w-36`
+													`${isActive ? 'text-foreground' : 'hover:text-foreground'} max-w-20 overflow-hidden text-xs text-nowrap text-ellipsis md:max-w-36`
 												}
 												end
 											>

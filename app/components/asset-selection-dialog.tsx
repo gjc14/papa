@@ -154,7 +154,7 @@ export function AssetSelectionDialog({
 			<DialogContent
 				{...dialogContentProps}
 				className={cn(
-					'max-h-[90vh] overflow-scroll',
+					'max-h-[90vh] overflow-scroll sm:max-w-1/2',
 					dialogContentProps.className,
 				)}
 			>
@@ -258,9 +258,9 @@ interface AssetGalleryProps {
 function AssetGallery({ assets, isLoading, onSelect }: AssetGalleryProps) {
 	if (isLoading || !assets) {
 		return (
-			<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 rounded-xl border px-2 py-5">
+			<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 border px-2 py-5">
 				<Loader className="animate-spin" />
-				<p className="max-w-sm text-center text-sm">
+				<p className="max-w-sm text-center text-xs">
 					Loading your assets, please wait a second.
 				</p>
 			</div>
@@ -282,9 +282,9 @@ function AssetGallery({ assets, isLoading, onSelect }: AssetGalleryProps) {
 		)
 	} else {
 		return (
-			<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 rounded-xl border px-2 py-5">
+			<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 border px-2 py-5">
 				<CloudAlert size={30} />
-				<p className="max-w-sm text-center text-sm">
+				<p className="max-w-sm text-center text-xs">
 					Please setup your S3 Object Storage to start using assets.
 				</p>
 			</div>

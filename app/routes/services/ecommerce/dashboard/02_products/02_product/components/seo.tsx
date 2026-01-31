@@ -147,9 +147,9 @@ export function Seo() {
 							}}
 						/>
 
-						<div className="bg-muted/50 flex w-full min-w-0 flex-col rounded-md border p-3">
+						<div className="bg-muted/50 flex w-full min-w-0 flex-col border p-3">
 							<div className="mb-3 flex w-full flex-wrap items-start justify-between gap-x-2">
-								<p className="text-primary text-xs font-bold tracking-wider uppercase">
+								<p className="text-foreground text-xs font-bold tracking-wider uppercase">
 									Search Preview
 								</p>
 							</div>
@@ -159,7 +159,7 @@ export function Seo() {
 									{`${import.meta.env.VITE_BASE_URL} › ${storeConfig.storeFrontPath.slice(1)} › product › ${slug} `}
 								</span>
 								<MoreVertical
-									size={16}
+									size={12}
 									className="text-muted-foreground flex-shrink-0"
 								/>
 							</div>
@@ -242,9 +242,9 @@ export function Seo() {
 							.
 						</FieldDescription>
 
-						<div className="bg-muted/50 flex w-full flex-col rounded-md border p-3">
+						<div className="bg-muted/50 flex w-full flex-col border p-3">
 							<div className="mb-3 flex w-full flex-wrap items-start justify-between gap-x-2 gap-y-1">
-								<p className="text-primary text-xs font-bold tracking-wider uppercase">
+								<p className="text-foreground text-xs font-bold tracking-wider uppercase">
 									OG Image Preview
 								</p>
 
@@ -264,7 +264,10 @@ export function Seo() {
 									<Tooltip>
 										<TooltipTrigger
 											render={
-												<Button variant="link" className="size-6 text-sm">
+												<Button
+													variant="link"
+													className="text-foreground size-6 text-sm"
+												>
 													<CircleQuestionMark />
 												</Button>
 											}
@@ -280,7 +283,7 @@ export function Seo() {
 							</div>
 
 							<div
-								className="relative flex max-w-md shrink items-center justify-center overflow-hidden rounded-md border"
+								className="relative flex max-w-md shrink items-center justify-center overflow-hidden border"
 								style={{
 									aspectRatio: aspectRatio.replace('x', '/'),
 								}}

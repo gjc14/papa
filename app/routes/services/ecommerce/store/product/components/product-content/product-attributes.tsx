@@ -23,7 +23,7 @@ export const ProductAttributes = () => {
 						key={attr.id}
 						className="flex justify-between gap-3 text-end text-sm"
 					>
-						<dt className="text-primary/60">{attr.name}</dt>
+						<dt className="text-foreground/60">{attr.name}</dt>
 						<dd className="font-medium">{attr.value}</dd>
 					</div>
 				))}

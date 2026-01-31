@@ -281,7 +281,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 												key={header.id}
 												colSpan={header.colSpan}
 												className={cn(
-													'text-muted-foreground bg-background border-primary h-10 border-b px-2 py-1 text-left text-sm font-medium whitespace-nowrap',
+													'text-muted-foreground bg-background border-foreground h-10 border-b px-2 py-1 text-left text-sm font-medium whitespace-nowrap',
 													'[&:has([role=checkbox])]:px-1',
 												)}
 											>
@@ -421,7 +421,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 									const page = e.target.value ? Number(e.target.value) - 1 : 0
 									table.setPageIndex(page)
 								}}
-								className="h-7.5 w-12 rounded-md px-1.5 py-1 text-xs"
+								className="h-7.5 w-12 px-1.5 py-1 text-xs"
 							/>
 							<span className="text-muted-foreground"> of </span>
 							{table.getPageCount()}

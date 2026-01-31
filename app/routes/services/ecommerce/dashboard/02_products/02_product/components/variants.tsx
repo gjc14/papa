@@ -183,7 +183,7 @@ function VariantCard({
 			</CardHeader>
 			<CardContent className="max-h-[360px] space-y-2 overflow-auto">
 				{noVariants ? (
-					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+					<p className="text-muted-foreground border border-dashed p-3 text-center text-xs">
 						No variants available. Click "Generate Variants" to create one.
 					</p>
 				) : (
@@ -203,9 +203,9 @@ function VariantCard({
 					Generate Variants
 				</Button>
 				<Button
-					variant="secondary"
+					variant="outline"
 					size="sm"
-					className="w-full border md:w-auto md:flex-1"
+					className="w-full md:w-auto md:flex-1"
 					onClick={() => {
 						if (noVariants) return
 						onOpenManager()
@@ -230,7 +230,7 @@ function VariantItem({
 	const { formattedPrice } = renderPrice(variant.option)
 
 	return (
-		<div className="flex items-center justify-between gap-2 overflow-scroll rounded-md border p-3">
+		<div className="flex items-center justify-between gap-2 overflow-scroll border p-3">
 			<div className="flex-1">
 				<p>
 					{Object.entries(variant.combination).map(([key, value], i) => (
@@ -928,7 +928,7 @@ function AddVariantDialog({
 						</DialogFooter>
 					</>
 				) : (
-					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+					<p className="text-muted-foreground border border-dashed p-3 text-center text-xs">
 						No attributes available to generate variant options. Please add
 						product attributes first.
 					</p>

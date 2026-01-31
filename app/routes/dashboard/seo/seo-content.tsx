@@ -136,7 +136,7 @@ export const SeoContent = ({
 						/>
 					</div>
 					<div className="grid grid-cols-4 items-center gap-4">
-						<div className="col-start-2 inline-flex aspect-square h-16 w-16 items-center justify-center rounded-md border">
+						<div className="col-start-2 inline-flex aspect-square h-16 w-16 items-center justify-center border">
 							{seo?.ogImage ? (
 								<img
 									src={seo.ogImage}

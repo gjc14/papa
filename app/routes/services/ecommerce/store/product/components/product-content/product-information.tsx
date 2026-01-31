@@ -42,7 +42,7 @@ export const ProductInformation = () => {
 				<div>
 					<h1 className="mb-2 text-4xl font-light">{product.name}</h1>
 					{product.subtitle && (
-						<p className="text-primary/60 text-lg">{product.subtitle}</p>
+						<p className="text-foreground/60 text-lg">{product.subtitle}</p>
 					)}
 				</div>
 				<div className="my-8 flex items-baseline gap-3">
@@ -59,7 +59,7 @@ export const ProductInformation = () => {
 					)}
 				</div>
 				{product.description && (
-					<p className="text-primary/90 leading-relaxed">
+					<p className="text-foreground/90 leading-relaxed">
 						{product.description}
 					</p>
 				)}
@@ -121,7 +121,7 @@ export const ProductInformation = () => {
 										return (
 											<span key={attrName}>
 												{attrName}:{' '}
-												<span className="text-primary font-medium">
+												<span className="text-foreground font-medium">
 													{value}
 												</span>
 												{index < variantAttributeEntries.length - 1 && ' ⨉ '}
@@ -131,7 +131,7 @@ export const ProductInformation = () => {
 								</p>
 							</>
 						) : (
-							<p className="text-primary/90 text-sm">
+							<p className="text-foreground/90 text-sm">
 								Please select an option to see the details.
 							</p>
 						)}

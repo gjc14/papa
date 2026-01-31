@@ -35,13 +35,15 @@ const CategoryComponent = ({
 	const fetcher = useFetcher()
 	const { mutating } = useFetcherNotification(fetcher)
 
+	const selected = selectedCategoryId === cat.id
+
 	return (
 		<div
 			className={cn(
-				`bg-muted flex items-center justify-between rounded-md p-3 transition-colors`,
+				`bg-muted flex items-center justify-between p-3 transition-colors`,
 				mutating ? 'opacity-50' : '',
 				cat._isPending ? 'cursor-not-allowed' : 'cursor-pointer',
-				selectedCategoryId === cat.id
+				selected
 					? 'bg-primary text-primary-foreground'
 					: 'bg-muted hover:bg-muted/80',
 			)}
@@ -49,7 +51,9 @@ const CategoryComponent = ({
 		>
 			<div className="font-medium">
 				{cat.name}
-				<p className="text-muted-foreground text-sm">
+				<p
+					className={`${selected ? 'text-primary-foreground' : 'text-muted-foreground'} text-sm`}
+				>
 					{cat.children?.length || 0} children
 				</p>
 			</div>
@@ -92,7 +96,7 @@ const ChildCategoryComponent = ({
 	return (
 		<div
 			className={cn(
-				`bg-muted flex items-center justify-between rounded-md p-3 transition-colors`,
+				`bg-muted flex items-center justify-between p-3 transition-colors`,
 				mutating ? 'opacity-50' : '',
 				category._isPending ? 'cursor-not-allowed' : 'cursor-pointer',
 			)}
@@ -171,7 +175,7 @@ export const CategoriesSection = ({
 	)
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col rounded-lg border p-4 shadow-xs lg:h-full lg:flex-none">
+		<div className="flex min-h-0 flex-1 flex-col border p-4 shadow-xs lg:h-full lg:flex-none">
 			<div className="mb-4 flex items-center justify-between">
 				<h2 className="text-xl font-semibold">Categories</h2>
 				<Dialog>
@@ -292,7 +296,7 @@ export const CategoryHierarchySection = ({
 		) || []
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col rounded-lg border p-4 shadow-xs lg:h-full lg:flex-none">
+		<div className="flex min-h-0 flex-1 flex-col border p-4 shadow-xs lg:h-full lg:flex-none">
 			<div className="mb-4 flex items-center justify-between">
 				<h2 className="text-xl font-semibold">
 					{category ? (

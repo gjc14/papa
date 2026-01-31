@@ -162,7 +162,7 @@ const AnimatedLink = ({
 							className={cn(
 								'mb-2 h-8 rounded-sm px-3',
 								'hover:bg-transparent dark:hover:bg-transparent',
-								isActive ? 'text-primary' : 'text-muted-foreground',
+								isActive ? 'text-foreground' : 'text-muted-foreground',
 								isPending ? 'animate-pulse' : '',
 								className,
 							)}

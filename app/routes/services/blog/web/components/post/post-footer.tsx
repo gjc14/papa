@@ -45,6 +45,7 @@ export const PostFooter = ({
 					<Button
 						variant="ghost"
 						className="group hover:bg-muted/50 flex h-auto items-center justify-start gap-3 p-4 text-left transition-colors"
+						nativeButton={false}
 						render={
 							<Link to={`/blog/${prev.slug}${search}`} prefetch="intent">
 								<ChevronLeft className="h-4 w-4 flex-shrink-0 transition-transform group-hover:-translate-x-1" />

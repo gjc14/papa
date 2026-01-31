@@ -20,7 +20,7 @@ const navigationLinks = [
 
 export function Header() {
 	return (
-		<header className="supports-[backdrop-filter]:bg-primary-foreground/50 bg-primary-foreground sticky top-0 z-10 w-full border-b px-4 backdrop-blur-md md:px-6">
+		<header className="supports-[backdrop-filter]:bg-background/50 bg-background sticky top-0 z-10 w-full border-b px-4 backdrop-blur-md md:px-6">
 			<div className="flex h-16 items-center justify-between">
 				{/* Logo */}
 				<div className="flex items-center">
@@ -35,7 +35,7 @@ export function Header() {
 							key={link.href}
 							to={link.href}
 							className={({ isActive }) =>
-								`hover:text-primary text-sm font-medium transition-colors ${
+								`hover:text-foreground text-sm font-medium transition-colors ${
 									isActive ? 'text-foreground' : 'text-muted-foreground'
 								}`
 							}
@@ -49,8 +49,8 @@ export function Header() {
 					<Sheet>
 						<SheetTrigger
 							render={
-								<Button variant="ghost" size="sm">
-									<Menu className="h-5 w-5" />
+								<Button variant="ghost" size="icon-sm">
+									<Menu />
 									<span className="sr-only">Toggle menu</span>
 								</Button>
 							}
@@ -65,7 +65,7 @@ export function Header() {
 										key={link.href}
 										to={link.href}
 										className={({ isActive }) =>
-											`hover:text-primary text-lg font-medium transition-colors ${
+											`hover:text-foreground mx-auto text-lg font-medium transition-colors ${
 												isActive ? 'text-foreground' : 'text-muted-foreground'
 											}`
 										}

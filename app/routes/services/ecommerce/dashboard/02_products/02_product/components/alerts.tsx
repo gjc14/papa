@@ -68,8 +68,8 @@ export function ProductAlerts() {
 				description={
 					<>
 						You're going to discard unsaved changes and reset{' '}
-						<span className="text-primary font-medium">{productName}</span> to
-						latest saved data. This action cannot be undone.
+						<span className="text-foreground font-medium">{productName}</span>{' '}
+						to latest saved data. This action cannot be undone.
 					</>
 				}
 				actionTitle="Reset"
@@ -82,8 +82,8 @@ export function ProductAlerts() {
 				description={
 					<>
 						You're going to restore{' '}
-						<span className="text-primary font-medium">{productName}</span> to
-						its last unsaved state. This action will discard current unsaved
+						<span className="text-foreground font-medium">{productName}</span>{' '}
+						to its last unsaved state. This action will discard current unsaved
 						changes.
 					</>
 				}
@@ -98,8 +98,8 @@ export function ProductAlerts() {
 				description={
 					<>
 						You're going to move{' '}
-						<span className="text-primary font-medium">{productName}</span> to
-						the trash. You can restore from Trash within 30 days.
+						<span className="text-foreground font-medium">{productName}</span>{' '}
+						to the trash. You can restore from Trash within 30 days.
 					</>
 				}
 				actionTitle="Move to Trash"
