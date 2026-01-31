@@ -14,6 +14,7 @@ import { Button } from '~/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -87,86 +88,88 @@ export function FloatingToolkit() {
 				/>
 
 				<DropdownMenuContent align="start" side="top" className="mb-2 w-64">
-					<DropdownMenuLabel>Quick Toolkit</DropdownMenuLabel>
+					<DropdownMenuGroup>
+						<DropdownMenuLabel>Quick Toolkit</DropdownMenuLabel>
 
-					<DropdownMenuSeparator />
+						<DropdownMenuSeparator />
 
-					<DropdownMenuItem onClick={() => navigate('/')}>
-						<PanelTop className="mr-2 size-4" />
-						<span>View Website</span>
-					</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => navigate('/')}>
+							<PanelTop className="mr-2 size-4" />
+							<span>View Website</span>
+						</DropdownMenuItem>
 
-					<DropdownMenuItem onClick={() => navigate('/dashboard')}>
-						<LayoutDashboard className="mr-2 size-4" />
-						<span>Go to Dashboard</span>
-					</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => navigate('/dashboard')}>
+							<LayoutDashboard className="mr-2 size-4" />
+							<span>Go to Dashboard</span>
+						</DropdownMenuItem>
 
-					<DropdownMenuItem onClick={() => navigate('/dashboard/blog/new')}>
-						<PencilLine className="mr-2 size-4" />
-						<span>New Post</span>
-					</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => navigate('/dashboard/blog/new')}>
+							<PencilLine className="mr-2 size-4" />
+							<span>New Post</span>
+						</DropdownMenuItem>
 
-					<DropdownMenuSeparator />
+						<DropdownMenuSeparator />
 
-					<DropdownMenuItem
-						onClick={() =>
-							window.open(
-								'https://github.com/gjc14/papa/discussions',
-								'_blank',
-								'noopener,noreferrer',
-							)
-						}
-					>
-						<HelpCircle className="mr-2 size-4" />
-						<span>Help & Resources</span>
-					</DropdownMenuItem>
-
-					<DropdownMenuSeparator />
-
-					<ThemeDropdownMenuSubTrigger className="cursor-pointer">
-						<CurrentThemeIcon className="mr-2 size-4" />
-						Change Theme
-					</ThemeDropdownMenuSubTrigger>
-
-					{/* Position toggle */}
-					<DropdownMenuSeparator />
-
-					<div className="grid grid-cols-3 gap-1.5 p-2">
-						<Button
-							type="button"
-							variant={position === 'left' ? 'default' : 'outline'}
-							size="sm"
-							className="h-7"
-							onClick={() => setPositionWithCookie('left')}
+						<DropdownMenuItem
+							onClick={() =>
+								window.open(
+									'https://github.com/gjc14/papa/discussions',
+									'_blank',
+									'noopener,noreferrer',
+								)
+							}
 						>
-							Left
-						</Button>
-						<Button
-							type="button"
-							variant={position === 'center' ? 'default' : 'outline'}
-							size="sm"
-							className="h-7"
-							onClick={() => setPositionWithCookie('center')}
-						>
-							Center
-						</Button>
-						<Button
-							type="button"
-							variant={position === 'right' ? 'default' : 'outline'}
-							size="sm"
-							className="h-7"
-							onClick={() => setPositionWithCookie('right')}
-						>
-							Right
-						</Button>
-					</div>
+							<HelpCircle className="mr-2 size-4" />
+							<span>Help & Resources</span>
+						</DropdownMenuItem>
 
-					<DropdownMenuSeparator />
+						<DropdownMenuSeparator />
 
-					<DropdownMenuItem onClick={() => authClient.signOut()}>
-						<LogOut className="mr-2 size-4" />
-						<span>Sign Out</span>
-					</DropdownMenuItem>
+						<ThemeDropdownMenuSubTrigger className="cursor-pointer">
+							<CurrentThemeIcon className="mr-2 size-4" />
+							Change Theme
+						</ThemeDropdownMenuSubTrigger>
+
+						{/* Position toggle */}
+						<DropdownMenuSeparator />
+
+						<div className="grid grid-cols-3 gap-1.5 p-2">
+							<Button
+								type="button"
+								variant={position === 'left' ? 'default' : 'outline'}
+								size="sm"
+								className="h-7"
+								onClick={() => setPositionWithCookie('left')}
+							>
+								Left
+							</Button>
+							<Button
+								type="button"
+								variant={position === 'center' ? 'default' : 'outline'}
+								size="sm"
+								className="h-7"
+								onClick={() => setPositionWithCookie('center')}
+							>
+								Center
+							</Button>
+							<Button
+								type="button"
+								variant={position === 'right' ? 'default' : 'outline'}
+								size="sm"
+								className="h-7"
+								onClick={() => setPositionWithCookie('right')}
+							>
+								Right
+							</Button>
+						</div>
+
+						<DropdownMenuSeparator />
+
+						<DropdownMenuItem onClick={() => authClient.signOut()}>
+							<LogOut className="mr-2 size-4" />
+							<span>Sign Out</span>
+						</DropdownMenuItem>
+					</DropdownMenuGroup>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</div>

@@ -13,6 +13,7 @@ import {
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
@@ -49,16 +50,18 @@ export function ProductBreadcrumb() {
 										<ChevronDownIcon />
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="start">
-										{categories.map(cat => (
-											<DropdownMenuItem
-												key={cat.id}
-												render={
-													<Link to={`../categories/${cat.slug}`}>
-														{cat.name}
-													</Link>
-												}
-											/>
-										))}
+										<DropdownMenuGroup>
+											{categories.map(cat => (
+												<DropdownMenuItem
+													key={cat.id}
+													render={
+														<Link to={`../categories/${cat.slug}`}>
+															{cat.name}
+														</Link>
+													}
+												/>
+											))}
+										</DropdownMenuGroup>
 									</DropdownMenuContent>
 								</DropdownMenu>
 							) : (

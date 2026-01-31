@@ -16,6 +16,7 @@ import { Button } from '~/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -64,26 +65,28 @@ export const DashboardDataTableMoreMenu = ({
 			/>
 
 			<DropdownMenuContent>
-				<DropdownMenuLabel>Manage</DropdownMenuLabel>
+				<DropdownMenuGroup>
+					<DropdownMenuLabel>Manage</DropdownMenuLabel>
 
-				{children && (
-					<>
-						<DropdownMenuSeparator />
-						{children}
-					</>
-				)}
+					{children && (
+						<>
+							<DropdownMenuSeparator />
+							{children}
+						</>
+					)}
 
-				{deletable && (
-					<>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							onClick={() => setOpen(true)}
-							className="focus:bg-destructive/90 focus:text-white"
-						>
-							{permanent ? 'Delete Permanently' : 'Move to Trash'}
-						</DropdownMenuItem>
-					</>
-				)}
+					{deletable && (
+						<>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								onClick={() => setOpen(true)}
+								className="focus:bg-destructive/90 focus:text-white"
+							>
+								{permanent ? 'Delete Permanently' : 'Move to Trash'}
+							</DropdownMenuItem>
+						</>
+					)}
+				</DropdownMenuGroup>
 			</DropdownMenuContent>
 
 			<AlertDialog open={open} onOpenChange={setOpen}>

@@ -6,6 +6,7 @@ import { Button } from '~/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
@@ -53,32 +54,34 @@ export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 				}
 			/>
 			<DropdownMenuContent className="bg-background">
-				{options.map(
-					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
-						<TooltipWrapper
-							key={index}
-							tooltip={name}
-							shortcut={shortcut}
-							side="right"
-							render={
-								<DropdownMenuItem
-									render={
-										<Button
-											variant="ghost"
-											size={'sm'}
-											disabled={!canRun(editor)}
-											onClick={() => run(editor)}
-											className={`w-full justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
-										>
-											<Icon className="size-4" />
-											{name}
-										</Button>
-									}
-								/>
-							}
-						/>
-					),
-				)}
+				<DropdownMenuGroup>
+					{options.map(
+						({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+							<TooltipWrapper
+								key={index}
+								tooltip={name}
+								shortcut={shortcut}
+								side="right"
+								render={
+									<DropdownMenuItem
+										render={
+											<Button
+												variant="ghost"
+												size={'sm'}
+												disabled={!canRun(editor)}
+												onClick={() => run(editor)}
+												className={`w-full justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
+											>
+												<Icon className="size-4" />
+												{name}
+											</Button>
+										}
+									/>
+								}
+							/>
+						),
+					)}
+				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

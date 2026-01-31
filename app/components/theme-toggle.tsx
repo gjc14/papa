@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuPortal,
 	DropdownMenuSub,
@@ -103,29 +104,31 @@ export const ThemeToggle = forwardRef<
 				}
 			/>
 			<DropdownMenuContent align="end">
-				<DropdownMenuItem
-					onClick={() => {
-						startViewTransition(() => setTheme('light'))
-					}}
-				>
-					Light
-				</DropdownMenuItem>
+				<DropdownMenuGroup>
+					<DropdownMenuItem
+						onClick={() => {
+							startViewTransition(() => setTheme('light'))
+						}}
+					>
+						Light
+					</DropdownMenuItem>
 
-				<DropdownMenuItem
-					onClick={() => {
-						startViewTransition(() => setTheme('dark'))
-					}}
-				>
-					Dark
-				</DropdownMenuItem>
+					<DropdownMenuItem
+						onClick={() => {
+							startViewTransition(() => setTheme('dark'))
+						}}
+					>
+						Dark
+					</DropdownMenuItem>
 
-				<DropdownMenuItem
-					onClick={() => {
-						startViewTransition(() => setTheme('system'))
-					}}
-				>
-					System
-				</DropdownMenuItem>
+					<DropdownMenuItem
+						onClick={() => {
+							startViewTransition(() => setTheme('system'))
+						}}
+					>
+						System
+					</DropdownMenuItem>
+				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)
@@ -143,18 +146,20 @@ export const ThemeDropdownMenuWrapper = ({
 		<DropdownMenu>
 			<DropdownMenuTrigger render={render} />
 			<DropdownMenuContent>
-				<DropdownMenuItem onClick={() => setTheme('light')}>
-					<Sun size={16} className="mr-2" />
-					Light
-				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme('dark')}>
-					<Moon size={16} className="mr-2" />
-					Dark
-				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => setTheme('system')}>
-					<SunMoon size={16} className="mr-2" />
-					System
-				</DropdownMenuItem>
+				<DropdownMenuGroup>
+					<DropdownMenuItem onClick={() => setTheme('light')}>
+						<Sun size={16} className="mr-2" />
+						Light
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => setTheme('dark')}>
+						<Moon size={16} className="mr-2" />
+						Dark
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => setTheme('system')}>
+						<SunMoon size={16} className="mr-2" />
+						System
+					</DropdownMenuItem>
+				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

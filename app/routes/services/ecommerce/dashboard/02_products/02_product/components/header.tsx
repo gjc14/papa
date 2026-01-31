@@ -16,6 +16,7 @@ import { Button } from '~/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -218,31 +219,33 @@ export function ProductEditPageHeader() {
 						}
 					/>
 					<DropdownMenuContent>
-						<DropdownMenuLabel>Product Actions</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							className="flex items-center gap-2"
-							onClick={() => setResetOpen(true)}
-							disabled={isSaving || isMovingToTrash}
-						>
-							<RefreshCcw className="size-4" />
-							<span>Reset Product</span>
-						</DropdownMenuItem>
-
-						{!isNew && (
+						<DropdownMenuGroup>
+							<DropdownMenuLabel>Product Actions</DropdownMenuLabel>
+							<DropdownMenuSeparator />
 							<DropdownMenuItem
-								className="focus:bg-destructive/90 flex items-center gap-2 focus:text-white"
-								onClick={() => setToTrashOpen(true)}
+								className="flex items-center gap-2"
+								onClick={() => setResetOpen(true)}
 								disabled={isSaving || isMovingToTrash}
 							>
-								{isMovingToTrash ? (
-									<Spinner className="size-4" />
-								) : (
-									<Trash className="size-4" />
-								)}
-								<span>Move to Trash</span>
+								<RefreshCcw className="size-4" />
+								<span>Reset Product</span>
 							</DropdownMenuItem>
-						)}
+
+							{!isNew && (
+								<DropdownMenuItem
+									className="focus:bg-destructive/90 flex items-center gap-2 focus:text-white"
+									onClick={() => setToTrashOpen(true)}
+									disabled={isSaving || isMovingToTrash}
+								>
+									{isMovingToTrash ? (
+										<Spinner className="size-4" />
+									) : (
+										<Trash className="size-4" />
+									)}
+									<span>Move to Trash</span>
+								</DropdownMenuItem>
+							)}
+						</DropdownMenuGroup>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</ItemActions>

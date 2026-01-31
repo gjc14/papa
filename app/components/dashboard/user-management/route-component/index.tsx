@@ -136,30 +136,31 @@ export const UserManagementRoute = ({
 			</DashboardHeader>
 			<DashboardContent className="px-0 md:px-0">
 				{/* {table => (
-						<div className="flex w-full items-center justify-between gap-2">
-							<Input
-								placeholder="Filter email..."
-								type="email"
-								autoComplete="off"
-								value={
-									(table.getColumn('email')?.getFilterValue() as string) ?? ''
+					<div className="flex w-full items-center justify-between gap-2">
+						<Input
+							placeholder="Filter email..."
+							type="email"
+							autoComplete="off"
+							value={
+								(table.getColumn('email')?.getFilterValue() as string) ?? ''
+							}
+							onChange={event =>
+								table.getColumn('email')?.setFilterValue(event.target.value)
+							}
+							className="max-w-sm"
+						/>
+						<DropdownMenu>
+							<DropdownMenuTrigger
+								hidden={!selectedUsers.length}
+								render={
+									<Button variant="outline" disabled={!selectedUsers.length}>
+										Actions
+										<ChevronDown />
+									</Button>
 								}
-								onChange={event =>
-									table.getColumn('email')?.setFilterValue(event.target.value)
-								}
-								className="max-w-sm"
 							/>
-							<DropdownMenu>
-								<DropdownMenuTrigger
-									hidden={!selectedUsers.length}
-									render={
-										<Button variant="outline" disabled={!selectedUsers.length}>
-											Actions
-											<ChevronDown />
-										</Button>
-									}
-								/>
-								<DropdownMenuContent className="space-y-1">
+							<DropdownMenuContent className="space-y-1">
+								<DropdownMenuGroup>
 									<DropdownMenuLabel>Bulk Operations</DropdownMenuLabel>
 									<DropdownMenuSeparator />
 									<DropdownMenuItem onClick={() => setOpenBulkEdit(true)}>
@@ -171,10 +172,11 @@ export const UserManagementRoute = ({
 									>
 										Delete
 									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</div>
-					)} */}
+								</DropdownMenuGroup>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				)} */}
 				<DashboardDataTable
 					columns={columns}
 					data={state}

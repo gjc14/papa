@@ -88,59 +88,61 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 						align="end"
 						sideOffset={4}
 					>
-						<DropdownMenuLabel className="p-0 font-normal">
-							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-								<Avatar className="h-8 w-8 rounded-lg">
-									<AvatarImage
-										src={user.image || '/placeholders/avatar.png'}
-										alt={user.name}
-									/>
-									<AvatarFallback className="rounded-lg">PA</AvatarFallback>
-								</Avatar>
-								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">{user.name}</span>
-									<span className="truncate text-xs">{user.email}</span>
-								</div>
-							</div>
-						</DropdownMenuLabel>
-
-						<DropdownMenuSeparator />
-						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<ActionButton
-								icon={Sparkles}
-								title="Upgrade to Pro"
-								route="/dashboard/account/upgrade"
+							<DropdownMenuLabel className="p-0 font-normal">
+								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+									<Avatar className="h-8 w-8 rounded-lg">
+										<AvatarImage
+											src={user.image || '/placeholders/avatar.png'}
+											alt={user.name}
+										/>
+										<AvatarFallback className="rounded-lg">PA</AvatarFallback>
+									</Avatar>
+									<div className="grid flex-1 text-left text-sm leading-tight">
+										<span className="truncate font-semibold">{user.name}</span>
+										<span className="truncate text-xs">{user.email}</span>
+									</div>
+								</div>
+							</DropdownMenuLabel>
+
+							<DropdownMenuSeparator />
+							<DropdownMenuSeparator />
+							<DropdownMenuGroup>
+								<ActionButton
+									icon={Sparkles}
+									title="Upgrade to Pro"
+									route="/dashboard/account/upgrade"
+								/>
+							</DropdownMenuGroup>
+
+							<DropdownMenuSeparator />
+							<DropdownMenuGroup>
+								{DefaultUserOptions.map(option => (
+									<ActionButton key={option.title} {...option} />
+								))}
+
+								<ThemeDropdownMenuSubTrigger className="group flex cursor-pointer items-center gap-2">
+									<CurrentThemeIcon className="size-4 transition-transform group-hover:rotate-[25deg] dark:group-hover:rotate-[25deg]" />
+									Change Theme
+								</ThemeDropdownMenuSubTrigger>
+							</DropdownMenuGroup>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								className="group"
+								render={
+									<button
+										className="flex w-full items-center gap-2"
+										onClick={handleSignOut}
+									>
+										<LogOut
+											size={16}
+											className="transition-transform group-hover:translate-x-0.5"
+										/>
+										<p className="text-sm">Sign Out</p>
+									</button>
+								}
 							/>
 						</DropdownMenuGroup>
-
-						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							{DefaultUserOptions.map(option => (
-								<ActionButton key={option.title} {...option} />
-							))}
-
-							<ThemeDropdownMenuSubTrigger className="group flex cursor-pointer items-center gap-2">
-								<CurrentThemeIcon className="size-4 transition-transform group-hover:rotate-[25deg] dark:group-hover:rotate-[25deg]" />
-								Change Theme
-							</ThemeDropdownMenuSubTrigger>
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							className="group"
-							render={
-								<button
-									className="flex w-full items-center gap-2"
-									onClick={handleSignOut}
-								>
-									<LogOut
-										size={16}
-										className="transition-transform group-hover:translate-x-0.5"
-									/>
-									<p className="text-sm">Sign Out</p>
-								</button>
-							}
-						/>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>

@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -169,14 +170,16 @@ export function Attributes() {
 												}
 											/>
 											<DropdownMenuContent>
-												<DropdownMenuLabel>Actions</DropdownMenuLabel>
-												<DropdownMenuSeparator />
-												<DropdownMenuItem
-													onClick={() => handleDeleteAttribute(a.id)}
-													className="focus:bg-destructive/90 focus:text-white"
-												>
-													Delete
-												</DropdownMenuItem>
+												<DropdownMenuGroup>
+													<DropdownMenuLabel>Actions</DropdownMenuLabel>
+													<DropdownMenuSeparator />
+													<DropdownMenuItem
+														onClick={() => handleDeleteAttribute(a.id)}
+														className="focus:bg-destructive/90 focus:text-white"
+													>
+														Delete
+													</DropdownMenuItem>
+												</DropdownMenuGroup>
 											</DropdownMenuContent>
 										</DropdownMenu>
 									</ItemActions>

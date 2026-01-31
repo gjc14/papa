@@ -5,6 +5,7 @@ import { ChevronsUpDown } from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
@@ -93,31 +94,33 @@ export function SidebarService({
 						side={isMobile ? 'bottom' : 'right'}
 						sideOffset={4}
 					>
-						<DropdownMenuLabel className="text-muted-foreground text-xs">
-							Services
-						</DropdownMenuLabel>
-						{services.map(service => (
-							<Link key={service.name} to={service.pathname}>
-								<DropdownMenuItem className="gap-2 p-2">
-									<div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
-										{renderServiceLogo(service.logo, 'sm')}
-									</div>
-									{service.name}
-									{/* <DropdownMenuShortcut>
+						<DropdownMenuGroup>
+							<DropdownMenuLabel className="text-muted-foreground text-xs">
+								Services
+							</DropdownMenuLabel>
+							{services.map(service => (
+								<Link key={service.name} to={service.pathname}>
+									<DropdownMenuItem className="gap-2 p-2">
+										<div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
+											{renderServiceLogo(service.logo, 'sm')}
+										</div>
+										{service.name}
+										{/* <DropdownMenuShortcut>
                                     ⌘{index + 1}
                                 </DropdownMenuShortcut> */}
-								</DropdownMenuItem>
-							</Link>
-						))}
-						{/* <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 p-2">
-                            <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                                <Plus className="size-4" />
-                            </div>
-                            <div className="font-medium text-muted-foreground">
-                                Add service
-                            </div>
-                        </DropdownMenuItem> */}
+									</DropdownMenuItem>
+								</Link>
+							))}
+							{/* <DropdownMenuSeparator />
+							<DropdownMenuItem className="gap-2 p-2">
+								<div className="bg-background flex size-6 items-center justify-center rounded-md border">
+									<Plus className="size-4" />
+								</div>
+								<div className="text-muted-foreground font-medium">
+									Add service
+								</div>
+							</DropdownMenuItem> */}
+						</DropdownMenuGroup>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>
