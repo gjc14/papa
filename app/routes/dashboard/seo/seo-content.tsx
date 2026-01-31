@@ -140,7 +140,7 @@ export const SeoContent = ({
 							{seo?.ogImage ? (
 								<img
 									src={seo.ogImage}
-									alt={seo?.metaTitle || 'SEO Open Graph Image'}
+									alt={seo?.metaTitle || 'OG Image'}
 									className="object-cover"
 								/>
 							) : (

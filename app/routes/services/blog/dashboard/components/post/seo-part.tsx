@@ -5,16 +5,11 @@
 import { useAtom } from 'jotai'
 import { toast } from 'sonner'
 
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
 import { Spinner } from '~/components/ui/spinner'
-import { Textarea } from '~/components/ui/textarea'
-import { MultiSelect } from '~/components/multi-select'
+import { SeoFieldSet } from '~/components/seo-field-set'
 import { generateSeoDescription } from '~/lib/utils/seo'
 
-import type { PostWithRelations } from '../../../lib/db/post.server'
 import { editorAtom, postAtom } from '../../context'
-import { TinyLinkButton } from './tiny-link-button'
 
 export const SeoPart = () => {
 	const [post, setPost] = useAtom(postAtom)
@@ -22,178 +17,38 @@ export const SeoPart = () => {
 
 	if (!editor || !post) return <Spinner />
 
-	const handleTitle = () => {
+	const handleChange = (field: string, value: string) => {
 		setPost(prev => {
 			if (!prev) return prev
-			const newPost = {
+			return {
 				...prev,
 				seo: {
 					...prev.seo,
-					metaTitle: post.title,
+					[field]: value,
 				},
-			} satisfies PostWithRelations
-			return newPost
-		})
-	}
-
-	const handleDesc = () => {
-		setPost(prev => {
-			if (!prev) return prev
-			const text = editor.getText() || ''
-			if (!text) {
-				toast.error('No content to generate SEO description')
-				return prev
 			}
-			const newPost = {
-				...prev,
-				seo: {
-					...prev.seo,
-					metaDescription: generateSeoDescription(text),
-				},
-			} satisfies PostWithRelations
-			return newPost
 		})
 	}
 
-	const handleOgImage = () => {
-		setPost(prev => {
-			if (!prev) return prev
-			const newPost = {
-				...prev,
-				seo: {
-					...prev.seo,
-					ogImage: post.featuredImage,
-				},
-			} satisfies PostWithRelations
-			return newPost
-		})
+	const handleFillInDescription = () => {
+		const text = editor.getText() || ''
+		if (!text) {
+			toast.error('No content to generate SEO description')
+			return
+		}
+		handleChange('metaDescription', generateSeoDescription(text))
 	}
 
 	return (
-		<>
-			<div className="flex flex-col">
-				<Label htmlFor="seo-title">
-					SEO Title
-					<TinyLinkButton title="Copy Title" onClick={handleTitle} />
-				</Label>
-				<div className="flex items-center gap-1.5">
-					<Input
-						id="seo-title"
-						name="seo-title"
-						type="text"
-						placeholder="Meta tilte should match Title (H1) for SEO."
-						value={post.seo.metaTitle || ''}
-						onChange={e => {
-							setPost(prev => {
-								if (!prev) return prev
-								const newPost = {
-									...prev,
-									seo: {
-										...prev.seo,
-										metaTitle: e.target.value,
-									},
-								} satisfies PostWithRelations
-								return newPost
-							})
-						}}
-					/>
-				</div>
-			</div>
-
-			<div className="flex flex-col">
-				<Label htmlFor="seo-description">
-					SEO Description
-					<TinyLinkButton title="Copy from post" onClick={handleDesc} />
-				</Label>
-				<Textarea
-					id="seo-description"
-					name="seo-description"
-					rows={3}
-					placeholder="Short description about your post..."
-					value={post.seo.metaDescription ?? ''}
-					onChange={e => {
-						setPost(prev => {
-							if (!prev) return prev
-							const newPost = {
-								...prev,
-								seo: {
-									...prev.seo,
-									metaDescription: e.target.value,
-								},
-							} satisfies PostWithRelations
-							return newPost
-						})
-					}}
-				/>
-			</div>
-
-			<div className="flex flex-col">
-				<Label htmlFor="seo-keywords">SEO Keywords</Label>
-				<MultiSelect
-					options={[]}
-					selected={(post.seo.keywords ?? '')
-						.split(',')
-						.map(k => k.trim())
-						.filter(k => k !== '')
-						.map(k => ({ label: k, value: k }))}
-					onSelectedChange={selectedArr => {
-						const keywords = selectedArr.map(s => s.label).join(', ')
-						setPost(prev => {
-							if (!prev) return prev
-							return {
-								...prev,
-								seo: {
-									...prev.seo,
-									keywords,
-								},
-							}
-						})
-					}}
-				/>
-			</div>
-
-			<div className="flex flex-col">
-				<div className="mb-2">
-					<div className="inline-flex aspect-square h-16 w-16 items-center justify-center border">
-						{post.seo.ogImage ? (
-							<img
-								src={post.seo.ogImage}
-								alt={post.title}
-								className="object-cover"
-							/>
-						) : (
-							'⛰️'
-						)}
-					</div>
-					{/* TODO: tabs to preview different image ratios */}
-				</div>
-				<Label htmlFor="seo-og-image">
-					SEO Open Graph Image
-					<TinyLinkButton title="Copy Feature Image" onClick={handleOgImage} />
-				</Label>
-				<div className="flex items-center gap-1.5">
-					<Input
-						id="seo-og-image"
-						name="seo-og-image"
-						type="text"
-						placeholder="https://example.com/image.webp"
-						value={post.seo.ogImage || ''}
-						onChange={e => {
-							setPost(prev => {
-								if (!prev) return prev
-								const newPost = {
-									...prev,
-									seo: {
-										...prev.seo,
-										ogImage: e.target.value,
-									},
-								} satisfies PostWithRelations
-								return newPost
-							})
-						}}
-					/>
-				</div>
-			</div>
-		</>
+		<SeoFieldSet
+			seo={post.seo}
+			onFillInTitle={() => handleChange('metaTitle', post.title)}
+			onTitleChange={title => handleChange('metaTitle', title)}
+			onFillInDescription={handleFillInDescription}
+			onDescriptionChange={desc => handleChange('metaDescription', desc)}
+			onFillInOgImage={() => handleChange('ogImage', post.featuredImage || '')}
+			onOgImageChange={({ src }) => handleChange('ogImage', src)}
+			onKeywordsChange={keywords => handleChange('keywords', keywords)}
+		/>
 	)
 }
