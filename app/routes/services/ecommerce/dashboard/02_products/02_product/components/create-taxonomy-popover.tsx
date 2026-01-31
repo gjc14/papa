@@ -62,17 +62,19 @@ export function CreateTaxonomyPopover({
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
-				<Button
-					variant="outline"
-					size="sm"
-					className="w-full"
-					disabled={isSubmitting}
-				>
-					{isSubmitting ? <Spinner /> : <Plus />}
-					{taxonomyType}
-				</Button>
-			</PopoverTrigger>
+			<PopoverTrigger
+				render={
+					<Button
+						variant="outline"
+						size="sm"
+						className="w-full"
+						disabled={isSubmitting}
+					>
+						{isSubmitting ? <Spinner /> : <Plus />}
+						{taxonomyType}
+					</Button>
+				}
+			/>
 			<PopoverContent className="w-80">
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div className="space-y-2">

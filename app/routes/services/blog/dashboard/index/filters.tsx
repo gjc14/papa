@@ -97,21 +97,23 @@ export const Filter = ({
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
-				<Button
-					variant="outline"
-					role="combobox"
-					aria-expanded={open}
-					className="h-8.5 justify-between text-xs"
-				>
-					{searching ? <Loader2 className="animate-spin" /> : null}
-					Filters
-					{hasFilter && (
-						<span className="size-1.5 shrink-0 rounded-full bg-current"></span>
-					)}
-					<ChevronDown className="opacity-50" />
-				</Button>
-			</PopoverTrigger>
+			<PopoverTrigger
+				render={
+					<Button
+						variant="outline"
+						role="combobox"
+						aria-expanded={open}
+						className="h-8.5 justify-between text-xs"
+					>
+						{searching ? <Loader2 className="animate-spin" /> : null}
+						Filters
+						{hasFilter && (
+							<span className="size-1.5 shrink-0 rounded-full bg-current"></span>
+						)}
+						<ChevronDown className="opacity-50" />
+					</Button>
+				}
+			/>
 
 			<PopoverContent className="w-[360px] p-2">
 				{/* Search input */}
@@ -130,23 +132,25 @@ export const Filter = ({
 				<div className="mb-2 flex items-center gap-2">
 					{/* Tags popover */}
 					<Popover open={tagsOpen} onOpenChange={setTagsOpen}>
-						<PopoverTrigger asChild>
-							<Button
-								size="sm"
-								variant="outline"
-								className="flex-1 justify-between"
-							>
-								<span>
-									Tags
-									{tagsInFilter.length > 0 && (
-										<span className="text-muted-foreground ml-2 text-xs">
-											{tagsInFilter.length}
-										</span>
-									)}
-								</span>
-								<ChevronDown className="opacity-50" />
-							</Button>
-						</PopoverTrigger>
+						<PopoverTrigger
+							render={
+								<Button
+									size="sm"
+									variant="outline"
+									className="flex-1 justify-between"
+								>
+									<span>
+										Tags
+										{tagsInFilter.length > 0 && (
+											<span className="text-muted-foreground ml-2 text-xs">
+												{tagsInFilter.length}
+											</span>
+										)}
+									</span>
+									<ChevronDown className="opacity-50" />
+								</Button>
+							}
+						/>
 						<PopoverContent className="w-[220px] p-0">
 							<Command>
 								<CommandInput placeholder="Search tags..." className="h-9" />
@@ -195,23 +199,25 @@ export const Filter = ({
 
 					{/* Categories popover */}
 					<Popover open={categoriesOpen} onOpenChange={setCategoriesOpen}>
-						<PopoverTrigger asChild>
-							<Button
-								size="sm"
-								variant="outline"
-								className="flex-1 justify-between"
-							>
-								<span>
-									Categories
-									{categoryInFilter.length > 0 && (
-										<span className="text-muted-foreground ml-2 text-xs">
-											{categoryInFilter.length}
-										</span>
-									)}
-								</span>
-								<ChevronDown className="opacity-50" />
-							</Button>
-						</PopoverTrigger>
+						<PopoverTrigger
+							render={
+								<Button
+									size="sm"
+									variant="outline"
+									className="flex-1 justify-between"
+								>
+									<span>
+										Categories
+										{categoryInFilter.length > 0 && (
+											<span className="text-muted-foreground ml-2 text-xs">
+												{categoryInFilter.length}
+											</span>
+										)}
+									</span>
+									<ChevronDown className="opacity-50" />
+								</Button>
+							}
+						/>
 						<PopoverContent className="w-[220px] p-0">
 							<Command>
 								<CommandInput

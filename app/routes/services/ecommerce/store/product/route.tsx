@@ -131,25 +131,32 @@ const ProductErrorTemplate = ({
 				</h2>
 
 				<div className="mt-12 mb-8 flex items-center gap-3">
-					<Button variant={'link'} asChild>
-						<Link to={returnTo}>
-							<ArrowLeft size={12} />
-							Return to <code>{returnTo}</code>
-						</Link>
-					</Button>
-					<Button variant={'outline'} asChild>
-						<Link to={'/store'}>
-							Browse Products
-							<Store size={12} />
-						</Link>
-					</Button>
+					<Button
+						variant={'link'}
+						render={
+							<Link to={returnTo}>
+								<ArrowLeft size={12} />
+								Return to <code>{returnTo}</code>
+							</Link>
+						}
+					/>
+					<Button
+						variant={'outline'}
+						render={
+							<Link to={'/store'}>
+								Browse Products
+								<Store size={12} />
+							</Link>
+						}
+					/>
 				</div>
 
 				<div>
 					<p className="text-muted-foreground text-sm">Need assistance?</p>
-					<Button variant={'link'} asChild>
-						<Link to={'/store/contact'}>Contact Us</Link>
-					</Button>
+					<Button
+						variant={'link'}
+						render={<Link to={'/store/contact'}>Contact Us</Link>}
+					/>
 				</div>
 			</div>
 			<div className="font-open-sans mb-8 flex items-center">

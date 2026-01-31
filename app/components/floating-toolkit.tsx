@@ -78,11 +78,13 @@ export function FloatingToolkit() {
 	return (
 		<div className={`${getPositionClass(position)} z-99999`}>
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button size={'icon'} className="size-7">
-						<ChevronUp />
-					</Button>
-				</DropdownMenuTrigger>
+				<DropdownMenuTrigger
+					render={
+						<Button size={'icon'} className="size-7">
+							<ChevronUp />
+						</Button>
+					}
+				/>
 
 				<DropdownMenuContent align="start" side="top" className="mb-2 w-64">
 					<DropdownMenuLabel>Quick Toolkit</DropdownMenuLabel>

@@ -11,12 +11,12 @@ import { parseShortcutKeys } from '~/components/editor/utils'
 export const TooltipWrapper = ({
 	tooltip,
 	shortcut,
-	children,
+	render,
 	side = 'bottom',
 }: {
 	tooltip?: string
 	shortcut?: string
-	children?: React.ReactNode
+	render?: React.ReactElement
 	side?: 'top' | 'right' | 'bottom' | 'left'
 }) => {
 	const shortcutKeys = shortcut
@@ -25,7 +25,7 @@ export const TooltipWrapper = ({
 
 	return (
 		<Tooltip>
-			<TooltipTrigger asChild>{children}</TooltipTrigger>
+			<TooltipTrigger render={render} />
 			<TooltipContent side={side} className="px-2 py-1 text-xs">
 				{tooltip}
 				{shortcutKeys.length > 0 && (

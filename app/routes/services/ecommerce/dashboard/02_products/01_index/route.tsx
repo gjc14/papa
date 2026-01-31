@@ -52,11 +52,14 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 			<DashboardHeader>
 				<DashboardTitle title="Products"></DashboardTitle>
 				<DashboardActions>
-					<Button asChild size={'sm'}>
-						<Link to="new">
-							<PlusCircle /> New Product
-						</Link>
-					</Button>
+					<Button
+						size={'sm'}
+						render={
+							<Link to="new">
+								<PlusCircle /> New Product
+							</Link>
+						}
+					/>
 				</DashboardActions>
 			</DashboardHeader>
 			<DashboardContent className="px-0 md:px-0">

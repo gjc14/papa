@@ -147,14 +147,17 @@ const ErrorTemplate = ({
 					</h2>
 				</div>
 
-				<Button variant={'link'} asChild>
-					<Link to={returnTo} className="mt-5">
-						<span>
-							Return to <code>{returnTo}</code>
-						</span>
-						<Undo2 size={12} />
-					</Link>
-				</Button>
+				<Button
+					variant={'link'}
+					render={
+						<Link to={returnTo} className="mt-5">
+							<span>
+								Return to <code>{returnTo}</code>
+							</span>
+							<Undo2 size={12} />
+						</Link>
+					}
+				/>
 			</div>
 
 			<div className="font-open-sans fixed bottom-8 flex items-center">

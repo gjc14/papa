@@ -16,9 +16,11 @@ export default function ECOverview() {
 				<DashboardTitle title="E-Commerce Overview" />
 				<DashboardActions>
 					{/* You may put some buttons here */}
-					<Button asChild variant={'ghost'} className="border-2 border-dashed">
-						<Link to="/store">Go to Storefront</Link>
-					</Button>
+					<Button
+						variant={'ghost'}
+						className="border-2 border-dashed"
+						render={<Link to="/store">Go to Storefront</Link>}
+					/>
 				</DashboardActions>
 			</DashboardHeader>
 			<DashboardContent>

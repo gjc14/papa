@@ -56,15 +56,19 @@ export default function DashboardIndex() {
 
 						<div className="flex gap-3">
 							{/* TODO: Add resources */}
-							<Button variant="outline" size="sm" asChild>
-								<a
-									href="https://github.com/gjc14/papa?tab=readme-ov-file#service"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									Learn More
-								</a>
-							</Button>
+							<Button
+								variant="outline"
+								size="sm"
+								render={
+									<a
+										href="https://github.com/gjc14/papa?tab=readme-ov-file#service"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										Learn More
+									</a>
+								}
+							/>
 							<Button size="sm">Get Started</Button>
 						</div>
 					</div>
@@ -82,22 +86,26 @@ export default function DashboardIndex() {
 									</div>
 									<div className="row-span-3 flex min-h-0 flex-col justify-start gap-1 overflow-hidden">
 										<Tooltip>
-											<TooltipTrigger asChild>
-												<p className="truncate text-center font-semibold">
-													{service.name}
-												</p>
-											</TooltipTrigger>
+											<TooltipTrigger
+												render={
+													<p className="truncate text-center font-semibold">
+														{service.name}
+													</p>
+												}
+											/>
 											<TooltipContent>
 												<p>{service.name}</p>
 											</TooltipContent>
 										</Tooltip>
 										{service.description && (
 											<Tooltip>
-												<TooltipTrigger asChild>
-													<p className="text-muted-foreground line-clamp-3 flex-1 text-start text-sm text-pretty">
-														{service.description}
-													</p>
-												</TooltipTrigger>
+												<TooltipTrigger
+													render={
+														<p className="text-muted-foreground line-clamp-3 flex-1 text-start text-sm text-pretty">
+															{service.description}
+														</p>
+													}
+												/>
 												<TooltipContent>
 													<p className="max-w-xs">{service.description}</p>
 												</TooltipContent>

@@ -93,18 +93,24 @@ export const ImageButton = () => {
 			actionLabel="Insert"
 			title="Image"
 			trigger={
-				<TooltipWrapper tooltip="Image" shortcut={IMAGE_SHORTCUT}>
-					<DialogTrigger asChild>
-						<Button
-							size={'icon'}
-							variant={'ghost'}
-							className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
-							disabled={!canRun}
-						>
-							<Image />
-						</Button>
-					</DialogTrigger>
-				</TooltipWrapper>
+				<TooltipWrapper
+					tooltip="Image"
+					shortcut={IMAGE_SHORTCUT}
+					render={
+						<DialogTrigger
+							render={
+								<Button
+									size={'icon'}
+									variant={'ghost'}
+									className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+									disabled={!canRun}
+								>
+									<Image />
+								</Button>
+							}
+						/>
+					}
+				/>
 			}
 			assets={filesContext}
 			isLoading={isLoading}

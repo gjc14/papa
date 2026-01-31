@@ -277,24 +277,26 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 				}}
 				delayDuration={800}
 			>
-				<TooltipTrigger asChild>
-					<Button
-						onClick={() => {
-							const option = row.original.option
-							navigator.clipboard.writeText(
-								JSON.stringify(option, (_, v) =>
-									typeof v === 'bigint' ? v.toString() : v,
-								),
-							)
-							setCopyState({ open: true, copied: true })
-						}}
-						variant={'ghost'}
-						size={'icon'}
-						className="hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground size-6 rounded-full focus:ring-0 focus-visible:ring-0"
-					>
-						<ClipboardCopy />
-					</Button>
-				</TooltipTrigger>
+				<TooltipTrigger
+					render={
+						<Button
+							onClick={() => {
+								const option = row.original.option
+								navigator.clipboard.writeText(
+									JSON.stringify(option, (_, v) =>
+										typeof v === 'bigint' ? v.toString() : v,
+									),
+								)
+								setCopyState({ open: true, copied: true })
+							}}
+							variant={'ghost'}
+							size={'icon'}
+							className="hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground size-6 rounded-full focus:ring-0 focus-visible:ring-0"
+						>
+							<ClipboardCopy />
+						</Button>
+					}
+				/>
 				<TooltipContent>
 					<p className="text-sm">
 						{copyState.copied ? 'Copied' : 'Copy variant'}
@@ -312,48 +314,50 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 				}}
 				delayDuration={800}
 			>
-				<TooltipTrigger asChild>
-					<Button
-						onClick={async () => {
-							const clipboardData = await navigator.clipboard.readText()
+				<TooltipTrigger
+					render={
+						<Button
+							onClick={async () => {
+								const clipboardData = await navigator.clipboard.readText()
 
-							const option = JSON.parse(clipboardData)
+								const option = JSON.parse(clipboardData)
 
-							const updatedOption = {
-								...option,
-								price: BigInt(option.price),
-								salePrice: option.salePrice ? BigInt(option.salePrice) : null,
-							}
-
-							setProduct(prev => {
-								if (!prev) return prev
-
-								return {
-									...prev,
-									variants: prev.variants.map(v => {
-										if (v.id === row.original.id) {
-											return {
-												...v,
-												option: {
-													...v.option,
-													...updatedOption,
-												},
-											}
-										}
-										return v
-									}),
+								const updatedOption = {
+									...option,
+									price: BigInt(option.price),
+									salePrice: option.salePrice ? BigInt(option.salePrice) : null,
 								}
-							})
 
-							setPasteState({ open: true, pasted: true })
-						}}
-						variant={'ghost'}
-						size={'icon'}
-						className="hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground size-6 rounded-full focus:ring-0 focus-visible:ring-0"
-					>
-						<ClipboardPaste />
-					</Button>
-				</TooltipTrigger>
+								setProduct(prev => {
+									if (!prev) return prev
+
+									return {
+										...prev,
+										variants: prev.variants.map(v => {
+											if (v.id === row.original.id) {
+												return {
+													...v,
+													option: {
+														...v.option,
+														...updatedOption,
+													},
+												}
+											}
+											return v
+										}),
+									}
+								})
+
+								setPasteState({ open: true, pasted: true })
+							}}
+							variant={'ghost'}
+							size={'icon'}
+							className="hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground size-6 rounded-full focus:ring-0 focus-visible:ring-0"
+						>
+							<ClipboardPaste />
+						</Button>
+					}
+				/>
 				<TooltipContent>
 					<p className="text-sm">
 						{pasteState.pasted ? 'Pasted' : 'Paste variant'}
@@ -436,9 +440,12 @@ function VariantManagementDialog({
 										})
 									}}
 								>
-									<Button variant="link" size="sm" asChild className="h-6">
-										<DialogTrigger>{attr}</DialogTrigger>
-									</Button>
+									<Button
+										variant="link"
+										size="sm"
+										className="h-6"
+										render={<DialogTrigger>{attr}</DialogTrigger>}
+									/>
 								</AttributeEditDialog>
 							)
 						},
@@ -528,13 +535,13 @@ function VariantManagementDialog({
 							<Button
 								variant="outline"
 								size="sm"
-								asChild
 								className="size-6 rounded-none"
-							>
-								<DialogTrigger>
-									<Plus />
-								</DialogTrigger>
-							</Button>
+								render={
+									<DialogTrigger>
+										<Plus />
+									</DialogTrigger>
+								}
+							/>
 						</AttributeEditDialog>
 					) : null,
 				cell: ({ row }) => (

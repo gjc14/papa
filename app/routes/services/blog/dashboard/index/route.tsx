@@ -126,12 +126,15 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 						/>
 					)} */}
 					<Filter q={q} tagFilter={tagFilter} categoryFilter={categoryFilter} />
-					<Button size={'sm'} asChild>
-						<Link to="/dashboard/blog/new">
-							<PlusCircle size={16} />
-							<p className="text-xs">Create new post</p>
-						</Link>
-					</Button>
+					<Button
+						size={'sm'}
+						render={
+							<Link to="/dashboard/blog/new">
+								<PlusCircle size={16} />
+								<p className="text-xs">Create new post</p>
+							</Link>
+						}
+					/>
 				</DashboardActions>
 			</DashboardHeader>
 			<DashboardContent className="px-0 md:px-0">

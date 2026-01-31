@@ -64,15 +64,17 @@ function createDefaultColumn<TData>(
 							</div>
 						) : (
 							<Popover>
-								<PopoverTrigger asChild>
-									<Button
-										variant={'ghost'}
-										size={'icon'}
-										className="text-muted-foreground size-6"
-									>
-										<Maximize className="size-3.5" />
-									</Button>
-								</PopoverTrigger>
+								<PopoverTrigger
+									render={
+										<Button
+											variant={'ghost'}
+											size={'icon'}
+											className="text-muted-foreground size-6"
+										>
+											<Maximize className="size-3.5" />
+										</Button>
+									}
+								/>
 								<PopoverContent>
 									<pre className="text-sm whitespace-pre-wrap">
 										{JSON.stringify(initialValue, null, 2)}

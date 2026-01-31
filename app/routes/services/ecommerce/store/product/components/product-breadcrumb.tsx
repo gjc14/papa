@@ -30,9 +30,9 @@ export function ProductBreadcrumb() {
 		<Breadcrumb>
 			<BreadcrumbList>
 				<BreadcrumbItem className="text-sm">
-					<BreadcrumbLink asChild>
-						<Link to={storeConfig.storeFrontPath}>Store</Link>
-					</BreadcrumbLink>
+					<BreadcrumbLink
+						render={<Link to={storeConfig.storeFrontPath}>Store</Link>}
+					/>
 				</BreadcrumbItem>
 
 				{categories.length > 0 && (
@@ -50,18 +50,25 @@ export function ProductBreadcrumb() {
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="start">
 										{categories.map(cat => (
-											<DropdownMenuItem key={cat.id} asChild>
-												<Link to={`../categories/${cat.slug}`}>{cat.name}</Link>
-											</DropdownMenuItem>
+											<DropdownMenuItem
+												key={cat.id}
+												render={
+													<Link to={`../categories/${cat.slug}`}>
+														{cat.name}
+													</Link>
+												}
+											/>
 										))}
 									</DropdownMenuContent>
 								</DropdownMenu>
 							) : (
-								<BreadcrumbLink asChild>
-									<Link to={`../categories/${categories[0].slug}`}>
-										{categories[0].name}
-									</Link>
-								</BreadcrumbLink>
+								<BreadcrumbLink
+									render={
+										<Link to={`../categories/${categories[0].slug}`}>
+											{categories[0].name}
+										</Link>
+									}
+								/>
 							)}
 						</BreadcrumbItem>
 					</>

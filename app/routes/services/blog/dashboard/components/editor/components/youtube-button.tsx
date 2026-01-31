@@ -114,18 +114,23 @@ export const YoutubeButton = () => {
 				}
 			}}
 		>
-			<TooltipWrapper tooltip="Youtube">
-				<PopoverTrigger asChild>
-					<Button
-						size={'icon'}
-						variant={'ghost'}
-						className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
-						disabled={!canRun}
-					>
-						<YoutubeIcon />
-					</Button>
-				</PopoverTrigger>
-			</TooltipWrapper>
+			<TooltipWrapper
+				tooltip="Youtube"
+				render={
+					<PopoverTrigger
+						render={
+							<Button
+								size={'icon'}
+								variant={'ghost'}
+								className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+								disabled={!canRun}
+							>
+								<YoutubeIcon />
+							</Button>
+						}
+					/>
+				}
+			/>
 			<PopoverContent className="flex w-80 flex-col gap-2 rounded-xl px-4 py-3">
 				<div className="w-full">
 					<Label htmlFor="yt-src">URL *</Label>
@@ -194,28 +199,34 @@ export const YoutubeButton = () => {
 				</div>
 
 				<div className="flex w-full items-center gap-2 pt-2">
-					<TooltipWrapper tooltip="Insert Youtube Video">
-						<Button
-							className="flex-1"
-							onClick={() => {
-								insertYoutubeVideo()
-								setIsYoutubeOpen(false)
-							}}
-							disabled={!canInsert}
-						>
-							{isInsert ? 'Insert' : 'Update'}
-						</Button>
-					</TooltipWrapper>
-					<TooltipWrapper tooltip="Open Youtube in New Tab">
-						<Button
-							variant="ghost"
-							size={'icon'}
-							onClick={handleOpenYoutube}
-							disabled={!canInsert}
-						>
-							<ExternalLink />
-						</Button>
-					</TooltipWrapper>
+					<TooltipWrapper
+						tooltip="Insert Youtube Video"
+						render={
+							<Button
+								className="flex-1"
+								onClick={() => {
+									insertYoutubeVideo()
+									setIsYoutubeOpen(false)
+								}}
+								disabled={!canInsert}
+							>
+								{isInsert ? 'Insert' : 'Update'}
+							</Button>
+						}
+					/>
+					<TooltipWrapper
+						tooltip="Open Youtube in New Tab"
+						render={
+							<Button
+								variant="ghost"
+								size={'icon'}
+								onClick={handleOpenYoutube}
+								disabled={!canInsert}
+							>
+								<ExternalLink />
+							</Button>
+						}
+					/>
 				</div>
 			</PopoverContent>
 		</Popover>

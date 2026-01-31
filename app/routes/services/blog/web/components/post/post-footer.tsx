@@ -45,20 +45,20 @@ export const PostFooter = ({
 					<Button
 						variant="ghost"
 						className="group hover:bg-muted/50 flex h-auto items-center justify-start gap-3 p-4 text-left transition-colors"
-						asChild
-					>
-						<Link to={`/blog/${prev.slug}${search}`} prefetch="intent">
-							<ChevronLeft className="h-4 w-4 flex-shrink-0 transition-transform group-hover:-translate-x-1" />
-							<div className="min-w-0 flex-1">
-								<div className="text-muted-foreground mb-1 text-xs">
-									Previous
+						render={
+							<Link to={`/blog/${prev.slug}${search}`} prefetch="intent">
+								<ChevronLeft className="h-4 w-4 flex-shrink-0 transition-transform group-hover:-translate-x-1" />
+								<div className="min-w-0 flex-1">
+									<div className="text-muted-foreground mb-1 text-xs">
+										Previous
+									</div>
+									<p className="line-clamp-2 font-medium text-wrap">
+										{prev.title}
+									</p>
 								</div>
-								<p className="line-clamp-2 font-medium text-wrap">
-									{prev.title}
-								</p>
-							</div>
-						</Link>
-					</Button>
+							</Link>
+						}
+					/>
 				) : (
 					<div />
 				)}
@@ -67,18 +67,18 @@ export const PostFooter = ({
 					<Button
 						variant="ghost"
 						className="group hover:bg-muted/50 flex h-auto items-center justify-end gap-3 p-4 text-right whitespace-break-spaces transition-colors"
-						asChild
-					>
-						<Link to={`/blog/${next.slug}${search}`} prefetch="intent">
-							<div className="min-w-0 flex-1 overflow-visible">
-								<div className="text-muted-foreground mb-1 text-xs">Next</div>
-								<p className="line-clamp-2 font-medium text-wrap">
-									{next.title}
-								</p>
-							</div>
-							<ChevronLeft className="h-4 w-4 flex-shrink-0 rotate-180 transition-transform group-hover:translate-x-1" />
-						</Link>
-					</Button>
+						render={
+							<Link to={`/blog/${next.slug}${search}`} prefetch="intent">
+								<div className="min-w-0 flex-1 overflow-visible">
+									<div className="text-muted-foreground mb-1 text-xs">Next</div>
+									<p className="line-clamp-2 font-medium text-wrap">
+										{next.title}
+									</p>
+								</div>
+								<ChevronLeft className="h-4 w-4 flex-shrink-0 rotate-180 transition-transform group-hover:translate-x-1" />
+							</Link>
+						}
+					/>
 				) : (
 					<div />
 				)}

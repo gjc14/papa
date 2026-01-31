@@ -150,12 +150,15 @@ export const UserManagementRoute = ({
 								className="max-w-sm"
 							/>
 							<DropdownMenu>
-								<DropdownMenuTrigger asChild hidden={!selectedUsers.length}>
-									<Button variant="outline" disabled={!selectedUsers.length}>
-										Actions
-										<ChevronDown />
-									</Button>
-								</DropdownMenuTrigger>
+								<DropdownMenuTrigger
+									hidden={!selectedUsers.length}
+									render={
+										<Button variant="outline" disabled={!selectedUsers.length}>
+											Actions
+											<ChevronDown />
+										</Button>
+									}
+								/>
 								<DropdownMenuContent className="space-y-1">
 									<DropdownMenuLabel>Bulk Operations</DropdownMenuLabel>
 									<DropdownMenuSeparator />

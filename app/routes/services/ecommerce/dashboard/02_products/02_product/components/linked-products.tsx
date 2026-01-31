@@ -252,12 +252,12 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 					size="icon"
 					className="size-8"
 					onClick={e => e.stopPropagation()}
-					asChild
-				>
-					<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
-						<ExternalLink />
-					</Link>
-				</Button>
+					render={
+						<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
+							<ExternalLink />
+						</Link>
+					}
+				/>
 				<Button
 					variant="ghost"
 					size="icon"
@@ -279,7 +279,7 @@ interface AddLinkedProductsDialogProps {
 	products: ProductListing[]
 	isLoading: boolean
 	/** Pass in trigger to auto focus on close */
-	trigger?: React.ReactNode
+	trigger?: React.ReactElement
 }
 
 // === Dialog for adding linked products ===
@@ -325,7 +325,7 @@ function AddLinkedProductsDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			{trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+			{trigger && <DialogTrigger render={trigger} />}
 			<DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
 				<DialogHeader className="shrink-0">
 					<DialogTitle>Add Linked Products</DialogTitle>
@@ -457,12 +457,12 @@ function SelectableProductItem({
 				size="icon"
 				className="size-8"
 				onClick={e => e.stopPropagation()}
-				asChild
-			>
-				<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
-					<ExternalLink />
-				</Link>
-			</Button>
+				render={
+					<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
+						<ExternalLink />
+					</Link>
+				}
+			/>
 		</div>
 	)
 }

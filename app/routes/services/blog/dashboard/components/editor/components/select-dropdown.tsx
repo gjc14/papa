@@ -66,17 +66,24 @@ export function SelectDropdownMenu({
 				if (!open) editor.chain().focus().run()
 			}}
 		>
-			<TooltipWrapper tooltip={tooltip} side={side}>
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant="ghost"
-						size={'sm'}
-						className="gap-0 has-[>svg]:pr-0.5 has-[>svg]:pl-1.5"
-					>
-						{ActiveIcon && <ActiveIcon />} <ChevronDown className="scale-75" />
-					</Button>
-				</DropdownMenuTrigger>
-			</TooltipWrapper>
+			<TooltipWrapper
+				tooltip={tooltip}
+				side={side}
+				render={
+					<DropdownMenuTrigger
+						render={
+							<Button
+								variant="ghost"
+								size={'sm'}
+								className="gap-0 has-[>svg]:pr-0.5 has-[>svg]:pl-1.5"
+							>
+								{ActiveIcon && <ActiveIcon />}{' '}
+								<ChevronDown className="scale-75" />
+							</Button>
+						}
+					/>
+				}
+			/>
 			<DropdownMenuContent
 				className="bg-background"
 				onCloseAutoFocus={e => e.preventDefault()}
@@ -89,23 +96,24 @@ export function SelectDropdownMenu({
 								tooltip={name}
 								shortcut={shortcut}
 								side="right"
-							>
-								<Button
-									size={'sm'}
-									variant={'ghost'}
-									className={`justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
-									asChild
-								>
-									<DropdownMenuRadioItem
-										value={name}
-										disabled={!canRun(editor)}
-										onClick={() => run(editor)}
-									>
-										<Icon className="size-4" />
-										{name}
-									</DropdownMenuRadioItem>
-								</Button>
-							</TooltipWrapper>
+								render={
+									<Button
+										size={'sm'}
+										variant={'ghost'}
+										className={`justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
+										render={
+											<DropdownMenuRadioItem
+												value={name}
+												disabled={!canRun(editor)}
+												onClick={() => run(editor)}
+											>
+												<Icon className="size-4" />
+												{name}
+											</DropdownMenuRadioItem>
+										}
+									/>
+								}
+							/>
 						),
 					)}
 				</DropdownMenuRadioGroup>

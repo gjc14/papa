@@ -55,19 +55,21 @@ const DashboardBreadcrumbs = () => {
 						<React.Fragment key={i}>
 							<Tooltip>
 								<TooltipProvider>
-									<TooltipTrigger asChild>
-										<BreadcrumbItem>
-											<NavLink
-												to={link}
-												className={({ isActive }) =>
-													`${isActive ? 'text-primary' : 'hover:text-primary'} max-w-20 overflow-hidden text-sm text-nowrap text-ellipsis md:max-w-36`
-												}
-												end
-											>
-												{name}
-											</NavLink>
-										</BreadcrumbItem>
-									</TooltipTrigger>
+									<TooltipTrigger
+										render={
+											<BreadcrumbItem>
+												<NavLink
+													to={link}
+													className={({ isActive }) =>
+														`${isActive ? 'text-primary' : 'hover:text-primary'} max-w-20 overflow-hidden text-sm text-nowrap text-ellipsis md:max-w-36`
+													}
+													end
+												>
+													{name}
+												</NavLink>
+											</BreadcrumbItem>
+										}
+									/>
 									<TooltipContent>{name}</TooltipContent>
 								</TooltipProvider>
 							</Tooltip>

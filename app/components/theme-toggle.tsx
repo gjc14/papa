@@ -90,16 +90,18 @@ export const ThemeToggle = forwardRef<
 	return (
 		<DropdownMenu>
 			<style>{styles}</style>
-			<DropdownMenuTrigger asChild>
-				<Button
-					ref={ref}
-					variant="outline"
-					size="icon"
-					className={cn(buttonSizes[size], className)}
-				>
-					<CurrentThemeIcon size={size} />
-				</Button>
-			</DropdownMenuTrigger>
+			<DropdownMenuTrigger
+				render={
+					<Button
+						ref={ref}
+						variant="outline"
+						size="icon"
+						className={cn(buttonSizes[size], className)}
+					>
+						<CurrentThemeIcon size={size} />
+					</Button>
+				}
+			/>
 			<DropdownMenuContent align="end">
 				<DropdownMenuItem
 					onClick={() => {
@@ -130,18 +132,16 @@ export const ThemeToggle = forwardRef<
 })
 
 // DropdownMenu
-export const ThemeDropDownMenuTrigger = ({
-	children,
-	asChild = false,
+export const ThemeDropdownMenuWrapper = ({
+	render,
 }: {
-	children: React.ReactNode
-	asChild?: boolean
+	render: React.ReactElement
 }) => {
 	const { setTheme } = useTheme()
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild={asChild}>{children}</DropdownMenuTrigger>
+			<DropdownMenuTrigger render={render} />
 			<DropdownMenuContent>
 				<DropdownMenuItem onClick={() => setTheme('light')}>
 					<Sun size={16} className="mr-2" />

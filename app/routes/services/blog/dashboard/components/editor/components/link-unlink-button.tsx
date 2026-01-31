@@ -110,18 +110,24 @@ export const LinkUnlinkButtons = () => {
 				}
 			}}
 		>
-			<TooltipWrapper tooltip="Link / Unlink" shortcut={LINK_UNKINK_SHORTCUT}>
-				<PopoverTrigger asChild>
-					<Button
-						size={'icon'}
-						variant={'ghost'}
-						className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
-						disabled={!canRun}
-					>
-						<Link size={14} />
-					</Button>
-				</PopoverTrigger>
-			</TooltipWrapper>
+			<TooltipWrapper
+				tooltip="Link / Unlink"
+				shortcut={LINK_UNKINK_SHORTCUT}
+				render={
+					<PopoverTrigger
+						render={
+							<Button
+								size={'icon'}
+								variant={'ghost'}
+								className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+								disabled={!canRun}
+							>
+								<Link size={14} />
+							</Button>
+						}
+					/>
+				}
+			/>
 			<PopoverContent className="flex w-80 items-center rounded-full p-0.5">
 				<div className="relative flex-1">
 					<Input
@@ -149,26 +155,32 @@ export const LinkUnlinkButtons = () => {
 				{/* Separator */}
 				<div className="bg-border mx-2 my-1 w-px self-stretch" />
 
-				<TooltipWrapper tooltip="Unset Link">
-					<Button
-						variant="ghost"
-						size={'icon'}
-						className="rounded-full"
-						onClick={unsetLink}
-					>
-						<Trash />
-					</Button>
-				</TooltipWrapper>
-				<TooltipWrapper tooltip="Open Link in New Tab">
-					<Button
-						variant="ghost"
-						size={'icon'}
-						className="rounded-full"
-						onClick={handleOpenLink}
-					>
-						<ExternalLink />
-					</Button>
-				</TooltipWrapper>
+				<TooltipWrapper
+					tooltip="Unset Link"
+					render={
+						<Button
+							variant="ghost"
+							size={'icon'}
+							className="rounded-full"
+							onClick={unsetLink}
+						>
+							<Trash />
+						</Button>
+					}
+				/>
+				<TooltipWrapper
+					tooltip="Open Link in New Tab"
+					render={
+						<Button
+							variant="ghost"
+							size={'icon'}
+							className="rounded-full"
+							onClick={handleOpenLink}
+						>
+							<ExternalLink />
+						</Button>
+					}
+				/>
 			</PopoverContent>
 		</Popover>
 	)

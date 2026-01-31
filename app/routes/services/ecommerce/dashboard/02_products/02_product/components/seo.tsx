@@ -191,19 +191,23 @@ export function Seo() {
 								title="Image"
 								trigger={
 									<Tooltip>
-										<TooltipTrigger asChild>
-											<DialogTrigger asChild>
-												<Button
-													variant={'outline'}
-													size={'icon'}
-													onClick={() =>
-														!assets && fetcher.load(assetResourceRoute)
+										<TooltipTrigger
+											render={
+												<DialogTrigger
+													render={
+														<Button
+															variant={'outline'}
+															size={'icon'}
+															onClick={() =>
+																!assets && fetcher.load(assetResourceRoute)
+															}
+														>
+															<Image />
+														</Button>
 													}
-												>
-													<Image />
-												</Button>
-											</DialogTrigger>
-										</TooltipTrigger>
+												/>
+											}
+										/>
 										<TooltipContent>Select from assets</TooltipContent>
 									</Tooltip>
 								}
@@ -255,11 +259,13 @@ export function Seo() {
 										</SelectContent>
 									</Select>
 									<Tooltip>
-										<TooltipTrigger asChild>
-											<Button variant="link" className="size-6 text-sm">
-												<CircleQuestionMark />
-											</Button>
-										</TooltipTrigger>
+										<TooltipTrigger
+											render={
+												<Button variant="link" className="size-6 text-sm">
+													<CircleQuestionMark />
+												</Button>
+											}
+										/>
 										<TooltipContent className="text-sm">
 											File no smaller than 600x315 / 5MB.
 											<br />

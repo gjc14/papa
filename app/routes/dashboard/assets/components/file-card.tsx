@@ -1,7 +1,6 @@
 import { forwardRef, useEffect, useState } from 'react'
 import { useFetcher } from 'react-router'
 
-import { toast } from 'sonner'
 import {
 	AudioWaveform,
 	Expand,
@@ -11,6 +10,7 @@ import {
 	Loader2,
 	Trash2,
 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import {
 	AlertDialog,
@@ -319,11 +319,13 @@ export const FileCard = ({
 						<Separator className="my-3" />
 
 						<AlertDialog>
-							<AlertDialogTrigger asChild>
-								<Button variant={'link'} className="h-fit w-fit p-0">
-									Delete permanently
-								</Button>
-							</AlertDialogTrigger>
+							<AlertDialogTrigger
+								render={
+									<Button variant={'link'} className="h-fit w-fit p-0">
+										Delete permanently
+									</Button>
+								}
+							/>
 							<AlertDialogContent>
 								<AlertDialogHeader>
 									<AlertDialogTitle>

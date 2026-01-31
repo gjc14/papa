@@ -15,7 +15,6 @@ interface ToggleButtonProps {
 	isActive?: (editor: Editor) => boolean
 	run: (editor: Editor) => void
 	canRun: (editor: Editor) => boolean
-	asChild?: boolean
 	className?: string
 }
 
@@ -36,22 +35,25 @@ export function ToggleButton(props: ToggleButtonProps) {
 	if (!editor) return <Skeleton className="size-8" />
 
 	return (
-		<TooltipWrapper tooltip={props.tooltip} shortcut={props.shortcut}>
-			<Button
-				variant="ghost"
-				size="icon"
-				aria-label={props.tooltip}
-				className={cn(
-					'size-8',
-					isActive ? 'bg-accent text-accent-foreground' : '',
-					props.className,
-				)}
-				disabled={!canRun}
-				onClick={() => props.run(editor)}
-				asChild={props.asChild}
-			>
-				{props.children}
-			</Button>
-		</TooltipWrapper>
+		<TooltipWrapper
+			tooltip={props.tooltip}
+			shortcut={props.shortcut}
+			render={
+				<Button
+					variant="ghost"
+					size="icon"
+					aria-label={props.tooltip}
+					className={cn(
+						'size-8',
+						isActive ? 'bg-accent text-accent-foreground' : '',
+						props.className,
+					)}
+					disabled={!canRun}
+					onClick={() => props.run(editor)}
+				>
+					{props.children}
+				</Button>
+			}
+		/>
 	)
 }

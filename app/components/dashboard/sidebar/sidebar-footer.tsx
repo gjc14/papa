@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router'
 
-import { toast } from 'sonner'
 import {
 	Bell,
 	ChevronRight,
@@ -11,6 +10,7 @@ import {
 	User2,
 	type LucideIcon,
 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import {
@@ -61,25 +61,27 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 		<SidebarMenu>
 			<SidebarMenuItem>
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<SidebarMenuButton
-							size="lg"
-							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-						>
-							<Avatar className="h-8 w-8 rounded-md">
-								<AvatarImage
-									src={user.image || '/placeholders/avatar.png'}
-									alt={user.name}
-								/>
-								<AvatarFallback>PA</AvatarFallback>
-							</Avatar>
-							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="truncate font-semibold">{user.name}</span>
-								<span className="truncate text-xs">{user.email}</span>
-							</div>
-							<ChevronRight className="ml-auto size-4" />
-						</SidebarMenuButton>
-					</DropdownMenuTrigger>
+					<DropdownMenuTrigger
+						render={
+							<SidebarMenuButton
+								size="lg"
+								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							>
+								<Avatar className="h-8 w-8 rounded-md">
+									<AvatarImage
+										src={user.image || '/placeholders/avatar.png'}
+										alt={user.name}
+									/>
+									<AvatarFallback>PA</AvatarFallback>
+								</Avatar>
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="truncate font-semibold">{user.name}</span>
+									<span className="truncate text-xs">{user.email}</span>
+								</div>
+								<ChevronRight className="ml-auto size-4" />
+							</SidebarMenuButton>
+						}
+					/>
 					<DropdownMenuContent
 						className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
 						side={'top'}
@@ -124,18 +126,21 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 							</ThemeDropdownMenuSubTrigger>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem className="group" asChild>
-							<button
-								className="flex w-full items-center gap-2"
-								onClick={handleSignOut}
-							>
-								<LogOut
-									size={16}
-									className="transition-transform group-hover:translate-x-0.5"
-								/>
-								<p className="text-sm">Sign Out</p>
-							</button>
-						</DropdownMenuItem>
+						<DropdownMenuItem
+							className="group"
+							render={
+								<button
+									className="flex w-full items-center gap-2"
+									onClick={handleSignOut}
+								>
+									<LogOut
+										size={16}
+										className="transition-transform group-hover:translate-x-0.5"
+									/>
+									<p className="text-sm">Sign Out</p>
+								</button>
+							}
+						/>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>
@@ -175,15 +180,18 @@ interface ActionButtonProps {
 const ActionButton = (props: ActionButtonProps) => {
 	if (props.route) {
 		return (
-			<DropdownMenuItem className="group flex items-center gap-2" asChild>
-				<Link to={props.route}>
-					<props.icon
-						size={16}
-						className="transition-transform group-hover:rotate-[25deg]"
-					/>
-					<p className="text-sm">{props.title}</p>
-				</Link>
-			</DropdownMenuItem>
+			<DropdownMenuItem
+				className="group flex items-center gap-2"
+				render={
+					<Link to={props.route}>
+						<props.icon
+							size={16}
+							className="transition-transform group-hover:rotate-[25deg]"
+						/>
+						<p className="text-sm">{props.title}</p>
+					</Link>
+				}
+			/>
 		)
 	}
 	return (

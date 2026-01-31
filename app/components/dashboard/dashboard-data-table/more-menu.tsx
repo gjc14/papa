@@ -50,12 +50,18 @@ export const DashboardDataTableMoreMenu = ({
 
 	return (
 		<DropdownMenu modal={false}>
-			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" size={'icon'} disabled={mutating}>
-					<span className="sr-only">Open menu</span>
-					{mutating ? <Loader2 className="animate-spin" /> : <MoreHorizontal />}
-				</Button>
-			</DropdownMenuTrigger>
+			<DropdownMenuTrigger
+				render={
+					<Button variant="ghost" size={'icon'} disabled={mutating}>
+						<span className="sr-only">Open menu</span>
+						{mutating ? (
+							<Loader2 className="animate-spin" />
+						) : (
+							<MoreHorizontal />
+						)}
+					</Button>
+				}
+			/>
 
 			<DropdownMenuContent>
 				<DropdownMenuLabel>Manage</DropdownMenuLabel>

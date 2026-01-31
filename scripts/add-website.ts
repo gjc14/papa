@@ -61,12 +61,8 @@ export default function WebsiteLayout() {
 						</div>
 
 						<nav className="flex items-center">
-							<Button asChild variant={'link'}>
-								<Link to="/${websiteName}">Website</Link>
-							</Button>
-							<Button asChild variant={'link'}>
-								<Link to="/${websiteName}/about">About</Link>
-							</Button>
+						<Button variant={'link'} render={<Link to="/${websiteName}">Website</Link>} />
+						<Button variant={'link'} render={<Link to="/${websiteName}/about">About</Link>} />
 						</nav>
 					</div>
 				</div>

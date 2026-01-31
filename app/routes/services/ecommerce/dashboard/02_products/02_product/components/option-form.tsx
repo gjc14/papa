@@ -112,17 +112,19 @@ function InheritButton({
 }: InheritButtonProps) {
 	return (
 		<Tooltip delayDuration={0}>
-			<TooltipTrigger asChild>
-				<Button
-					type="button"
-					size="icon"
-					variant={isInherited ? 'secondary' : 'ghost'}
-					className="size-6"
-					onClick={onInherit}
-				>
-					{isInherited ? <Link2 /> : <Link2Off />}
-				</Button>
-			</TooltipTrigger>
+			<TooltipTrigger
+				render={
+					<Button
+						type="button"
+						size="icon"
+						variant={isInherited ? 'secondary' : 'ghost'}
+						className="size-6"
+						onClick={onInherit}
+					>
+						{isInherited ? <Link2 /> : <Link2Off />}
+					</Button>
+				}
+			/>
 			<TooltipContent side="right">
 				<div className="text-xs">
 					{isInherited ? (
@@ -195,31 +197,35 @@ export function OptionForm({
 				orientation="vertical"
 				className="flex h-full w-full flex-row gap-1"
 			>
-				<TabsList asChild>
-					<Field
-						orientation={'vertical'}
-						className="h-auto w-fit justify-start gap-2"
-					>
-						{tabConfig.map(({ value, icon: Icon, label }) => (
-							<Tooltip delayDuration={0} key={value}>
-								<TooltipTrigger asChild>
-									<span>
-										<TabsTrigger
-											value={value}
-											className="h-9 w-9 cursor-pointer p-2"
-											disabled={isVariant ? !option.active : false}
-										>
-											<Icon size={16} />
-										</TabsTrigger>
-									</span>
-								</TooltipTrigger>
-								<TooltipContent side="right" className="px-2 py-1 text-xs">
-									{label}
-								</TooltipContent>
-							</Tooltip>
-						))}
-					</Field>
-				</TabsList>
+				<TabsList
+					render={
+						<Field
+							orientation={'vertical'}
+							className="h-auto w-fit justify-start gap-2"
+						>
+							{tabConfig.map(({ value, icon: Icon, label }) => (
+								<Tooltip delayDuration={0} key={value}>
+									<TooltipTrigger
+										render={
+											<span>
+												<TabsTrigger
+													value={value}
+													className="h-9 w-9 cursor-pointer p-2"
+													disabled={isVariant ? !option.active : false}
+												>
+													<Icon size={16} />
+												</TabsTrigger>
+											</span>
+										}
+									/>
+									<TooltipContent side="right" className="px-2 py-1 text-xs">
+										{label}
+									</TooltipContent>
+								</Tooltip>
+							))}
+						</Field>
+					}
+				/>
 
 				<div className="flex grow flex-col overflow-hidden rounded-md border">
 					<TabsContent
@@ -261,37 +267,37 @@ export function OptionForm({
 														onClick={() =>
 															!assets && fetcher.load(assetResourceRoute)
 														}
-														asChild
-													>
-														{option.image ? (
-															<div className="relative w-[80px]!">
-																<button
-																	type="button"
-																	onClick={e => {
-																		e.stopPropagation()
-																		onChange({
-																			image: null,
-																			imageAlt: null,
-																			imageTitle: null,
-																		})
-																	}}
-																	className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
-																>
-																	<X size={12} />
-																</button>
-																<img
-																	src={option.image}
-																	alt={option.imageAlt || ''}
-																	title={option.imageTitle || ''}
-																	className="aspect-square h-full w-full cursor-pointer rounded-md border object-cover"
-																/>
-															</div>
-														) : (
-															<div className="bg-accent flex aspect-square w-[80px]! cursor-pointer items-center justify-center rounded-md border border-dashed">
-																<Image />
-															</div>
-														)}
-													</DialogTrigger>
+														render={
+															option.image ? (
+																<div className="relative w-[80px]!">
+																	<button
+																		type="button"
+																		onClick={e => {
+																			e.stopPropagation()
+																			onChange({
+																				image: null,
+																				imageAlt: null,
+																				imageTitle: null,
+																			})
+																		}}
+																		className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+																	>
+																		<X size={12} />
+																	</button>
+																	<img
+																		src={option.image}
+																		alt={option.imageAlt || ''}
+																		title={option.imageTitle || ''}
+																		className="aspect-square h-full w-full cursor-pointer rounded-md border object-cover"
+																	/>
+																</div>
+															) : (
+																<div className="bg-accent flex aspect-square w-[80px]! cursor-pointer items-center justify-center rounded-md border border-dashed">
+																	<Image />
+																</div>
+															)
+														}
+													/>
 												}
 												assets={assets}
 												isLoading={fetcher.state === 'loading'}

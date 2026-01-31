@@ -23,12 +23,14 @@ export const BulkDeleteAlertDialog = ({
 }) => {
 	return (
 		<AlertDialog>
-			<AlertDialogTrigger asChild>
-				<Button size={'sm'} variant={'destructive'} disabled={isDeleting}>
-					{isDeleting && <Spinner />}
-					{`Delete Posts (${numberOfRowsDeleting})`}
-				</Button>
-			</AlertDialogTrigger>
+			<AlertDialogTrigger
+				render={
+					<Button size={'sm'} variant={'destructive'} disabled={isDeleting}>
+						{isDeleting && <Spinner />}
+						{`Delete Posts (${numberOfRowsDeleting})`}
+					</Button>
+				}
+			/>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

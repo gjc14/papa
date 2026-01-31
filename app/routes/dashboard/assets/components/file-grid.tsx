@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 
-import { toast } from 'sonner'
 import { CloudUploadIcon, CupSoda } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
 import {
@@ -27,7 +27,7 @@ export interface FileGridProps {
 	onFileSelect?: (file: FileMetadata) => void
 	onFileUpdate?: (fileMeta: FileMetadata) => void
 	onFileDeleted?: (file: FileMetadata) => void
-	dialogTrigger?: React.ReactNode
+	dialogTrigger?: React.ReactElement
 	onUpload?: (files: FileMetadata[]) => void
 	/** Controllable state to visually show selected single file */
 	visuallySelected?: FileMetadata | null
@@ -57,7 +57,7 @@ export const FileGrid = (props: FileGridProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>{props.dialogTrigger}</DialogTrigger>
+			<DialogTrigger render={props.dialogTrigger} />
 			<DialogContent className="max-h-[90vh] max-w-xl min-w-[50vw] overflow-scroll">
 				<DialogHeader className="h-fit">
 					<DialogTitle>Assets</DialogTitle>

@@ -197,12 +197,14 @@ export const CategoriesSection = ({
 								onChange={e => setNewCategoryName(e.target.value)}
 								className="flex-1"
 							/>
-							<DialogClose asChild>
-								<Button type="submit" size="sm">
-									<PlusCircle />
-									Create
-								</Button>
-							</DialogClose>
+							<DialogClose
+								render={
+									<Button type="submit" size="sm">
+										<PlusCircle />
+										Create
+									</Button>
+								}
+							/>
 						</Form>
 					</DialogContent>
 				</Dialog>
@@ -327,12 +329,14 @@ export const CategoryHierarchySection = ({
 								onChange={e => setNewChildCategoryName(e.target.value)}
 								className="flex-1"
 							/>
-							<DialogClose asChild>
-								<Button type="submit" size="sm">
-									<PlusCircle />
-									Create
-								</Button>
-							</DialogClose>
+							<DialogClose
+								render={
+									<Button type="submit" size="sm">
+										<PlusCircle />
+										Create
+									</Button>
+								}
+							/>
 						</Form>
 					</DialogContent>
 				</Dialog>

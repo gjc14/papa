@@ -53,18 +53,22 @@ type AssetSelectionDialogProps = {
  *         	actionLabel="Insert"
  *         	title="Image"
  *         	trigger={
- *         		<TooltipWrapper tooltip="Image" shortcut={IMAGE_SHORTCUT}>
- *         			<DialogTrigger asChild>
- *         				<Button
- *         					size={'icon'}
- *         					variant={'ghost'}
- *         					className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
- *         					disabled={!canRun}
- *         				>
- *         					<Image size={14} />
- *         				</Button>
- *         			</DialogTrigger>
- *         		</TooltipWrapper>
+ *         		<TooltipWrapper
+ * 					tooltip="Image"
+ * 					shortcut={IMAGE_SHORTCUT}
+ * 					render={
+ * 						<DialogTrigger render={
+ * 							<Button
+ *         						size={'icon'}
+ *         						variant={'ghost'}
+ *         						className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+ *         						disabled={!canRun}
+ *         					>
+ *         						<Image size={14} />
+ *         					</Button>}
+ * 						/>
+ * 					}
+ * 				/>
  *         	}
  *         	asset={filesContext}
  *         	isLoading={isLoading}
@@ -227,15 +231,17 @@ export function AssetSelectionDialog({
 						}}
 					/>
 
-					<DialogClose asChild>
-						<Button
-							onClick={onAction}
-							className="mt-2 w-full"
-							disabled={!isAvailable}
-						>
-							{actionLabel || 'Insert'}
-						</Button>
-					</DialogClose>
+					<DialogClose
+						render={
+							<Button
+								onClick={onAction}
+								className="mt-2 w-full"
+								disabled={!isAvailable}
+							>
+								{actionLabel || 'Insert'}
+							</Button>
+						}
+					/>
 				</div>
 			</DialogContent>
 		</Dialog>

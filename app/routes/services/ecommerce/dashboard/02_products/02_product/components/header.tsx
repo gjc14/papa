@@ -184,16 +184,16 @@ export function ProductEditPageHeader() {
 								variant="ghost"
 								size="icon"
 								className="text-muted-foreground hover:text-foreground size-6"
-								asChild
-							>
-								<Link
-									to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<ExternalLink />
-								</Link>
-							</Button>
+								render={
+									<Link
+										to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
+										target="_blank"
+										rel="noreferrer"
+									>
+										<ExternalLink />
+									</Link>
+								}
+							/>
 						</>
 					)}
 				</ItemDescription>
@@ -210,11 +210,13 @@ export function ProductEditPageHeader() {
 					{isNew ? 'Create Product' : 'Save Product'}
 				</Button>
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant={'outline'} size={'icon'} className="h-8">
-							<MoreVertical />
-						</Button>
-					</DropdownMenuTrigger>
+					<DropdownMenuTrigger
+						render={
+							<Button variant={'outline'} size={'icon'} className="h-8">
+								<MoreVertical />
+							</Button>
+						}
+					/>
 					<DropdownMenuContent>
 						<DropdownMenuLabel>Product Actions</DropdownMenuLabel>
 						<DropdownMenuSeparator />

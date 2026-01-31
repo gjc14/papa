@@ -37,21 +37,23 @@ export const ProgressCard = ({
 			onClick={e => e.stopPropagation()}
 		>
 			{/* Upload progress card */}
-			<CollapsibleTrigger asChild>
-				<Button
-					variant="ghost"
-					size="sm"
-					className="bg-muted flex w-full items-center justify-between space-x-4 border px-4 py-0"
-					onClick={e => e.stopPropagation()}
-				>
-					<h4 className="text-sm font-semibold">
-						{visibleUploadProgress.length}{' '}
-						{visibleUploadProgress.length > 1 ? 'files' : 'file'} created
-					</h4>
-					<ChevronsUpDown className="h-4 w-4" />
-					<span className="sr-only">Toggle</span>
-				</Button>
-			</CollapsibleTrigger>
+			<CollapsibleTrigger
+				render={
+					<Button
+						variant="ghost"
+						size="sm"
+						className="bg-muted flex w-full items-center justify-between space-x-4 border px-4 py-0"
+						onClick={e => e.stopPropagation()}
+					>
+						<h4 className="text-sm font-semibold">
+							{visibleUploadProgress.length}{' '}
+							{visibleUploadProgress.length > 1 ? 'files' : 'file'} created
+						</h4>
+						<ChevronsUpDown className="h-4 w-4" />
+						<span className="sr-only">Toggle</span>
+					</Button>
+				}
+			/>
 			<CollapsibleContent className="space-y-2">
 				{visibleUploadProgress.map(([key, upload]) => {
 					const { file, progress, status, error } = upload

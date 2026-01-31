@@ -149,21 +149,25 @@ export function Attributes() {
 										</ItemDescription>
 									</ItemContent>
 									<ItemActions>
-										<DialogTrigger asChild>
-											<Button variant="outline" size="sm">
-												Edit
-											</Button>
-										</DialogTrigger>
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<Button
-													variant="outline"
-													size="icon"
-													className="size-8"
-												>
-													<MoreVertical />
+										<DialogTrigger
+											render={
+												<Button variant="outline" size="sm">
+													Edit
 												</Button>
-											</DropdownMenuTrigger>
+											}
+										/>
+										<DropdownMenu>
+											<DropdownMenuTrigger
+												render={
+													<Button
+														variant="outline"
+														size="icon"
+														className="size-8"
+													>
+														<MoreVertical />
+													</Button>
+												}
+											/>
 											<DropdownMenuContent>
 												<DropdownMenuLabel>Actions</DropdownMenuLabel>
 												<DropdownMenuSeparator />
@@ -202,13 +206,13 @@ export function Attributes() {
 						variant="outline"
 						size="sm"
 						className="w-full md:w-auto md:flex-1"
-						asChild
-					>
-						<DialogTrigger>
-							<Plus />
-							Add Attribute
-						</DialogTrigger>
-					</Button>
+						render={
+							<DialogTrigger>
+								<Plus />
+								Add Attribute
+							</DialogTrigger>
+						}
+					/>
 				</AttributeEditDialog>
 				<Button
 					variant="secondary"

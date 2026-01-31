@@ -66,11 +66,15 @@ export function PostMeta({ post }: { post: PostWithRelations }) {
 						<div className="mr-auto">
 							{post.categories.map((c, i) => (
 								<Fragment key={i}>
-									<Button variant={'link'} className="h-fit p-0" asChild>
-										<Link to={`/blog?category=${c.slug}`} prefetch="intent">
-											{c.name}
-										</Link>
-									</Button>
+									<Button
+										variant={'link'}
+										className="h-fit p-0"
+										render={
+											<Link to={`/blog?category=${c.slug}`} prefetch="intent">
+												{c.name}
+											</Link>
+										}
+									/>
 									{i < post.categories.length - 1 && (
 										<span className="px-1.5">&</span>
 									)}

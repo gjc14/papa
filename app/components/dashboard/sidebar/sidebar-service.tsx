@@ -67,23 +67,25 @@ export function SidebarService({
 			<SidebarMenuItem>
 				<DropdownMenu>
 					{currentService && (
-						<DropdownMenuTrigger asChild>
-							<SidebarMenuButton
-								size="lg"
-								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-							>
-								<div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border">
-									{renderServiceLogo(currentService.logo, 'lg')}
-								</div>
-								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold">
-										{currentService.name}
-									</span>
-									<span className="truncate text-xs">{'Start Up'}</span>
-								</div>
-								<ChevronsUpDown className="ml-auto" />
-							</SidebarMenuButton>
-						</DropdownMenuTrigger>
+						<DropdownMenuTrigger
+							render={
+								<SidebarMenuButton
+									size="lg"
+									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								>
+									<div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border">
+										{renderServiceLogo(currentService.logo, 'lg')}
+									</div>
+									<div className="grid flex-1 text-left text-sm leading-tight">
+										<span className="truncate font-semibold">
+											{currentService.name}
+										</span>
+										<span className="truncate text-xs">{'Start Up'}</span>
+									</div>
+									<ChevronsUpDown className="ml-auto" />
+								</SidebarMenuButton>
+							}
+						/>
 					)}
 					<DropdownMenuContent
 						className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"

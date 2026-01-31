@@ -38,22 +38,22 @@ export function SidebarSecondary({
 					{items.map(item => (
 						<SidebarMenuItem key={item.title}>
 							<SidebarMenuButton
-								asChild
 								size="default"
 								onClick={item.action ? () => item.action() : undefined}
-							>
-								{item.url ? (
-									<Link to={item.url}>
-										<item.icon />
-										<span>{item.title}</span>
-									</Link>
-								) : (
-									<span className="cursor-pointer">
-										<item.icon />
-										<span>{item.title}</span>
-									</span>
-								)}
-							</SidebarMenuButton>
+								render={
+									item.url ? (
+										<Link to={item.url}>
+											<item.icon />
+											<span>{item.title}</span>
+										</Link>
+									) : (
+										<span className="cursor-pointer">
+											<item.icon />
+											<span>{item.title}</span>
+										</span>
+									)
+								}
+							/>
 						</SidebarMenuItem>
 					))}
 				</SidebarMenu>

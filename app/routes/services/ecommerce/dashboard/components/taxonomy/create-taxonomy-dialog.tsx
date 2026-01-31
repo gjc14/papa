@@ -227,12 +227,14 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 				setOpen(o)
 			}}
 		>
-			<DialogTrigger asChild>
-				<Button size="sm">
-					<Plus />
-					Create {config.name}
-				</Button>
-			</DialogTrigger>
+			<DialogTrigger
+				render={
+					<Button size="sm">
+						<Plus />
+						Create {config.name}
+					</Button>
+				}
+			/>
 			<DialogContent className="max-w-md">
 				<DialogHeader>
 					<DialogTitle>Create New {config.name}</DialogTitle>

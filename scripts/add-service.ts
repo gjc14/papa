@@ -178,9 +178,7 @@ export default function ExampleDashboardLayout() {
 				<DashboardTitle title="🍜 Shop Dashboard" />
 				<DashboardActions>
 					{/* You may put some buttons here */}
-					<Button asChild variant={'ghost'} className="border-2 border-dashed">
-						<Link to="/${frontendRouteName}">Go to Example Shop</Link>
-					</Button>
+					<Button variant={'ghost'} className="border-2 border-dashed" render={<Link to="/${frontendRouteName}">Go to Example Shop</Link>} />
 				</DashboardActions>
 			</DashboardHeader>
 			<DashboardContent>
@@ -208,14 +206,10 @@ export default function ExampleDashboardIndex() {
 			<div>
 				<ul className="list-inside list-disc">
 					<li>
-						<Button asChild variant={'link'} className="p-0">
-							<Link to="たいわんラーメン">たいわんラーメン (Taiwan ramen)</Link>
-						</Button>
+						<Button variant={'link'} className="p-0" render={<Link to="たいわんラーメン">たいわんラーメン (Taiwan ramen)</Link>} />
 					</li>
 					<li>
-						<Button asChild variant={'link'} className="p-0">
-							<Link to="はかたラーメン">はかたラーメン (Hakata ramen)</Link>
-						</Button>
+						<Button variant={'link'} className="p-0" render={<Link to="はかたラーメン">はかたラーメン (Hakata ramen)</Link>} />
 					</li>
 				</ul>
 			</div>
@@ -237,9 +231,7 @@ export default function ExampleDashboardSub({ params }: Route.ComponentProps) {
 			<h3 className="text-6xl">🍜</h3>
 			<p>{params.productId} Page</p>
 
-			<Button asChild variant={'outline'} className="mt-5">
-				<Link to="..">Back to products list</Link>
-			</Button>
+			<Button variant={'outline'} className="mt-5" render={<Link to="..">Back to products list</Link>} />
 		</div>
 	)
 }
@@ -282,12 +274,10 @@ export default function ShopLayout() {
 				</Link>
 
 				<Button
-					asChild
 					variant={'ghost'}
 					className="mb-8 border-dashed border-2"
-				>
-					<Link to="/dashboard/${serviceName}">See Dashboard</Link>
-				</Button>
+					render={<Link to="/dashboard/${serviceName}">See Dashboard</Link>}
+				/>
 			</div>
 
 			<Outlet />
@@ -318,9 +308,7 @@ export default function Shop() {
 							</p>
 						</CardContent>
 						<CardFooter>
-							<Button asChild className="w-full">
-								<Link to={\`\${product.id}\`}>View Details</Link>
-							</Button>
+							<Button className="w-full" render={<Link to={\`\${product.id}\`}>View Details</Link>} />
 						</CardFooter>
 					</Card>
 				))}
@@ -369,9 +357,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
 					<Button size="lg" className="w-full">
 						Add to Cart
 					</Button>
-					<Button variant="outline" size="lg" asChild className="w-full">
-						<Link to="/${frontendRouteName}">← Back to Shop</Link>
-					</Button>
+					<Button variant="outline" size="lg" className="w-full" render={<Link to="/${frontendRouteName}">← Back to Shop</Link>} />
 				</CardFooter>
 			</Card>
 		</div>

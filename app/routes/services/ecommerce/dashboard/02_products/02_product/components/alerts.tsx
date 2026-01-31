@@ -120,7 +120,7 @@ function ProductActionAlert({
 	cancelTitle = 'Cancel',
 	onAction,
 	onCancel,
-	children,
+	render,
 }: {
 	open: boolean
 	onOpenChange: (open: boolean) => void
@@ -130,11 +130,11 @@ function ProductActionAlert({
 	cancelTitle?: string
 	onAction: () => void
 	onCancel?: () => void
-	children?: React.ReactNode
+	render?: React.ReactElement
 }) {
 	return (
 		<AlertDialog open={open} onOpenChange={onOpenChange}>
-			{children && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
+			{render && <AlertDialogTrigger render={render} />}
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>{title}</AlertDialogTitle>

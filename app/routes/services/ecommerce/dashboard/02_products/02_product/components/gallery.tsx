@@ -111,32 +111,32 @@ export function Gallery() {
 						trigger={
 							<DialogTrigger
 								onClick={() => !assets && fetcher.load(assetResourceRoute)}
-								asChild
-							>
-								{productImage ? (
-									<div className="relative">
-										<button
-											type="button"
-											onClick={e => {
-												e.stopPropagation()
-												handleRemoveFeatureImage()
-											}}
-											className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
-										>
-											<X size={12} />
-										</button>
-										<img
-											src={productImage}
-											alt={productName}
-											className="aspect-square h-full w-full cursor-pointer rounded-md object-cover"
-										/>
-									</div>
-								) : (
-									<div className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed">
-										<Image />
-									</div>
-								)}
-							</DialogTrigger>
+								render={
+									productImage ? (
+										<div className="relative">
+											<button
+												type="button"
+												onClick={e => {
+													e.stopPropagation()
+													handleRemoveFeatureImage()
+												}}
+												className="bg-destructive absolute top-0.5 right-0.5 cursor-pointer rounded-full p-0.5 text-white hover:opacity-80"
+											>
+												<X size={12} />
+											</button>
+											<img
+												src={productImage}
+												alt={productName}
+												className="aspect-square h-full w-full cursor-pointer rounded-md object-cover"
+											/>
+										</div>
+									) : (
+										<div className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center rounded-md border border-dashed">
+											<Image />
+										</div>
+									)
+								}
+							/>
 						}
 						assets={assets}
 						isLoading={fetcher.state === 'loading'}

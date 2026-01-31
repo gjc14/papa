@@ -36,17 +36,22 @@ export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 
 	return (
 		<DropdownMenu>
-			<TooltipWrapper tooltip="More options">
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant="ghost"
-						size={'sm'}
-						onClick={e => e.isDefaultPrevented()}
-					>
-						<MoreVertical />
-					</Button>
-				</DropdownMenuTrigger>
-			</TooltipWrapper>
+			<TooltipWrapper
+				tooltip="More options"
+				render={
+					<DropdownMenuTrigger
+						render={
+							<Button
+								variant="ghost"
+								size={'sm'}
+								onClick={e => e.isDefaultPrevented()}
+							>
+								<MoreVertical />
+							</Button>
+						}
+					/>
+				}
+			/>
 			<DropdownMenuContent className="bg-background">
 				{options.map(
 					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
@@ -55,20 +60,23 @@ export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 							tooltip={name}
 							shortcut={shortcut}
 							side="right"
-						>
-							<DropdownMenuItem asChild>
-								<Button
-									variant="ghost"
-									size={'sm'}
-									disabled={!canRun(editor)}
-									onClick={() => run(editor)}
-									className={`w-full justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
-								>
-									<Icon className="size-4" />
-									{name}
-								</Button>
-							</DropdownMenuItem>
-						</TooltipWrapper>
+							render={
+								<DropdownMenuItem
+									render={
+										<Button
+											variant="ghost"
+											size={'sm'}
+											disabled={!canRun(editor)}
+											onClick={() => run(editor)}
+											className={`w-full justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
+										>
+											<Icon className="size-4" />
+											{name}
+										</Button>
+									}
+								/>
+							}
+						/>
 					),
 				)}
 			</DropdownMenuContent>

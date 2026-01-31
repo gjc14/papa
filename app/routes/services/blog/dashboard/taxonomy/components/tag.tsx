@@ -116,12 +116,14 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 								onChange={e => setNewTagName(e.target.value)}
 								className="flex-1"
 							/>
-							<DialogClose asChild>
-								<Button type="submit" size="sm">
-									<PlusCircle />
-									Create
-								</Button>
-							</DialogClose>
+							<DialogClose
+								render={
+									<Button type="submit" size="sm">
+										<PlusCircle />
+										Create
+									</Button>
+								}
+							/>
 						</Form>
 					</DialogContent>
 				</Dialog>
