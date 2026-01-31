@@ -4,7 +4,7 @@ import { LoaderCircle, Search } from 'lucide-react'
 
 import { cn } from '~/lib/utils'
 
-import { Input } from './input'
+import { Input } from '../input'
 
 export function InputSearch(
 	props: React.ComponentProps<typeof Input> & {

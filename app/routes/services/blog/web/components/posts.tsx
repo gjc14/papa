@@ -15,7 +15,7 @@ import { motion } from 'motion/react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Badge } from '~/components/ui/badge'
-import { InputSearch } from '~/components/ui/input-search'
+import { InputSearch } from '~/components/ui/xui/input-search'
 
 import type { PostWithRelations } from '../..//lib/db/post.server'
 
