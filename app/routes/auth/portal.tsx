@@ -2,7 +2,7 @@ import type { Route } from './+types/portal'
 import { useEffect } from 'react'
 import { redirect } from 'react-router'
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 
 import { MainWrapper } from '~/components/wrappers'
 import { auth } from '~/lib/auth/auth.server'

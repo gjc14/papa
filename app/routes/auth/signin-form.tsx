@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Form, useNavigate } from 'react-router'
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'

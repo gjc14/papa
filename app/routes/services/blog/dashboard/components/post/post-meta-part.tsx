@@ -3,7 +3,7 @@
  * This component is responsible for rendering the meta part of the post editor.
  */
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 import { useAtom } from 'jotai'
 import { CloudAlert, Loader } from 'lucide-react'
 

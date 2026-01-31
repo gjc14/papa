@@ -9,7 +9,7 @@ import './styles/youtube-node.css'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useAtom } from 'jotai'
 import debounce from 'lodash/debounce'

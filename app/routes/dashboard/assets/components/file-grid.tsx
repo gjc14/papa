@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 import { CloudUploadIcon, CupSoda } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'

@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react'
 import { useFetcher } from 'react-router'
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 import {
 	AudioWaveform,
 	Expand,

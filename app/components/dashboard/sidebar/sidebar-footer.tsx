@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router'
 
-import { toast } from '@gjc14/sonner'
+import { toast } from 'sonner'
 import {
 	Bell,
 	ChevronRight,
