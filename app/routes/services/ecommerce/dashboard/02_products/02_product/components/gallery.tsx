@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useState } from 'react'
 
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { Image, Plus, X } from 'lucide-react'
@@ -8,9 +7,7 @@ import { Card, CardContent } from '~/components/ui/card'
 import { DialogTrigger } from '~/components/ui/dialog'
 import { Skeleton } from '~/components/ui/skeleton'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
-import { assetsAtom } from '~/context/assets'
-import type { loader } from '~/routes/dashboard/assets/resource'
-import { assetResourceRoute } from '~/routes/dashboard/assets/utils'
+import { useAssets } from '~/hooks/use-assets'
 
 import {
 	productAtom,
@@ -28,8 +25,6 @@ const productIdAtom = atom(get => get(productAtom)?.id ?? null)
 const productNameAtom = atom(get => get(productAtom)?.name ?? null)
 
 export function Gallery() {
-	const fetcher = useFetcher<typeof loader>()
-
 	const setProduct = useSetAtom(productAtom)
 	const [gallery, setGallery] = useAtom(productGalleryAtom)
 	const productId = useAtomValue(productIdAtom)
@@ -37,17 +32,14 @@ export function Gallery() {
 	const productImage = useAtomValue(productImageAtom)
 	const productImageAlt = useAtomValue(productImageAltAtom)
 	const productImageTitle = useAtomValue(productImageTitleAtom)
-	const [assets, setAssets] = useAtom(assetsAtom)
+
+	const { assets, setAssets, load, isLoading } = useAssets()
 
 	const [openSelectFeature, setOpenSelectFeature] = useState(false)
 	const [openSelectGallery, setOpenSelectGallery] = useState(false)
 	const [srcInput, setSrcInput] = useState('')
 	const [altInput, setAltInput] = useState('')
 	const [titleInput, setTitleInput] = useState('')
-
-	useEffect(() => {
-		if (fetcher.data) setAssets(fetcher.data)
-	}, [fetcher.data])
 
 	if (!productId || productName === null) return null
 
@@ -110,7 +102,7 @@ export function Gallery() {
 						title="Image"
 						trigger={
 							<DialogTrigger
-								onClick={() => !assets && fetcher.load(assetResourceRoute)}
+								onClick={() => !assets && load()}
 								render={
 									productImage ? (
 										<div className="relative">
@@ -139,7 +131,7 @@ export function Gallery() {
 							/>
 						}
 						assets={assets}
-						isLoading={fetcher.state === 'loading'}
+						isLoading={isLoading}
 						open={openSelectFeature}
 						onOpenChange={open => {
 							setOpenSelectFeature(open)
@@ -160,6 +152,15 @@ export function Gallery() {
 						titleInput={titleInput}
 						setTitleInput={setTitleInput}
 						onAction={handleSetFeatureImage}
+						onUpload={files =>
+							setAssets(prev => {
+								if (!prev) return prev
+								return {
+									...prev,
+									files: [...prev.files, ...files],
+								}
+							})
+						}
 					/>
 				</div>
 
@@ -201,14 +202,14 @@ export function Gallery() {
 							trigger={
 								<DialogTrigger
 									className="bg-accent border-muted-foreground flex aspect-square cursor-pointer items-center justify-center border border-dashed"
-									onClick={() => !assets && fetcher.load(assetResourceRoute)}
+									onClick={() => !assets && load()}
 									hidden={galleryPending}
 								>
 									<Plus />
 								</DialogTrigger>
 							}
 							assets={assets}
-							isLoading={fetcher.state === 'loading'}
+							isLoading={isLoading}
 							open={openSelectGallery}
 							onOpenChange={open => {
 								setOpenSelectGallery(open)
@@ -223,6 +224,15 @@ export function Gallery() {
 							titleInput={titleInput}
 							setTitleInput={setTitleInput}
 							onAction={handleInsertGallery}
+							onUpload={files =>
+								setAssets(prev => {
+									if (!prev) return prev
+									return {
+										...prev,
+										files: [...prev.files, ...files],
+									}
+								})
+							}
 						/>
 					</div>
 				</div>

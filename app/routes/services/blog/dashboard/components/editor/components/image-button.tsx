@@ -10,9 +10,9 @@ import { Button } from '~/components/ui/button'
 import { DialogTrigger } from '~/components/ui/dialog'
 import { Skeleton } from '~/components/ui/skeleton'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
+import { useAssets } from '~/hooks/use-assets'
 
 import { editorAtom } from '../../../context'
-import { useAssetsContext } from '../../../hooks'
 import { createImageOption } from '../edit-options'
 import { TooltipWrapper } from './tooltip-wrapper'
 
@@ -21,7 +21,7 @@ export const isImageSelectorOpenAtom = atom(false)
 export const ImageButton = () => {
 	const IMAGE_SHORTCUT = createImageOption({ src: '' }).shortcut
 
-	const { filesContext, isLoading } = useAssetsContext()
+	const { assets, isLoading, setAssets } = useAssets({ fetchOnLoad: true })
 
 	const [srcInput, setSrcInput] = useState('')
 	const [altInput, setAltInput] = useState('')
@@ -112,7 +112,7 @@ export const ImageButton = () => {
 					}
 				/>
 			}
-			assets={filesContext}
+			assets={assets}
 			isLoading={isLoading}
 			open={isImageSelectorOpen}
 			onOpenChange={open => {
@@ -136,6 +136,15 @@ export const ImageButton = () => {
 			titleInput={titleInput}
 			setTitleInput={setTitleInput}
 			onAction={handleInsert}
+			onUpload={files =>
+				setAssets(prev => {
+					if (!prev) return prev
+					return {
+						...prev,
+						files: [...prev.files, ...files],
+					}
+				})
+			}
 		/>
 	)
 }

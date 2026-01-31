@@ -42,6 +42,8 @@ type AssetSelectionDialogProps = {
 	onAction?: () => void
 	/** Title of the asset type, e.g. Image, Video, etc. */
 	title?: string
+	/** Callback when files are uploaded */
+	onUpload?: (files: React.ComponentProps<typeof FileGrid>['files']) => void
 } & Pick<AssetGalleryProps, 'assets' | 'isLoading'> &
 	React.ComponentProps<typeof DialogContent>
 
@@ -114,6 +116,7 @@ export function AssetSelectionDialog({
 	title,
 	assets,
 	isLoading,
+	onUpload,
 	...dialogContentProps
 }: AssetSelectionDialogProps) {
 	const [assetLoading, setAssetLoading] = useState(false)
@@ -229,6 +232,7 @@ export function AssetSelectionDialog({
 							setAltInput(alt || '')
 							setTitleInput(title)
 						}}
+						onUpload={onUpload}
 					/>
 
 					<DialogClose
@@ -253,9 +257,15 @@ interface AssetGalleryProps {
 	assets: Awaited<ReturnType<typeof loader>> | null
 	isLoading: boolean
 	onSelect: (args: { src: string; alt: string | null; title: string }) => void
+	onUpload?: (files: React.ComponentProps<typeof FileGrid>['files']) => void
 }
 
-function AssetGallery({ assets, isLoading, onSelect }: AssetGalleryProps) {
+function AssetGallery({
+	assets,
+	isLoading,
+	onSelect,
+	onUpload,
+}: AssetGalleryProps) {
 	if (isLoading || !assets) {
 		return (
 			<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 border px-2 py-5">
@@ -277,6 +287,7 @@ function AssetGallery({ assets, isLoading, onSelect }: AssetGalleryProps) {
 						title: file.name,
 					})
 				}}
+				onUpload={onUpload}
 				cardSize="lg"
 			/>
 		)

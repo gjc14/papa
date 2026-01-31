@@ -20,21 +20,21 @@ import {
 import { Spinner } from '~/components/ui/spinner'
 import { Textarea } from '~/components/ui/textarea'
 import { SeparatorWithText } from '~/components/separator-with-text'
+import { useAssets } from '~/hooks/use-assets'
 import { generateSeoDescription, generateSlug } from '~/lib/utils/seo'
 import { FileGrid } from '~/routes/dashboard/assets/components/file-grid'
 
 import { PostStatus } from '../../../lib/db/schema'
 import { editorAtom, postAtom } from '../../context'
-import { useAssetsContext } from '../../hooks'
 
 export const PostMetaPart = () => {
 	const [post, setPost] = useAtom(postAtom)
 	const [editor] = useAtom(editorAtom)
 
-	const { filesContext, isLoading } = useAssetsContext()
-	const files = filesContext?.files || []
-	const origin = filesContext?.origin || ''
-	const hasObjectStorage = filesContext?.hasObjectStorage || false
+	const { assets, isLoading } = useAssets({ fetchOnLoad: true })
+	const files = assets?.files || []
+	const origin = assets?.origin || ''
+	const hasObjectStorage = assets?.hasObjectStorage || false
 
 	if (!editor || !post) return <Spinner />
 
@@ -125,7 +125,7 @@ export const PostMetaPart = () => {
 							})
 						}}
 					/>
-				) : (
+				) : !assets ? null : (
 					<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 border px-2 py-3">
 						<CloudAlert size={30} />
 						<p className="max-w-sm text-center text-xs">

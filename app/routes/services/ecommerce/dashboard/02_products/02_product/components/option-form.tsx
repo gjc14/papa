@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useState } from 'react'
 
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import {
 	DownloadCloud,
 	DownloadIcon,
@@ -46,9 +45,7 @@ import {
 } from '~/components/ui/tooltip'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
 import { SeparatorWithText } from '~/components/separator-with-text'
-import { assetsAtom } from '~/context/assets'
-import type { loader } from '~/routes/dashboard/assets/resource'
-import { assetResourceRoute } from '~/routes/dashboard/assets/utils'
+import { useAssets } from '~/hooks/use-assets'
 import {
 	StockStatus,
 	type DownloadFile,
@@ -163,8 +160,8 @@ export function OptionForm({
 
 	const storeConfig = useAtomValue(storeConfigAtom)
 
-	const fetcher = useFetcher<typeof loader>()
-	const [assets, setAssets] = useAtom(assetsAtom)
+	const { assets, setAssets, load, isLoading } = useAssets()
+
 	const [openSelectFeature, setOpenSelectFeature] = useState(false)
 	const [srcInput, setSrcInput] = useState('')
 	const [altInput, setAltInput] = useState('')
@@ -186,10 +183,6 @@ export function OptionForm({
 
 	const { hasDiscount, formattedPrice, formattedOriginalPrice } =
 		renderPrice(option)
-
-	useEffect(() => {
-		if (fetcher.data) setAssets(fetcher.data)
-	}, [fetcher.data])
 
 	return (
 		<FieldSet className="h-full w-full">
@@ -266,9 +259,7 @@ export function OptionForm({
 												title="Image"
 												trigger={
 													<DialogTrigger
-														onClick={() =>
-															!assets && fetcher.load(assetResourceRoute)
-														}
+														onClick={() => !assets && load()}
 														render={
 															option.image ? (
 																<div className="relative w-[80px]!">
@@ -302,7 +293,7 @@ export function OptionForm({
 													/>
 												}
 												assets={assets}
-												isLoading={fetcher.state === 'loading'}
+												isLoading={isLoading}
 												open={openSelectFeature}
 												onOpenChange={open => {
 													setOpenSelectFeature(open)
@@ -330,6 +321,15 @@ export function OptionForm({
 													})
 													setOpenSelectFeature(false)
 												}}
+												onUpload={files =>
+													setAssets(prev => {
+														if (!prev) return prev
+														return {
+															...prev,
+															files: [...prev.files, ...files],
+														}
+													})
+												}
 											/>
 										</Field>
 									)}
