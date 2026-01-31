@@ -42,7 +42,7 @@ export const PostCollection = ({
 					{title}
 				</motion.h2>
 				{description ? (
-					<div className="relative mt-12 rounded-md border bg-emerald-500/30 px-4 py-3">
+					<div className="relative mt-12 border bg-emerald-500/30 px-4 py-3">
 						<div className="flex gap-3">
 							<CircleCheckIcon
 								className="mt-0.5 shrink-0 opacity-70"

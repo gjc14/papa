@@ -76,7 +76,7 @@ export const PostMetaPart = () => {
 				<img
 					src={post.featuredImage || '/logo.png'}
 					alt="featured image"
-					className="mb-2 h-40 w-full rounded-md object-cover"
+					className="mb-2 h-40 w-full object-cover"
 				/>
 				<Label htmlFor="image">Image</Label>
 				<Input
@@ -127,9 +127,9 @@ export const PostMetaPart = () => {
 						}}
 					/>
 				) : (
-					<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 rounded-xl border px-2 py-3">
+					<div className="text-muted-foreground flex w-full flex-1 flex-col items-center justify-center gap-2 border px-2 py-3">
 						<CloudAlert size={30} />
-						<p className="max-w-sm text-center text-sm">
+						<p className="max-w-sm text-center text-xs">
 							Please setup your S3 Object Storage to start using assets.
 						</p>
 					</div>

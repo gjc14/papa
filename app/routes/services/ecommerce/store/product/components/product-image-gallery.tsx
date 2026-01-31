@@ -125,12 +125,12 @@ export const ProductImageGallerySkeleton = ({
 	return (
 		<ProductImageGalleryWrapper sticky={sticky}>
 			{/* Main image skeleton */}
-			<Skeleton className="aspect-square w-full rounded-none" />
+			<Skeleton className="aspect-square w-full" />
 
 			{/* Thumbnail gallery skeleton */}
 			<div className="mt-4 flex gap-2">
 				{[...Array(3)].map((_, idx) => (
-					<Skeleton key={idx} className="h-20 w-20 rounded-none" />
+					<Skeleton key={idx} className="h-20 w-20" />
 				))}
 			</div>
 		</ProductImageGalleryWrapper>

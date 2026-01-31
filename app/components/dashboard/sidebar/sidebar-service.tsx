@@ -74,14 +74,16 @@ export function SidebarService({
 									size="lg"
 									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
-									<div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border">
+									<div className="flex aspect-square size-8 items-center justify-center overflow-hidden border">
 										{renderServiceLogo(currentService.logo, 'lg')}
 									</div>
 									<div className="grid flex-1 text-left text-sm leading-tight">
 										<span className="truncate font-semibold">
 											{currentService.name}
 										</span>
-										<span className="truncate text-xs">{'Start Up'}</span>
+										<span className="text-muted-foreground truncate text-xs">
+											Startup
+										</span>
 									</div>
 									<ChevronsUpDown className="ml-auto" />
 								</SidebarMenuButton>
@@ -89,7 +91,7 @@ export function SidebarService({
 						/>
 					)}
 					<DropdownMenuContent
-						className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+						className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
 						align="start"
 						side={isMobile ? 'bottom' : 'right'}
 						sideOffset={4}
@@ -101,7 +103,7 @@ export function SidebarService({
 							{services.map(service => (
 								<Link key={service.name} to={service.pathname}>
 									<DropdownMenuItem className="gap-2 p-2">
-										<div className="flex size-6 items-center justify-center overflow-hidden rounded-sm border">
+										<div className="flex size-6 items-center justify-center overflow-hidden border">
 											{renderServiceLogo(service.logo, 'sm')}
 										</div>
 										{service.name}
@@ -113,7 +115,7 @@ export function SidebarService({
 							))}
 							{/* <DropdownMenuSeparator />
 							<DropdownMenuItem className="gap-2 p-2">
-								<div className="bg-background flex size-6 items-center justify-center rounded-md border">
+								<div className="flex size-6 items-center justify-center overflow-hidden border">
 									<Plus className="size-4" />
 								</div>
 								<div className="text-muted-foreground font-medium">

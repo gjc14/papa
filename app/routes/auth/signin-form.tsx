@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Form, useNavigate } from 'react-router'
 
-import { toast } from 'sonner'
 import { REGEXP_ONLY_DIGITS } from 'input-otp'
+import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Button } from '~/components/ui/button'
@@ -121,7 +121,7 @@ export const SignInForm = ({
 			<Card className="w-full max-w-sm">
 				<CardHeader>
 					<CardTitle className="text-2xl">Welcome back</CardTitle>
-					<CardDescription>You are already signed in</CardDescription>
+					<CardDescription>You have already signed in</CardDescription>
 				</CardHeader>
 				<CardContent className="flex flex-col items-center justify-center gap-3">
 					<Avatar className="size-28">
@@ -135,7 +135,7 @@ export const SignInForm = ({
 						<p className="text-lg font-semibold">{user.name || user.email}</p>
 						<p className="text-muted-foreground text-sm">{user.email}</p>
 						{user.role && (
-							<p className="text-primary text-xs font-medium capitalize">
+							<p className="text-foreground text-xs font-medium capitalize">
 								{user.role}
 							</p>
 						)}

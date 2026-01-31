@@ -42,7 +42,7 @@ export const ProductInformation = () => {
 				<div>
 					<h1 className="mb-2 text-4xl font-light">{product.name}</h1>
 					{product.subtitle && (
-						<p className="text-primary/60 text-lg">{product.subtitle}</p>
+						<p className="text-foreground/60 text-lg">{product.subtitle}</p>
 					)}
 				</div>
 				<div className="my-8 flex items-baseline gap-3">
@@ -59,7 +59,7 @@ export const ProductInformation = () => {
 					)}
 				</div>
 				{product.description && (
-					<p className="text-primary/90 leading-relaxed">
+					<p className="text-foreground/90 leading-relaxed">
 						{product.description}
 					</p>
 				)}
@@ -87,7 +87,7 @@ export const ProductInformation = () => {
 												onMouseLeave={() => displayAttributeImage(undefined)}
 												disabled={!isAvailable}
 												variant={'ghost'}
-												className={`rounded-none border-2 text-sm transition-colors ${
+												className={`border-2 text-sm transition-colors ${
 													isSelected
 														? 'border-primary bg-primary text-primary-foreground hover:text-primary-foreground hover:bg-primary dark:hover:bg-primary'
 														: isAvailable
@@ -106,7 +106,7 @@ export const ProductInformation = () => {
 
 					{/* Selected Option Display */}
 					<div
-						className={`space-y-2 rounded-md border-2 ${selectedVariant ? '' : 'border-dashed'} p-4`}
+						className={`space-y-2 border-2 ${selectedVariant ? '' : 'border-dashed'} p-4`}
 					>
 						<h3 className="text-sm font-medium">Selected Variant</h3>
 						{selectedVariant ? (
@@ -121,7 +121,7 @@ export const ProductInformation = () => {
 										return (
 											<span key={attrName}>
 												{attrName}:{' '}
-												<span className="text-primary font-medium">
+												<span className="text-foreground font-medium">
 													{value}
 												</span>
 												{index < variantAttributeEntries.length - 1 && ' ⨉ '}
@@ -131,7 +131,7 @@ export const ProductInformation = () => {
 								</p>
 							</>
 						) : (
-							<p className="text-primary/90 text-sm">
+							<p className="text-foreground/90 text-sm">
 								Please select an option to see the details.
 							</p>
 						)}

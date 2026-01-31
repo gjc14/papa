@@ -132,15 +132,18 @@ const ErrorTemplate = ({
 					Page Not Found
 				</h2>
 
-				<p className="text-primary/80 mx-3 mb-8 max-w-md text-center text-lg">
+				<p className="text-foreground/80 mx-3 mb-8 max-w-md text-center text-lg">
 					Sorry, we couldn't find the page you're looking for.
 				</p>
 
-				<Link to={'/'}>
-					<Button variant={'link'}>
-						<ArrowLeft /> Back to Home
-					</Button>
-				</Link>
+				<Button
+					variant={'link'}
+					render={
+						<Link to={'/'}>
+							<ArrowLeft /> Back to Home
+						</Link>
+					}
+				/>
 			</main>
 		)
 	}
@@ -165,23 +168,29 @@ const ErrorTemplate = ({
 					Internal Server Error
 				</h2>
 
-				<p className="text-primary/80 mx-3 mb-8 max-w-md text-center text-lg">
+				<p className="text-foreground/80 mx-3 mb-8 max-w-md text-center text-lg">
 					Something went wrong on our servers.
 				</p>
 
 				<div className="flex flex-col gap-4 sm:flex-row">
-					<Link to={'/'}>
-						<Button variant="outline" className="rounded-full">
-							<ArrowLeft className="h-4 w-4" /> Back to Home
-						</Button>
-					</Link>
-
-					<a href="mailto:contact@ema.il">
-						<Button variant="secondary" className="rounded-full">
-							<AlertCircle />
-							Report this error
-						</Button>
-					</a>
+					<Button
+						className="rounded-full"
+						render={
+							<Link to={'/'}>
+								<ArrowLeft className="h-4 w-4" /> Back to Home
+							</Link>
+						}
+					/>
+					<Button
+						variant="outline"
+						className="rounded-full"
+						render={
+							<a href="mailto:contact@ema.il">
+								<AlertCircle />
+								Report this error
+							</a>
+						}
+					/>
 				</div>
 			</main>
 		)
@@ -214,16 +223,20 @@ const ErrorTemplate = ({
 			</motion.h1>
 
 			{errorMessage && (
-				<h2 className="mb-8 text-2xl font-semibold md:text-3xl">
+				<h2 className="text-muted-foreground mb-8 text-xl font-semibold md:text-3xl">
 					{errorMessage}
 				</h2>
 			)}
 
-			<Link to={'/'}>
-				<Button variant={'outline'} className="rounded-full">
-					<ArrowLeft /> Back to Home
-				</Button>
-			</Link>
+			<Button
+				variant={'outline'}
+				className="rounded-full"
+				render={
+					<Link to={'/'}>
+						<ArrowLeft /> Back to Home
+					</Link>
+				}
+			/>
 		</main>
 	)
 }

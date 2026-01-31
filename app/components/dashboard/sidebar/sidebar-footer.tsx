@@ -67,7 +67,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 								size="lg"
 								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<Avatar className="h-8 w-8 rounded-md">
+								<Avatar className="h-8 w-8">
 									<AvatarImage
 										src={user.image || '/placeholders/avatar.png'}
 										alt={user.name}
@@ -83,29 +83,30 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 						}
 					/>
 					<DropdownMenuContent
-						className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+						className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
 						side={'top'}
 						align="end"
 						sideOffset={4}
 					>
 						<DropdownMenuGroup>
 							<DropdownMenuLabel className="p-0 font-normal">
-								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-									<Avatar className="h-8 w-8 rounded-lg">
+								<div className="flex items-center gap-2 px-1 py-1.5">
+									<Avatar className="h-8 w-8">
 										<AvatarImage
 											src={user.image || '/placeholders/avatar.png'}
 											alt={user.name}
 										/>
-										<AvatarFallback className="rounded-lg">PA</AvatarFallback>
+										<AvatarFallback>PA</AvatarFallback>
 									</Avatar>
-									<div className="grid flex-1 text-left text-sm leading-tight">
-										<span className="truncate font-semibold">{user.name}</span>
+									<div className="grid flex-1 text-left leading-tight">
+										<span className="text-foreground truncate text-sm font-semibold">
+											{user.name}
+										</span>
 										<span className="truncate text-xs">{user.email}</span>
 									</div>
 								</div>
 							</DropdownMenuLabel>
 
-							<DropdownMenuSeparator />
 							<DropdownMenuSeparator />
 							<DropdownMenuGroup>
 								<ActionButton
@@ -128,20 +129,15 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 							</DropdownMenuGroup>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
-								className="group"
-								render={
-									<button
-										className="flex w-full items-center gap-2"
-										onClick={handleSignOut}
-									>
-										<LogOut
-											size={16}
-											className="transition-transform group-hover:translate-x-0.5"
-										/>
-										<p className="text-sm">Sign Out</p>
-									</button>
-								}
-							/>
+								className="group flex items-center gap-2"
+								onClick={handleSignOut}
+							>
+								<LogOut
+									size={16}
+									className="transition-transform group-hover:translate-x-0.5"
+								/>
+								Sign Out
+							</DropdownMenuItem>
 						</DropdownMenuGroup>
 					</DropdownMenuContent>
 				</DropdownMenu>
@@ -190,7 +186,7 @@ const ActionButton = (props: ActionButtonProps) => {
 							size={16}
 							className="transition-transform group-hover:rotate-[25deg]"
 						/>
-						<p className="text-sm">{props.title}</p>
+						{props.title}
 					</Link>
 				}
 			/>
@@ -205,7 +201,7 @@ const ActionButton = (props: ActionButtonProps) => {
 				size={16}
 				className="transition-transform group-hover:rotate-[25deg]"
 			/>
-			<p className="text-sm">{props.title}</p>
+			{props.title}
 		</DropdownMenuItem>
 	)
 }

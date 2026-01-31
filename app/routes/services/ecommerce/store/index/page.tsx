@@ -92,7 +92,6 @@ const Search = ({ q }: { q?: string }) => {
 				defaultValue={q || ''}
 				id="q"
 				name="q"
-				className="rounded-none"
 			/>
 		</Form>
 	)

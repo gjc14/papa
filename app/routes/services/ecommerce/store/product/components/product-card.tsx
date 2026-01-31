@@ -60,9 +60,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 export const ProductCardSkeleton = () => {
 	return (
 		<div>
-			<Skeleton className="mb-4 aspect-square rounded-none" />
-			<Skeleton className="mb-2 h-4 w-3/4 rounded-none" />
-			<Skeleton className="mb-2 h-4 w-3/4 rounded-none" />
+			<Skeleton className="mb-4 aspect-square" />
+			<Skeleton className="mb-2 h-4 w-3/4" />
+			<Skeleton className="mb-2 h-4 w-3/4" />
 		</div>
 	)
 }

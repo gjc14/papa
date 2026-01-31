@@ -20,7 +20,7 @@ export const columns: ColumnDef<User>[] = [
 		cell: ({ row }) => {
 			return (
 				<div className="flex items-center justify-center">
-					<Avatar className="h-8 w-8 rounded-full">
+					<Avatar className="h-8 w-8">
 						<AvatarImage
 							src={row.original.image || '/placeholders/avatar.png'}
 							alt={row.original.name}

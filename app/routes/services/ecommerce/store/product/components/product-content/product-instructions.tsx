@@ -20,10 +20,10 @@ export const ProductInstructions = () => {
 					<Button
 						key={idx}
 						onClick={() => setActiveTab(idx)}
-						className={`cursor-pointer rounded-none border-b-2 px-0 pb-5 text-sm font-medium transition-colors hover:no-underline ${
+						className={`cursor-pointer border-b-2 px-0 pb-5 text-sm font-medium transition-colors hover:no-underline ${
 							activeTab === idx
 								? 'border-primary'
-								: 'text-primary/70 hover:text-primary border-transparent'
+								: 'text-foreground/70 hover:text-foreground border-transparent'
 						}`}
 						variant={'link'}
 					>
@@ -32,7 +32,7 @@ export const ProductInstructions = () => {
 				))}
 			</div>
 			<div className="prose prose-sm max-w-none">
-				<p className="text-primary/90 leading-relaxed whitespace-pre-line">
+				<p className="text-foreground/90 leading-relaxed whitespace-pre-line">
 					{product.instructions[activeTab].content}
 				</p>
 			</div>

@@ -229,7 +229,7 @@ export function OptionForm({
 					}
 				/>
 
-				<div className="flex grow flex-col overflow-hidden rounded-md border">
+				<div className="flex grow flex-col overflow-hidden border">
 					<TabsContent
 						tabIndex={-1}
 						value="general"
@@ -290,11 +290,11 @@ export function OptionForm({
 																		src={option.image}
 																		alt={option.imageAlt || ''}
 																		title={option.imageTitle || ''}
-																		className="aspect-square h-full w-full cursor-pointer rounded-md border object-cover"
+																		className="aspect-square h-full w-full cursor-pointer border object-cover"
 																	/>
 																</div>
 															) : (
-																<div className="bg-accent flex aspect-square w-[80px]! cursor-pointer items-center justify-center rounded-md border border-dashed">
+																<div className="bg-accent flex aspect-square w-[80px]! cursor-pointer items-center justify-center border border-dashed">
 																	<Image />
 																</div>
 															)
@@ -767,7 +767,7 @@ export function OptionForm({
 
 							{option.manageStock === 1 ? (
 								<>
-									<Field className="text-muted-foreground bg-muted items-center justify-center rounded-md border border-dashed p-3 text-sm">
+									<Field className="text-muted-foreground bg-muted items-center justify-center border border-dashed p-3 text-xs">
 										Stock quantity management will be available here once
 										implemented.
 									</Field>
@@ -998,7 +998,7 @@ export function OptionForm({
 									</Field>
 								</>
 							) : (
-								<Field className="text-muted-foreground bg-muted items-center justify-center rounded-md border border-dashed p-3 text-sm">
+								<Field className="text-muted-foreground bg-muted items-center justify-center border border-dashed p-3 text-xs">
 									Turn off virtual product to enable shipping details.
 								</Field>
 							)}
@@ -1100,7 +1100,7 @@ export function OptionForm({
 											))}
 										</FieldGroup>
 									) : (
-										<Field className="text-muted-foreground bg-muted items-center justify-center rounded-md border border-dashed p-3 text-sm">
+										<Field className="text-muted-foreground bg-muted items-center justify-center border border-dashed p-3 text-xs">
 											No download files added yet.
 										</Field>
 									)}
@@ -1212,7 +1212,7 @@ export function OptionForm({
 									</FieldGroup>
 								</>
 							) : (
-								<Field className="text-muted-foreground bg-muted items-center justify-center rounded-md border border-dashed p-3 text-sm">
+								<Field className="text-muted-foreground bg-muted items-center justify-center border border-dashed p-3 text-sm">
 									Enable if this product option is a digital downloadable item.
 								</Field>
 							)}

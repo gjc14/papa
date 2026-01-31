@@ -153,7 +153,7 @@ const FileGridMain = ({
 	return (
 		<div
 			className={cn(
-				'relative h-auto w-full grow overflow-scroll rounded-xl border-4 border-dashed p-3',
+				'relative h-auto w-full grow overflow-scroll border-4 border-dashed p-3',
 				isDragActive ? 'border-4 border-sky-600 dark:border-sky-600' : '',
 			)}
 			{...getRootProps()}
@@ -161,11 +161,11 @@ const FileGridMain = ({
 			<input {...getInputProps()} />
 			<div
 				className={cn(
-					'bg-muted absolute inset-0 z-10 flex h-full w-full items-center justify-center rounded-lg',
+					'bg-muted absolute inset-0 z-10 flex h-full w-full items-center justify-center',
 					isDragActive ? '' : 'hidden',
 				)}
 			>
-				<CloudUploadIcon className="text-primary h-12 w-12" />
+				<CloudUploadIcon className="text-foreground h-12 w-12" />
 			</div>
 			{files.length > 0 ? (
 				<div

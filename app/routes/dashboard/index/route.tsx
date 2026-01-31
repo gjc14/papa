@@ -1,5 +1,7 @@
 import { Link } from 'react-router'
 
+import { StackIcon } from '@phosphor-icons/react'
+
 import { Button } from '~/components/ui/button'
 import {
 	Tooltip,
@@ -28,27 +30,13 @@ export default function DashboardIndex() {
 			<DashboardContent>
 				{services.length === 0 ? (
 					<div className="m-auto flex h-64 flex-col items-center justify-center space-y-6 text-center">
-						<div className="bg-primary flex h-24 w-24 items-center justify-center rounded-full">
-							<svg
-								className="text-primary-foreground h-12 w-12"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={1.5}
-									d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-								/>
-							</svg>
+						<div className="bg-primary flex h-20 w-20 items-center justify-center rounded-full">
+							<StackIcon className="text-background size-12" />
 						</div>
 
 						<div className="space-y-2">
-							<h3 className="text-primary text-xl font-semibold">
-								No Services Available
-							</h3>
-							<p className="text-muted-foreground max-w-md">
+							<h3 className="text-xl font-semibold">No Services Available</h3>
+							<p className="text-muted-foreground max-w-md text-sm">
 								There are currently no services configured. Services will appear
 								here once they're added to your dashboard.
 							</p>
@@ -79,9 +67,9 @@ export default function DashboardIndex() {
 								<Link
 									key={index}
 									to={service.pathname}
-									className="hover:bg-accent grid h-40 w-full cursor-pointer grid-rows-5 items-center gap-2 rounded-xl border p-5 transition-colors"
+									className="hover:bg-accent grid h-40 w-full cursor-pointer grid-rows-5 items-center gap-2 border p-5 transition-colors"
 								>
-									<div className="row-span-2 m-auto overflow-hidden rounded-lg">
+									<div className="row-span-2 m-auto overflow-hidden">
 										{renderServiceLogo(service.logo, 'lg')}
 									</div>
 									<div className="row-span-3 flex min-h-0 flex-col justify-start gap-1 overflow-hidden">

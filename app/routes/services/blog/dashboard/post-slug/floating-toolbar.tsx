@@ -143,7 +143,7 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 				type="submit"
 				size={'sm'}
 				variant={'default'}
-				className="hover:text-primary rounded-full border border-transparent hover:border-current hover:bg-transparent"
+				className="hover:text-foreground rounded-full border border-transparent hover:border-current hover:bg-transparent"
 				disabled={!hasChanges || isSaving}
 				onClick={handleSave}
 			>
@@ -153,8 +153,8 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 
 			{/* Open settings */}
 			<Button
-				className="ml-1 size-8 rounded-full"
-				size={'icon'}
+				className="ml-1 rounded-full"
+				size={'icon-sm'}
 				onClick={() => setIsSettingsOpen(p => !p)}
 			>
 				<Settings />

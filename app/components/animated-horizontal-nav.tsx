@@ -68,7 +68,7 @@ export const AnimatedNav = ({
 		<nav ref={navRef} className="relative flex w-full gap-[-0.125rem] border-b">
 			{/* Hover background */}
 			<motion.div
-				className="bg-muted/80 absolute h-8 rounded-sm"
+				className="bg-muted/80 absolute h-8"
 				initial={false}
 				animate={{
 					x: hoverTabBounds.left,
@@ -160,9 +160,9 @@ const AnimatedLink = ({
 							variant={'ghost'}
 							data-index={index}
 							className={cn(
-								'mb-2 h-8 rounded-sm px-3',
+								'mb-2 h-8 px-3',
 								'hover:bg-transparent dark:hover:bg-transparent',
-								isActive ? 'text-primary' : 'text-muted-foreground',
+								isActive ? 'text-foreground' : 'text-muted-foreground',
 								isPending ? 'animate-pulse' : '',
 								className,
 							)}

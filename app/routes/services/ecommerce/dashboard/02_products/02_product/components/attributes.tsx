@@ -141,12 +141,16 @@ export function Attributes() {
 								<Item variant="outline" className="relative">
 									<ItemContent>
 										<ItemTitle>
-											{a.visible ? <Eye size={16} /> : <EyeOff size={16} />}
-											{a.name || 'Untitled'}
+											{a.visible ? <Eye size={12} /> : <EyeOff size={12} />}
+											{a.name ? (
+												a.name
+											) : (
+												<span className="text-muted-foreground">-</span>
+											)}
 										</ItemTitle>
-										<ItemDescription>{a.value || 'No content'}</ItemDescription>
+										<ItemDescription>{a.value || '-'}</ItemDescription>
 										<ItemDescription>
-											<Badge className="rounded-none">{a.selectType}</Badge>
+											<Badge>{a.selectType}</Badge>
 										</ItemDescription>
 									</ItemContent>
 									<ItemActions>
@@ -160,11 +164,7 @@ export function Attributes() {
 										<DropdownMenu>
 											<DropdownMenuTrigger
 												render={
-													<Button
-														variant="outline"
-														size="icon"
-														className="size-8"
-													>
+													<Button variant="outline" size="icon-sm">
 														<MoreVertical />
 													</Button>
 												}
@@ -174,8 +174,8 @@ export function Attributes() {
 													<DropdownMenuLabel>Actions</DropdownMenuLabel>
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
+														variant="destructive"
 														onClick={() => handleDeleteAttribute(a.id)}
-														className="focus:bg-destructive/90 focus:text-white"
 													>
 														Delete
 													</DropdownMenuItem>
@@ -187,7 +187,7 @@ export function Attributes() {
 							</AttributeEditDialog>
 						))
 				) : (
-					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+					<p className="text-muted-foreground border border-dashed p-3 text-center text-xs">
 						No attributes. Click "Add Attribute" to create one.
 					</p>
 				)}
@@ -218,9 +218,9 @@ export function Attributes() {
 					/>
 				</AttributeEditDialog>
 				<Button
-					variant="secondary"
+					variant="outline"
 					size="sm"
-					className="w-full border md:w-auto md:flex-1"
+					className="w-full md:w-auto md:flex-1"
 					onClick={() => alert('not implemented')}
 				>
 					<ListChecksIcon />

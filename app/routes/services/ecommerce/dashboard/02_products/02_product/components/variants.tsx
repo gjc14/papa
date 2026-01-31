@@ -183,7 +183,7 @@ function VariantCard({
 			</CardHeader>
 			<CardContent className="max-h-[360px] space-y-2 overflow-auto">
 				{noVariants ? (
-					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+					<p className="text-muted-foreground border border-dashed p-3 text-center text-xs">
 						No variants available. Click "Generate Variants" to create one.
 					</p>
 				) : (
@@ -203,9 +203,9 @@ function VariantCard({
 					Generate Variants
 				</Button>
 				<Button
-					variant="secondary"
+					variant="outline"
 					size="sm"
-					className="w-full border md:w-auto md:flex-1"
+					className="w-full md:w-auto md:flex-1"
 					onClick={() => {
 						if (noVariants) return
 						onOpenManager()
@@ -230,7 +230,7 @@ function VariantItem({
 	const { formattedPrice } = renderPrice(variant.option)
 
 	return (
-		<div className="flex items-center justify-between gap-2 overflow-scroll rounded-md border p-3">
+		<div className="flex items-center justify-between gap-2 overflow-scroll border p-3">
 			<div className="flex-1">
 				<p>
 					{Object.entries(variant.combination).map(([key, value], i) => (
@@ -402,7 +402,7 @@ function VariantManagementDialog({
 							onClick={row.getToggleExpandedHandler()}
 							variant={'ghost'}
 							size={'icon'}
-							className="h-full w-full rounded-none focus:ring-0 focus-visible:ring-0"
+							className="h-full w-full focus:ring-0 focus-visible:ring-0"
 							aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
 							aria-expanded={row.getIsExpanded()}
 							data-row-id={row.id}
@@ -478,10 +478,10 @@ function VariantManagementDialog({
 									value={currentValue}
 									onValueChange={v => v && handleCombinationChange(v)}
 								>
-									<SelectTrigger className="h-8 w-full rounded-none">
+									<SelectTrigger className="h-8 w-full">
 										<SelectValue placeholder={`Select ${attr}`} />
 									</SelectTrigger>
-									<SelectContent className="rounded-none">
+									<SelectContent className="">
 										{options.map(option => {
 											const exists = productVariants
 												? combinationExists({
@@ -497,7 +497,7 @@ function VariantManagementDialog({
 												<SelectItem
 													key={option}
 													value={option}
-													className="rounded-none"
+													className=""
 													disabled={exists}
 												>
 													{option}
@@ -535,7 +535,7 @@ function VariantManagementDialog({
 							<Button
 								variant="outline"
 								size="sm"
-								className="size-6 rounded-none"
+								className="size-6"
 								render={
 									<DialogTrigger>
 										<Plus />
@@ -867,18 +867,18 @@ function AddVariantDialog({
 												}))
 											}
 										>
-											<SelectTrigger className="h-8 w-full rounded-none">
+											<SelectTrigger className="h-8 w-full">
 												<SelectValue
 													placeholder={`Select ${attr} (${options.length})`}
 												/>
 											</SelectTrigger>
-											<SelectContent className="rounded-none">
+											<SelectContent className="">
 												{options.map(option => {
 													return (
 														<SelectItem
 															key={option}
 															value={option}
-															className="rounded-none"
+															className=""
 														>
 															{option}
 														</SelectItem>
@@ -928,7 +928,7 @@ function AddVariantDialog({
 						</DialogFooter>
 					</>
 				) : (
-					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+					<p className="text-muted-foreground border border-dashed p-3 text-center text-xs">
 						No attributes available to generate variant options. Please add
 						product attributes first.
 					</p>

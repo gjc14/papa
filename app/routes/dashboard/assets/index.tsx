@@ -99,7 +99,7 @@ export default function DashboardAsset() {
 						origin={origin}
 					/>
 				) : (
-					<div className="flex h-full min-h-60 w-full grow flex-col items-center justify-center gap-3 rounded-xl border">
+					<div className="flex h-full min-h-60 w-full grow flex-col items-center justify-center gap-3 border">
 						<CloudAlert size={50} />
 						<p className="max-w-sm text-center">
 							Please setup your S3 Object Storage to start uploading assets

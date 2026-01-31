@@ -20,7 +20,7 @@ export const DangerZone = () => {
 		<>
 			<Separator />
 
-			<div className="flex w-full flex-col rounded-lg border p-3">
+			<div className="flex w-full flex-col border p-3">
 				<h3>Delete this post</h3>
 				<p className="my-2">This action cannot be undone. new value</p>
 

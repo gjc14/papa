@@ -199,7 +199,7 @@ function BulkEditableFields({
 
 				<Select name="role" defaultValue={user.role ?? 'user'}>
 					<SelectTrigger
-						className="col-span-3"
+						className="col-span-3 w-full"
 						disabled={isBulkEdit && !enabledFields.has('role')}
 					>
 						<SelectValue id="role" placeholder="what's your role?" />

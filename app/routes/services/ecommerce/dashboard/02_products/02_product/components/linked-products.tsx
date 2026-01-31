@@ -99,7 +99,7 @@ export function LinkedProducts() {
 						</div>
 					) : crossSellProducts.length === 0 ? (
 						/* Empty state */
-						<div className="text-muted-foreground rounded-md border border-dashed px-2 py-5 text-center text-sm">
+						<div className="text-muted-foreground border border-dashed px-2 py-5 text-center text-xs">
 							No linked products yet. Click "Add Cross Sell Product" to get
 							started.
 						</div>
@@ -158,7 +158,7 @@ export function LinkedProducts() {
 						</div>
 					) : upsellProducts.length === 0 ? (
 						/* Empty state */
-						<div className="text-muted-foreground rounded-md border border-dashed px-2 py-5 text-center text-sm">
+						<div className="text-muted-foreground border border-dashed px-2 py-5 text-center text-xs">
 							No linked products yet. Click "Add Upsell Product" to get started.
 						</div>
 					) : (
@@ -216,9 +216,9 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 	)
 
 	return (
-		<div className="flex items-center gap-3 overflow-auto rounded-lg border p-3">
+		<div className="flex items-center gap-3 overflow-auto border p-3">
 			{/* Product image */}
-			<div className="size-16 shrink-0 overflow-hidden rounded-md">
+			<div className="size-16 shrink-0 overflow-hidden">
 				{product.option.image ? (
 					<img
 						src={product.option.image}
@@ -410,7 +410,7 @@ function SelectableProductItem({
 
 	return (
 		<div
-			className={`hover:bg-muted/50 flex min-w-0 cursor-pointer items-center gap-3 overflow-auto rounded-lg border p-3 transition-colors ${
+			className={`hover:bg-muted/50 flex min-w-0 cursor-pointer items-center gap-3 overflow-auto border p-3 transition-colors ${
 				isSelected ? 'border-primary bg-primary/5' : ''
 			}`}
 			onClick={() => onToggle(product)}
@@ -426,7 +426,7 @@ function SelectableProductItem({
 			/>
 
 			{/* Product image */}
-			<div className="size-16 shrink-0 overflow-hidden rounded-md">
+			<div className="size-16 shrink-0 overflow-hidden">
 				{product.option.image ? (
 					<img
 						src={product.option.image}

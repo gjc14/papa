@@ -217,7 +217,7 @@ export function Taxonomies() {
 					{!dataInitialized.brands ? (
 						<Spinner />
 					) : bTreeData.length > 0 ? (
-						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
+						<div className="max-h-52 w-full overflow-auto border py-1.5">
 							<div className="m-2 mt-1">
 								<Input
 									value={brandsFilter}
@@ -238,7 +238,7 @@ export function Taxonomies() {
 							)}
 						</div>
 					) : (
-						<div className="text-muted-foreground my-3 w-full rounded-md border border-dashed p-2 text-center text-sm">
+						<div className="text-muted-foreground my-3 w-full border border-dashed p-2 text-center text-xs">
 							Please add brands to see options
 						</div>
 					)}
@@ -270,7 +270,7 @@ export function Taxonomies() {
 					{!dataInitialized.categories ? (
 						<Spinner />
 					) : cTreeData.length > 0 ? (
-						<div className="max-h-52 w-full overflow-auto rounded-md border py-1.5">
+						<div className="max-h-52 w-full overflow-auto border py-1.5">
 							<div className="m-2 mt-1">
 								<Input
 									value={categoriesFilter}
@@ -291,7 +291,7 @@ export function Taxonomies() {
 							)}
 						</div>
 					) : (
-						<div className="text-muted-foreground my-3 w-full rounded-md border border-dashed p-2 text-center text-sm">
+						<div className="text-muted-foreground my-3 w-full border border-dashed p-2 text-center text-xs">
 							Please add categories to see options
 						</div>
 					)}

@@ -122,10 +122,10 @@ const Sidebar = ({ sections, containerRef }: SidebarProps) => {
 							key={section.id}
 							href={`#${section.id}`}
 							onClick={e => handleLinkClick(e, section.id)}
-							className={`block truncate border-l-5 px-3 py-2 text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+							className={`block truncate px-3 py-2 text-xs font-medium whitespace-nowrap transition-all duration-300 ${
 								activeId === section.id
-									? 'border-brand bg-muted text-primary'
-									: 'text-muted-foreground hover:bg-muted hover:text-primary border-transparent'
+									? 'text-primary scale-105'
+									: 'text-muted-foreground hover:text-foreground border-transparent hover:scale-105'
 							} `}
 						>
 							{section.label}

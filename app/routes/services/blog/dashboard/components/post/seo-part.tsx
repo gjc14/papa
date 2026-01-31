@@ -2,8 +2,8 @@
  * Contains the SEO part of the post editor.
  * It includes the SEO title and SEO description fields.
  */
-import { toast } from 'sonner'
 import { useAtom } from 'jotai'
+import { toast } from 'sonner'
 
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
@@ -154,7 +154,7 @@ export const SeoPart = () => {
 
 			<div className="flex flex-col">
 				<div className="mb-2">
-					<div className="inline-flex aspect-square h-16 w-16 items-center justify-center rounded-md border">
+					<div className="inline-flex aspect-square h-16 w-16 items-center justify-center border">
 						{post.seo.ogImage ? (
 							<img
 								src={post.seo.ogImage}

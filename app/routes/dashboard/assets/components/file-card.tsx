@@ -129,7 +129,7 @@ export const FileCard = ({
 	return (
 		<div
 			className={cn(
-				'group relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-lg border',
+				'group relative flex aspect-square flex-col items-center justify-center overflow-hidden border',
 				className,
 				onSelect ? 'cursor-pointer' : 'cursor-default',
 				visuallySelected?.id === file.id
@@ -156,21 +156,17 @@ export const FileCard = ({
 				<File />
 			)}
 			{deleteAlert && (
-				<div className="bg-background supports-[backdrop-filter]:bg-background/20 absolute flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-lg pt-3 backdrop-blur-xs">
-					<Button
-						variant={'destructive'}
-						size={'sm'}
-						className="h-6 px-2 py-1.5 text-[10px]"
-						onClick={handleDelete}
-					>
+				<div className="bg-background supports-[backdrop-filter]:bg-background/80 absolute flex h-full w-full flex-col items-center justify-center gap-0.5 pt-3 backdrop-blur-xs">
+					<Button variant={'destructive'} size={'xs'} onClick={handleDelete}>
 						Delete
 					</Button>
-					<button
-						className="h-6 cursor-pointer px-2 py-1.5 text-[10px] underline-offset-2 hover:underline"
+					<Button
+						variant={'ghost'}
+						size={'xs'}
 						onClick={() => setDeleteAlert(false)}
 					>
 						Cancel
-					</button>
+					</Button>
 				</div>
 			)}
 			{/* options */}
@@ -178,7 +174,7 @@ export const FileCard = ({
 				className={cn(
 					`hidden ${deleteAlert ? '' : 'group-hover:flex'}`,
 					'bg-background absolute bottom-3 left-[50%] translate-x-[-50%]',
-					'items-center justify-center gap-1 rounded-lg border px-1 py-0.5',
+					'items-center justify-center border p-0.5',
 				)}
 			>
 				<ToolBarButton
@@ -202,7 +198,7 @@ export const FileCard = ({
 						<DialogTitle className="flex grid-cols-3 items-center gap-1.5">
 							{file.name}
 						</DialogTitle>
-						<DialogDescription className="flex min-h-36 flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border">
+						<DialogDescription className="flex min-h-36 flex-col items-center justify-center gap-2 overflow-hidden border">
 							{fileGeneralType === 'image' ? (
 								<img className="max-h-[50vh]" src={url} alt={file.name} />
 							) : fileGeneralType === 'video' ? (
@@ -230,7 +226,7 @@ export const FileCard = ({
 							</Label>
 							<p
 								id="id"
-								className="min-h-0 flex-1 cursor-copy overflow-y-auto rounded-lg border px-1.5 py-1 text-sm shadow-xs"
+								className="min-h-0 flex-1 cursor-copy overflow-y-auto border px-1.5 py-1 text-sm shadow-xs"
 								onClick={() => {
 									navigator.clipboard.writeText(String(file.id))
 									toast.success('Copied to clipboard')
@@ -246,7 +242,7 @@ export const FileCard = ({
 							<div className="flex items-center gap-2">
 								<p
 									id="url"
-									className="min-h-0 flex-1 cursor-copy overflow-y-auto rounded-lg border px-1.5 py-1 text-sm shadow-xs"
+									className="min-h-0 flex-1 cursor-copy overflow-y-auto border px-1.5 py-1 text-sm shadow-xs"
 									onClick={() => {
 										navigator.clipboard.writeText(origin + url)
 										toast.success('Copied to clipboard')
@@ -321,7 +317,10 @@ export const FileCard = ({
 						<AlertDialog>
 							<AlertDialogTrigger
 								render={
-									<Button variant={'link'} className="h-fit w-fit p-0">
+									<Button
+										variant={'link'}
+										className="text-destructive h-fit w-fit p-0"
+									>
 										Delete permanently
 									</Button>
 								}
@@ -357,9 +356,10 @@ const ToolBarButton = ({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 	return (
 		<Button
+			size={'icon-sm'}
 			{...props}
 			className={cn(
-				'hover:bg-accent text-primary inline-flex size-6 cursor-pointer items-center justify-center gap-2 rounded-full bg-transparent p-1 whitespace-nowrap transition-colors',
+				'hover:bg-accent text-foreground inline-flex cursor-pointer items-center justify-center gap-2 bg-transparent p-1 whitespace-nowrap transition-colors',
 				className,
 			)}
 		/>

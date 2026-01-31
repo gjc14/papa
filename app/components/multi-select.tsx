@@ -23,12 +23,12 @@ const DefaultBadge = ({ option, handleUnselect }: BadgeProps) => {
 	return (
 		<Badge
 			key={option.value}
-			className={cn('my-auto rounded-full', option.className)}
+			className={cn('my-auto', option.className)}
 			style={option.style}
 		>
 			{option.label}
 			<button
-				className="ring-offset-background focus:ring-ring ml-1.5 cursor-pointer rounded-full outline-hidden focus:ring-2"
+				className="ring-offset-background focus:ring-ring ml-1.5 cursor-pointer outline-hidden focus:ring-2"
 				onClick={() => handleUnselect(option)}
 			>
 				<X className="h-3 w-3" />
@@ -197,7 +197,7 @@ const InternalMultiSelect = (props: MultiSelectInputProps) => {
 		<>
 			<div
 				className={cn(
-					'group border-input ring-offset-background focus-within:ring-ring focus-within:ring-offset cursor-text rounded-md border px-2 py-2 text-sm focus-within:ring-1',
+					'group border-input ring-offset-background focus-within:ring-ring focus-within:ring-offset cursor-text border px-2 py-2 text-sm focus-within:ring-1',
 					className,
 				)}
 				onClick={() => inputRef.current?.focus()}
@@ -244,7 +244,7 @@ const InternalMultiSelect = (props: MultiSelectInputProps) => {
 						 * 3. Display add new item option if inputValue and no options match (both empty and non-empty should work)
 						 */}
 						<div
-							className={`bg-popover text-popover-foreground animate-in absolute top-0 z-10 w-full rounded-md border shadow-md outline-hidden`}
+							className={`bg-popover text-popover-foreground animate-in absolute top-0 z-10 w-full border shadow-md outline-hidden`}
 						>
 							{/* When searching */}
 							{isSearching ? (
@@ -262,7 +262,7 @@ const InternalMultiSelect = (props: MultiSelectInputProps) => {
 													e.stopPropagation()
 												}}
 												onClick={createNewOption}
-												className="bg-accent flex w-full cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none"
+												className="bg-accent flex w-full cursor-pointer items-center px-2 py-1.5 text-sm outline-hidden select-none"
 											>
 												<PlusCircle className="mr-2 h-4 w-4" />"
 												{inputValue.trim()}"
@@ -279,7 +279,7 @@ const InternalMultiSelect = (props: MultiSelectInputProps) => {
 
 									<CommandGroup className={noOptions ? 'hidden' : ''}>
 										{error && (
-											<div className="mb-2 rounded-md border border-amber-500/50 px-2 py-1 text-amber-600">
+											<div className="mb-2 border border-amber-500/50 px-2 py-1 text-amber-600">
 												<p className="text-sm">
 													<TriangleAlert
 														className="me-3 -mt-0.5 inline-flex opacity-60"

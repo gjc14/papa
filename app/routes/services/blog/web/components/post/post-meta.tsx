@@ -43,7 +43,7 @@ export function PostMeta({ post }: { post: PostWithRelations }) {
 					</Avatar>
 					<div className="flex flex-col">
 						<Button
-							className="flex h-6 w-fit items-center px-0 text-base font-medium"
+							className="text-foreground flex h-6 w-fit items-center px-0 text-base font-medium"
 							variant={'link'}
 						>
 							{post.author?.name || post.author?.email}
@@ -69,6 +69,7 @@ export function PostMeta({ post }: { post: PostWithRelations }) {
 									<Button
 										variant={'link'}
 										className="h-fit p-0"
+										nativeButton={false}
 										render={
 											<Link to={`/blog?category=${c.slug}`} prefetch="intent">
 												{c.name}

@@ -121,11 +121,7 @@ export const Instructions = () => {
 										<DropdownMenu>
 											<DropdownMenuTrigger
 												render={
-													<Button
-														variant="outline"
-														size="icon"
-														className="size-8"
-													>
+													<Button variant="outline" size="icon-sm">
 														<MoreVertical />
 													</Button>
 												}
@@ -135,8 +131,8 @@ export const Instructions = () => {
 													<DropdownMenuLabel>Actions</DropdownMenuLabel>
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
+														variant="destructive"
 														onClick={() => handleDeleteInstruction(i._id)}
-														className="focus:bg-destructive/90 focus:text-white"
 													>
 														Delete
 													</DropdownMenuItem>
@@ -148,7 +144,7 @@ export const Instructions = () => {
 							</InstructionEditDialog>
 						))
 				) : (
-					<p className="text-muted-foreground rounded-md border border-dashed p-3 text-center text-sm">
+					<p className="text-muted-foreground border border-dashed p-3 text-center text-xs">
 						No instructions added yet. Click "Add Instruction" to create one.
 					</p>
 				)}

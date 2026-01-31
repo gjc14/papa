@@ -121,7 +121,7 @@ export function ProductEditPageHeader() {
 	if (!productId || productName === null || productSlug === null) return null
 
 	return (
-		<Item className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b-border sticky top-0 z-10 overflow-auto rounded-none py-2 backdrop-blur">
+		<Item className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b-border sticky top-0 z-10 overflow-auto py-2 backdrop-blur">
 			<ItemContent>
 				<ItemTitle className="truncate whitespace-nowrap">
 					<span className="text-muted-foreground">
@@ -135,11 +135,11 @@ export function ProductEditPageHeader() {
 				<ItemDescription className="flex items-center gap-1 truncate overflow-visible whitespace-nowrap">
 					{editSlug ? (
 						<>
-							<span className="text-muted-foreground text-sm">
+							<span className="text-muted-foreground truncate">
 								{storeConfig.storeFrontPath}/product/
 							</span>
 							<Input
-								className="text-primary h-7 w-fit px-2"
+								className="text-foreground h-6 w-fit px-1"
 								type="text"
 								placeholder="enter slug..."
 								value={slugInput}
@@ -148,7 +148,7 @@ export function ProductEditPageHeader() {
 							/>
 							<Button
 								size="icon"
-								className="size-7"
+								className="size-6"
 								onClick={() => {
 									setProduct(pv => (pv ? { ...pv, slug: slugInput } : pv))
 									setEditSlug(false)
@@ -159,7 +159,7 @@ export function ProductEditPageHeader() {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="size-7"
+								className="size-6"
 								onClick={() => {
 									setSlugInput(productSlug)
 									setEditSlug(false)
@@ -170,31 +170,33 @@ export function ProductEditPageHeader() {
 						</>
 					) : (
 						<>
-							<span className="text-muted-foreground truncate text-sm">
+							<span className="text-muted-foreground truncate">
 								{storeConfig.storeFrontPath}/product/{productSlug}
 							</span>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="text-muted-foreground hover:text-foreground size-6"
-								onClick={() => setEditSlug(true)}
-							>
-								<Pencil />
-							</Button>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="text-muted-foreground hover:text-foreground size-6"
-								render={
-									<Link
-										to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
-										target="_blank"
-										rel="noreferrer"
-									>
-										<ExternalLink />
-									</Link>
-								}
-							/>
+							<span>
+								<Button
+									variant="ghost"
+									size="icon-xs"
+									className="text-muted-foreground hover:text-foreground"
+									onClick={() => setEditSlug(true)}
+								>
+									<Pencil />
+								</Button>
+								<Button
+									variant="ghost"
+									size="icon-xs"
+									className="text-muted-foreground hover:text-foreground"
+									render={
+										<Link
+											to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
+											target="_blank"
+											rel="noreferrer"
+										>
+											<ExternalLink />
+										</Link>
+									}
+								/>
+							</span>
 						</>
 					)}
 				</ItemDescription>
@@ -213,7 +215,7 @@ export function ProductEditPageHeader() {
 				<DropdownMenu>
 					<DropdownMenuTrigger
 						render={
-							<Button variant={'outline'} size={'icon'} className="h-8">
+							<Button variant={'outline'} size={'icon-sm'}>
 								<MoreVertical />
 							</Button>
 						}
@@ -233,7 +235,7 @@ export function ProductEditPageHeader() {
 
 							{!isNew && (
 								<DropdownMenuItem
-									className="focus:bg-destructive/90 flex items-center gap-2 focus:text-white"
+									variant="destructive"
 									onClick={() => setToTrashOpen(true)}
 									disabled={isSaving || isMovingToTrash}
 								>
