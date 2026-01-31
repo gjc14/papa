@@ -63,7 +63,8 @@ export function SelectDropdownMenu({
 			open={open}
 			onOpenChange={open => {
 				setOpen(open)
-				if (!open) editor.chain().focus().run()
+				// Focus editor when closing the menu
+				if (!open) editor.commands.focus()
 			}}
 		>
 			<TooltipWrapper
@@ -72,11 +73,7 @@ export function SelectDropdownMenu({
 				render={
 					<DropdownMenuTrigger
 						render={
-							<Button
-								variant="ghost"
-								size={'sm'}
-								className="gap-0 has-[>svg]:pr-0.5 has-[>svg]:pl-1.5"
-							>
+							<Button variant="ghost" className="gap-0 px-1">
 								{ActiveIcon && <ActiveIcon />}{' '}
 								<ChevronDown className="scale-75" />
 							</Button>

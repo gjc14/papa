@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useEditorState } from '@tiptap/react'
 import { useAtom } from 'jotai'
 import { MoreVertical } from 'lucide-react'
@@ -18,6 +20,7 @@ import { TooltipWrapper } from './tooltip-wrapper'
 
 export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 	const [editor] = useAtom(editorAtom)
+	const [open, setOpen] = useState(false)
 
 	/**
 	 * The selector function allows you to specify which parts of the editor state you want to subscribe to.
@@ -36,17 +39,20 @@ export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 	if (!editor) return <Skeleton className="size-8" />
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu
+			open={open}
+			onOpenChange={open => {
+				setOpen(open)
+				// Focus editor when closing the menu
+				if (!open) editor.commands.focus()
+			}}
+		>
 			<TooltipWrapper
 				tooltip="More options"
 				render={
 					<DropdownMenuTrigger
 						render={
-							<Button
-								variant="ghost"
-								size={'sm'}
-								onClick={e => e.isDefaultPrevented()}
-							>
+							<Button size="icon" variant="ghost">
 								<MoreVertical />
 							</Button>
 						}

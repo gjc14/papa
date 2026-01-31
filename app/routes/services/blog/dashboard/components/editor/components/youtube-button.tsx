@@ -110,6 +110,7 @@ export const YoutubeButton = () => {
 						setOptions(attr as SetYoutubeVideoOptions)
 					}
 				} else {
+					// Focus editor when closing the menu
 					editor.commands.focus()
 				}
 			}}
@@ -122,7 +123,7 @@ export const YoutubeButton = () => {
 							<Button
 								size={'icon'}
 								variant={'ghost'}
-								className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+								className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
 								disabled={!canRun}
 							>
 								<YoutubeIcon />

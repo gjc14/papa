@@ -102,7 +102,7 @@ export const ImageButton = () => {
 								<Button
 									size={'icon'}
 									variant={'ghost'}
-									className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+									className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
 									disabled={!canRun}
 								>
 									<Image />
@@ -124,6 +124,7 @@ export const ImageButton = () => {
 					setAltInput(alt || '')
 					setTitleInput(title || '')
 				} else {
+					// Focus editor when closing the menu
 					editor.commands.focus()
 				}
 			}}

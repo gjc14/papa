@@ -106,6 +106,7 @@ export const LinkUnlinkButtons = () => {
 					const { href } = editor.getAttributes('link')
 					setLinkInput(href || '')
 				} else {
+					// Focus editor when closing the menu
 					editor.commands.focus()
 				}
 			}}
@@ -119,7 +120,7 @@ export const LinkUnlinkButtons = () => {
 							<Button
 								size={'icon'}
 								variant={'ghost'}
-								className={`h-8 w-8 ${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+								className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
 								disabled={!canRun}
 							>
 								<Link size={14} />
@@ -128,7 +129,7 @@ export const LinkUnlinkButtons = () => {
 					/>
 				}
 			/>
-			<PopoverContent className="flex w-80 items-center rounded-full p-0.5">
+			<PopoverContent className="flex w-80 flex-row items-center gap-0 rounded-full p-0.5">
 				<div className="relative flex-1">
 					<Input
 						id="link"
