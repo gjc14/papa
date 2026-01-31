@@ -2,67 +2,17 @@ import * as React from 'react'
 
 import { cn } from '~/lib/utils/index'
 
-export interface TextareaProps
-	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-	autoSize?: boolean
+function Textarea({ className, ...props }: React.ComponentProps<'textarea'>) {
+	return (
+		<textarea
+			data-slot="textarea"
+			className={cn(
+				'border-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 disabled:bg-input/50 dark:disabled:bg-input/80 placeholder:text-muted-foreground flex field-sizing-content min-h-16 w-full rounded-none border bg-transparent px-2.5 py-2 text-xs transition-colors outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-1 md:text-xs',
+				className,
+			)}
+			{...props}
+		/>
+	)
 }
-
-const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-	({ className, value, onChange, autoSize, ...props }, ref) => {
-		const textareaRef = React.useRef<HTMLTextAreaElement | null>(null)
-
-		// Combine refs to handle both forwarded ref and internal ref
-		const handleRef = (textarea: HTMLTextAreaElement | null) => {
-			textareaRef.current = textarea
-			if (typeof ref === 'function') {
-				ref(textarea)
-			} else if (ref) {
-				ref.current = textarea
-			}
-		}
-
-		const adjustHeight = React.useCallback(() => {
-			const textarea = textareaRef.current
-			if (textarea && autoSize) {
-				textarea.style.height = 'auto'
-				textarea.style.height = `${textarea.scrollHeight}px`
-			}
-		}, [autoSize])
-
-		React.useEffect(() => {
-			adjustHeight()
-		}, [value, adjustHeight])
-
-		// Adjust height on window resize
-		React.useEffect(() => {
-			if (autoSize) {
-				const handleResize = () => {
-					adjustHeight()
-				}
-				window.addEventListener('resize', handleResize)
-				return () => {
-					window.removeEventListener('resize', handleResize)
-				}
-			}
-		}, [autoSize, adjustHeight])
-
-		return (
-			<textarea
-				className={cn(
-					'border-input placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[60px] w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs focus-visible:ring-1 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
-					className,
-				)}
-				ref={handleRef}
-				value={value}
-				onChange={e => {
-					onChange?.(e)
-					adjustHeight()
-				}}
-				{...props}
-			/>
-		)
-	},
-)
-Textarea.displayName = 'Textarea'
 
 export { Textarea }
