@@ -9,12 +9,11 @@ import {
 	useSubmit,
 } from 'react-router'
 
-import { AvatarImage } from '@radix-ui/react-avatar'
 import debounce from 'lodash/debounce'
 import { CircleCheckIcon, XCircle } from 'lucide-react'
 import { motion } from 'motion/react'
 
-import { Avatar, AvatarFallback } from '~/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Badge } from '~/components/ui/badge'
 import { InputSearch } from '~/components/ui/input-search'
 
@@ -123,14 +122,14 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 				<div className="mt-8 flex items-center justify-start gap-3.5">
 					<Avatar className="size-8">
 						<AvatarImage
-							src={post.author?.image || undefined}
-							alt={post.author?.name || '🍟'}
+							src={post.author?.image ?? undefined}
+							alt={post.author?.name ?? 'A'}
 						/>
-						<AvatarFallback>{post.author?.name?.[0] || '🍟'}</AvatarFallback>
+						<AvatarFallback>{post.author?.name?.[0] ?? 'A'}</AvatarFallback>
 					</Avatar>
 					<div className="flex flex-col">
 						<span className="text-sm font-semibold">
-							{post.author?.name || 'Anonymous'}
+							{post.author?.name ?? 'Anonymous'}
 						</span>
 						<span className="text-muted-foreground text-xs">
 							{post.updatedAt.toLocaleDateString('zh-TW')}

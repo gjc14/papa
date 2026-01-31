@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { DropdownMenuRadioItem } from '@radix-ui/react-dropdown-menu'
 import { useEditorState } from '@tiptap/react'
 import { useAtom } from 'jotai'
 import { ChevronDown } from 'lucide-react'
@@ -10,6 +9,7 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Skeleton } from '~/components/ui/skeleton'
@@ -90,18 +90,21 @@ export function SelectDropdownMenu({
 								shortcut={shortcut}
 								side="right"
 							>
-								<DropdownMenuRadioItem value={name} asChild>
-									<Button
-										variant="ghost"
-										size={'sm'}
+								<Button
+									size={'sm'}
+									variant={'ghost'}
+									className={`justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
+									asChild
+								>
+									<DropdownMenuRadioItem
+										value={name}
 										disabled={!canRun(editor)}
 										onClick={() => run(editor)}
-										className={`justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
 									>
 										<Icon className="size-4" />
 										{name}
-									</Button>
-								</DropdownMenuRadioItem>
+									</DropdownMenuRadioItem>
+								</Button>
 							</TooltipWrapper>
 						),
 					)}

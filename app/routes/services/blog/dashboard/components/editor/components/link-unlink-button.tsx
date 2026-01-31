@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import { PopoverClose } from '@radix-ui/react-popover'
 import { useEditorState } from '@tiptap/react'
 import { atom, useAtom } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
@@ -134,16 +133,17 @@ export const LinkUnlinkButtons = () => {
 						onChange={e => setLinkInput(e.target.value)}
 						onKeyDown={handleKeyDown}
 					/>
-					<PopoverClose asChild>
-						<Button
-							variant="ghost"
-							size="icon"
-							className="absolute top-1/2 right-1 size-7 -translate-y-1/2 rounded-full"
-							onClick={setLink}
-						>
-							<Circle />
-						</Button>
-					</PopoverClose>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="absolute top-1/2 right-1 size-7 -translate-y-1/2 rounded-full"
+						onClick={() => {
+							setLink()
+							setIsLinkUnlinkOpen(false)
+						}}
+					>
+						<Circle />
+					</Button>
 				</div>
 
 				{/* Separator */}

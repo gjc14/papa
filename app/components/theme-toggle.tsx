@@ -1,6 +1,5 @@
 import { forwardRef } from 'react'
 
-import type { DropdownMenuSubContentProps } from '@radix-ui/react-dropdown-menu'
 import { Moon, Sun, SunMoon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
@@ -170,7 +169,7 @@ export const ThemeDropdownMenuSubTrigger = ({
 	children: React.ReactNode
 	className?: string
 	/** DropdownMenuSubContent props */
-	contentProps?: DropdownMenuSubContentProps
+	contentProps?: React.ComponentPropsWithoutRef<typeof DropdownMenuSubContent>
 }) => {
 	const { setTheme } = useTheme()
 

@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router'
 
-import { ChevronLeftIcon } from '@radix-ui/react-icons'
+import { ChevronLeft } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
@@ -48,7 +48,7 @@ export const PostFooter = ({
 						asChild
 					>
 						<Link to={`/blog/${prev.slug}${search}`} prefetch="intent">
-							<ChevronLeftIcon className="h-4 w-4 flex-shrink-0 transition-transform group-hover:-translate-x-1" />
+							<ChevronLeft className="h-4 w-4 flex-shrink-0 transition-transform group-hover:-translate-x-1" />
 							<div className="min-w-0 flex-1">
 								<div className="text-muted-foreground mb-1 text-xs">
 									Previous
@@ -76,7 +76,7 @@ export const PostFooter = ({
 									{next.title}
 								</p>
 							</div>
-							<ChevronLeftIcon className="h-4 w-4 flex-shrink-0 rotate-180 transition-transform group-hover:translate-x-1" />
+							<ChevronLeft className="h-4 w-4 flex-shrink-0 rotate-180 transition-transform group-hover:translate-x-1" />
 						</Link>
 					</Button>
 				) : (

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { DropdownMenuRadioItem } from '@radix-ui/react-dropdown-menu'
 import { Editor, useEditorState } from '@tiptap/react'
 import { useAtom } from 'jotai'
 import { ChevronDown } from 'lucide-react'
@@ -9,7 +8,9 @@ import { Button } from '~/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 import { Skeleton } from '~/components/ui/skeleton'
@@ -110,11 +111,12 @@ export function ColorDropdownMenu({
 				className="bg-background max-w-[90vw]"
 				onCloseAutoFocus={e => e.preventDefault()}
 			>
-				<DropdownMenuRadioGroup className="grid grid-cols-[repeat(5,1fr)] justify-center gap-0.5 p-1">
-					{options.map(({ name, run, canRun, isActive, color }, index) => (
-						<TooltipWrapper key={index} tooltip={name} side="top">
-							<DropdownMenuRadioItem value={name} asChild>
-								<button
+				<DropdownMenuGroup>
+					<DropdownMenuRadioGroup className="grid grid-cols-[repeat(5,1fr)] justify-center gap-0.5 p-1">
+						{options.map(({ name, run, canRun, isActive, color }, index) => (
+							<TooltipWrapper key={index} tooltip={name} side="top">
+								<DropdownMenuRadioItem
+									value={name}
 									disabled={isActive?.(editor) || !canRun(editor)}
 									onClick={() => run(editor)}
 									className="hover:bg-primary/20 m-0.5 w-fit cursor-pointer overflow-hidden rounded-full border p-0.75 disabled:cursor-not-allowed"
@@ -132,28 +134,27 @@ export function ColorDropdownMenu({
 											style={{ backgroundColor: color }}
 										/>
 									)}
-								</button>
-							</DropdownMenuRadioItem>
-						</TooltipWrapper>
-					))}
+								</DropdownMenuRadioItem>
+							</TooltipWrapper>
+						))}
 
-					{/* Remove color */}
-					<TooltipWrapper tooltip="Remove color" side="top">
-						<DropdownMenuRadioItem value={'remove'} asChild>
-							<button
+						{/* Remove color */}
+						<TooltipWrapper tooltip="Remove color" side="top">
+							<DropdownMenuRadioItem
+								value="remove"
 								disabled={!canRemove?.(editor)}
 								onClick={() => onRemove?.(editor)}
 								className="hover:bg-primary/20 m-0.5 w-fit cursor-pointer overflow-hidden rounded-full border p-0.75 disabled:cursor-not-allowed"
 							>
-								<div className="relative size-5 rounded-full border-[3px] border-gray-500 p-0.5">
-									<div className="absolute top-0 left-0 h-full w-full rotate-45">
-										<div className="absolute top-1/2 left-1/2 h-[3px] w-[120%] -translate-x-1/2 -translate-y-1/2 bg-gray-500" />
-									</div>
-								</div>
-							</button>
-						</DropdownMenuRadioItem>
-					</TooltipWrapper>
-				</DropdownMenuRadioGroup>
+								<span className="relative size-5 rounded-full border-[3px] border-gray-500 p-0.5">
+									<span className="absolute top-0 left-0 h-full w-full rotate-45">
+										<span className="absolute top-1/2 left-1/2 h-[3px] w-[120%] -translate-x-1/2 -translate-y-1/2 bg-gray-500" />
+									</span>
+								</span>
+							</DropdownMenuRadioItem>
+						</TooltipWrapper>
+					</DropdownMenuRadioGroup>
+				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

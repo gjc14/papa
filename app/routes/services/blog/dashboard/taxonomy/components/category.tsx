@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Form, useFetcher, useSubmit } from 'react-router'
 
-import { DialogClose } from '@radix-ui/react-dialog'
 import { CircleX, PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
