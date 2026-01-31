@@ -1,8 +1,6 @@
 import { Editor } from '@tiptap/core'
 import { atom } from 'jotai'
 
-import type { loader } from '~/routes/dashboard/assets/resource'
-
 import type { PostWithRelations } from '../lib/db/post.server'
 import type { Category, Tag } from '../lib/db/schema'
 import { defaultContent } from './post-slug/utils'
@@ -17,10 +15,6 @@ export const tagsAtom = atom<Tag[]>([])
 export const categoriesAtom = atom<(Category & { children: Category[] })[]>([])
 export const editorAtom = atom<Editor | null>(null)
 export const editorContentAtom = atom<string | null>(null)
-
-type AssetLoaderData = Awaited<ReturnType<typeof loader>>
-
-export const assetsAtom = atom<AssetLoaderData | null>(null)
 
 export const isSettingsOpenAtom = atom(false)
 

@@ -46,6 +46,7 @@ import {
 } from '~/components/ui/tooltip'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
 import { SeparatorWithText } from '~/components/separator-with-text'
+import { assetsAtom } from '~/context/assets'
 import type { loader } from '~/routes/dashboard/assets/resource'
 import { assetResourceRoute } from '~/routes/dashboard/assets/utils'
 import {
@@ -55,7 +56,6 @@ import {
 import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import { productAtom, storeConfigAtom } from '../../../../store/product/context'
-import { assetsAtom } from '../../../context'
 
 export type ProductOptionType = NonNullable<
 	ReturnType<typeof productAtom.read>

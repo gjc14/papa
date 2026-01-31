@@ -8,6 +8,7 @@ import { Card, CardContent } from '~/components/ui/card'
 import { DialogTrigger } from '~/components/ui/dialog'
 import { Skeleton } from '~/components/ui/skeleton'
 import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
+import { assetsAtom } from '~/context/assets'
 import type { loader } from '~/routes/dashboard/assets/resource'
 import { assetResourceRoute } from '~/routes/dashboard/assets/utils'
 
@@ -15,7 +16,6 @@ import {
 	productAtom,
 	productGalleryAtom,
 } from '../../../../store/product/context'
-import { assetsAtom } from '../../../context'
 
 const productImageAtom = atom(get => get(productAtom)?.option.image ?? null)
 const productImageAltAtom = atom(
