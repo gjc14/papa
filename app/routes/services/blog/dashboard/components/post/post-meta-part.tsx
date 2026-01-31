@@ -3,9 +3,9 @@
  * This component is responsible for rendering the meta part of the post editor.
  */
 
-import { toast } from 'sonner'
 import { useAtom } from 'jotai'
 import { CloudAlert, Loader } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
@@ -141,6 +141,7 @@ export const PostMetaPart = () => {
 					value={post.status}
 					name="status"
 					onValueChange={v => {
+						if (!v) return
 						setPost(prev => {
 							if (!prev) return prev
 							const newPost = {

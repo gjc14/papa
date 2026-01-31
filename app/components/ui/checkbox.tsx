@@ -6,7 +6,11 @@ import { CheckIcon } from '@phosphor-icons/react'
 
 import { cn } from '~/lib/utils/index'
 
-function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
+function Checkbox({
+	className,
+	icon,
+	...props
+}: CheckboxPrimitive.Root.Props & { icon?: React.ReactElement }) {
 	return (
 		<CheckboxPrimitive.Root
 			data-slot="checkbox"
@@ -20,7 +24,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
 				data-slot="checkbox-indicator"
 				className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
 			>
-				<CheckIcon />
+				{icon ?? <CheckIcon />}
 			</CheckboxPrimitive.Indicator>
 		</CheckboxPrimitive.Root>
 	)

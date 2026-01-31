@@ -28,7 +28,7 @@ export const PostSettings = () => {
 			<SheetContent
 				className={`overflow-y-scroll pt-0 ${isMobile ? 'max-h-9/10' : ''}`}
 				side={isMobile ? 'bottom' : 'right'}
-				hideCloseButton
+				showCloseButton={false}
 			>
 				<SheetHeader className="supports-[backdrop-filter]:bg-primary-foreground/80 bg-primary-foreground sticky top-0 flex-row items-center justify-between space-y-0 py-3 backdrop-blur-xs">
 					<SheetTitle>Edit Post</SheetTitle>

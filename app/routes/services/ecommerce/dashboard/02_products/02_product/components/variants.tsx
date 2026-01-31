@@ -275,9 +275,9 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 						copied: open ? false : prev.copied,
 					}))
 				}}
-				delayDuration={800}
 			>
 				<TooltipTrigger
+					delay={800}
 					render={
 						<Button
 							onClick={() => {
@@ -312,9 +312,9 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 						pasted: open ? false : prev.pasted,
 					}))
 				}}
-				delayDuration={800}
 			>
 				<TooltipTrigger
+					delay={800}
 					render={
 						<Button
 							onClick={async () => {
@@ -476,7 +476,7 @@ function VariantManagementDialog({
 							return (
 								<Select
 									value={currentValue}
-									onValueChange={handleCombinationChange}
+									onValueChange={v => v && handleCombinationChange(v)}
 								>
 									<SelectTrigger className="h-8 w-full rounded-none">
 										<SelectValue placeholder={`Select ${attr}`} />
@@ -860,6 +860,7 @@ function AddVariantDialog({
 										<Select
 											value={newVariantCombination[attr] || ''}
 											onValueChange={v =>
+												v &&
 												setNewVariantCombination(prev => ({
 													...prev,
 													[attr]: v,

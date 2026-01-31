@@ -249,7 +249,10 @@ export function Seo() {
 								</p>
 
 								<div className="flex items-center gap-1">
-									<Select value={aspectRatio} onValueChange={setAspectRatio}>
+									<Select
+										value={aspectRatio}
+										onValueChange={v => v && setAspectRatio(v)}
+									>
 										<SelectTrigger className="h-8 w-fit gap-2">
 											<SelectValue />
 										</SelectTrigger>

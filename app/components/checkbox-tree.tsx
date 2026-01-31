@@ -86,7 +86,7 @@ function CheckboxTreeItem({
 					<Checkbox
 						ref={checkboxRef}
 						id={`checkbox-${node.id}`}
-						checked={state}
+						checked={!!state}
 						onCheckedChange={() => onToggle(node.id)}
 						className="shrink-0 cursor-pointer"
 					/>

@@ -111,8 +111,9 @@ function InheritButton({
 	parentValue,
 }: InheritButtonProps) {
 	return (
-		<Tooltip delayDuration={0}>
+		<Tooltip>
 			<TooltipTrigger
+				delay={0}
 				render={
 					<Button
 						type="button"
@@ -204,8 +205,9 @@ export function OptionForm({
 							className="h-auto w-fit justify-start gap-2"
 						>
 							{tabConfig.map(({ value, icon: Icon, label }) => (
-								<Tooltip delayDuration={0} key={value}>
+								<Tooltip key={value}>
 									<TooltipTrigger
+										delay={0}
 										render={
 											<span>
 												<TabsTrigger
@@ -455,7 +457,7 @@ export function OptionForm({
 											</FieldLabel>
 											<Select
 												value={option.currency}
-												onValueChange={value => onChange({ currency: value })}
+												onValueChange={v => v && onChange({ currency: v })}
 											>
 												<SelectTrigger
 													className={
@@ -798,9 +800,7 @@ export function OptionForm({
 									</FieldLabel>
 									<Select
 										value={option.stockStatus}
-										onValueChange={(value: StockStatus) =>
-											onChange({ stockStatus: value })
-										}
+										onValueChange={v => v && onChange({ stockStatus: v })}
 									>
 										<SelectTrigger
 											id="stockStatus"

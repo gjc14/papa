@@ -418,9 +418,11 @@ function SelectableProductItem({
 			{/* Checkbox */}
 			<Checkbox
 				checked={isSelected}
-				onCheckedChange={() => onToggle(product)}
-				onClick={e => e.stopPropagation()}
-				icon={isSelected && <span className="text-xs">{selectedOrder}</span>}
+				icon={
+					isSelected ? (
+						<span className="text-xs">{selectedOrder}</span>
+					) : undefined
+				}
 			/>
 
 			{/* Product image */}

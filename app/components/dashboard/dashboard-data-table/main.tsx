@@ -457,10 +457,8 @@ function createSelectColumn<TData extends RowData>(): ColumnDef<TData> {
 		header: ({ table }) => (
 			<div className="grid place-self-center p-0.5">
 				<Checkbox
-					checked={
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && 'indeterminate')
-					}
+					checked={table.getIsAllPageRowsSelected()}
+					indeterminate={table.getIsSomePageRowsSelected()}
 					onCheckedChange={v => table.toggleAllPageRowsSelected(!!v)}
 					aria-label="Select page rows"
 					className=""

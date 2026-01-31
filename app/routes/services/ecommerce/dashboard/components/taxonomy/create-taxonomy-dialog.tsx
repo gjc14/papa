@@ -153,9 +153,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 	})
 	const formRef = useRef<HTMLFormElement>(null)
 	const [open, setOpen] = useState(false)
-	const [selectedParentId, setSelectedParentId] = useState<string | undefined>(
-		undefined,
-	)
+	const [selectedParentId, setSelectedParentId] = useState<string | null>(null)
 	const [showSuccess, setShowSuccess] = useState(false)
 
 	useEffect(() => {
@@ -188,10 +186,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		}
 
 		if (config.hasParent) {
-			taxonomyData.parentId =
-				selectedParentId && selectedParentId !== 'none'
-					? Number(selectedParentId)
-					: null
+			taxonomyData.parentId = selectedParentId ? Number(selectedParentId) : null
 		}
 
 		if (config.hasValue) {
@@ -207,7 +202,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 
 	const handleReset = () => {
 		formRef.current?.reset()
-		setSelectedParentId(undefined)
+		setSelectedParentId(null)
 		setShowSuccess(false)
 	}
 
@@ -343,16 +338,16 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 								<Label htmlFor="parentId">Parent {config.name}</Label>
 								<Select
 									value={selectedParentId}
-									onValueChange={setSelectedParentId}
+									onValueChange={v => setSelectedParentId(v)}
 									disabled={mutating}
 								>
-									<SelectTrigger>
+									<SelectTrigger className="w-full">
 										<SelectValue
 											placeholder={`None (Top-level ${config.name.toLowerCase()})`}
 										/>
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value="none">
+										<SelectItem value={null}>
 											None (Top-level {config.name.toLowerCase()})
 										</SelectItem>
 										{validParentItems.map(item => (

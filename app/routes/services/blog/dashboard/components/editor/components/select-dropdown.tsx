@@ -84,10 +84,7 @@ export function SelectDropdownMenu({
 					/>
 				}
 			/>
-			<DropdownMenuContent
-				className="bg-background"
-				onCloseAutoFocus={e => e.preventDefault()}
-			>
+			<DropdownMenuContent className="bg-background">
 				<DropdownMenuRadioGroup className="flex flex-col">
 					{options.map(
 						({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (

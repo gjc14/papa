@@ -27,7 +27,11 @@ interface CreateTaxonomyPopoverProps {
 	/** Available parent options (only top-level items without children) */
 	parentOptions: Array<{ id: number; name: string }>
 	/** Callback when create */
-	onCreate: (data: { name: string; slug: string; parentId?: number }) => void
+	onCreate: (data: {
+		name: string
+		slug: string
+		parentId: number | null
+	}) => void
 	/** Submit state */
 	isSubmitting: boolean
 }
@@ -40,7 +44,7 @@ export function CreateTaxonomyPopover({
 }: CreateTaxonomyPopoverProps) {
 	const [open, setOpen] = useState(false)
 	const [name, setName] = useState('')
-	const [parentId, setParentId] = useState<string>('')
+	const [parentId, setParentId] = useState<string | null>(null)
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -51,12 +55,12 @@ export function CreateTaxonomyPopover({
 			slug: generateSlug(name, {
 				fallbackPrefix: `new-${taxonomyType.toLowerCase()}`,
 			}),
-			...(parentId ? { parentId: Number(parentId) } : {}),
+			parentId: parentId ? Number(parentId) : null,
 		})
 
 		// Reset form
 		setName('')
-		setParentId('')
+		setParentId(null)
 		setOpen(false)
 	}
 
@@ -95,18 +99,17 @@ export function CreateTaxonomyPopover({
 					</div>
 					{parentOptions.length > 0 && (
 						<div className="space-y-2">
-							<Label htmlFor="parent">Parent (Optional)</Label>
-							<Select
-								value={parentId}
-								onValueChange={v => {
-									v === 'none' ? setParentId('') : setParentId(v)
-								}}
-							>
-								<SelectTrigger id="parent">
-									<SelectValue placeholder="Select parent..." />
+							<Label htmlFor="parent">Parent (Optional) {parentId}</Label>
+							<Select value={parentId} onValueChange={v => setParentId(v)}>
+								<SelectTrigger id="parent" className="w-full">
+									<SelectValue
+										placeholder={`None (Top-level ${taxonomyType.toLowerCase()})`}
+									/>
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="none">None</SelectItem>
+									<SelectItem value={null}>
+										None (Top-level {taxonomyType.toLowerCase()})
+									</SelectItem>
 									<SelectSeparator />
 									{parentOptions.map(option => (
 										<SelectItem key={option.id} value={String(option.id)}>

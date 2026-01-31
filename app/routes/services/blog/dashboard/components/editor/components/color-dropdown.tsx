@@ -113,10 +113,7 @@ export function ColorDropdownMenu({
 					/>
 				}
 			/>
-			<DropdownMenuContent
-				className="bg-background max-w-[90vw]"
-				onCloseAutoFocus={e => e.preventDefault()}
-			>
+			<DropdownMenuContent className="bg-background max-w-[90vw]">
 				<DropdownMenuGroup>
 					<DropdownMenuRadioGroup className="grid grid-cols-[repeat(5,1fr)] justify-center gap-0.5 p-1">
 						{options.map(({ name, run, canRun, isActive, color }, index) => (

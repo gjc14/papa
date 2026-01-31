@@ -64,6 +64,7 @@ export default function DashboardAsset() {
 					<Select
 						defaultValue="all"
 						onValueChange={v => {
+							if (!v) return
 							setDisplay(v)
 						}}
 					>
