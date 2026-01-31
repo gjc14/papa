@@ -32,14 +32,12 @@ export function PostMeta({ post }: { post: PostWithRelations }) {
 		<div className="mx-auto w-full py-2">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-3">
-					<Avatar className="h-10 w-10">
+					<Avatar className="size-10">
 						<AvatarImage
-							src={post.author?.image || '/placeholders/avatar.png'}
-							alt={post.author?.name || 'Author avatar'}
+							src={post.author?.image ?? undefined}
+							alt={post.author?.name ?? 'A'}
 						/>
-						<AvatarFallback>
-							{post.author?.name?.charAt(0) || 'PA'}
-						</AvatarFallback>
+						<AvatarFallback>{post.author?.name?.[0] ?? 'A'}</AvatarFallback>
 					</Avatar>
 					<div className="flex flex-col">
 						<Button
