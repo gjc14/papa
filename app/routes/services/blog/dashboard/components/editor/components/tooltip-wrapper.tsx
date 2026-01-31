@@ -1,3 +1,4 @@
+import { Kbd } from '~/components/ui/kbd'
 import {
 	Tooltip,
 	TooltipContent,
@@ -29,9 +30,7 @@ export const TooltipWrapper = ({
 			<TooltipContent side={side} className="px-2 py-1 text-xs">
 				{tooltip}
 				{shortcutKeys.length > 0 && (
-					<kbd className="bg-background text-muted-foreground/70 ms-2 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-						{shortcutKeys.join(' + ')}
-					</kbd>
+					<Kbd className="ml-1">{shortcutKeys.join(' + ')}</Kbd>
 				)}
 			</TooltipContent>
 		</Tooltip>

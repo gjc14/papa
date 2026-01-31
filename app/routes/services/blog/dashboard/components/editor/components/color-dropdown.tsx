@@ -87,7 +87,8 @@ export function ColorDropdownMenu({
 			open={open}
 			onOpenChange={open => {
 				setOpen(open)
-				if (!open) editor.chain().focus().run()
+				// Focus editor when closing the menu
+				if (!open) editor.commands.focus()
 			}}
 		>
 			<TooltipWrapper
@@ -98,8 +99,7 @@ export function ColorDropdownMenu({
 						render={
 							<Button
 								variant="ghost"
-								size={'sm'}
-								className="gap-0 has-[>svg]:pr-0.5 has-[>svg]:pl-1.5"
+								className="gap-0 px-1"
 								style={
 									activeColor
 										? activeIndicatorStyles(activeIndicator)(activeColor.color)
@@ -113,7 +113,7 @@ export function ColorDropdownMenu({
 					/>
 				}
 			/>
-			<DropdownMenuContent className="bg-background max-w-[90vw]">
+			<DropdownMenuContent className="bg-background w-auto">
 				<DropdownMenuGroup>
 					<DropdownMenuRadioGroup className="grid grid-cols-[repeat(5,1fr)] justify-center gap-0.5 p-1">
 						{options.map(({ name, run, canRun, isActive, color }, index) => (

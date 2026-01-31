@@ -40,11 +40,10 @@ export function ToggleButton(props: ToggleButtonProps) {
 			shortcut={props.shortcut}
 			render={
 				<Button
-					variant="ghost"
-					size="icon"
 					aria-label={props.tooltip}
+					size={'icon'}
+					variant={'ghost'}
 					className={cn(
-						'size-8',
 						isActive ? 'bg-accent text-accent-foreground' : '',
 						props.className,
 					)}
