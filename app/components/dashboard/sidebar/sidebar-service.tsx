@@ -25,21 +25,25 @@ export interface ServiceDashboardConfig {
 	 */
 	name: string
 	/**
-	 * Can be a React component or an image URL
+	 * Can be an svg or an image URL
 	 * ```
-	 * // For React component, use:
+	 * // For svg, you could either pass in your own svg or utilize icon libraries:
 	 * import { Command } from 'lucide-react'
-	 * // ...
-	 * logo: Command
+	 * import { AvocadoIcon } from '@phosphor-icons/react'
+	 * import { mySVG } from './my-svg' // your own svg as a React component. e.g. export const mySVG = () => (<svg>...</svg>)
+	 * {
+	 * 		// ...
+	 * 		logo: AvocadoIcon // or Command
+	 * }
 	 *
 	 * // For image URL, use:
-	 * logo: '/your-logo.png'
-	 *
-	 * // For SVG/PNG path, use:
-	 * import mySVGLogo from './my-logo.svg'
+	 * import mySVGLogo from './my-svg.svg'
 	 * import myPNGLogo from './my-logo.png'
-	 * // ...
-	 * logo: mySVGLogo
+	 *
+	 * {
+	 * 		// ...
+	 * 		logo: '/your-logo.png' // to directly point to an image in public folder or use `mySVGLogo`, `myPNGLogo` imported from your file
+	 * }
 	 * ```
 	 */
 	logo: React.ElementType | string
@@ -75,7 +79,10 @@ export function SidebarService({
 									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
 									<div className="flex aspect-square size-8 items-center justify-center overflow-hidden border">
-										{renderServiceLogo(currentService.logo, 'lg')}
+										{renderServiceLogo({
+											logo: currentService.logo,
+											className: 'size-8',
+										})}
 									</div>
 									<div className="grid flex-1 text-left text-sm leading-tight">
 										<span className="truncate font-semibold">
@@ -101,17 +108,21 @@ export function SidebarService({
 								Services
 							</DropdownMenuLabel>
 							{services.map(service => (
-								<Link key={service.name} to={service.pathname}>
-									<DropdownMenuItem className="gap-2 p-2">
-										<div className="flex size-6 items-center justify-center overflow-hidden border">
-											{renderServiceLogo(service.logo, 'sm')}
-										</div>
-										{service.name}
-										{/* <DropdownMenuShortcut>
-                                    ⌘{index + 1}
-                                </DropdownMenuShortcut> */}
-									</DropdownMenuItem>
-								</Link>
+								<DropdownMenuItem
+									className="[& gap-2 p-2"
+									render={
+										<Link key={service.name} to={service.pathname}>
+											<div className="flex size-6 items-center justify-center overflow-hidden border [&_svg]:size-4">
+												{renderServiceLogo({
+													logo: service.logo,
+													className: 'size-6',
+												})}
+											</div>
+											{service.name}
+											{/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
+										</Link>
+									}
+								/>
 							))}
 							{/* <DropdownMenuSeparator />
 							<DropdownMenuItem className="gap-2 p-2">

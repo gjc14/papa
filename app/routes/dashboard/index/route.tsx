@@ -6,7 +6,6 @@ import { Button } from '~/components/ui/button'
 import {
 	Tooltip,
 	TooltipContent,
-	TooltipProvider,
 	TooltipTrigger,
 } from '~/components/ui/tooltip'
 import {
@@ -61,49 +60,39 @@ export default function DashboardIndex() {
 						</div>
 					</div>
 				) : (
-					<TooltipProvider>
-						<div className="grid h-fit w-full grid-cols-2 gap-3 overflow-auto md:grid-cols-3 xl:grid-cols-4">
-							{services.map((service, index) => (
-								<Link
-									key={index}
-									to={service.pathname}
-									className="hover:bg-accent grid h-40 w-full cursor-pointer grid-rows-5 items-center gap-2 border p-5 transition-colors"
-								>
-									<div className="row-span-2 m-auto overflow-hidden">
-										{renderServiceLogo(service.logo, 'lg')}
-									</div>
-									<div className="row-span-3 flex min-h-0 flex-col justify-start gap-1 overflow-hidden">
-										<Tooltip>
-											<TooltipTrigger
-												render={
-													<p className="truncate text-center font-semibold">
-														{service.name}
+					<div className="grid h-fit w-full grid-cols-2 gap-3 overflow-auto md:grid-cols-3 xl:grid-cols-4">
+						{services.map((service, index) => (
+							<Tooltip key={index}>
+								<TooltipTrigger
+									render={
+										<Link
+											to={service.pathname}
+											className="hover:bg-accent grid h-40 w-full cursor-pointer grid-rows-5 items-center gap-2 border p-5 transition-colors"
+										>
+											<div className="row-span-2 m-auto flex size-8 items-center justify-center overflow-hidden [&_svg]:size-6">
+												{renderServiceLogo({ logo: service.logo, size: 'lg' })}
+											</div>
+											<div className="row-span-3 flex min-h-0 flex-col justify-start gap-1 overflow-hidden">
+												<p className="truncate text-center font-semibold">
+													{service.name}
+												</p>
+												{service.description && (
+													<p className="text-muted-foreground line-clamp-3 flex-1 text-start text-sm text-pretty">
+														{service.description}
 													</p>
-												}
-											/>
-											<TooltipContent>
-												<p>{service.name}</p>
-											</TooltipContent>
-										</Tooltip>
-										{service.description && (
-											<Tooltip>
-												<TooltipTrigger
-													render={
-														<p className="text-muted-foreground line-clamp-3 flex-1 text-start text-sm text-pretty">
-															{service.description}
-														</p>
-													}
-												/>
-												<TooltipContent>
-													<p className="max-w-xs">{service.description}</p>
-												</TooltipContent>
-											</Tooltip>
-										)}
-									</div>
-								</Link>
-							))}
-						</div>
-					</TooltipProvider>
+												)}
+											</div>
+										</Link>
+									}
+								/>
+								<TooltipContent>
+									<p className="max-w-xs text-xs">
+										<strong>{service.name}</strong> | {service.description}
+									</p>
+								</TooltipContent>
+							</Tooltip>
+						))}
+					</div>
 				)}
 			</DashboardContent>
 		</DashboardLayout>
