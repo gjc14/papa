@@ -189,6 +189,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 		brands,
 		attributes,
 		title,
+		status: 'ALL',
 	})
 
 	return { products }
