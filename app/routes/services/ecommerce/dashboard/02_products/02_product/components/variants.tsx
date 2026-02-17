@@ -796,8 +796,9 @@ function AddVariantDialog({
 
 		combinations.forEach(combination => {
 			if (!combinationExists({ variants: productVariants, combination })) {
+				const newId = -(Math.floor(Math.random() * 2147483648) + 1) // id doesn't matter, backend will delete all and recreate
 				newVariants.push({
-					id: -(Math.floor(Math.random() * 2147483648) + 1), // id doesn't matter, backend will delete all and recreate
+					id: newId, // id doesn't matter, backend will delete all and recreate
 					// postgres integer -2147483648 to +2147483647
 					productId: product.id,
 					order: productVariants
@@ -805,9 +806,10 @@ function AddVariantDialog({
 						: 0,
 					combination,
 
-					optionId: -(Math.floor(Math.random() * 2147483648) + 1), // id doesn't matter, backend will delete all and recreate
+					optionId: newId, // id doesn't matter, backend will delete all and recreate
 					option: {
 						...product.option,
+						id: newId,
 						image: '',
 						imageAlt: '',
 						imageTitle: '',
