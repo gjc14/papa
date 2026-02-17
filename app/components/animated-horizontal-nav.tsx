@@ -3,7 +3,7 @@ import { NavLink } from 'react-router'
 
 import { motion } from 'motion/react'
 
-import { Button } from '~/components/ui/button'
+import { buttonVariants } from '~/components/ui/button'
 import { cn } from '~/lib/utils'
 
 export interface RouteButton {
@@ -14,7 +14,7 @@ export interface RouteButton {
 export const AnimatedNav = ({
 	routes,
 }: {
-	routes: (RouteButton & React.ComponentProps<'button'>)[]
+	routes: (RouteButton & React.ComponentProps<typeof NavLink>)[]
 }) => {
 	const [hoveredTab, setHoveredTab] = useState<number | null>(null)
 	const [activeTabBounds, setActiveTabBounds] = useState<{
@@ -102,7 +102,7 @@ export const AnimatedNav = ({
 			{routes.map((route, i) => {
 				const { to, title, ...buttonProps } = route
 				return (
-					<AnimatedLink
+					<AnimatedLinkButton
 						key={i}
 						to={to}
 						title={title}
@@ -125,7 +125,7 @@ interface AnimatedLinkProps extends RouteButton {
 	index: number
 }
 
-const AnimatedLink = ({
+const AnimatedLinkButton = ({
 	to,
 	title,
 	index,
@@ -134,9 +134,27 @@ const AnimatedLink = ({
 	onActive,
 	className,
 	...rest
-}: AnimatedLinkProps & React.ComponentProps<'button'>) => {
+}: AnimatedLinkProps & React.ComponentProps<typeof NavLink>) => {
 	return (
-		<NavLink to={to} end className="relative">
+		<NavLink
+			data-index={index}
+			to={to}
+			end
+			className={({ isActive, isPending }) =>
+				cn(
+					buttonVariants({ variant: 'ghost' }),
+					'relative',
+					'mb-1 h-8 px-3',
+					'hover:bg-transparent dark:hover:bg-transparent',
+					isActive ? 'text-foreground' : 'text-muted-foreground',
+					isPending ? 'animate-pulse' : '',
+					className,
+				)
+			}
+			onMouseEnter={onHover}
+			onMouseLeave={onLeave}
+			{...rest}
+		>
 			{({ isActive, isPending }) => {
 				// Call onActive when isActive changes
 				useEffect(() => {
@@ -156,22 +174,7 @@ const AnimatedLink = ({
 							damping: 30,
 						}}
 					>
-						<Button
-							variant={'ghost'}
-							data-index={index}
-							className={cn(
-								'mb-2 h-8 px-3',
-								'hover:bg-transparent dark:hover:bg-transparent',
-								isActive ? 'text-foreground' : 'text-muted-foreground',
-								isPending ? 'animate-pulse' : '',
-								className,
-							)}
-							onMouseEnter={onHover}
-							onMouseLeave={onLeave}
-							{...rest}
-						>
-							{title}
-						</Button>
+						{title}
 					</motion.div>
 				)
 			}}
