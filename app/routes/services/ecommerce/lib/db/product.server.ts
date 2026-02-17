@@ -57,7 +57,7 @@ export type ProductListingWithRelations = ProductListing & {
 }
 
 type GetProductsParamsBase = {
-	/** Filter by product status (default: 'PUBLISHED'). Use 'ALL' to fetch all statuses. */
+	/** Filter by product status. Use 'ALL' to fetch all statuses. @default 'PUBLISHED' */
 	status?: ProductStatus | 'ALL'
 	/** Array of category slugs to filter products by category. */
 	categories?: string[]
@@ -845,13 +845,11 @@ async function connectProductVariants(
 	})
 
 	// Collect option IDs to delete (those not being reused)
-	const existingOptionIds = existingVariants.map(v => v.optionId)
-	const optionIdsInUse = variants
-		.map(v => v.option.id)
-		.filter(id => existingOptionIds.includes(id))
-	const optionIdsToDelete = existingOptionIds.filter(
-		id => !optionIdsInUse.includes(id),
-	)
+	// Use Set for O(1) lookup instead of O(n) array.includes()
+	const incomingOptionIds = new Set(variants.map(v => v.optionId))
+	const optionIdsToDelete = existingVariants
+		.map(v => v.optionId)
+		.filter(id => !incomingOptionIds.has(id))
 
 	// Delete orphaned options
 	if (optionIdsToDelete.length > 0) {
@@ -860,58 +858,95 @@ async function connectProductVariants(
 			.where(inArray(productOption.id, optionIdsToDelete))
 	}
 
-	// Insert new variants
-	if (variants.length > 0) {
-		const optionIds = variants.map(v => v.option.id)
-		const existingOptions = await tx
-			.select({ id: productOption.id })
-			.from(productOption)
-			.where(inArray(productOption.id, optionIds))
+	// Update/Insert options
+	const existingOptions = await tx
+		.select({ id: productOption.id })
+		.from(productOption)
+		.where(inArray(productOption.id, Array.from(incomingOptionIds)))
 
-		const existingOptionIds = new Set(existingOptions.map(o => o.id))
+	const existingOptionIds = new Set(existingOptions.map(o => o.id))
 
-		// Classify: 1. toInsert (bulk), 2. toUpdate (loop)
-		const optionsToInsert = variants
-			.filter(v => !existingOptionIds.has(v.option.id))
-			.map(v => v.option)
+	// Classify and prevent duplicate: 1. toInsert (bulk), 2. toUpdate (loop)
+	const oUpdateMap = new Map<number, ProductOption>()
+	const oInsertMap = new Map<number, ProductOption>()
 
-		const optionsToUpdate = variants
-			.filter(v => existingOptionIds.has(v.option.id))
-			.map(v => v.option)
-
-		const insertedOptionIds = new Map<number, number>() // oldId -> newId
-		if (optionsToInsert.length > 0) {
-			const inserted = await tx
-				.insert(productOption)
-				.values(optionsToInsert)
-				.returning({ id: productOption.id })
-
-			optionsToInsert.forEach((opt, index) => {
-				insertedOptionIds.set(opt.id, inserted[index].id)
-			})
+	for (const v of variants) {
+		if (existingOptionIds.has(v.optionId)) {
+			oUpdateMap.set(v.optionId, { ...v.option, id: v.optionId })
+		} else {
+			oInsertMap.set(v.optionId, { ...v.option, id: v.optionId })
 		}
+	}
 
-		for (const opt of optionsToUpdate) {
-			await tx
-				.update(productOption)
-				.set(opt)
-				.where(eq(productOption.id, opt.id))
-		}
+	// Handling updates and inserts
+	const optionsToUpdate = Array.from(oUpdateMap.values())
+	const optionsToInsert = Array.from(oInsertMap.values())
 
-		const variantsToInsert = variants.map(variant => {
-			const optionIdDatabase =
-				insertedOptionIds.get(variant.option.id) ?? variant.option.id
-			const { combination, order } = variant
-			return { combination, order, optionId: optionIdDatabase, productId }
+	for (const opt of optionsToUpdate) {
+		await tx.update(productOption).set(opt).where(eq(productOption.id, opt.id))
+	}
+
+	const insertedOptionIds = new Map<number, number>() // oldOptionId -> newOptionId
+	if (optionsToInsert.length > 0) {
+		const inserted = await tx
+			.insert(productOption)
+			.values(optionsToInsert.map(opt => ({ ...opt, id: undefined })))
+			.returning({ id: productOption.id })
+
+		optionsToInsert.forEach((opt, index) => {
+			insertedOptionIds.set(opt.id, inserted[index].id)
 		})
+	}
 
-		// Delete and Insert variants at once
+	// Update optionId in variants to match inserted options
+	const incomingVariants = variants.map(variant => {
+		return {
+			...variant,
+			optionId: insertedOptionIds.get(variant.optionId) ?? variant.optionId,
+		}
+	})
+
+	const incomingVariantIds = new Set(incomingVariants.map(v => v.id))
+	const variantIdsToDelete = existingVariants
+		.map(v => v.id)
+		.filter(id => !incomingVariantIds.has(id))
+
+	// Delete orphaned variants
+	if (variantIdsToDelete.length > 0) {
 		await tx
 			.delete(productVariant)
-			.where(eq(productVariant.productId, productId))
-		if (variantsToInsert.length > 0) {
-			await tx.insert(productVariant).values(variantsToInsert)
+			.where(inArray(productVariant.id, variantIdsToDelete))
+	}
+
+	// Update/Insert variants
+	const existingVariantIds = new Set(existingVariants.map(v => v.id))
+
+	// Classify and prevent duplicate: 1. toInsert (bulk), 2. toUpdate (loop)
+	const vUpdateMap = new Map<number, ProductVariant>()
+	const vInsertMap = new Map<number, ProductVariant>()
+
+	for (const v of incomingVariants) {
+		if (existingVariantIds.has(v.id)) {
+			vUpdateMap.set(v.id, v)
+		} else {
+			vInsertMap.set(v.id, v)
 		}
+	}
+
+	const variantsToUpdate = Array.from(vUpdateMap.values())
+	const variantsToInsert = Array.from(vInsertMap.values())
+
+	for (const variant of variantsToUpdate) {
+		await tx
+			.update(productVariant)
+			.set(variant)
+			.where(eq(productVariant.id, variant.id))
+	}
+
+	if (variantsToInsert.length > 0) {
+		await tx
+			.insert(productVariant)
+			.values(variantsToInsert.map(v => ({ ...v, id: undefined })))
 	}
 
 	console.timeEnd('connectProductVariants')
