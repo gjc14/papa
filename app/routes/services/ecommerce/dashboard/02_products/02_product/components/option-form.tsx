@@ -260,6 +260,7 @@ export function OptionForm({
 												trigger={
 													<DialogTrigger
 														onClick={() => !assets && load()}
+														nativeButton={false}
 														render={
 															option.image ? (
 																<div className="relative w-[80px]!">

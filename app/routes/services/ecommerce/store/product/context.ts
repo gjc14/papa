@@ -12,7 +12,7 @@ import type {
 	EcTag as Tag,
 } from '../../lib/db/schema'
 
-type StoreConfig = {
+export type StoreConfig = {
 	id: number
 	/** Name of the store, used for SEO @default "Store" */
 	name: string

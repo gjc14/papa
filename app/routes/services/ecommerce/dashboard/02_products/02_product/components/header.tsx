@@ -182,26 +182,26 @@ export function ProductEditPageHeader() {
 								>
 									<Pencil />
 								</Button>
-								<Button
-									variant="ghost"
-									size="icon-xs"
-									className="text-muted-foreground hover:text-foreground"
-									render={
-										<Link
-											to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
-											target="_blank"
-											rel="noreferrer"
-										>
-											<ExternalLink />
-										</Link>
-									}
-								/>
 							</span>
 						</>
 					)}
 				</ItemDescription>
 			</ItemContent>
 			<ItemActions>
+				<Button
+					variant="ghost"
+					size="icon"
+					nativeButton={false}
+					render={
+						<Link
+							to={`${storeConfig.storeFrontPath}/product/${productSlug}?preview=true`}
+							target="_blank"
+							rel="noreferrer"
+						>
+							<ExternalLink />
+						</Link>
+					}
+				/>
 				<Button
 					size="sm"
 					type="submit"

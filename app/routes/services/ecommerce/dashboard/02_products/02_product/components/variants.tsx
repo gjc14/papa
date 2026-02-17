@@ -227,24 +227,34 @@ function VariantItem({
 	variant: VariantType
 	onEdit: (id: number) => void
 }) {
-	const { formattedPrice } = renderPrice(variant.option)
+	const { hasDiscount, formattedPrice, formattedOriginalPrice } = renderPrice(
+		variant.option,
+	)
 
 	return (
 		<div className="flex items-center justify-between gap-2 overflow-scroll border p-3">
 			<div className="flex-1">
+				<p className="text-muted-foreground text-xs">
+					{variant.option.sku || '- (sku)'}
+				</p>
 				<p>
-					{Object.entries(variant.combination).map(([key, value], i) => (
-						<Fragment key={key}>
+					{Object.entries(variant.combination).map(([attr, val], i) => (
+						<Fragment key={attr}>
 							{i !== 0 && <span className="text-muted-foreground"> ⨉ </span>}
-							<span className="text-sm font-medium">{key}</span>
+							<span className="text-sm font-medium">{attr}</span>
 							<span className="bg-muted ml-1 border px-1 py-0.5 text-xs">
-								{value}
+								{val}
 							</span>
 						</Fragment>
 					))}
 				</p>
-				<p className="text-muted-foreground mt-2 text-xs">
-					{variant.option.sku || 'No SKU'} • {formattedPrice}
+				<p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-1 text-xs font-bold">
+					{formattedPrice}
+					{hasDiscount && (
+						<span className="font-normal line-through">
+							{formattedOriginalPrice}
+						</span>
+					)}
 				</p>
 			</div>
 			<Button size="sm" variant="outline" onClick={() => onEdit(variant.id)}>

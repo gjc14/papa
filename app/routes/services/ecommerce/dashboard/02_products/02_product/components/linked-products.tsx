@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useFetcher } from 'react-router'
 
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ExternalLink, Plus, X } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
@@ -32,13 +32,17 @@ import type {
 } from '~/routes/services/ecommerce/lib/db/product.server'
 import {
 	crossSellProductsAtom,
+	storeConfigAtom,
 	upsellProductsAtom,
+	type StoreConfig,
 } from '~/routes/services/ecommerce/store/product/context'
 import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
 
 import type { loader } from '../resource'
 
 export function LinkedProducts() {
+	const storeConfig = useAtomValue(storeConfigAtom)
+
 	const fetcher = useFetcher<typeof loader>()
 
 	const [productsAvailable, setProductsAvailable] = useState<ProductListing[]>(
@@ -111,6 +115,7 @@ export function LinkedProducts() {
 								.map(product => (
 									<LinkedProductItem
 										key={product.id}
+										storeConfig={storeConfig}
 										product={product}
 										onRemove={handleRemoveCSProduct}
 									/>
@@ -120,6 +125,7 @@ export function LinkedProducts() {
 				</CardContent>
 				<CardFooter>
 					<AddLinkedProductsDialog
+						storeConfig={storeConfig}
 						open={isCSOpen}
 						onOpenChange={setIsCSOpen}
 						onConfirm={handleSetCSProducts}
@@ -169,6 +175,7 @@ export function LinkedProducts() {
 								.map(product => (
 									<LinkedProductItem
 										key={product.id}
+										storeConfig={storeConfig}
 										product={product}
 										onRemove={handleRemoveUSProduct}
 									/>
@@ -178,6 +185,7 @@ export function LinkedProducts() {
 				</CardContent>
 				<CardFooter>
 					<AddLinkedProductsDialog
+						storeConfig={storeConfig}
 						open={isUSOpen}
 						onOpenChange={setIsUSOpen}
 						onConfirm={handleSetUSProducts}
@@ -206,11 +214,16 @@ export function LinkedProducts() {
 }
 
 interface LinkedProductItemProps {
+	storeConfig: StoreConfig
 	product: ProductListing
 	onRemove: (productId: number) => void
 }
 
-function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
+function LinkedProductItem({
+	storeConfig,
+	product,
+	onRemove,
+}: LinkedProductItemProps) {
 	const { hasDiscount, formattedPrice, formattedOriginalPrice } = renderPrice(
 		product.option,
 	)
@@ -219,17 +232,15 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 		<div className="flex items-center gap-3 overflow-auto border p-3">
 			{/* Product image */}
 			<div className="size-16 shrink-0 overflow-hidden">
-				{product.option.image ? (
-					<img
-						src={product.option.image}
-						alt={product.name}
-						className="size-full object-cover"
-					/>
-				) : (
-					<div className="flex size-full items-center justify-center text-xs">
-						❓
-					</div>
-				)}
+				<img
+					src={product.option.image || storeConfig.placeholderImage.image}
+					alt={
+						product.name ||
+						storeConfig.placeholderImage.imageAlt ||
+						storeConfig.name
+					}
+					className="size-full object-cover"
+				/>
 			</div>
 
 			{/* Product info */}
@@ -272,6 +283,7 @@ function LinkedProductItem({ product, onRemove }: LinkedProductItemProps) {
 }
 
 interface AddLinkedProductsDialogProps {
+	storeConfig: StoreConfig
 	open: boolean
 	onOpenChange: (open: boolean) => void
 	onConfirm: (products: (ProductListing & { order: number })[]) => void
@@ -285,6 +297,7 @@ interface AddLinkedProductsDialogProps {
 // === Dialog for adding linked products ===
 
 function AddLinkedProductsDialog({
+	storeConfig,
 	open,
 	onOpenChange,
 	onConfirm,
@@ -358,6 +371,7 @@ function AddLinkedProductsDialog({
 								return (
 									<SelectableProductItem
 										key={product.id}
+										storeConfig={storeConfig}
 										product={product}
 										selectedOrder={
 											selectedProducts.find(p => p.id === product.id)?.order
@@ -393,12 +407,14 @@ function AddLinkedProductsDialog({
 }
 
 interface SelectableProductItemProps {
+	storeConfig: StoreConfig
 	product: ProductListing
 	selectedOrder?: number
 	onToggle: (product: ProductListing) => void
 }
 
 function SelectableProductItem({
+	storeConfig,
 	product,
 	selectedOrder,
 	onToggle,
@@ -427,17 +443,15 @@ function SelectableProductItem({
 
 			{/* Product image */}
 			<div className="size-16 shrink-0 overflow-hidden">
-				{product.option.image ? (
-					<img
-						src={product.option.image}
-						alt={product.name}
-						className="size-full object-cover"
-					/>
-				) : (
-					<div className="flex size-full items-center justify-center text-xs">
-						❓
-					</div>
-				)}
+				<img
+					src={product.option.image || storeConfig.placeholderImage.image}
+					alt={
+						product.name ||
+						storeConfig.placeholderImage.imageAlt ||
+						storeConfig.name
+					}
+					className="size-full object-cover"
+				/>
 			</div>
 
 			{/* Product info */}

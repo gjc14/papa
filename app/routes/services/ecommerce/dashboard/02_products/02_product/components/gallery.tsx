@@ -103,6 +103,7 @@ export function Gallery() {
 						trigger={
 							<DialogTrigger
 								onClick={() => !assets && load()}
+								nativeButton={false}
 								render={
 									productImage ? (
 										<div className="relative">
