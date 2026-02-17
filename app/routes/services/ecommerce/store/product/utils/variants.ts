@@ -41,10 +41,17 @@ const getSelectedVariant = (props: {
 	>
 }) => {
 	return props.product.variants.find(variant => {
-		const combination = variant.combination
-		// Only check attributes that have been selected
-		return Object.entries(combination).every(
-			([key, value]) => props.selectedVariantAttributes[key] === value,
+		const selectedKeys = Object.keys(props.selectedVariantAttributes)
+		const combinationKeys = Object.keys(variant.combination)
+
+		// Check if both have the same number of keys
+		if (selectedKeys.length !== combinationKeys.length) {
+			return false
+		}
+
+		// Check if all selected attributes match
+		return selectedKeys.every(
+			key => props.selectedVariantAttributes[key] === variant.combination[key],
 		)
 	})
 }
