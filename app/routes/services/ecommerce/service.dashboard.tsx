@@ -1,26 +1,32 @@
-import { Apple, BadgeDollarSign, Handshake, Package, Store } from 'lucide-react'
+import {
+	AvocadoIcon,
+	HandshakeIcon,
+	PackageIcon,
+	SealPercentIcon,
+	StorefrontIcon,
+} from '@phosphor-icons/react'
 
 import { registerServiceDashboard } from '~/lib/service/dashboard-registry'
 
 registerServiceDashboard({
 	name: 'E-Commerce',
 	description: 'Design your storefront with website design AI in React!',
-	logo: Store,
+	logo: StorefrontIcon,
 	pathname: '/dashboard/ecommerce',
 	sidebar: {
 		primary: [
 			{
-				icon: Store,
+				icon: StorefrontIcon,
 				title: 'Dashboard',
 				pathname: 'ecommerce',
 			},
 			{
-				icon: Handshake,
+				icon: HandshakeIcon,
 				title: 'Orders',
 				pathname: 'ecommerce/orders',
 			},
 			{
-				icon: Apple,
+				icon: AvocadoIcon,
 				title: 'Products',
 				pathname: 'ecommerce/products',
 				sub: [
@@ -51,12 +57,12 @@ registerServiceDashboard({
 				],
 			},
 			{
-				icon: Package,
+				icon: PackageIcon,
 				title: 'Inventory',
 				pathname: 'ecommerce/inventory',
 			},
 			{
-				icon: BadgeDollarSign,
+				icon: SealPercentIcon,
 				title: 'Promotions',
 				pathname: 'ecommerce/promotions',
 			},
