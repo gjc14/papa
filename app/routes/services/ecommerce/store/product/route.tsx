@@ -44,23 +44,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 		})
 	}
 
-	const productGalleryPromise = new Promise<
-		Awaited<ReturnType<typeof getProductGallery>>
-	>(async resolve => {
-		const gallery = await getProductGallery(product.id)
-		// Insert main product image as first image if exists
-		if (product.option.image) {
-			gallery.unshift({
-				image: product.option.image,
-				productId: product.id,
-				order: 0,
-				alt: product.name,
-				title: product.name,
-			})
-		}
-		resolve(gallery)
-	})
-
+	const productGalleryPromise = getProductGallery(product.id)
 	const crossSellProductsPromise = getCrossSellProducts(product.id)
 
 	return { product, productGalleryPromise, crossSellProductsPromise }

@@ -12,9 +12,9 @@ import {
 	ProductCrossSellSkeleton,
 } from './components/product-cross-sell'
 import {
-	ProductImageGallery,
-	ProductImageGallerySkeleton,
-} from './components/product-image-gallery'
+	ProductGallery,
+	ProductGallerySkeleton,
+} from './components/product-gallery'
 import { isResolvingAtom, productAtom } from './context'
 
 /**
@@ -34,9 +34,9 @@ export function StoreProductPage() {
 			</div>
 			<div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-8 lg:gap-16">
 				{isResolving.productGallery ? (
-					<ProductImageGallerySkeleton />
+					<ProductGallerySkeleton />
 				) : (
-					<ProductImageGallery />
+					<ProductGallery />
 				)}
 
 				<ProductContent />

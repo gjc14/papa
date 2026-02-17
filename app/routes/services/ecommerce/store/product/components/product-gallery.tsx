@@ -8,7 +8,7 @@ import { Skeleton } from '~/components/ui/skeleton'
 import { productGallery as productGalleryTable } from '../../../lib/db/schema'
 import { useProductContext } from '../hooks/use-product-context'
 
-const ProductImageGalleryWrapper = ({
+const ProductGalleryWrapper = ({
 	sticky = true,
 	children,
 }: {
@@ -24,7 +24,7 @@ const ProductImageGalleryWrapper = ({
 
 export type ProductGallery = (typeof productGalleryTable.$inferSelect)[]
 
-export const ProductImageGallery = () => {
+export const ProductGallery = () => {
 	const { storeConfig, product, productGallery, hoveredAttributeImage } =
 		useProductContext()
 
@@ -33,6 +33,7 @@ export const ProductImageGallery = () => {
 	if (!product) return null
 
 	const gallery = [
+		// Put the feature image first if exists, then the gallery images
 		...(product.option.image
 			? [
 					{
@@ -54,7 +55,7 @@ export const ProductImageGallery = () => {
 	}
 
 	return (
-		<ProductImageGalleryWrapper sticky={true}>
+		<ProductGalleryWrapper sticky={true}>
 			<div className="relative">
 				<img
 					src={
@@ -113,17 +114,17 @@ export const ProductImageGallery = () => {
 					</button>
 				))}
 			</div>
-		</ProductImageGalleryWrapper>
+		</ProductGalleryWrapper>
 	)
 }
 
-export const ProductImageGallerySkeleton = ({
+export const ProductGallerySkeleton = ({
 	sticky = true,
 }: {
 	sticky?: boolean
 }) => {
 	return (
-		<ProductImageGalleryWrapper sticky={sticky}>
+		<ProductGalleryWrapper sticky={sticky}>
 			{/* Main image skeleton */}
 			<Skeleton className="aspect-square w-full" />
 
@@ -133,6 +134,6 @@ export const ProductImageGallerySkeleton = ({
 					<Skeleton key={idx} className="h-20 w-20" />
 				))}
 			</div>
-		</ProductImageGalleryWrapper>
+		</ProductGalleryWrapper>
 	)
 }

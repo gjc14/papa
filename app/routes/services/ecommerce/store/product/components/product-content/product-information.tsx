@@ -1,4 +1,5 @@
 import { Button } from '~/components/ui/button'
+import { cn } from '~/lib/utils'
 
 import { useProductContext } from '../../hooks/use-product-context'
 
@@ -87,13 +88,14 @@ export const ProductInformation = () => {
 												onMouseLeave={() => displayAttributeImage(undefined)}
 												disabled={!isAvailable}
 												variant={'ghost'}
-												className={`border-2 text-sm transition-colors ${
+												className={cn(
+													`cursor-pointer border-2 text-sm transition-colors`,
 													isSelected
-														? 'border-primary bg-primary text-primary-foreground hover:text-primary-foreground hover:bg-primary dark:hover:bg-primary'
+														? 'border-primary bg-primary text-primary-foreground hover:text-primary-foreground hover:bg-primary/70 dark:hover:bg-primary/70'
 														: isAvailable
-															? 'hover:border-muted-foreground cursor-pointer'
-															: 'text-muted-foreground/30 cursor-not-allowed line-through'
-												}`}
+															? 'hover:border-muted-foreground border-muted'
+															: 'text-muted-foreground/30 cursor-not-allowed line-through',
+												)}
 											>
 												{value}
 											</Button>
@@ -115,19 +117,19 @@ export const ProductInformation = () => {
 									SKU: {selectedVariantOption.sku || 'N/A'}
 								</div>
 								<p className="text-muted-foreground text-sm">
-									{variantAttributeEntries.map(([attrName], index) => {
-										// Render in order of attributeName keys
-										const value = selectedVariant.combination[attrName]
-										return (
+									{Object.entries(selectedVariant.combination).map(
+										([attrName, value], index) => (
 											<span key={attrName}>
 												{attrName}:{' '}
 												<span className="text-foreground font-medium">
 													{value}
 												</span>
-												{index < variantAttributeEntries.length - 1 && ' ⨉ '}
+												{index <
+													Object.entries(selectedVariant.combination).length -
+														1 && ' ⨉ '}
 											</span>
-										)
-									})}
+										),
+									)}
 								</p>
 							</>
 						) : (
