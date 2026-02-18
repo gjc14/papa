@@ -2,25 +2,24 @@ import { type ActionFunctionArgs } from 'react-router'
 
 import { z } from 'zod'
 
-import { createSEO, deleteSEO, updateSEO } from '~/lib/db/seo.server'
+import { createSEO, deleteSEO, getSEOs, updateSEO } from '~/lib/db/seo.server'
 import { type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
 
 const insertSchmea = z.object({
-	metaTitle: z.string(),
-	metaDescription: z.string(),
-	keywords: z.string(),
-	route: z.string(),
-	ogImage: z.string(),
+	metaTitle: z.string().nullable(),
+	metaDescription: z.string().nullable(),
+	keywords: z.string().nullable(),
+	route: z.string().nullable(),
+	ogImage: z.string().nullable(),
 })
 
-const updateSchmea = z.object({
-	id: z.string().transform(val => Number(val)),
-	metaTitle: z.string(),
-	metaDescription: z.string(),
-	keywords: z.string(),
-	route: z.string(),
-	ogImage: z.string(),
+const updateSchmea = insertSchmea.extend({
+	id: z.number(),
+})
+
+const deleteSchema = z.object({
+	id: z.number(),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -32,8 +31,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 	console.log('action')
 
-	const formData = await request.formData()
-	const seoRequested = Object.fromEntries(formData)
+	const seoRequested = await request.json()
 
 	switch (request.method) {
 		case 'POST':
@@ -72,17 +70,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 			}
 		case 'DELETE':
 			try {
-				const id = seoRequested.id
-				if (!Number.isNaN(id)) {
-					const { seo } = await deleteSEO(Number(id))
-					return {
-						msg: `SEO for ${seo.route || seo.metaTitle || 'unknown'} delete`,
-					} satisfies ActionResponse
-				} else {
-					throw new Error('Invalid arguments')
-				}
+				const { id } = deleteSchema.parse(seoRequested)
+				const { seo } = await deleteSEO(id)
+				return {
+					msg: `SEO for ${seo.route || seo.metaTitle || 'unknown'} delete`,
+				} satisfies ActionResponse
 			} catch (error) {
 				return handleError(error, request)
 			}
 	}
 }
+
+export const loader = async () => await getSEOs()
