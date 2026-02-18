@@ -4,7 +4,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 
-import { CircleQuestionMark, Image, MoreVertical } from 'lucide-react'
+import {
+	ArrowSquareOutIcon,
+	DotsThreeVerticalIcon,
+	ImageIcon,
+	QuestionIcon,
+} from '@phosphor-icons/react'
 
 import { Button } from '~/components/ui/button'
 import { DialogTrigger } from '~/components/ui/dialog'
@@ -35,28 +40,25 @@ import type { Seo } from '~/lib/db/schema'
 /**
  * @example
  * ```tsx
- * export function MyComponent() {
- *		const handleChange = (field: string, value: string) => {
- *			setProduct(prev => {
- *				if (!prev) return prev
- *				return {
- *					...prev,
- *					seo: { ...prev.seo, [field]: value },
- *				}
- *			})
+ * import { useState } from "react"
+ *
+ * import { SeoFieldSet } from "~/components/seo-field-set"
+ * import { Seo } from "~/lib/db/schema"
+ *
+ * export function MyComponent({ seo }: { seo: Seo }) {
+ *		const [seoState, setSeoState] = useState(seo)
+ *		const handleChange = <K extends keyof Seo>(field: K, value: Seo[K]) => {
+ *			setSeoState(prev => ({ ...prev, [field]: value }))
  *		}
  *
  *		return (
  *			<SeoFieldSet
- *				seo={seo}
- *				linkPreview={`${import.meta.env.VITE_BASE_URL} › ${storeConfig.storeFrontPath.slice(1)} › product › ${slug}`}
- *				onFillInTitle={() => handleChange('metaTitle', name || '')}
+ *				seo={seoState}
+ *				onFillInTitle={() => handleChange('metaTitle', 'meta title')}
  *				onTitleChange={title => handleChange('metaTitle', title)}
- *				onFillInDescription={() =>
- *					handleChange('metaDescription', description || '')
- *				}
+ *				onFillInDescription={() => handleChange('metaDescription', 'meta description')}
  *				onDescriptionChange={desc => handleChange('metaDescription', desc)}
- *				onFillInOgImage={() => handleChange('ogImage', featureImage || '')}
+ *				onFillInOgImage={() => handleChange('ogImage', 'og image')}
  *				onOgImageChange={({ src }) => handleChange('ogImage', src)}
  *				onKeywordsChange={keywords => handleChange('keywords', keywords)}
  *			/>
@@ -67,7 +69,15 @@ import type { Seo } from '~/lib/db/schema'
 export function SeoFieldSet({
 	seo,
 	linkPreview = import.meta.env.VITE_BASE_URL +
-		(seo.route ? `${seo.route.replace(/\//g, ' › ')}` : ''),
+		`${
+			!seo.route || seo.route === '/'
+				? '/'
+				: ' > ' +
+					seo.route
+						.replace(/^\/+|\/+$/g, '')
+						.split('/')
+						.join(' > ')
+		}`,
 	onFillInTitle,
 	onTitleChange,
 	onFillInDescription,
@@ -137,7 +147,7 @@ export function SeoFieldSet({
 
 					<div className="flex min-w-0 items-center gap-1">
 						<span className="truncate text-[12px]">{linkPreview}</span>
-						<MoreVertical
+						<DotsThreeVerticalIcon
 							size={12}
 							className="text-muted-foreground flex-shrink-0"
 						/>
@@ -189,7 +199,7 @@ export function SeoFieldSet({
 													size={'icon'}
 													onClick={() => !assets && load()}
 												>
-													<Image />
+													<ImageIcon />
 												</Button>
 											}
 										/>
@@ -237,11 +247,11 @@ export function SeoFieldSet({
 						to="https://www.ogimage.gallery/libary/the-ultimate-guide-to-og-image-dimensions-2024-update"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="underline"
+						className="flex items-center gap-1 underline"
 					>
 						Learn more about OG image sizes
+						<ArrowSquareOutIcon />
 					</Link>
-					.
 				</FieldDescription>
 
 				<div className="bg-muted/50 flex w-full flex-col border p-3">
@@ -270,7 +280,7 @@ export function SeoFieldSet({
 											variant="link"
 											className="text-foreground size-6 text-sm"
 										>
-											<CircleQuestionMark />
+											<QuestionIcon />
 										</Button>
 									}
 								/>
