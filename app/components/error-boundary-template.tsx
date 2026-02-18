@@ -51,7 +51,7 @@ export function ErrorBoundaryTemplate({
 	// Route throw new Response (404, etc.)
 	if (isRouteErrorResponse(error)) {
 		statusMessage = statusCodeMap[error.status]
-		console.error('Admin Route Error Response:', error)
+		console.error('Route Error Response:', error)
 
 		const errorMessage = error.data || 'Error Response'
 
