@@ -7,7 +7,11 @@ import { PlusCircle } from 'lucide-react'
 
 import { Button } from '~/components/ui/button'
 import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { DashboardDataTableMoreMenu } from '~/components/dashboard/dashboard-data-table'
+import {
+	DashboardDataTable,
+	DashboardDataTableMoreMenu,
+} from '~/components/dashboard/dashboard-data-table'
+import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
 import {
 	DashboardActions,
 	DashboardContent,
@@ -18,9 +22,6 @@ import {
 import { useFetcherNotification } from '~/hooks/use-notification'
 import { getSEOs } from '~/lib/db/seo.server'
 import { SeoContent } from '~/routes/dashboard/seo/seo-content'
-
-import { DashboardDataTable } from '~/components/dashboard/dashboard-data-table'
-import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
 
 export const loader = async () => {
 	const { seos } = await getSEOs()
@@ -70,7 +71,7 @@ export default function SEO({ loaderData }: Route.ComponentProps) {
 					autoResetPageIndex={shouldSkip}
 					skipAutoResetPageIndex={skip}
 					className="px-2 md:px-3"
-					initialPageSize={20}
+					initialPagination={{ pageSize: 20 }}
 				></DashboardDataTable>
 			</DashboardContent>
 		</DashboardLayout>

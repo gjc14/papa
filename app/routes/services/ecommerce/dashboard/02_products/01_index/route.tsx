@@ -71,7 +71,7 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 					autoResetPageIndex={shouldSkip}
 					skipAutoResetPageIndex={skip}
 					className="px-2 md:px-3"
-					initialPageSize={20}
+					initialPagination={{ pageSize: 20 }}
 				/>
 			</DashboardContent>
 		</DashboardLayout>

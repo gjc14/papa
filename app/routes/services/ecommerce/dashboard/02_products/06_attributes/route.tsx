@@ -62,7 +62,7 @@ export default function ECAttributes({ loaderData }: Route.ComponentProps) {
 					autoResetPageIndex={shouldSkip}
 					skipAutoResetPageIndex={skip}
 					className="px-2 md:px-3"
-					initialPageSize={50}
+					initialPagination={{ pageSize: 50 }}
 				/>
 			</DashboardContent>
 		</DashboardLayout>
