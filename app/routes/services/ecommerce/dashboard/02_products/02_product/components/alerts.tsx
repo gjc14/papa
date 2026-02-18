@@ -52,13 +52,24 @@ export function ProductAlerts() {
 
 	if (!productId || productName === null) return null
 
-	const onDelete = () => {
+	const onReset = () => {
+		console.log('Product reset', productId)
+		setResetAlertOpen(false)
+	}
+
+	const onRestore = () => {
+		console.log('Product restored', productId)
+		setRestoreAlertOpen(false)
+	}
+
+	const onMoveToTrash = () => {
 		if (isMovingToTrash) return
 		fetcher.submit([{ id: productId, name: productName }], {
 			method: 'DELETE',
 			action: `/dashboard/ecommerce/products/resource`,
 			encType: 'application/json',
 		})
+		setToTrashAlertOpen(false)
 	}
 
 	return (
@@ -73,7 +84,7 @@ export function ProductAlerts() {
 					</>
 				}
 				actionTitle="Reset"
-				onAction={() => console.log('Product reset', productId)}
+				onAction={onReset}
 				open={resetAlertOpen}
 				onOpenChange={setResetAlertOpen}
 			/>
@@ -89,7 +100,7 @@ export function ProductAlerts() {
 				}
 				actionTitle="Restore"
 				cancelTitle="Discard"
-				onAction={() => console.log('Product restored', productId)}
+				onAction={onRestore}
 				open={restoreAlertOpen}
 				onOpenChange={setRestoreAlertOpen}
 			/>
@@ -103,7 +114,7 @@ export function ProductAlerts() {
 					</>
 				}
 				actionTitle="Move to Trash"
-				onAction={onDelete}
+				onAction={onMoveToTrash}
 				open={toTrashAlertOpen}
 				onOpenChange={setToTrashAlertOpen}
 			/>
