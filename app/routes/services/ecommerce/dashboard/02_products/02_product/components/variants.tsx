@@ -469,15 +469,22 @@ function VariantManagementDialog({
 								setProduct(prev => {
 									if (!prev) return prev
 
+									// Append new combination value to the current variant combination in order of attributes
+									const attributeNameInOrder = productAttributes
+										? productAttributes
+												.sort((a, b) => a.order - b.order)
+												.map(a => a.name || a.id.toString())
+										: []
+
+									let combination: Record<string, string> = {}
+									for (const a of attributeNameInOrder) {
+										combination[a] = a === attr ? value : variant.combination[a]
+									}
+
 									return {
 										...prev,
 										variants: prev.variants.map(v =>
-											v.id === variant.id
-												? {
-														...v,
-														combination: { ...v.combination, [attr]: value },
-													}
-												: v,
+											v.id === variant.id ? { ...v, combination } : v,
 										),
 									}
 								})
