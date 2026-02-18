@@ -9,6 +9,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 	type ColumnDef,
+	type PaginationState,
 	type Row,
 	type RowData,
 	type TableOptions,
@@ -119,12 +120,64 @@ interface DashboardDataTableProps<TData, TValue> {
 	data: TData[]
 	setData: React.Dispatch<React.SetStateAction<TData[]>>
 	/**
+	 * Providing stable id reference
+	 * @see https://tanstack.com/table/v8/docs/api/core/instance#getrowid
+	 *
+	 * This makes sure that when sourece data changes, references also changes. If not provided, index is used.
+	 * @example
+	 * *In cases when you use state `const [rowState, setRowState] = useState(row.original)`, the component will not rerender when source data changes because the component references the old row index.*
+	 * > Important concept: when referencing row with index (when getRowId is not provided),
+	 * > the reference is not stable because when source data changes, row will reference the same index but different data.
+	 * > In this case, you should call row.original again to get new row, or provide getRowId to rerender row when source data changes.
+	 * ```
+	 * const data = [
+	 * 	{ id: 1, name: "Taylor" }, // index 1
+	 * 	{ id: 2, name: "Antonial" } // index 2
+	 * ]
+	 * ```
+	 *
+	 * after update, it becomes:
+	 *
+	 * ```
+	 * const newData = [
+	 * 	{ id: 2, name: "Antonio" }, // old index 2; now index 1
+	 * 	{ id: 1, name: "Taylor"} // old index 1; now index 2
+	 * ]
+	 *
+	 * cell: ({row}) => {
+	 * 	// currentRow references new row data, and will update when source data changes
+	 * 	const currentRow = row.original
+	 *
+	 * 	// rowState references old row data, and will not update when source data changes
+	 * 	const [rowState, setRowState] = useState(row.original)
+	 * 	// to fix this, you can either call row.original again to get new row data, or provide getRowId to make sure it updates as the source data changes
+	 *
+	 * 	// this will update rowState when source data changes
+	 * 	useEffect(() => setRowState(row.original), [row.original])
+	 *
+	 * 	return rowState.name
+	 * }
+	 * ```
+	 *
+	 * If no `getRowId()` provided, table renders seems right (cause rows render the Array directly),
+	 * but since row index does not change, it will not rerender the component that references `row.original`.
+	 * Thus you need to call `row.original` again to get current new row data, or provide `getRowId()` to make sure it updates as the source data changes.
+	 * Otherwise, your `row.original` will still reference the old data.
+	 */
+	getRowId?:
+		| ((
+				originalRow: TData,
+				index: number,
+				parent?: Row<TData> | undefined,
+		  ) => string)
+		| undefined
+	/**
 	 * if true, a select column will be shown on the left.
 	 * @default false
 	 */
 	/**
 	 * Server side table or not. If only tens of thousands of rows, you can take advantage of client side table features.
-	 * [Should You Use Client-Side Pagination?](https://tanstack.com/table/v8/docs/guide/pagination#should-you-use-client-side-pagination)
+	 * @link [Should You Use Client-Side Pagination?](https://tanstack.com/table/v8/docs/guide/pagination#should-you-use-client-side-pagination)
 	 * @default false
 	 */
 	server?: {
@@ -156,13 +209,11 @@ interface DashboardDataTableProps<TData, TValue> {
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)
 	 */
 	enableRowSelection?: boolean | ((row: Row<TData>) => boolean)
-	/** @default 0 */
-	initialPageIndex?: number
-	/** @default 10 */
-	initialPageSize?: number
+	/** @default "{ pageIndex: 0, pageSize: 10 }" */
+	initialPagination?: Partial<PaginationState>
 	/** Determine if page index should reset, value returned from [useSkipper](./hooks.ts) */
 	autoResetPageIndex?: boolean
-	/**  */
+	/** @see https://tanstack.com/table/v8/docs/framework/react/examples/editable-data */
 	skipAutoResetPageIndex?: () => void
 	className?: string
 }
@@ -172,21 +223,22 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 	columns,
 	data,
 	setData,
+	getRowId,
 	server,
 	selectable = false,
 	editable = false,
 	enableRowSelection,
-	initialPageIndex = 0,
-	initialPageSize = 10,
+	initialPagination,
 	getRowCanExpand,
 	expandedRowRender = () => null,
 	autoResetPageIndex,
 	skipAutoResetPageIndex,
 	className,
 }: DashboardDataTableProps<TData, TValue>) {
-	const [pagination, setPagination] = React.useState({
-		pageIndex: initialPageIndex,
-		pageSize: initialPageSize,
+	const [pagination, setPagination] = React.useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 10,
+		...initialPagination,
 	})
 	const [rowSelection, setRowSelection] = React.useState({})
 
@@ -204,6 +256,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 		columns: [...(selectable ? [selectColumn] : []), ...columns],
 		data,
 		getCoreRowModel: getCoreRowModel(),
+		getRowId,
 
 		// === pagination
 		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
@@ -241,7 +294,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 		// Provide our updateData function to our table meta
 		meta: {
 			updateData: (rowIndex, columnId, value) => {
-				// Skip page index reset until after next rerender
+				/** Skip page index reset until after next rerender @see https://tanstack.com/table/v8/docs/framework/react/examples/editable-data */
 				;(skipAutoResetPageIndex ?? internalSkipAutoResetPageIndex)()
 				setData(prev =>
 					prev.map((row, index) => {
