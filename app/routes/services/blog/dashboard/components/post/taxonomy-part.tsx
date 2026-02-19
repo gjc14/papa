@@ -26,6 +26,7 @@ export const TaxonomyPart = () => {
 				<Label htmlFor="categories">Categories</Label>
 				<div className="flex items-center gap-1.5">
 					<MultiSelect
+						className="w-full"
 						options={categories.map(c => ({
 							label: c.name,
 							value: String(c.id),
@@ -54,6 +55,7 @@ export const TaxonomyPart = () => {
 				<Label htmlFor="tags">Tags</Label>
 				<div className="flex items-center gap-1.5">
 					<MultiSelect
+						className="w-full"
 						options={tags.map(t => ({
 							label: t.name,
 							value: String(t.id),
