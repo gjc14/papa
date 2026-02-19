@@ -1,4 +1,4 @@
-import { getSEO } from '~/lib/db/seo.server'
+import { getSeo } from '~/lib/db/seo.server'
 import { createMeta } from '~/lib/utils/seo'
 
 import { getPosts } from '../../lib/db/post.server'
@@ -24,7 +24,7 @@ export async function fetchPosts(
 	tags?: string[],
 	q?: string,
 ) {
-	const { seo } = await getSEO(url.pathname)
+	const seo = await getSeo(url.pathname)
 	const meta = seo ? createMeta(seo, url) : null
 
 	const { posts, categoryFilter, tagFilter } = await getPosts({

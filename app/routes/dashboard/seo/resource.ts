@@ -1,8 +1,8 @@
-import { type ActionFunctionArgs } from 'react-router'
+import type { Route } from './+types'
 
 import { z } from 'zod'
 
-import { createSEO, deleteSEO, getSEOs, updateSEO } from '~/lib/db/seo.server'
+import { createSeo, deleteSeo, getSeos, updateSeo } from '~/lib/db/seo.server'
 import { type ActionResponse } from '~/lib/utils'
 import { handleError } from '~/lib/utils/server'
 
@@ -22,7 +22,7 @@ const deleteSchema = z.object({
 	id: z.number(),
 })
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: Route.ActionArgs) => {
 	if (!['POST', 'PUT', 'DELETE'].includes(request.method)) {
 		return {
 			err: 'Method not allowed',
@@ -37,7 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		case 'POST':
 			try {
 				const seoToCreate = insertSchmea.parse(seoRequested)
-				const { seo } = await createSEO({
+				const seo = await createSeo({
 					metaTitle: seoToCreate.metaTitle,
 					metaDescription: seoToCreate.metaDescription,
 					route: seoToCreate.route,
@@ -54,7 +54,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		case 'PUT':
 			try {
 				const seoToUpdate = updateSchmea.parse(seoRequested)
-				const { seo } = await updateSEO({
+				const seo = await updateSeo({
 					id: seoToUpdate.id,
 					metaTitle: seoToUpdate.metaTitle,
 					metaDescription: seoToUpdate.metaDescription,
@@ -71,7 +71,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		case 'DELETE':
 			try {
 				const { id } = deleteSchema.parse(seoRequested)
-				const { seo } = await deleteSEO(id)
+				const seo = await deleteSeo(id)
 				return {
 					msg: `SEO for ${seo.route || seo.metaTitle || 'unknown'} delete`,
 				} satisfies ActionResponse
@@ -81,4 +81,4 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	}
 }
 
-export const loader = async () => await getSEOs()
+export const loader = async () => await getSeos()

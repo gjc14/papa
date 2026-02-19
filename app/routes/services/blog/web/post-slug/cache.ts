@@ -1,4 +1,4 @@
-import { getSEO } from '~/lib/db/seo.server'
+import { getSeo } from '~/lib/db/seo.server'
 import { createMeta } from '~/lib/utils/seo'
 
 import { getPostBySlug } from '../../lib/db/post.server'
@@ -19,7 +19,7 @@ export const headers = {
 }
 
 export async function fetchPost(postSlug: string, url: URL) {
-	const { seo } = await getSEO(url.pathname)
+	const seo = await getSeo(url.pathname)
 	const meta = seo ? createMeta(seo, url) : null
 
 	const { post, nextPost, prevPost } = await getPostBySlug(
