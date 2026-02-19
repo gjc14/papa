@@ -35,6 +35,7 @@ import {
 } from '~/components/ui/select'
 import { cn } from '~/lib/utils'
 
+import { EditableCell } from './components/editable-cell'
 import { useSkipper } from './hooks'
 
 declare module '@tanstack/react-table' {
@@ -49,8 +50,8 @@ function createDefaultColumn<TData>(
 	server: boolean = false,
 ): Partial<ColumnDef<TData, unknown>> {
 	return {
-		cell({ getValue, row: { index }, column: { id }, table }) {
-			const initialValue = getValue()
+		cell(ctx) {
+			const initialValue = ctx.getValue()
 
 			if (!editable) {
 				const displayValue =
@@ -89,27 +90,7 @@ function createDefaultColumn<TData>(
 				)
 			}
 
-			// We need to keep and update the state of the cell normally
-			const [value, setValue] = React.useState(initialValue)
-
-			// When the input is blurred, we'll call our table meta's updateData function
-			const onBlur = () => {
-				table.options.meta?.updateData(index, id, value)
-			}
-
-			// If the initialValue is changed external, sync it up with our state
-			React.useEffect(() => {
-				setValue(initialValue)
-			}, [initialValue])
-
-			return (
-				<Input
-					value={(value || '') as string}
-					onChange={e => setValue(e.target.value)}
-					onBlur={onBlur}
-					className="h-12 border-0 px-2 py-1 focus-visible:ring-inset"
-				/>
-			)
+			return EditableCell(ctx)
 		},
 	}
 }
