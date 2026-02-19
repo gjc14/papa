@@ -116,7 +116,7 @@ export function ProductEditPageHeader() {
 			action: 'resource', // :productSlug/resource route is where the action defined
 			encType: 'application/json',
 		})
-	}, [store])
+	}, [store, isNew])
 
 	if (!productId || productName === null || productSlug === null) return null
 
