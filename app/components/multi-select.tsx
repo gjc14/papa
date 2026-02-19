@@ -1,12 +1,13 @@
+import { Autocomplete } from '@base-ui/react/autocomplete'
 import * as React from 'react'
 
-import { Command as CommandPrimitive, useCommandState } from 'cmdk'
-import { PlusCircle, TriangleAlert, X } from 'lucide-react'
+import { PlusCircleIcon, WarningIcon, XIcon } from '@phosphor-icons/react'
 
-import { cn } from '../lib/utils'
-import { Badge } from './ui/badge'
-import { Command, CommandGroup, CommandItem, CommandList } from './ui/command'
-import { Spinner } from './ui/spinner'
+import { Badge } from '~/components/ui/badge'
+import { Spinner } from '~/components/ui/spinner'
+import { cn } from '~/lib/utils'
+
+import { Kbd } from './ui/kbd'
 
 type Option = Record<'value' | 'label', string>
 type DisplayOption = Option & {
@@ -19,183 +20,244 @@ interface BadgeProps {
 	handleUnselect: (option: DisplayOption) => void
 }
 
-const DefaultBadge = ({ option, handleUnselect }: BadgeProps) => {
-	return (
-		<Badge
-			key={option.value}
-			className={cn('my-auto', option.className)}
-			style={option.style}
+const DefaultBadge = ({ option, handleUnselect }: BadgeProps) => (
+	<Badge
+		key={option.value}
+		className={cn('my-auto', option.className)}
+		style={option.style}
+	>
+		{option.label}
+		<button
+			className="ring-offset-background focus:ring-ring ml-1.5 cursor-pointer outline-hidden focus:ring-2"
+			onClick={() => handleUnselect(option)}
 		>
-			{option.label}
-			<button
-				className="ring-offset-background focus:ring-ring ml-1.5 cursor-pointer outline-hidden focus:ring-2"
-				onClick={() => handleUnselect(option)}
-			>
-				<X className="h-3 w-3" />
-			</button>
-		</Badge>
-	)
-}
+			<XIcon className="h-3 w-3" />
+		</button>
+	</Badge>
+)
 
-interface MultiSelectInputProps {
+interface MultiSelectProps {
 	/** Array of { value, label } to select from */
 	options?: Option[]
-	/** options selected by default */
-	defaultSelected?: DisplayOption[]
-	/** Current selected options */
+	/** Current selected options (controlled) */
 	selected?: DisplayOption[]
-	/** Callback function when the selected options change, returns current select state */
+	/** Callback when selected options change */
 	onSelectedChange?: (selected: DisplayOption[]) => void
-	/** Input state */
+	/** Controlled input value */
 	input?: string
-	/** Input state */
+	/** Controlled input setter */
 	setInput?: React.Dispatch<React.SetStateAction<string>>
-	/** When CommandList first triggered, useful for lazy load */
+	/**
+	 * Async search callback, fires on input change.
+	 * When provided, disables built-in filter (parent controls items).
+	 */
+	onSearch?: (query: string) => void
+	/** Called on first focus for lazy-loading */
 	onInitSearch?: () => void
-	/** Display ui when is searching */
+	/** Show loading state */
 	isSearching?: boolean
-	/** Callback function to create id for the new option created @default Math.random().toString(36).slice(2) */
+	/** Allow creating new items that don't exist in options @default true */
+	allowCreate?: boolean
+	/** ID generator for newly created items */
 	createId?: (value: string) => string
+	/** Autocomplete mode @default 'list' – set 'both' for inline autocomplete */
+	mode?: 'list' | 'both' | 'inline' | 'none'
 	/** Placeholder text for the input field */
 	placeholder?: string
-	/** Additional class names for the input field */
+	/** Additional class names for the input wrapper */
 	className?: string
-	/** Custom badge component to render selected options */
+	/** Custom badge renderer for selected items */
 	badge?: (props: BadgeProps) => React.ReactNode
-	/** Error message state */
+	/** Error message */
 	error?: string
-	/** Error message state */
+	/** Error setter */
 	setError?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const MultiSelect = (props: MultiSelectInputProps) => {
-	return (
-		// Wrap in Command to use useCommandState
-		<Command className="overflow-visible bg-transparent">
-			<InternalMultiSelect {...props} />
-		</Command>
-	)
-}
-
-const InternalMultiSelect = (props: MultiSelectInputProps) => {
+/**
+ * MultiSelect built on top of `@base-ui/react/autocomplete`.
+ *
+ * Works inside Dialog / Sheet because no `<Autocomplete.Portal>` is used –
+ * the popup renders inline, avoiding focus-trap conflicts with the parent dialog.
+ */
+export const MultiSelect = (props: MultiSelectProps) => {
 	const {
 		options = [],
-		defaultSelected,
-		selected,
+		selected = [],
 		onSelectedChange,
 		input,
 		setInput,
+		onSearch,
 		onInitSearch,
 		isSearching,
-		createId = v => `${Math.random().toString(36).slice(2)}-${v}`,
+		allowCreate = true,
+		createId = (v: string) => `${Math.random().toString(36).slice(2)}-${v}`,
+		mode = 'list',
 		placeholder,
 		className,
 		badge: BadgeComponent = DefaultBadge,
-		error: ExternalError,
-		setError: ExternalSetError,
+		error: externalError,
+		setError: externalSetError,
 	} = props
 
 	const init = React.useRef(false)
 	const inputRef = React.useRef<HTMLInputElement>(null)
+	const anchorRef = React.useRef<HTMLDivElement>(null)
+	const portalContainerRef = React.useRef<HTMLDivElement>(null)
 
-	const [internalInputValue, setInternalInputValue] = React.useState(
-		input ?? '',
-	)
-	const inputValue = input ?? internalInputValue
-	const setInputValue = setInput ?? setInternalInputValue
+	// Flags to distinguish item-selection from normal typing inside onValueChange
+	const isPointerSelectRef = React.useRef(false)
+	const isEnterKeyRef = React.useRef(false)
+	const isHandlingSelectRef = React.useRef(false)
 
+	// ── input value (controlled / uncontrolled) ──────────────────────────
+	const [internalInput, setInternalInput] = React.useState('')
+	const inputValue = input ?? internalInput
+	const setInputValue = setInput ?? setInternalInput
+
+	// ── composition (IME) ────────────────────────────────────────────────
 	const [isComposing, setIsComposing] = React.useState(false)
 
-	const [open, setOpen] = React.useState(false)
+	// ── error (controlled / uncontrolled) ────────────────────────────────
+	const [internalError, setInternalError] = React.useState(externalError ?? '')
+	const error = externalError ?? internalError
+	const setError = externalSetError ?? setInternalError
 
-	const [internalError, internalSetError] = React.useState<string>(
-		ExternalError ?? '',
-	)
-	const error = ExternalError ?? internalError
-	const setError = ExternalSetError ?? internalSetError
-
-	const [internalSelected, setInternalSelected] = React.useState<
-		DisplayOption[]
-	>(defaultSelected ?? [])
-
-	const currentSelected = selected ?? internalSelected
-
-	const selectableOptions = options.filter(
-		o => !currentSelected.some(s => s.value === o.value),
+	// ── derived state ────────────────────────────────────────────────────
+	const selectableOptions = React.useMemo(
+		() => options.filter(o => !selected.some(s => s.value === o.value)),
+		[options, selected],
 	)
 
-	const noOptions = useCommandState(s => s.filtered.count) === 0
+	const trimmedLower = inputValue.trim().toLowerCase()
 
-	/** Helper function to update (un)controlled selected state */
-	const handleUpdate = React.useCallback(
-		(selected: Option[]) => {
-			onSelectedChange?.(selected)
-			setInternalSelected(selected)
+	const hasPerfectMatch =
+		!trimmedLower ||
+		selectableOptions.some(
+			o => o.label.trim().toLowerCase() === trimmedLower,
+		) ||
+		selected.some(s => s.label.trim().toLowerCase() === trimmedLower)
+
+	const showCreateNew = allowCreate && !!inputValue.trim() && !hasPerfectMatch
+
+	// ── handlers ─────────────────────────────────────────────────────────
+	const handleSelect = React.useCallback(
+		(option: Option) => {
+			isHandlingSelectRef.current = true
+			onSelectedChange?.([...selected, option])
+			setInputValue('')
+			// Re-focus so the popup re-opens for continuous selection
+			requestAnimationFrame(() => {
+				inputRef.current?.focus()
+				isHandlingSelectRef.current = false
+			})
 		},
-		[onSelectedChange],
+		[selected, onSelectedChange, setInputValue],
 	)
 
-	const handleUnselect = (option: Option) => {
-		handleUpdate(currentSelected.filter(s => s.value !== option.value))
-	}
+	const handleUnselect = React.useCallback(
+		(option: Option) => {
+			onSelectedChange?.(selected.filter(s => s.value !== option.value))
+		},
+		[selected, onSelectedChange],
+	)
 
-	const optionLabelExists = (label: string, options: Option[]) => {
-		return options.some(
-			option =>
-				option.label.trim().toLowerCase() === label.trim().toLowerCase(),
-		)
-	}
-
-	/** Helper function to handle new option creation @returns void */
 	const createNewOption = React.useCallback(() => {
-		if (!inputValue.trim()) return
+		const trimmed = inputValue.trim()
+		if (!trimmed) return
 
-		const labelExists = optionLabelExists(inputValue, currentSelected)
-		if (labelExists) {
-			return setError('Label already exists')
+		if (
+			selected.some(s => s.label.trim().toLowerCase() === trimmed.toLowerCase())
+		) {
+			setError('Label already exists')
+			return
 		}
 
-		const newOption: Option = {
-			value: createId(inputValue.trim()),
-			label: inputValue.trim(),
-		}
+		handleSelect({
+			value: createId(trimmed),
+			label: trimmed,
+		})
+	}, [inputValue, selected, createId, handleSelect, setError])
 
-		handleUpdate([...currentSelected, newOption])
-		setInputValue('')
-	}, [currentSelected, createId, handleUpdate])
+	/**
+	 * Called by Autocomplete.Root whenever the input text changes.
+	 * Also fires when an item is selected (value becomes the item label).
+	 */
+	const handleValueChange = React.useCallback(
+		(nextValue: string) => {
+			// Skip programmatic clears after handleSelect
+			if (isHandlingSelectRef.current) return
 
-	const handleKeyDown = React.useCallback(
-		(e: React.KeyboardEvent<HTMLDivElement>) => {
-			setError('')
-			if (isComposing) return e.stopPropagation()
-
-			if (e.key === 'Enter') {
-				// Create new option if no options are available
-				if (noOptions) {
-					createNewOption()
-					return e.stopPropagation()
+			// Detect item-selection via pointer or Enter
+			if (isPointerSelectRef.current || isEnterKeyRef.current) {
+				const matched = selectableOptions.find(o => o.label === nextValue)
+				if (matched) {
+					isPointerSelectRef.current = false
+					isEnterKeyRef.current = false
+					handleSelect(matched)
+					return
 				}
 			}
-			if (e.key === 'Delete' || e.key === 'Backspace') {
-				if (inputValue === '') {
-					handleUnselect(currentSelected[currentSelected.length - 1])
-					return e.stopPropagation()
-				}
+			isPointerSelectRef.current = false
+			isEnterKeyRef.current = false
+
+			setInputValue(nextValue)
+			onSearch?.(nextValue)
+		},
+		[selectableOptions, handleSelect, setInputValue, onSearch],
+	)
+
+	const handleKeyDown = React.useCallback(
+		(e: React.KeyboardEvent<HTMLInputElement>) => {
+			setError('')
+			if (isComposing) return
+
+			if (e.key === 'Enter') {
+				isEnterKeyRef.current = true
+				// After a micro-task, check whether the Autocomplete consumed the
+				// Enter (i.e. a highlighted item was selected → onValueChange fired).
+				// If the flag is still set, no item was selected → create new.
+				queueMicrotask(() => {
+					if (isEnterKeyRef.current) {
+						isEnterKeyRef.current = false
+						if (showCreateNew) {
+							createNewOption()
+						}
+					}
+				})
+			}
+
+			if (
+				(e.key === 'Backspace' || e.key === 'Delete') &&
+				inputValue === '' &&
+				selected.length > 0
+			) {
+				handleUnselect(selected[selected.length - 1])
 			}
 		},
 		[
 			isComposing,
 			inputValue,
-			noOptions,
+			selected,
+			showCreateNew,
 			createNewOption,
 			handleUnselect,
-			currentSelected,
+			setError,
 		],
 	)
 
 	return (
-		<>
+		<Autocomplete.Root
+			items={selectableOptions}
+			value={inputValue}
+			onValueChange={handleValueChange}
+			mode={mode}
+			itemToStringValue={(item: Option) => item.label}
+			filter={onSearch ? null : undefined}
+		>
+			{/* ── Input area with badges ─────────────────────────────────── */}
 			<div
+				ref={anchorRef}
 				className={cn(
 					'group border-input ring-offset-background focus-within:ring-ring focus-within:ring-offset cursor-text border px-2 py-2 text-sm focus-within:ring-1',
 					className,
@@ -203,135 +265,103 @@ const InternalMultiSelect = (props: MultiSelectInputProps) => {
 				onClick={() => inputRef.current?.focus()}
 			>
 				<div className="flex flex-wrap items-center gap-1">
-					{currentSelected.map(option => (
+					{selected.map(option => (
 						<div key={option.value} onClick={e => e.stopPropagation()}>
 							<BadgeComponent option={option} handleUnselect={handleUnselect} />
 						</div>
 					))}
 
-					<CommandPrimitive.Input
+					<Autocomplete.Input
 						ref={inputRef}
-						value={inputValue}
-						onValueChange={setInputValue}
 						onKeyDown={handleKeyDown}
-						onBlur={() => setOpen(false)}
 						onFocus={() => {
-							setOpen(true)
-
-							// Trigger onInitSearch only the first time CommandList is opened
-							!init.current && (init.current = true) && onInitSearch?.()
+							if (!init.current) {
+								init.current = true
+								onInitSearch?.()
+							}
 						}}
-						onCompositionStart={() => {
-							setIsComposing(true)
-						}}
-						onCompositionEnd={() => {
-							setIsComposing(false)
-						}}
+						onCompositionStart={() => setIsComposing(true)}
+						onCompositionEnd={() => setIsComposing(false)}
 						placeholder={placeholder ?? 'Select...'}
 						className="placeholder:text-muted-foreground ml-1 flex-1 bg-transparent outline-hidden"
 					/>
 				</div>
 			</div>
-			<div className="relative mt-2">
-				{open && (
-					// Canvas
-					<CommandList>
-						{/**
-						 * User flow:
-						 *
-						 * 1. Focus and display selectableOptions in CommandGroup (not applicable if no options provided)
-						 * 2. If inputValue, filter selectableOptions (not applicable if no options provided)
-						 * 3. Display add new item option if inputValue and no options match (both empty and non-empty should work)
-						 */}
-						<div
-							className={`bg-popover text-popover-foreground animate-in absolute top-0 z-10 w-full border shadow-md outline-hidden`}
-						>
-							{/* When searching */}
-							{isSearching ? (
-								<CommandGroup className="flex items-center justify-center py-2">
-									<Spinner />
-								</CommandGroup>
-							) : (
-								<>
-									{/* Rendered when count = 0 */}
-									{inputValue.trim() ? (
-										<CommandPrimitive.Empty className="p-1 text-sm">
-											<button
-												onMouseDown={e => {
-													e.preventDefault()
-													e.stopPropagation()
-												}}
-												onClick={createNewOption}
-												className="bg-accent flex w-full cursor-pointer items-center px-2 py-1.5 text-sm outline-hidden select-none"
-											>
-												<PlusCircle className="mr-2 h-4 w-4" />"
-												{inputValue.trim()}"
-												<kbd className="ml-auto text-xs text-nowrap">
-													return ⏎
-												</kbd>
-											</button>
-										</CommandPrimitive.Empty>
-									) : (
-										<CommandPrimitive.Empty className="py-6 text-center text-sm">
-											No options found...
-										</CommandPrimitive.Empty>
+
+			{/* Portal container – renders locally so it stays inside Dialog / Sheet */}
+			<div ref={portalContainerRef} />
+
+			<Autocomplete.Portal container={portalContainerRef}>
+				<Autocomplete.Positioner
+					className="z-50 outline-none"
+					sideOffset={4}
+					anchor={anchorRef}
+				>
+					<Autocomplete.Popup className="bg-popover text-popover-foreground max-h-60 w-[var(--anchor-width)] overflow-y-auto overscroll-contain border shadow-md">
+						{isSearching ? (
+							<div className="flex items-center justify-center py-4">
+								<Spinner />
+							</div>
+						) : (
+							<>
+								{error && (
+									<div className="border-b border-amber-500/50 px-2 py-1 text-amber-600">
+										<p className="text-sm">
+											<WarningIcon
+												className="me-3 -mt-0.5 inline-flex opacity-60"
+												size={16}
+												aria-hidden="true"
+											/>
+											{error}
+										</p>
+									</div>
+								)}
+
+								{/* "Create new" – always first when no perfect match */}
+								{showCreateNew && (
+									<button
+										onMouseDown={e => {
+											e.preventDefault()
+											e.stopPropagation()
+										}}
+										onClick={createNewOption}
+										className="hover:bg-accent flex w-full cursor-pointer items-center px-3 py-2 text-sm outline-hidden select-none"
+									>
+										<PlusCircleIcon className="mr-2 h-4 w-4" />
+										Create &quot;{inputValue.trim()}&quot;
+										<Kbd className="ml-auto">return ⏎</Kbd>
+									</button>
+								)}
+
+								<Autocomplete.List className="scroll-py-1 outline-0">
+									{(option: Option) => (
+										<Autocomplete.Item
+											key={option.value}
+											value={option}
+											onPointerDown={() => {
+												isPointerSelectRef.current = true
+											}}
+											className="data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground flex cursor-default items-center px-3 py-2 text-sm outline-none select-none"
+										>
+											{option.label}
+										</Autocomplete.Item>
 									)}
+								</Autocomplete.List>
 
-									<CommandGroup className={noOptions ? 'hidden' : ''}>
-										{error && (
-											<div className="mb-2 border border-amber-500/50 px-2 py-1 text-amber-600">
-												<p className="text-sm">
-													<TriangleAlert
-														className="me-3 -mt-0.5 inline-flex opacity-60"
-														size={16}
-														aria-hidden="true"
-													/>
-													{error}
-												</p>
-											</div>
-										)}
-
-										{selectableOptions.map(option => (
-											<CommandItem
-												key={option.value}
-												onMouseDown={e => {
-													e.preventDefault()
-													e.stopPropagation()
-												}}
-												onSelect={() => {
-													handleUpdate([...currentSelected, option])
-													setInputValue('')
-												}}
-												className="cursor-pointer"
-											>
-												{option.label}
-											</CommandItem>
-										))}
-
-										{inputValue.trim() &&
-											!optionLabelExists(inputValue, selectableOptions) && (
-												<CommandItem
-													onMouseDown={e => {
-														e.preventDefault()
-														e.stopPropagation()
-													}}
-													onSelect={createNewOption}
-													className="cursor-pointer"
-												>
-													<PlusCircle className="mr-2 h-4 w-4" />"
-													{inputValue.trim()}"
-													<kbd className="ml-auto text-xs text-nowrap">
-														return ⏎
-													</kbd>
-												</CommandItem>
-											)}
-									</CommandGroup>
-								</>
-							)}
-						</div>
-					</CommandList>
-				)}
-			</div>
-		</>
+								{!showCreateNew && (
+									<Autocomplete.Empty>
+										<div className="text-muted-foreground py-6 text-center text-sm">
+											No options found...
+										</div>
+									</Autocomplete.Empty>
+								)}
+							</>
+						)}
+					</Autocomplete.Popup>
+				</Autocomplete.Positioner>
+			</Autocomplete.Portal>
+		</Autocomplete.Root>
 	)
 }
+
+export type { Option, DisplayOption, BadgeProps, MultiSelectProps }
