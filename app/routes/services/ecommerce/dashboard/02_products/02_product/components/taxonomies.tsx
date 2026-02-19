@@ -5,6 +5,7 @@ import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 import {
 	Card,
+	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
@@ -206,14 +207,14 @@ export function Taxonomies() {
 
 	return (
 		<div id="taxonomies" className="space-y-6">
-			<Card className="gap-4 pt-6 pb-5">
+			<Card>
 				<CardHeader>
 					<CardTitle>Brands</CardTitle>
 					<CardDescription>
 						Organize products by brand or manufacturer.
 					</CardDescription>
 				</CardHeader>
-				<div className="flex w-full items-center justify-center px-6">
+				<CardContent>
 					{!dataInitialized.brands ? (
 						<Spinner />
 					) : bTreeData.length > 0 ? (
@@ -242,7 +243,7 @@ export function Taxonomies() {
 							Please add brands to see options
 						</div>
 					)}
-				</div>
+				</CardContent>
 				<CardFooter className="w-full">
 					<CreateTaxonomyPopover
 						taxonomyType="Brand"
@@ -258,7 +259,7 @@ export function Taxonomies() {
 					/>
 				</CardFooter>
 			</Card>
-			<Card className="gap-4 pt-6 pb-5">
+			<Card>
 				<CardHeader>
 					<CardTitle>Categories</CardTitle>
 					<CardDescription>
@@ -266,7 +267,7 @@ export function Taxonomies() {
 						features, or use case.
 					</CardDescription>
 				</CardHeader>
-				<div className="flex w-full items-center justify-center px-5">
+				<CardContent>
 					{!dataInitialized.categories ? (
 						<Spinner />
 					) : cTreeData.length > 0 ? (
@@ -295,7 +296,7 @@ export function Taxonomies() {
 							Please add categories to see options
 						</div>
 					)}
-				</div>
+				</CardContent>
 				<CardFooter className="w-full">
 					<CreateTaxonomyPopover
 						taxonomyType="Category"
@@ -311,14 +312,14 @@ export function Taxonomies() {
 					/>
 				</CardFooter>
 			</Card>
-			<Card className="gap-4 pt-6 pb-5">
+			<Card>
 				<CardHeader>
 					<CardTitle>Tags</CardTitle>
 					<CardDescription>
 						Add keywords that best describe your product.
 					</CardDescription>
 				</CardHeader>
-				<div className="flex w-full items-center justify-center px-6">
+				<CardContent>
 					<MultiSelect
 						options={tags.map(t => ({
 							label: t.name,
@@ -354,7 +355,7 @@ export function Taxonomies() {
 						}
 						isSearching={!dataInitialized.tags}
 					/>
-				</div>
+				</CardContent>
 			</Card>
 		</div>
 	)
