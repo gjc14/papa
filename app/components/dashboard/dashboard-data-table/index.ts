@@ -1,2 +1,4 @@
 export { DashboardDataTable } from './main'
 export { DashboardDataTableMoreMenu } from './more-menu'
+export * from './hooks'
+export * from './types'
