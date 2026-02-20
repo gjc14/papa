@@ -9,9 +9,13 @@ import {
 	getSortedRowModel,
 	useReactTable,
 	type ColumnDef,
+	type ColumnFiltersState,
+	type GlobalFilterTableState,
+	type OnChangeFn,
 	type PaginationState,
 	type Row,
 	type RowData,
+	type SortingState,
 	type TableOptions,
 	type Table as TableType,
 } from '@tanstack/react-table'
@@ -95,8 +99,9 @@ function createDefaultColumn<TData>(
 	}
 }
 
-interface DashboardDataTableProps<TData, TValue> {
-	ref: React.Ref<TableType<TData>>
+export interface DashboardDataTableProps<TData, TValue> {
+	/** You should not depend on the table state from this ref directly */
+	ref?: React.Ref<TableType<TData>>
 	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
 	setData: React.Dispatch<React.SetStateAction<TData[]>>
@@ -153,36 +158,42 @@ interface DashboardDataTableProps<TData, TValue> {
 		  ) => string)
 		| undefined
 	/**
-	 * Server side table or not. If only tens of thousands of rows, you can take advantage of client side table features.
+	 * Turn on manual mode. You should handle pagination, sorting and filtering on your own when using this.
+	 *
+	 * If only tens of thousands of rows, you can take advantage of client side table features.
 	 * @link [Should You Use Client-Side Pagination?](https://tanstack.com/table/v8/docs/guide/pagination#should-you-use-client-side-pagination)
-	 * @default false
 	 */
 	server?: {
-		rowCount: TableOptions<TData>['rowCount']
+		rowCount?: TableOptions<TData>['rowCount']
 		pageCount?: TableOptions<TData>['pageCount']
+
+		/** External pagination state. Falls back to internal state when omitted. */
+		pagination?: PaginationState
+		/** External sorting state. Falls back to `undefined` when omitted. */
+		sorting?: SortingState
+		/** External column filters state. Falls back to `undefined` when omitted. */
+		columnFilters?: ColumnFiltersState
+		/** External global filter value. Falls back to `undefined` when omitted. */
+		globalFilter?: GlobalFilterTableState['globalFilter']
+
+		onPaginationChange?: OnChangeFn<PaginationState>
+		onSortingChange?: OnChangeFn<SortingState>
+		onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>
+		onGlobalFilterChange?: OnChangeFn<GlobalFilterTableState['globalFilter']>
 	}
-	/**
-	 * if true, a select column will be shown on the left.
-	 * @default false
-	 */
-	selectable?: boolean
-	/**
-	 * Function to determine if a row is expandable
-	 * @see https://tanstack.com/table/latest/docs/framework/react/examples/expanding
-	 */
-	getRowCanExpand?: (row: Row<TData>) => boolean
-	/**
-	 * Function to render an expanded row
-	 */
-	expandedRowRender?: (
-		row: Row<TData>,
-		table: TableType<TData>,
-	) => React.ReactNode
+
 	/**
 	 * if true, default column will render an input in the cell.
 	 * @default false
 	 */
 	editable?: boolean
+
+	/**
+	 * if true, a select column will be shown on the left.
+	 * @default false
+	 */
+	selectable?: boolean
+
 	/**
 	 * - Enables/disables row selection for all rows in the table OR
 	 * - A function that given a row, returns whether to enable/disable row selection for that row
@@ -190,12 +201,41 @@ interface DashboardDataTableProps<TData, TValue> {
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)
 	 */
 	enableRowSelection?: boolean | ((row: Row<TData>) => boolean)
+
+	/**
+	 * If provided, allows you to override the default behavior of determining whether a row can be expanded.
+	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#getrowcanexpand)
+	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)
+	 *
+	 * @see https://tanstack.com/table/latest/docs/framework/react/examples/expanding
+	 */
+	getRowCanExpand?: (row: Row<TData>) => boolean
+
+	/**
+	 * Function to render an expanded row
+	 */
+	expandedRowRender?: (
+		row: Row<TData>,
+		table: TableType<TData>,
+	) => React.ReactNode
+
 	/** @default "{ pageIndex: 0, pageSize: 10 }" */
 	initialPagination?: Partial<PaginationState>
 	/** Determine if page index should reset, value returned from [useSkipper](./hooks.ts) */
 	autoResetPageIndex?: boolean
 	/** @see https://tanstack.com/table/v8/docs/framework/react/examples/editable-data */
 	skipAutoResetPageIndex?: () => void
+
+	/**
+	 * The filter function to use for global filtering.
+	 * - A `string` referencing a built-in filter function
+	 * - A `string` that references a custom filter functions provided via the `tableOptions.filterFns` option
+	 * - A custom filter function
+	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/global-filtering#globalfilterfn)
+	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/global-filtering)
+	 */
+	globalFilterFn?: TableOptions<TData>['globalFilterFn']
+
 	className?: string
 }
 
@@ -206,14 +246,15 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 	setData,
 	getRowId,
 	server,
-	selectable = false,
 	editable = false,
+	selectable = false,
 	enableRowSelection,
-	initialPagination,
 	getRowCanExpand,
 	expandedRowRender = () => null,
+	initialPagination,
 	autoResetPageIndex,
 	skipAutoResetPageIndex,
+	globalFilterFn,
 	className,
 }: DashboardDataTableProps<TData, TValue>) {
 	const [pagination, setPagination] = React.useState<PaginationState>({
@@ -221,6 +262,12 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 		pageSize: 10,
 		...initialPagination,
 	})
+	const [sorting, setSorting] = React.useState<SortingState>([])
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+		[],
+	)
+	const [globalFilter, setGlobalFilter] = React.useState<any>('')
+
 	const [rowSelection, setRowSelection] = React.useState({})
 
 	const [internalAutoResetPageIndex, internalSkipAutoResetPageIndex] =
@@ -239,38 +286,51 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 		getCoreRowModel: getCoreRowModel(),
 		getRowId,
 
-		// === pagination
-		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
-		manualFiltering: !!server, // turn off client-side pagination if is server-side table
-		/** @see https://tanstack.com/table/v8/docs/guide/pagination#manual-server-side-pagination */
-		getPaginationRowModel: !server ? getPaginationRowModel() : undefined, // not needed for server-side pagination
+		enableRowSelection,
+
+		// –– pagination ––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		/** @see https://tanstack.com/table/latest/docs/guide/pagination#manual-server-side-pagination */
+		manualPagination: !!server,
+		getPaginationRowModel: !server ? getPaginationRowModel() : undefined, // not needed for manual server-side pagination
 		/** @see https://tanstack.com/table/v8/docs/guide/pagination#page-count-and-row-count */
 		rowCount: server?.rowCount,
 		pageCount: server?.pageCount,
 		/** @see https://tanstack.com/table/v8/docs/guide/pagination#auto-reset-page-index */
 		autoResetPageIndex: autoResetPageIndex ?? internalAutoResetPageIndex,
 
-		// === filtering & sorting
-		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
-		getFilteredRowModel: !server ? getFilteredRowModel() : undefined, // not needed for manual server-side filtering
+		// –– sorting –––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 		/** @see https://tanstack.com/table/v8/docs/guide/sorting#manual-server-side-sorting */
+		manualSorting: !!server,
 		getSortedRowModel: !server ? getSortedRowModel() : undefined, // not needed for manual server-side sorting
 
-		// ===
+		// –– filtering –––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		manualFiltering: !!server,
+		/** @see https://tanstack.com/table/v8/docs/guide/column-filtering#manual-server-side-filtering */
+		getFilteredRowModel: !server ? getFilteredRowModel() : undefined, // not needed for manual server-side filtering
+		/** @see https://tanstack.com/table/latest/docs/guide/global-filtering */
+		globalFilterFn: !server ? globalFilterFn : undefined, // not needed for manual server-side filtering
 
+		// –– expanding –––––––––––––––––––––––––––––––––––––––––––––––––––––––
+		/** @see https://tanstack.com/table/latest/docs/guide/expanding#enable-client-side-expanding */
 		getExpandedRowModel: getExpandedRowModel(),
 		/** @see https://tanstack.com/table/latest/docs/framework/react/examples/expanding */
 		getRowCanExpand,
 
-		enableRowSelection,
-
 		state: {
-			pagination,
 			/** @see https://tanstack.com/table/v8/docs/guide/row-selection#access-row-selection-state */
 			rowSelection,
+
+			pagination: server?.pagination ?? pagination,
+			sorting: server?.sorting ?? sorting,
+			columnFilters: server?.columnFilters ?? columnFilters,
+			globalFilter: server?.globalFilter ?? globalFilter,
 		},
-		onPaginationChange: setPagination,
 		onRowSelectionChange: setRowSelection,
+
+		onPaginationChange: server?.onPaginationChange ?? setPagination,
+		onSortingChange: server?.onSortingChange ?? setSorting,
+		onColumnFiltersChange: server?.onColumnFiltersChange ?? setColumnFilters,
+		onGlobalFilterChange: server?.onGlobalFilterChange ?? setGlobalFilter,
 
 		// Provide our updateData function to our table meta
 		meta: {
