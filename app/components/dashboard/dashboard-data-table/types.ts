@@ -131,7 +131,7 @@ export interface DashboardDataTableProps<TData, TValue> {
 	) => React.ReactNode
 
 	/** @default "{ pageIndex: 0, pageSize: 10 }" */
-	initialPagination?: Partial<PaginationState>
+	defaultPagination?: Partial<PaginationState>
 	/** Determine if page index should reset, value returned from [useSkipper](./hooks.ts) */
 	autoResetPageIndex?: boolean
 	/** @see https://tanstack.com/table/v8/docs/framework/react/examples/editable-data */

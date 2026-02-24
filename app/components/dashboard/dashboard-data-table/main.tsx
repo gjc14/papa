@@ -107,7 +107,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 	enableRowSelection,
 	getRowCanExpand,
 	expandedRowRender = () => null,
-	initialPagination,
+	defaultPagination,
 	autoResetPageIndex,
 	skipAutoResetPageIndex,
 	globalFilterFn,
@@ -116,7 +116,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 	const [pagination, setPagination] = React.useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
-		...initialPagination,
+		...defaultPagination,
 	})
 	const [sorting, setSorting] = React.useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
