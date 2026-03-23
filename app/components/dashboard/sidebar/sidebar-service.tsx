@@ -30,7 +30,7 @@ export interface ServiceDashboardConfig {
 	 * // For svg, you could either pass in your own svg or utilize icon libraries:
 	 * import { Command } from 'lucide-react'
 	 * import { AvocadoIcon } from '@phosphor-icons/react'
-	 * import { mySVG } from './my-svg' // your own svg as a React component. e.g. export const mySVG = () => (<svg>...</svg>)
+	 * import { mySVG } from './my-svg' // your own svg as a React component. e.g., export const mySVG = () => (<svg>...</svg>)
 	 * {
 	 * 		// ...
 	 * 		logo: AvocadoIcon // or Command

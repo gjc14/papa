@@ -242,7 +242,7 @@ export function generateSeoDescription(
 			if (description.toLowerCase().includes(keyword.toLowerCase())) {
 				// Use word boundary regex to ensure we're not matching a substring of a larger word.
 				const regex = new RegExp(`\\b${escapeRegExp(keyword)}\\b`, 'gi')
-				// Here, you could wrap the keyword with a tag for emphasis, e.g.:
+				// Here, you could wrap the keyword with a tag for emphasis, e.g.,:
 				// description = description.replace(regex, `<strong>${keyword}</strong>`);
 				// For now, we'll simply reassign the keyword (this line can be modified as needed).
 				description = description.replace(regex, keyword)

@@ -173,7 +173,7 @@ function BulkEditableFields({
 					name="image"
 					defaultValue={user.image ?? undefined}
 					className="col-span-3"
-					placeholder="e.g. https://placecats.com/300/200"
+					placeholder="e.g., https://placecats.com/300/200"
 					disabled={isBulkEdit && !enabledFields.has('image')}
 				/>
 			</div>

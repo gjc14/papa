@@ -37,7 +37,7 @@ import { Youtube } from '~/components/icons/youtube'
 
 export interface EditOptionProps {
 	name: string
-	/** e.g. ctrl/mod+alt+shift */
+	/** e.g., ctrl/mod+alt+shift */
 	shortcut?: string
 	icon: LucideIcon
 	isActive?: (editor: Editor) => boolean

@@ -175,7 +175,7 @@ export const productOption = pgTable(
 		downloadExpiry: integer('download_expiry'), // in seconds
 
 		sku: varchar('sku', { length: 100 }),
-		identifier: varchar('identifier', { length: 255 }), // e.g. GTIN, UPC, EAN, or ISBN
+		identifier: varchar('identifier', { length: 255 }), // e.g., GTIN, UPC, EAN, or ISBN
 
 		// stock management
 		manageStock: integer('manage_stock').notNull().default(0),

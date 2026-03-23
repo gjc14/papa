@@ -40,7 +40,7 @@ type AssetSelectionDialogProps = {
 	actionLabel?: string
 	/** Callback when action button is clicked to insert */
 	onAction?: () => void
-	/** Title of the asset type, e.g. Image, Video, etc. */
+	/** Title of the asset type, e.g., Image, Video, etc. */
 	title?: string
 	/** Callback when files are uploaded */
 	onUpload?: (files: React.ComponentProps<typeof FileGrid>['files']) => void
@@ -157,7 +157,7 @@ export function AssetSelectionDialog({
 			<DialogContent
 				{...dialogContentProps}
 				className={cn(
-					'max-h-[90vh] overflow-scroll sm:max-w-1/2',
+					'sm:max-w-1/2 max-h-[90vh] overflow-scroll',
 					dialogContentProps.className,
 				)}
 			>

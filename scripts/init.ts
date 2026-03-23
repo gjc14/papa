@@ -10,7 +10,7 @@ const scripts = [
 
 let currentProcess: ReturnType<typeof spawn> | null = null
 
-// Handle Signal Interrupt (e.g. Ctrl+C)
+// Handle Signal Interrupt (e.g., Ctrl+C)
 process.on('SIGINT', () => {
 	console.log('\n🛑 Received SIGINT, cleaning up...')
 	if (currentProcess) {

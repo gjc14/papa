@@ -27,7 +27,7 @@
 
 ## Before you start
 
-1. Prepare an useful IDE. (e.g.
+1. Prepare an useful IDE. (e.g.,
    [Visual Studio Code](https://code.visualstudio.com/))
 2. Get a
    [PostgreSQL Open Source Relational Database](https://www.postgresql.org/). If
@@ -124,7 +124,7 @@ cd ./papa && cp .env.example .env
     `node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"`
     to generate a random secret with node.
 5.  `VITE_BASE_URL`: This is the domain where you're hosting this app in
-    production environment, e.g. `https://papa.delicioso`.
+    production environment, e.g., `https://papa.delicioso`.
 6.  `APP_NAME`: What you call your app.
 7.  `EMAIL_PROVIDER`: Options: `smtp`, `ses`, `resend`, `nodemailer` (same as
     `smtp`). Default `resend`
@@ -151,7 +151,7 @@ cd ./papa && cp .env.example .env
         and
         [Types of Amazon SES credentials](https://docs.aws.amazon.com/ses/latest/dg/send-email-concepts-credentials.html)
 
-        - `AWS_SES_REGION`: e.g. `ap-northeast-1`
+        - `AWS_SES_REGION`: e.g., `ap-northeast-1`
         - `AWS_SES_ACCESS_KEY_ID`: Get this from `IAM`
         - `AWS_SES_SECRET_ACCESS_KEY`: Get this from `IAM`, you should set
           Permissions policies of the user to:
@@ -468,7 +468,7 @@ under `/app/routes/rebellious-route/lib/db/schema` as well will be read.
 
 **Conventional way to generate schema in your service**
 
-1. Create folder `lib/db/schema` in your service e.g.
+1. Create folder `lib/db/schema` in your service e.g.,
    `/app/routes/services/my-service/lib/db/schema`
 2. Create file `my-schema-name.ts` under the former folder created.
 3. Write schema.

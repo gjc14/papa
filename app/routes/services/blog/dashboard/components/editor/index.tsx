@@ -1,7 +1,7 @@
 /**
  * PostEditor uses Jotai, should be placed in <Provider> context.
  * editor will be saved in jotai, so when navigating away and back, the editor instance is still there.
- * editorContent will update if serverPost changes (e.g. switch to another post, or update post)
+ * editorContent will update if serverPost changes (e.g., switch to another post, or update post)
  */
 import './styles.css'
 import './styles/image-node.css'
@@ -9,10 +9,10 @@ import './styles/youtube-node.css'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { toast } from 'sonner'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useAtom } from 'jotai'
 import debounce from 'lodash/debounce'
+import { toast } from 'sonner'
 
 import { ExtensionKit } from '~/components/editor/extension-kit'
 import { authClient } from '~/lib/auth/auth-client'
@@ -70,7 +70,7 @@ export function ContentEditor() {
 			},
 			// https://github.com/ueberdosis/tiptap/blob/develop/packages/extension-file-handler/src/FileHandlePlugin.ts
 			handleDrop(view, event, slice, moved) {
-				if (moved) return false // don't handle if it's a move event (e.g. dragging selected text)
+				if (moved) return false // don't handle if it's a move event (e.g., dragging selected text)
 				if (!event.dataTransfer?.files.length) {
 					return false
 				}
@@ -118,7 +118,7 @@ export function ContentEditor() {
 			debouncedSetEditorContent(JSON.stringify(jsonContent))
 		},
 		onDestroy() {
-			// Clean up editor in jotai to prevent access before next mount, e.g. when navigating away and back
+			// Clean up editor in jotai to prevent access before next mount, e.g., when navigating away and back
 			setEditor(null)
 		},
 	})
@@ -126,7 +126,7 @@ export function ContentEditor() {
 	useEffect(() => {
 		if (!editor || !serverPost || !serverPost.id) return
 
-		// Update content if navigated to another post, should not change if same post (e.g. revalidate after update)
+		// Update content if navigated to another post, should not change if same post (e.g., revalidate after update)
 		if (postId !== serverPost.id) {
 			setPostId(serverPost.id)
 
@@ -140,7 +140,7 @@ export function ContentEditor() {
 
 	// Handle shortcut keys
 	const handleKeyDown = (e: React.KeyboardEvent) => {
-		e.stopPropagation() // prevent passing e out e.g. mod+b will only bold rather than toggle sidebar as well
+		e.stopPropagation() // prevent passing e out e.g., mod+b will only bold rather than toggle sidebar as well
 		// e.preventDefault() // TBD. prevent like mod+s save, mod+p print, or mod+r refres
 	}
 

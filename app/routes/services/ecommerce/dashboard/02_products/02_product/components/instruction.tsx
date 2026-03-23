@@ -89,8 +89,8 @@ export const Instructions = () => {
 			<CardHeader>
 				<CardTitle>Instructions</CardTitle>
 				<CardDescription>
-					Every instruction will help your customers make the right choice. e.g.
-					How To Use; Ingredients.
+					Every instruction will help your customers make the right choice.
+					e.g., How To Use; Ingredients.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="max-h-[360px] space-y-2 overflow-scroll">
