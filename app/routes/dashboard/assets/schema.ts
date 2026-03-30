@@ -1,7 +1,7 @@
-import { createSelectSchema } from 'drizzle-zod'
-import { z } from 'zod'
+import { createSelectSchema } from "drizzle-zod"
+import { z } from "zod"
 
-import { file } from '~/lib/db/schema'
+import { file } from "~/lib/db/schema"
 
 // Request schemas
 const inputSchema = z.object({

@@ -1,15 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect } from "react"
 
-import { useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
+import { useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
 
 import {
 	isDraftCheckCompleteAtom,
 	isRestoreAlertOpenAtom,
 	serverPostAtom,
-} from '../context'
-import { areDifferentPosts } from '../utils'
-import { postLocalStorageKey } from './utils'
+} from "../context"
+import { areDifferentPosts } from "../utils"
+import { postLocalStorageKey } from "./utils"
 
 /**
  * This file handles local-storage draft checking.

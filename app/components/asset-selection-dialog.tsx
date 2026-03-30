@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import { CloudAlert, Loader } from 'lucide-react'
+import { CloudAlert, Loader } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Dialog,
 	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogTitle,
-} from '~/components/ui/dialog'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
-import { Separator } from '~/components/ui/separator'
-import { cn, defaultValidUrlProtocols, isValidUrl } from '~/lib/utils'
-import { FileGrid } from '~/routes/dashboard/assets/components/file-grid'
-import type { loader } from '~/routes/dashboard/assets/resource'
+} from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
+import { Separator } from "~/components/ui/separator"
+import { cn, defaultValidUrlProtocols, isValidUrl } from "~/lib/utils"
+import { FileGrid } from "~/routes/dashboard/assets/components/file-grid"
+import type { loader } from "~/routes/dashboard/assets/resource"
 
 type AssetSelectionDialogProps = {
 	/** @link [DialogTrigger](./ui/dialog.tsx) */
@@ -43,8 +43,8 @@ type AssetSelectionDialogProps = {
 	/** Title of the asset type, e.g., Image, Video, etc. */
 	title?: string
 	/** Callback when files are uploaded */
-	onUpload?: (files: React.ComponentProps<typeof FileGrid>['files']) => void
-} & Pick<AssetGalleryProps, 'assets' | 'isLoading'> &
+	onUpload?: (files: React.ComponentProps<typeof FileGrid>["files"]) => void
+} & Pick<AssetGalleryProps, "assets" | "isLoading"> &
 	React.ComponentProps<typeof DialogContent>
 
 /**
@@ -121,11 +121,11 @@ export function AssetSelectionDialog({
 }: AssetSelectionDialogProps) {
 	const [assetLoading, setAssetLoading] = useState(false)
 	const [assetError, setAssetError] = useState(false)
-	const [currentLoadingSrc, setCurrentLoadingSrc] = useState('')
+	const [currentLoadingSrc, setCurrentLoadingSrc] = useState("")
 
 	const validSrcInput =
-		srcInput.startsWith('/assets') ||
-		isValidUrl(srcInput, [...defaultValidUrlProtocols, 'blob:'])
+		srcInput.startsWith("/assets") ||
+		isValidUrl(srcInput, [...defaultValidUrlProtocols, "blob:"])
 
 	const isAvailable = (available || true) && validSrcInput
 
@@ -137,7 +137,7 @@ export function AssetSelectionDialog({
 		} else if (!validSrcInput) {
 			setAssetLoading(false)
 			setAssetError(false)
-			setCurrentLoadingSrc('')
+			setCurrentLoadingSrc("")
 		}
 	}, [srcInput, currentLoadingSrc])
 
@@ -157,7 +157,7 @@ export function AssetSelectionDialog({
 			<DialogContent
 				{...dialogContentProps}
 				className={cn(
-					'sm:max-w-1/2 max-h-[90vh] overflow-scroll',
+					"sm:max-w-1/2 max-h-[90vh] overflow-scroll",
 					dialogContentProps.className,
 				)}
 			>
@@ -176,7 +176,7 @@ export function AssetSelectionDialog({
 									alt={altInput}
 									title={titleInput}
 									className={`max-h-40 object-contain transition-opacity ${
-										assetLoading ? 'hidden' : 'opacity-100'
+										assetLoading ? "hidden" : "opacity-100"
 									}`}
 									onLoad={handleAssetLoad}
 									onError={handleAssetError}
@@ -196,7 +196,7 @@ export function AssetSelectionDialog({
 							<Input
 								id="asset-src"
 								value={srcInput}
-								onChange={e => setSrcInput(e.target.value)}
+								onChange={(e) => setSrcInput(e.target.value)}
 								placeholder="https://example.com/asset.webp"
 							/>
 						</div>
@@ -206,7 +206,7 @@ export function AssetSelectionDialog({
 							<Input
 								id="asset-alt"
 								value={altInput}
-								onChange={e => setAltInput(e.target.value)}
+								onChange={(e) => setAltInput(e.target.value)}
 								placeholder={`My ${title} Alt Text`}
 							/>
 						</div>
@@ -216,7 +216,7 @@ export function AssetSelectionDialog({
 							<Input
 								id="asset-title"
 								value={titleInput}
-								onChange={e => setTitleInput(e.target.value)}
+								onChange={(e) => setTitleInput(e.target.value)}
 								placeholder={`My ${title} Title`}
 							/>
 						</div>
@@ -229,7 +229,7 @@ export function AssetSelectionDialog({
 						isLoading={isLoading}
 						onSelect={({ src, alt, title }) => {
 							setSrcInput(src)
-							setAltInput(alt || '')
+							setAltInput(alt || "")
 							setTitleInput(title)
 						}}
 						onUpload={onUpload}
@@ -242,7 +242,7 @@ export function AssetSelectionDialog({
 								className="mt-2 w-full"
 								disabled={!isAvailable}
 							>
-								{actionLabel || 'Insert'}
+								{actionLabel || "Insert"}
 							</Button>
 						}
 					/>
@@ -257,7 +257,7 @@ interface AssetGalleryProps {
 	assets: Awaited<ReturnType<typeof loader>> | null
 	isLoading: boolean
 	onSelect: (args: { src: string; alt: string | null; title: string }) => void
-	onUpload?: (files: React.ComponentProps<typeof FileGrid>['files']) => void
+	onUpload?: (files: React.ComponentProps<typeof FileGrid>["files"]) => void
 }
 
 function AssetGallery({
@@ -279,8 +279,8 @@ function AssetGallery({
 		return (
 			<FileGrid
 				files={assets.files || []}
-				origin={assets.origin || ''}
-				onFileSelect={file => {
+				origin={assets.origin || ""}
+				onFileSelect={(file) => {
 					onSelect({
 						src: `/assets/${file.id}`,
 						alt: file.description,

@@ -1,21 +1,21 @@
 /**
  * Store Product Page is a component that could be dynamically rendered from database.
  */
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from "jotai"
 
-import { Separator } from '~/components/ui/separator'
+import { Separator } from "~/components/ui/separator"
 
-import { ProductBreadcrumb } from './components/product-breadcrumb'
-import { ProductContent } from './components/product-content'
+import { ProductBreadcrumb } from "./components/product-breadcrumb"
+import { ProductContent } from "./components/product-content"
 import {
 	ProductCrossSell,
 	ProductCrossSellSkeleton,
-} from './components/product-cross-sell'
+} from "./components/product-cross-sell"
 import {
 	ProductGallery,
 	ProductGallerySkeleton,
-} from './components/product-gallery'
-import { isResolvingAtom, productAtom } from './context'
+} from "./components/product-gallery"
+import { isResolvingAtom, productAtom } from "./context"
 
 /**
  * Store product page component, displays product, image gallery, and cross-sell products.

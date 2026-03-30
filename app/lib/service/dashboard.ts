@@ -1,8 +1,8 @@
-import { getServiceDashboards } from './dashboard-registry'
-import type { ServiceDashboard } from './type'
+import { getServiceDashboards } from "./dashboard-registry"
+import type { ServiceDashboard } from "./type"
 
 // Eagerly import service routes to ensure that they are registered in build time
-import.meta.glob('../../routes/services/**/service.dashboard.{ts,tsx}', {
+import.meta.glob("../../routes/services/**/service.dashboard.{ts,tsx}", {
 	eager: true,
 })
 

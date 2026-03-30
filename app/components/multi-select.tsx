@@ -1,15 +1,15 @@
-import { Autocomplete } from '@base-ui/react/autocomplete'
-import * as React from 'react'
+import { Autocomplete } from "@base-ui/react/autocomplete"
+import * as React from "react"
 
-import { PlusCircleIcon, WarningIcon, XIcon } from '@phosphor-icons/react'
+import { PlusCircleIcon, WarningIcon, XIcon } from "@phosphor-icons/react"
 
-import { Badge } from '~/components/ui/badge'
-import { Spinner } from '~/components/ui/spinner'
-import { cn } from '~/lib/utils'
+import { Badge } from "~/components/ui/badge"
+import { Spinner } from "~/components/ui/spinner"
+import { cn } from "~/lib/utils"
 
-import { Kbd } from './ui/kbd'
+import { Kbd } from "./ui/kbd"
 
-type Option = Record<'value' | 'label', string>
+type Option = Record<"value" | "label", string>
 type DisplayOption = Option & {
 	className?: string
 	style?: React.CSSProperties
@@ -23,7 +23,7 @@ interface BadgeProps {
 const DefaultBadge = ({ option, handleUnselect }: BadgeProps) => (
 	<Badge
 		key={option.value}
-		className={cn('my-auto', option.className)}
+		className={cn("my-auto", option.className)}
 		style={option.style}
 	>
 		{option.label}
@@ -61,7 +61,7 @@ interface MultiSelectProps {
 	/** ID generator for newly created items */
 	createId?: (value: string) => string
 	/** Autocomplete mode @default 'list' – set 'both' for inline autocomplete */
-	mode?: 'list' | 'both' | 'inline' | 'none'
+	mode?: "list" | "both" | "inline" | "none"
 	/** Placeholder text for the input field */
 	placeholder?: string
 	/** Additional class names for the input wrapper */
@@ -92,7 +92,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 		isSearching,
 		allowCreate = true,
 		createId = (v: string) => `${Math.random().toString(36).slice(2)}-${v}`,
-		mode = 'list',
+		mode = "list",
 		placeholder,
 		className,
 		badge: BadgeComponent = DefaultBadge,
@@ -111,7 +111,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 	const isHandlingSelectRef = React.useRef(false)
 
 	// ── input value (controlled / uncontrolled) ──────────────────────────
-	const [internalInput, setInternalInput] = React.useState('')
+	const [internalInput, setInternalInput] = React.useState("")
 	const inputValue = input ?? internalInput
 	const setInputValue = setInput ?? setInternalInput
 
@@ -119,13 +119,13 @@ export const MultiSelect = (props: MultiSelectProps) => {
 	const [isComposing, setIsComposing] = React.useState(false)
 
 	// ── error (controlled / uncontrolled) ────────────────────────────────
-	const [internalError, setInternalError] = React.useState(externalError ?? '')
+	const [internalError, setInternalError] = React.useState(externalError ?? "")
 	const error = externalError ?? internalError
 	const setError = externalSetError ?? setInternalError
 
 	// ── derived state ────────────────────────────────────────────────────
 	const selectableOptions = React.useMemo(
-		() => options.filter(o => !selected.some(s => s.value === o.value)),
+		() => options.filter((o) => !selected.some((s) => s.value === o.value)),
 		[options, selected],
 	)
 
@@ -134,9 +134,9 @@ export const MultiSelect = (props: MultiSelectProps) => {
 	const hasPerfectMatch =
 		!trimmedLower ||
 		selectableOptions.some(
-			o => o.label.trim().toLowerCase() === trimmedLower,
+			(o) => o.label.trim().toLowerCase() === trimmedLower,
 		) ||
-		selected.some(s => s.label.trim().toLowerCase() === trimmedLower)
+		selected.some((s) => s.label.trim().toLowerCase() === trimmedLower)
 
 	const showCreateNew = allowCreate && !!inputValue.trim() && !hasPerfectMatch
 
@@ -145,7 +145,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 		(option: Option) => {
 			isHandlingSelectRef.current = true
 			onSelectedChange?.([...selected, option])
-			setInputValue('')
+			setInputValue("")
 			// Re-focus so the popup re-opens for continuous selection
 			requestAnimationFrame(() => {
 				inputRef.current?.focus()
@@ -157,7 +157,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 
 	const handleUnselect = React.useCallback(
 		(option: Option) => {
-			onSelectedChange?.(selected.filter(s => s.value !== option.value))
+			onSelectedChange?.(selected.filter((s) => s.value !== option.value))
 		},
 		[selected, onSelectedChange],
 	)
@@ -167,9 +167,11 @@ export const MultiSelect = (props: MultiSelectProps) => {
 		if (!trimmed) return
 
 		if (
-			selected.some(s => s.label.trim().toLowerCase() === trimmed.toLowerCase())
+			selected.some(
+				(s) => s.label.trim().toLowerCase() === trimmed.toLowerCase(),
+			)
 		) {
-			setError('Label already exists')
+			setError("Label already exists")
 			return
 		}
 
@@ -190,7 +192,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 
 			// Detect item-selection via pointer or Enter
 			if (isPointerSelectRef.current || isEnterKeyRef.current) {
-				const matched = selectableOptions.find(o => o.label === nextValue)
+				const matched = selectableOptions.find((o) => o.label === nextValue)
 				if (matched) {
 					isPointerSelectRef.current = false
 					isEnterKeyRef.current = false
@@ -209,10 +211,10 @@ export const MultiSelect = (props: MultiSelectProps) => {
 
 	const handleKeyDown = React.useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
-			setError('')
+			setError("")
 			if (isComposing) return
 
-			if (e.key === 'Enter') {
+			if (e.key === "Enter") {
 				isEnterKeyRef.current = true
 				// After a micro-task, check whether the Autocomplete consumed the
 				// Enter (i.e. a highlighted item was selected → onValueChange fired).
@@ -228,8 +230,8 @@ export const MultiSelect = (props: MultiSelectProps) => {
 			}
 
 			if (
-				(e.key === 'Backspace' || e.key === 'Delete') &&
-				inputValue === '' &&
+				(e.key === "Backspace" || e.key === "Delete") &&
+				inputValue === "" &&
 				selected.length > 0
 			) {
 				handleUnselect(selected[selected.length - 1])
@@ -259,14 +261,14 @@ export const MultiSelect = (props: MultiSelectProps) => {
 			<div
 				ref={anchorRef}
 				className={cn(
-					'group border-input ring-offset-background focus-within:ring-ring focus-within:ring-offset cursor-text border px-2 py-2 text-sm focus-within:ring-1',
+					"group border-input ring-offset-background focus-within:ring-ring focus-within:ring-offset cursor-text border px-2 py-2 text-sm focus-within:ring-1",
 					className,
 				)}
 				onClick={() => inputRef.current?.focus()}
 			>
 				<div className="flex flex-wrap items-center gap-1">
-					{selected.map(option => (
-						<div key={option.value} onClick={e => e.stopPropagation()}>
+					{selected.map((option) => (
+						<div key={option.value} onClick={(e) => e.stopPropagation()}>
 							<BadgeComponent option={option} handleUnselect={handleUnselect} />
 						</div>
 					))}
@@ -282,7 +284,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 						}}
 						onCompositionStart={() => setIsComposing(true)}
 						onCompositionEnd={() => setIsComposing(false)}
-						placeholder={placeholder ?? 'Select...'}
+						placeholder={placeholder ?? "Select..."}
 						className="placeholder:text-muted-foreground ml-1 flex-1 bg-transparent outline-hidden"
 					/>
 				</div>
@@ -320,7 +322,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 								{/* "Create new" – always first when no perfect match */}
 								{showCreateNew && (
 									<button
-										onMouseDown={e => {
+										onMouseDown={(e) => {
 											e.preventDefault()
 											e.stopPropagation()
 										}}

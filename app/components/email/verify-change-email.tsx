@@ -9,7 +9,7 @@ import {
 	Preview,
 	Section,
 	Text,
-} from '@react-email/components'
+} from "@react-email/components"
 
 interface VerifyChangeEmailProps {
 	userFirstname: string
@@ -20,15 +20,15 @@ interface VerifyChangeEmailProps {
 }
 
 const baseURL =
-	process.env.NODE_ENV === 'production'
-		? process.env.VITE_BASE_URL || 'http://localhost:5173'
-		: 'http://localhost:5173'
+	process.env.NODE_ENV === "production"
+		? process.env.VITE_BASE_URL || "http://localhost:5173"
+		: "http://localhost:5173"
 
 export const VerifyChangeEmail = ({
 	userFirstname,
 	appName,
 	verifyLink,
-	logoUrl = baseURL + '/logo.png',
+	logoUrl = baseURL + "/logo.png",
 	newEmail,
 }: VerifyChangeEmailProps) => (
 	<Html>
@@ -52,10 +52,10 @@ export const VerifyChangeEmail = ({
 					click the button below to verify.
 				</Text>
 				<Text style={paragraph}>
-					After verification, another verification email will be sent to{' '}
+					After verification, another verification email will be sent to{" "}
 					<strong>{newEmail}</strong> as well.
 				</Text>
-				<Text style={{ ...paragraph, color: '#8898aa', fontSize: '14px' }}>
+				<Text style={{ ...paragraph, color: "#8898aa", fontSize: "14px" }}>
 					If you did not request this change, please ignore this email.
 				</Text>
 				<Section style={btnContainer}>
@@ -78,46 +78,46 @@ export const VerifyChangeEmail = ({
 export default VerifyChangeEmail
 
 const main = {
-	backgroundColor: '#ffffff',
+	backgroundColor: "#ffffff",
 	fontFamily:
 		'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 }
 
 const container = {
-	margin: '0 auto',
-	padding: '20px 0 48px',
+	margin: "0 auto",
+	padding: "20px 0 48px",
 }
 
 const logo = {
-	margin: '0 auto',
+	margin: "0 auto",
 }
 
 const paragraph = {
-	fontSize: '16px',
-	lineHeight: '26px',
+	fontSize: "16px",
+	lineHeight: "26px",
 }
 
 const btnContainer = {
-	textAlign: 'center' as const,
+	textAlign: "center" as const,
 }
 
 const button = {
-	backgroundColor: '#0B1F66',
-	borderRadius: '3px',
-	color: '#fff',
-	fontSize: '16px',
-	textDecoration: 'none',
-	textAlign: 'center' as const,
-	display: 'block',
-	padding: '12px',
+	backgroundColor: "#0B1F66",
+	borderRadius: "3px",
+	color: "#fff",
+	fontSize: "16px",
+	textDecoration: "none",
+	textAlign: "center" as const,
+	display: "block",
+	padding: "12px",
 }
 
 const hr = {
-	borderColor: '#cccccc',
-	margin: '20px 0',
+	borderColor: "#cccccc",
+	margin: "20px 0",
 }
 
 const footer = {
-	color: '#8898aa',
-	fontSize: '12px',
+	color: "#8898aa",
+	fontSize: "12px",
 }

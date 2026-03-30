@@ -1,7 +1,7 @@
-import { getSeo } from '~/lib/db/seo.server'
-import { createMeta } from '~/lib/utils/seo'
+import { getSeo } from "~/lib/db/seo.server"
+import { createMeta } from "~/lib/utils/seo"
 
-import { getPostBySlug } from '../../lib/db/post.server'
+import { getPostBySlug } from "../../lib/db/post.server"
 
 type PostPromise = ReturnType<typeof fetchPost> // Promise<{ meta, post, ... }>
 type PostPayload = Awaited<PostPromise> // { meta, post, ... }
@@ -15,7 +15,7 @@ type CacheEntry = {
 export const postServerMemoryCache = new Map<string, CacheEntry>()
 export const TTL = 60 * 1000 // 60s
 export const headers = {
-	'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=30',
+	"Cache-Control": "public, max-age=0, s-maxage=60, stale-while-revalidate=30",
 }
 
 export async function fetchPost(postSlug: string, url: URL) {
@@ -24,7 +24,7 @@ export async function fetchPost(postSlug: string, url: URL) {
 
 	const { post, nextPost, prevPost } = await getPostBySlug(
 		postSlug,
-		'PUBLISHED',
+		"PUBLISHED",
 	)
 	cleanupExpiredEntries()
 

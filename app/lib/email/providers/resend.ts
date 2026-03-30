@@ -1,6 +1,6 @@
-import { Resend } from 'resend'
+import { Resend } from "resend"
 
-import type { EmailOptions, EmailProvider } from '../types'
+import type { EmailOptions, EmailProvider } from "../types"
 
 export class ResendProvider implements EmailProvider {
 	private resend: Resend
@@ -21,7 +21,7 @@ export class ResendProvider implements EmailProvider {
 				})
 
 				if (error) {
-					console.error('Resend error:', error)
+					console.error("Resend error:", error)
 					throw new Error(`Failed to send email via Resend: ${error.message}`)
 				}
 			} else {
@@ -36,12 +36,12 @@ export class ResendProvider implements EmailProvider {
 				})
 
 				if (error) {
-					console.error('Resend error:', error)
+					console.error("Resend error:", error)
 					throw new Error(`Failed to send email via Resend: ${error.message}`)
 				}
 			}
 		} catch (error) {
-			console.error('Error sending email via Resend:', error)
+			console.error("Error sending email via Resend:", error)
 			throw error
 		}
 	}

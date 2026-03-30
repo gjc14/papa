@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from "jotai"
 
 import {
 	Card,
@@ -6,17 +6,17 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Field, FieldDescription, FieldLabel } from '~/components/ui/field'
-import { Input } from '~/components/ui/input'
-import { Textarea } from '~/components/ui/textarea'
+} from "~/components/ui/card"
+import { Field, FieldDescription, FieldLabel } from "~/components/ui/field"
+import { Input } from "~/components/ui/input"
+import { Textarea } from "~/components/ui/textarea"
 
-import { productAtom } from '../../../../store/product/context'
+import { productAtom } from "../../../../store/product/context"
 
-const productNameAtom = atom(get => get(productAtom)?.name)
-const productSubtitleAtom = atom(get => get(productAtom)?.subtitle)
-const productDescriptionAtom = atom(get => get(productAtom)?.description)
-const productPurchaseNoteAtom = atom(get => get(productAtom)?.purchaseNote)
+const productNameAtom = atom((get) => get(productAtom)?.name)
+const productSubtitleAtom = atom((get) => get(productAtom)?.subtitle)
+const productDescriptionAtom = atom((get) => get(productAtom)?.description)
+const productPurchaseNoteAtom = atom((get) => get(productAtom)?.purchaseNote)
 
 export function GeneralInformation() {
 	const setProduct = useSetAtom(productAtom)
@@ -28,7 +28,7 @@ export function GeneralInformation() {
 	const handleProductChange = (
 		updatedProduct: Partial<typeof productAtom.read>,
 	) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return { ...prev, ...updatedProduct }
 		})
@@ -50,7 +50,7 @@ export function GeneralInformation() {
 						name="name"
 						placeholder="Taiwan Formosa Oolong Tea"
 						value={productName}
-						onChange={e => handleProductChange({ name: e.target.value })}
+						onChange={(e) => handleProductChange({ name: e.target.value })}
 						required
 						autoFocus
 					/>
@@ -62,8 +62,8 @@ export function GeneralInformation() {
 						id="p-subtitle"
 						name="subtitle"
 						placeholder="A short one-liner about your product"
-						value={productSubtitle || ''}
-						onChange={e => handleProductChange({ subtitle: e.target.value })}
+						value={productSubtitle || ""}
+						onChange={(e) => handleProductChange({ subtitle: e.target.value })}
 					/>
 					<FieldDescription>
 						Optional tagline displayed below product name.
@@ -76,8 +76,8 @@ export function GeneralInformation() {
 						id="p-description"
 						name="description"
 						placeholder="Detailed product description..."
-						value={productDescription || ''}
-						onChange={e =>
+						value={productDescription || ""}
+						onChange={(e) =>
 							handleProductChange({
 								description: e.target.value,
 							})
@@ -95,8 +95,8 @@ export function GeneralInformation() {
 						id="p-purchase-note"
 						name="purchaseNote"
 						placeholder="Special instructions or notes after purchase..."
-						value={productPurchaseNote || ''}
-						onChange={e =>
+						value={productPurchaseNote || ""}
+						onChange={(e) =>
 							handleProductChange({
 								purchaseNote: e.target.value,
 							})

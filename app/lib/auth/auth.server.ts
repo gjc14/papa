@@ -1,29 +1,29 @@
 /**
  * This auth module is dedicated to the dashboard.
  */
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { betterAuth } from "better-auth"
+import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
 	admin as adminPlugin,
 	emailOTP,
 	organization,
-} from 'better-auth/plugins'
+} from "better-auth/plugins"
 
-import { db } from '~/lib/db/db.server'
+import { db } from "~/lib/db/db.server"
 
-import { emailService } from '../email'
-import { ac, admin, user } from './permissions'
+import { emailService } from "../email"
+import { ac, admin, user } from "./permissions"
 import {
 	sendSignInOTP,
 	sendVerifyChangeEmailLink,
 	sendVerifyLink,
-} from './utils'
+} from "./utils"
 
-const appName = process.env.APP_NAME || 'PAPA'
+const appName = process.env.APP_NAME || "PAPA"
 const baseURL =
-	process.env.NODE_ENV === 'production'
-		? process.env.VITE_BASE_URL || 'http://localhost:5173'
-		: 'http://localhost:5173'
+	process.env.NODE_ENV === "production"
+		? process.env.VITE_BASE_URL || "http://localhost:5173"
+		: "http://localhost:5173"
 
 const otpExpireIn = 60 * 5 // 5 minutes
 
@@ -31,7 +31,7 @@ export const auth = betterAuth({
 	appName,
 	baseURL,
 	database: drizzleAdapter(db, {
-		provider: 'pg',
+		provider: "pg",
 	}),
 	emailAndPassword: {
 		enabled: false,
@@ -106,9 +106,9 @@ export const auth = betterAuth({
 					emailOTP({
 						expiresIn: otpExpireIn, // 5 minutes
 						async sendVerificationOTP({ email, otp, type }) {
-							console.log('sendVerificationOTP', email, otp, type)
+							console.log("sendVerificationOTP", email, otp, type)
 							switch (type) {
-								case 'sign-in':
+								case "sign-in":
 									await sendSignInOTP({
 										email,
 										otp,
@@ -116,11 +116,11 @@ export const auth = betterAuth({
 										emailService: emailService!,
 									})
 									break
-								case 'email-verification':
-									console.warn('Email verification not implemented')
+								case "email-verification":
+									console.warn("Email verification not implemented")
 									break
-								case 'forget-password':
-									console.warn('Forget password not implemented')
+								case "forget-password":
+									console.warn("Forget password not implemented")
 									break
 							}
 						},

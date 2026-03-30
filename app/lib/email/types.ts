@@ -12,10 +12,10 @@ export interface EmailProvider {
 }
 
 export const EmailProviderType = {
-	RESEND: 'resend',
-	NODEMAILER: 'nodemailer',
-	SMTP: 'smtp',
-	SES: 'ses',
+	RESEND: "resend",
+	NODEMAILER: "nodemailer",
+	SMTP: "smtp",
+	SES: "ses",
 } as const
 
 export type EmailProviderType =

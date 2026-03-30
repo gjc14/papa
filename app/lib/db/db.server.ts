@@ -1,33 +1,33 @@
 /**
  * Database
  */
-import 'dotenv/config'
+import "dotenv/config"
 
 /**
  * Object Storage
  */
-import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3'
-import { drizzle } from 'drizzle-orm/node-postgres'
+import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3"
+import { drizzle } from "drizzle-orm/node-postgres"
 
-import * as schema from './schema'
+import * as schema from "./schema"
 
 export function createDB<T extends Record<string, unknown> = {}>(
 	serviceSchema?: T,
 ) {
 	if (!process.env.DATABASE_URL) {
-		throw new Error('DATABASE_URL is not defined')
+		throw new Error("DATABASE_URL is not defined")
 	}
 
 	return drizzle(process.env.DATABASE_URL, {
 		schema: { ...schema, ...serviceSchema } as typeof schema & T,
-		casing: 'snake_case',
+		casing: "snake_case",
 	})
 }
 
 export const db = createDB()
 
 export type TransactionType = Parameters<
-	Parameters<(typeof db)['transaction']>[0]
+	Parameters<(typeof db)["transaction"]>[0]
 >[0]
 
 const ACCESS_KEY_ID = process.env.OBJECT_STORAGE_ACCESS_KEY_ID
@@ -37,18 +37,18 @@ const ACCOUNT_ID = process.env.OBJECT_STORAGE_ACCOUNT_ID
 if (!ACCESS_KEY_ID || !SECRET_ACCESS_KEY || !ACCOUNT_ID) {
 	console.warn(
 		`Object Storage: S3Client Missing ${
-			!ACCESS_KEY_ID ? 'OBJECT_STORAGE_ACCESS_KEY_ID' : ''
+			!ACCESS_KEY_ID ? "OBJECT_STORAGE_ACCESS_KEY_ID" : ""
 		},
-        ${!SECRET_ACCESS_KEY ? 'OBJECT_STORAGE_SECRET_ACCESS_KEY' : ''},
-        ${!ACCOUNT_ID ? 'OBJECT_STORAGE_ACCOUNT_ID' : ''}
-        `.replace(/\s+/g, ' '),
+        ${!SECRET_ACCESS_KEY ? "OBJECT_STORAGE_SECRET_ACCESS_KEY" : ""},
+        ${!ACCOUNT_ID ? "OBJECT_STORAGE_ACCOUNT_ID" : ""}
+        `.replace(/\s+/g, " "),
 	)
 }
 
 export const S3 =
 	ACCESS_KEY_ID && SECRET_ACCESS_KEY && ACCOUNT_ID
 		? new S3Client({
-				region: 'auto',
+				region: "auto",
 				endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
 				credentials: {
 					accessKeyId: ACCESS_KEY_ID,
@@ -58,13 +58,13 @@ export const S3 =
 		: null
 
 if (process.env.NODE_ENV && S3) {
-	S3.send(new ListBucketsCommand({})).then(result => {
+	S3.send(new ListBucketsCommand({})).then((result) => {
 		const isPapaExists = !!result.Buckets?.find(
-			bucket => bucket.Name === (process.env.BUCKET_NAME || 'papa'),
+			(bucket) => bucket.Name === (process.env.BUCKET_NAME || "papa"),
 		)
 		if (!isPapaExists) {
 			console.warn(
-				`Bucket ${process.env.BUCKET_NAME || 'papa'} not found, please create it. Refer to ./README.md`,
+				`Bucket ${process.env.BUCKET_NAME || "papa"} not found, please create it. Refer to ./README.md`,
 			)
 		}
 	})

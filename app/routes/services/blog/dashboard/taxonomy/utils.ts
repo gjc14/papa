@@ -1,6 +1,6 @@
-import { useFetchers } from 'react-router'
+import { useFetchers } from "react-router"
 
-import type { CategoryType, TagType } from './type'
+import type { CategoryType, TagType } from "./type"
 
 type pendingItem = ReturnType<typeof useFetchers>[number] & {
 	formData: FormData
@@ -14,17 +14,17 @@ const usePendingCategories = () => {
 	return useFetchers()
 		.filter((fetcher): fetcher is pendingItem => {
 			if (!fetcher.formData) return false
-			const gotchaTag = fetcher.formData.get('intent') === 'category'
-			const isPOST = fetcher.formMethod === 'POST'
+			const gotchaTag = fetcher.formData.get("intent") === "category"
+			const isPOST = fetcher.formMethod === "POST"
 			return gotchaTag && isPOST
 		})
-		.map(fetcher => {
+		.map((fetcher) => {
 			return {
-				id: Number(fetcher.formData?.get('id')),
+				id: Number(fetcher.formData?.get("id")),
 				parentId: null,
-				name: fetcher.formData?.get('name'),
-				slug: fetcher.formData?.get('slug'),
-				description: fetcher.formData?.get('description'),
+				name: fetcher.formData?.get("name"),
+				slug: fetcher.formData?.get("slug"),
+				description: fetcher.formData?.get("description"),
 				children: [],
 				posts: [],
 			} as CategoryType
@@ -40,17 +40,17 @@ const usePendingChildCategories = () => {
 		.filter((fetcher): fetcher is pendingItem => {
 			if (!fetcher.formData) return false
 			const gotchaChildCategory =
-				fetcher.formData.get('intent') === 'child-category'
-			const isPOST = fetcher.formMethod === 'POST'
+				fetcher.formData.get("intent") === "child-category"
+			const isPOST = fetcher.formMethod === "POST"
 			return gotchaChildCategory && isPOST
 		})
-		.map(fetcher => {
+		.map((fetcher) => {
 			return {
-				id: Number(fetcher.formData?.get('id')),
-				name: fetcher.formData?.get('name'),
-				parentId: Number(fetcher.formData?.get('parentId')),
-				slug: fetcher.formData?.get('slug'),
-				description: fetcher.formData?.get('description'),
+				id: Number(fetcher.formData?.get("id")),
+				name: fetcher.formData?.get("name"),
+				parentId: Number(fetcher.formData?.get("parentId")),
+				slug: fetcher.formData?.get("slug"),
+				description: fetcher.formData?.get("description"),
 			} as CategoryType
 		})
 }
@@ -63,16 +63,16 @@ const usePendingTags = () => {
 	return useFetchers()
 		.filter((fetcher): fetcher is pendingItem => {
 			if (!fetcher.formData) return false
-			const gotchaTag = fetcher.formData.get('intent') === 'tag'
-			const isPOST = fetcher.formMethod === 'POST'
+			const gotchaTag = fetcher.formData.get("intent") === "tag"
+			const isPOST = fetcher.formMethod === "POST"
 			return gotchaTag && isPOST
 		})
-		.map(fetcher => {
+		.map((fetcher) => {
 			return {
-				id: Number(fetcher.formData.get('id')),
-				name: String(fetcher.formData.get('name')),
-				slug: String(fetcher.formData.get('slug')),
-				description: String(fetcher.formData.get('description') || ''),
+				id: Number(fetcher.formData.get("id")),
+				name: String(fetcher.formData.get("name")),
+				slug: String(fetcher.formData.get("slug")),
+				description: String(fetcher.formData.get("description") || ""),
 				posts: [],
 			} as TagType
 		})

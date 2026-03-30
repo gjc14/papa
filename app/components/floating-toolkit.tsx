@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useCallback, useState } from "react"
+import { useNavigate } from "react-router"
 
 import {
 	ChevronUp,
@@ -8,9 +8,9 @@ import {
 	LogOut,
 	PanelTop,
 	PencilLine,
-} from 'lucide-react'
+} from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -19,45 +19,45 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
+} from "~/components/ui/dropdown-menu"
 import {
 	CurrentThemeIcon,
 	ThemeDropdownMenuSubTrigger,
-} from '~/components/theme-toggle'
-import { authClient } from '~/lib/auth/auth-client'
+} from "~/components/theme-toggle"
+import { authClient } from "~/lib/auth/auth-client"
 
-type ToolkitPosition = 'right' | 'left' | 'center'
+type ToolkitPosition = "right" | "left" | "center"
 
 function getPositionClass(position: ToolkitPosition) {
 	switch (position) {
-		case 'left':
-			return 'fixed left-6 bottom-6'
-		case 'center':
-			return 'fixed left-1/2 bottom-6 -translate-x-1/2'
-		case 'right':
+		case "left":
+			return "fixed left-6 bottom-6"
+		case "center":
+			return "fixed left-1/2 bottom-6 -translate-x-1/2"
+		case "right":
 		default:
-			return 'fixed right-6 bottom-6'
+			return "fixed right-6 bottom-6"
 	}
 }
 
-const TOOLKIT_POSITION_COOKIE = 'toolkit-position'
+const TOOLKIT_POSITION_COOKIE = "toolkit-position"
 const TOOLKIT_POSITION_COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 
 export function FloatingToolkit() {
 	const [position, setPosition] = useState<ToolkitPosition>(() => {
-		if (typeof document === 'undefined') return 'right'
+		if (typeof document === "undefined") return "right"
 
 		const match = document.cookie
-			.split('; ')
-			.find(row => row.startsWith(`${TOOLKIT_POSITION_COOKIE}=`))
+			.split("; ")
+			.find((row) => row.startsWith(`${TOOLKIT_POSITION_COOKIE}=`))
 
-		const value = match?.split('=')[1]
+		const value = match?.split("=")[1]
 
-		if (value === 'left' || value === 'center' || value === 'right') {
+		if (value === "left" || value === "center" || value === "right") {
 			return value
 		}
 
-		return 'right'
+		return "right"
 	})
 
 	const navigate = useNavigate()
@@ -65,7 +65,7 @@ export function FloatingToolkit() {
 
 	const setPositionWithCookie = useCallback(
 		(value: ToolkitPosition | ((v: ToolkitPosition) => ToolkitPosition)) => {
-			const next = typeof value === 'function' ? value(position) : value
+			const next = typeof value === "function" ? value(position) : value
 
 			setPosition(next)
 
@@ -74,14 +74,14 @@ export function FloatingToolkit() {
 		[position],
 	)
 
-	if (data?.user.role !== 'admin') return null
+	if (data?.user.role !== "admin") return null
 
 	return (
 		<div className={`${getPositionClass(position)} z-99999`}>
 			<DropdownMenu>
 				<DropdownMenuTrigger
 					render={
-						<Button size={'icon'} className="size-7">
+						<Button size={"icon"} className="size-7">
 							<ChevronUp />
 						</Button>
 					}
@@ -93,17 +93,17 @@ export function FloatingToolkit() {
 
 						<DropdownMenuSeparator />
 
-						<DropdownMenuItem onClick={() => navigate('/')}>
+						<DropdownMenuItem onClick={() => navigate("/")}>
 							<PanelTop className="mr-2 size-4" />
 							<span>View Website</span>
 						</DropdownMenuItem>
 
-						<DropdownMenuItem onClick={() => navigate('/dashboard')}>
+						<DropdownMenuItem onClick={() => navigate("/dashboard")}>
 							<LayoutDashboard className="mr-2 size-4" />
 							<span>Go to Dashboard</span>
 						</DropdownMenuItem>
 
-						<DropdownMenuItem onClick={() => navigate('/dashboard/blog/new')}>
+						<DropdownMenuItem onClick={() => navigate("/dashboard/blog/new")}>
 							<PencilLine className="mr-2 size-4" />
 							<span>New Post</span>
 						</DropdownMenuItem>
@@ -113,9 +113,9 @@ export function FloatingToolkit() {
 						<DropdownMenuItem
 							onClick={() =>
 								window.open(
-									'https://github.com/gjc14/papa/discussions',
-									'_blank',
-									'noopener,noreferrer',
+									"https://github.com/gjc14/papa/discussions",
+									"_blank",
+									"noopener,noreferrer",
 								)
 							}
 						>
@@ -136,28 +136,28 @@ export function FloatingToolkit() {
 						<div className="grid grid-cols-3 gap-1.5 p-2">
 							<Button
 								type="button"
-								variant={position === 'left' ? 'default' : 'outline'}
+								variant={position === "left" ? "default" : "outline"}
 								size="sm"
 								className="h-7"
-								onClick={() => setPositionWithCookie('left')}
+								onClick={() => setPositionWithCookie("left")}
 							>
 								Left
 							</Button>
 							<Button
 								type="button"
-								variant={position === 'center' ? 'default' : 'outline'}
+								variant={position === "center" ? "default" : "outline"}
 								size="sm"
 								className="h-7"
-								onClick={() => setPositionWithCookie('center')}
+								onClick={() => setPositionWithCookie("center")}
 							>
 								Center
 							</Button>
 							<Button
 								type="button"
-								variant={position === 'right' ? 'default' : 'outline'}
+								variant={position === "right" ? "default" : "outline"}
 								size="sm"
 								className="h-7"
-								onClick={() => setPositionWithCookie('right')}
+								onClick={() => setPositionWithCookie("right")}
 							>
 								Right
 							</Button>

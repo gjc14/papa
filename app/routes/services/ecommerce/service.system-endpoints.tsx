@@ -1,19 +1,19 @@
-import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
-import type { SitemapUrlConfig } from '~/lib/service/utils'
+import { registerSystemEndpoints } from "~/lib/service/system-endpoints-registry"
+import type { SitemapUrlConfig } from "~/lib/service/utils"
 
-import { dbEcommerce as db } from './lib/db/db.server'
+import { dbEcommerce as db } from "./lib/db/db.server"
 
 registerSystemEndpoints({
-	sitemap: url => getStoreSitemap(url.origin),
+	sitemap: (url) => getStoreSitemap(url.origin),
 	robots: () => {
 		// TODO: Now there are duplicate `/store` loc. Add store routes from db (configurable store base path)
-		const storeUrls = ['/store']
+		const storeUrls = ["/store"]
 
 		return {
 			groups: [
 				{
-					userAgents: ['*'],
-					allow: storeUrls.map(p => (p.endsWith('/') ? p : p + '/')),
+					userAgents: ["*"],
+					allow: storeUrls.map((p) => (p.endsWith("/") ? p : p + "/")),
 					crawlDelay: 300,
 				},
 			],
@@ -30,7 +30,7 @@ async function getStoreSitemap(origin: string): Promise<SitemapUrlConfig[]> {
 
 	const products = await db.query.product.findMany({
 		where(fields, { eq }) {
-			return eq(fields.status, 'PUBLISHED')
+			return eq(fields.status, "PUBLISHED")
 		},
 		columns: {
 			slug: true,
@@ -39,7 +39,7 @@ async function getStoreSitemap(origin: string): Promise<SitemapUrlConfig[]> {
 	})
 
 	// TODO: Now there are duplicate `/store` loc. Add store routes from db (configurable store base path)
-	const storeUrls = ['/store']
+	const storeUrls = ["/store"]
 
 	// Generate URLs for stores and their products
 	for (const storeUrl of storeUrls) {

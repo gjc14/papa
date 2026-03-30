@@ -1,14 +1,14 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /* fonts */
-@import '@fontsource-variable/inter';
+@import "@fontsource-variable/inter";
 
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/container-queries";
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
 	--radius-sm: calc(var(--radius) - 4px);
@@ -54,7 +54,7 @@
 	--color-brand: var(--brand);
 	--color-brand-foreground: var(--brand-foreground);
 
-	--font-sans: 'Inter Variable', sans-serif;
+	--font-sans: "Inter Variable", sans-serif;
 }
 
 html {
@@ -99,7 +99,7 @@ html {
 	--brand-foreground: oklch(0.141 0.005 285.823);
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
 	--background: oklch(0.145 0 0);
 	--foreground: oklch(0.985 0 0);
 	--card: oklch(0.205 0 0);

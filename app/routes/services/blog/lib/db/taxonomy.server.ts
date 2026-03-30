@@ -1,22 +1,22 @@
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 
-import { generateSlug } from '~/lib/utils/seo'
+import { generateSlug } from "~/lib/utils/seo"
 
-import { dbBlog as db } from './db.server'
-import { category as categoryTable, tag as tagTable } from './schema'
-import type { Category, Tag } from './schema'
+import { dbBlog as db } from "./db.server"
+import { category as categoryTable, tag as tagTable } from "./schema"
+import type { Category, Tag } from "./schema"
 
 /**
  * Tag and Category functions
  */
 export const createCategory = async ({
 	name,
-	description = '',
+	description = "",
 }: {
 	name: string
 	description?: string
 }): Promise<{ category: Category }> => {
-	const slug = generateSlug(name, { fallbackPrefix: 'category' })
+	const slug = generateSlug(name, { fallbackPrefix: "category" })
 
 	const [category] = await db
 		.insert(categoryTable)
@@ -51,13 +51,13 @@ export const deleteCategory = async (
 export const createChildCategory = async ({
 	parentId,
 	name,
-	description = '',
+	description = "",
 }: {
 	parentId: number
 	name: string
 	description?: string
 }): Promise<{ category: Category }> => {
-	const slug = generateSlug(name, { fallbackPrefix: 'child-category' })
+	const slug = generateSlug(name, { fallbackPrefix: "child-category" })
 
 	const [category] = await db
 		.insert(categoryTable)
@@ -81,12 +81,12 @@ export const getCategoriesHierarchy = async (): Promise<{
 // Tag functions
 export const createTag = async ({
 	name,
-	description = '',
+	description = "",
 }: {
 	name: string
 	description?: string
 }): Promise<{ tag: Tag }> => {
-	const slug = generateSlug(name, { fallbackPrefix: 'tag' })
+	const slug = generateSlug(name, { fallbackPrefix: "tag" })
 
 	const [tag] = await db
 		.insert(tagTable)

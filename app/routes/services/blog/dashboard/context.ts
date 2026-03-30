@@ -1,10 +1,10 @@
-import { Editor } from '@tiptap/core'
-import { atom } from 'jotai'
+import { Editor } from "@tiptap/core"
+import { atom } from "jotai"
 
-import type { PostWithRelations } from '../lib/db/post.server'
-import type { Category, Tag } from '../lib/db/schema'
-import { defaultContent } from './post-slug/utils'
-import { areDifferentPosts } from './utils'
+import type { PostWithRelations } from "../lib/db/post.server"
+import type { Category, Tag } from "../lib/db/schema"
+import { defaultContent } from "./post-slug/utils"
+import { areDifferentPosts } from "./utils"
 
 // used when post loaded / updated from server
 export const serverPostAtom = atom<PostWithRelations | null>(null) // only for comparison
@@ -27,7 +27,7 @@ export const isDeletingAtom = atom(false)
 
 export const isDraftCheckCompleteAtom = atom(false)
 
-export const hasChangesAtom = atom(get => {
+export const hasChangesAtom = atom((get) => {
 	const [server, draft] = [get(serverPostAtom), get(postAtom)]
 	const editorContent = get(editorContentAtom)
 	if (!editorContent || !server || !draft) return false

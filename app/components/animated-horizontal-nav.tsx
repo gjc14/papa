@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router'
+import { useEffect, useRef, useState } from "react"
+import { NavLink } from "react-router"
 
-import { motion } from 'motion/react'
+import { motion } from "motion/react"
 
-import { buttonVariants } from '~/components/ui/button'
-import { cn } from '~/lib/utils'
+import { buttonVariants } from "~/components/ui/button"
+import { cn } from "~/lib/utils"
 
 export interface RouteButton {
 	to: string
@@ -27,7 +27,7 @@ export const AnimatedNav = ({
 	}>({ left: 0, width: 0 })
 	const navRef = useRef<HTMLDivElement>(null)
 
-	console.log('routes', routes)
+	console.log("routes", routes)
 
 	useEffect(() => {
 		if (hoveredTab !== null && navRef.current) {
@@ -75,12 +75,12 @@ export const AnimatedNav = ({
 					width: hoverTabBounds.width,
 				}}
 				transition={{
-					type: 'spring',
+					type: "spring",
 					stiffness: 500,
 					damping: 30,
 				}}
 				style={{
-					display: hoveredTab === null ? 'none' : 'block',
+					display: hoveredTab === null ? "none" : "block",
 				}}
 			/>
 
@@ -93,7 +93,7 @@ export const AnimatedNav = ({
 					width: activeTabBounds.width,
 				}}
 				transition={{
-					type: 'spring',
+					type: "spring",
 					stiffness: 500,
 					damping: 50,
 				}}
@@ -142,12 +142,12 @@ const AnimatedLinkButton = ({
 			end
 			className={({ isActive, isPending }) =>
 				cn(
-					buttonVariants({ variant: 'ghost' }),
-					'relative',
-					'mb-1 h-8 px-3',
-					'hover:bg-transparent dark:hover:bg-transparent',
-					isActive ? 'text-foreground' : 'text-muted-foreground',
-					isPending ? 'animate-pulse' : '',
+					buttonVariants({ variant: "ghost" }),
+					"relative",
+					"mb-1 h-8 px-3",
+					"hover:bg-transparent dark:hover:bg-transparent",
+					isActive ? "text-foreground" : "text-muted-foreground",
+					isPending ? "animate-pulse" : "",
 					className,
 				)
 			}
@@ -169,7 +169,7 @@ const AnimatedLinkButton = ({
 							scale: isActive ? 1.05 : 1,
 						}}
 						transition={{
-							type: 'spring',
+							type: "spring",
 							stiffness: 500,
 							damping: 30,
 						}}

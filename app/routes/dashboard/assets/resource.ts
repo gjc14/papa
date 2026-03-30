@@ -1,18 +1,18 @@
-import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router'
+import { type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router"
 
-import { and, eq } from 'drizzle-orm'
-import { createInsertSchema } from 'drizzle-zod'
-import { z } from 'zod'
+import { and, eq } from "drizzle-orm"
+import { createInsertSchema } from "drizzle-zod"
+import { z } from "zod"
 
-import { deleteFile, getUploadPresignedURL } from '~/lib/db/asset.server'
-import { db, S3 } from '~/lib/db/db.server'
-import type { FileMetadata } from '~/lib/db/schema'
-import { file as fileTable } from '~/lib/db/schema'
-import { type ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
-import { authContext } from '~/middleware/context/auth'
+import { deleteFile, getUploadPresignedURL } from "~/lib/db/asset.server"
+import { db, S3 } from "~/lib/db/db.server"
+import type { FileMetadata } from "~/lib/db/schema"
+import { file as fileTable } from "~/lib/db/schema"
+import { type ActionResponse } from "~/lib/utils"
+import { handleError } from "~/lib/utils/server"
+import { authContext } from "~/middleware/context/auth"
 
-import { presignUrlRequestSchema, type PresignResponse } from './schema'
+import { presignUrlRequestSchema, type PresignResponse } from "./schema"
 
 const fileMetadataInsertUpdateSchema = createInsertSchema(fileTable)
 	.required({
@@ -27,7 +27,7 @@ const fileMetadataInsertUpdateSchema = createInsertSchema(fileTable)
 export const action = async ({ request, context }: ActionFunctionArgs) => {
 	if (!S3) {
 		return {
-			err: 'Object storage not configured',
+			err: "Object storage not configured",
 		} satisfies ActionResponse
 	}
 
@@ -36,14 +36,14 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 	const jsonData = await request.json()
 
 	switch (request.method) {
-		case 'POST':
+		case "POST":
 			try {
 				// Request to generate presigned URLs
 				const presignUrlRequests = presignUrlRequestSchema.parse(jsonData)
 
 				// Generate file metadata
 				const presignedUrls = await Promise.all(
-					presignUrlRequests.map(async file => {
+					presignUrlRequests.map(async (file) => {
 						const presignedUrl = await getUploadPresignedURL({
 							key: file.key,
 							size: file.size,
@@ -62,7 +62,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 					.insert(fileTable)
 					.values(
 						presignUrlRequests.map(
-							file =>
+							(file) =>
 								({
 									key: file.key,
 									type: file.type,
@@ -75,11 +75,11 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 					.returning()
 
 				const presignedUrlsWithMetadata: PresignResponse = presignedUrls.map(
-					url => {
+					(url) => {
 						const fileMetadata = fileMetadatas.find(
-							file => file.key === url.key,
+							(file) => file.key === url.key,
 						)
-						if (!fileMetadata) throw new Error('File metadata not found')
+						if (!fileMetadata) throw new Error("File metadata not found")
 						return {
 							metadata: fileMetadata,
 							presignedUrl: url.presignedUrl,
@@ -88,7 +88,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				)
 
 				return {
-					msg: 'Presign urls generated successfully',
+					msg: "Presign urls generated successfully",
 					data: presignedUrlsWithMetadata,
 					preventNotification: true,
 				} satisfies ActionResponse
@@ -96,7 +96,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				return handleError(error, request)
 			}
 
-		case 'PUT':
+		case "PUT":
 			try {
 				const fileMetadata = fileMetadataInsertUpdateSchema.parse(jsonData)
 
@@ -109,29 +109,29 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 					.where(eq(fileTable.id, fileMetadata.id))
 					.returning()
 				return {
-					msg: 'File updated',
+					msg: "File updated",
 					data: newFileMetadata,
 				} satisfies ActionResponse
 			} catch (error) {
 				return handleError(error, request)
 			}
 
-		case 'DELETE':
+		case "DELETE":
 			try {
 				if (
 					jsonData &&
-					typeof jsonData === 'object' &&
-					'key' in jsonData &&
-					typeof jsonData.key === 'string'
+					typeof jsonData === "object" &&
+					"key" in jsonData &&
+					typeof jsonData.key === "string"
 				) {
 					const fileMetadata = await db.query.file.findFirst({
 						where: (t, { eq }) => eq(t.key, jsonData.key),
 					})
 
 					if (!fileMetadata || fileMetadata.ownerId !== adminSession.user.id) {
-						console.warn('User is deleting a file that does not belong to them')
+						console.warn("User is deleting a file that does not belong to them")
 						return {
-							err: 'File not found',
+							err: "File not found",
 						} satisfies ActionResponse
 					}
 
@@ -150,13 +150,13 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 						msg: `File ${fileMetadata.name} deleted successfully`,
 					} satisfies ActionResponse
 				} else {
-					throw new Error('Invalid arguments')
+					throw new Error("Invalid arguments")
 				}
 			} catch (error) {
 				return handleError(error, request)
 			}
 		default:
-			throw new Response('', { status: 405 })
+			throw new Response("", { status: 405 })
 	}
 }
 

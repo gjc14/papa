@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import * as React from 'react'
+import * as React from "react"
 
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight } from "lucide-react"
 
-import { Checkbox } from '~/components/ui/checkbox'
-import { cn } from '~/lib/utils'
+import { Checkbox } from "~/components/ui/checkbox"
+import { cn } from "~/lib/utils"
 
 export interface TreeNode {
 	id: string
@@ -25,7 +25,7 @@ interface CheckboxTreeItemProps {
 	level: number
 	selectedIds: Set<string>
 	onToggle: (id: string) => void
-	getNodeState: (node: TreeNode) => boolean | 'indeterminate'
+	getNodeState: (node: TreeNode) => boolean | "indeterminate"
 }
 
 function CheckboxTreeItem({
@@ -42,26 +42,26 @@ function CheckboxTreeItem({
 
 	React.useEffect(() => {
 		if (checkboxRef.current) {
-			const input = checkboxRef.current.querySelector('input')
+			const input = checkboxRef.current.querySelector("input")
 			if (input) {
-				input.indeterminate = state === 'indeterminate'
+				input.indeterminate = state === "indeterminate"
 			}
 		}
 	}, [state])
 
 	const paddingMap: Record<number, string> = {
-		0: '',
-		1: 'pl-6',
-		2: 'pl-12',
-		3: 'pl-18',
-		4: 'pl-24',
+		0: "",
+		1: "pl-6",
+		2: "pl-12",
+		3: "pl-18",
+		4: "pl-24",
 	}
 
 	return (
 		<div className="select-none">
 			<div
 				className={cn(
-					'hover:bg-muted/50 flex items-center gap-1 py-1.5 pl-1 transition-colors',
+					"hover:bg-muted/50 flex items-center gap-1 py-1.5 pl-1 transition-colors",
 					paddingMap[level],
 				)}
 			>
@@ -69,12 +69,12 @@ function CheckboxTreeItem({
 					<button
 						onClick={() => setIsExpanded(!isExpanded)}
 						className="flex h-4 w-4 items-center justify-center transition-colors"
-						aria-label={isExpanded ? 'Collapse' : 'Expand'}
+						aria-label={isExpanded ? "Collapse" : "Expand"}
 					>
 						<ChevronRight
 							className={cn(
-								'text-muted-foreground h-3.5 w-3.5 transition-transform',
-								isExpanded && 'rotate-90',
+								"text-muted-foreground h-3.5 w-3.5 transition-transform",
+								isExpanded && "rotate-90",
 							)}
 						/>
 					</button>
@@ -101,7 +101,7 @@ function CheckboxTreeItem({
 
 			{hasChildren && isExpanded && (
 				<div className="ml-0">
-					{node.children!.map(child => (
+					{node.children!.map((child) => (
 						<CheckboxTreeItem
 							key={child.id}
 							node={child}
@@ -138,7 +138,7 @@ export function CheckboxTree({
 		const ids: string[] = []
 		const traverse = (n: TreeNode) => {
 			if (n.children) {
-				n.children.forEach(child => {
+				n.children.forEach((child) => {
 					ids.push(child.id)
 					traverse(child)
 				})
@@ -154,20 +154,20 @@ export function CheckboxTree({
 				return false
 			}
 			const descendantIds = getDescendantIds(node)
-			return descendantIds.some(id => selected.has(id))
+			return descendantIds.some((id) => selected.has(id))
 		},
 		[selected, getDescendantIds],
 	)
 
 	const getNodeState = React.useCallback(
-		(node: TreeNode): boolean | 'indeterminate' => {
+		(node: TreeNode): boolean | "indeterminate" => {
 			const isChecked = selected.has(node.id)
 			const hasChildren = node.children && node.children.length > 0
 
 			if (isChecked) {
 				return true
 			} else if (hasChildren && hasSelectedChildren(node)) {
-				return 'indeterminate'
+				return "indeterminate"
 			} else return false
 		},
 		[selected, hasSelectedChildren],
@@ -188,8 +188,8 @@ export function CheckboxTree({
 	)
 
 	return (
-		<div className={cn('space-y-0.5', className)}>
-			{data.map(node => (
+		<div className={cn("space-y-0.5", className)}>
+			{data.map((node) => (
 				<CheckboxTreeItem
 					key={node.id}
 					node={node}

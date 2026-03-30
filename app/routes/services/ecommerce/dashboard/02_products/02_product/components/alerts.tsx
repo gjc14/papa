@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
-import { useFetcher, useNavigate } from 'react-router'
+import { useEffect } from "react"
+import { useFetcher, useNavigate } from "react-router"
 
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue } from "jotai"
 
 import {
 	AlertDialog,
@@ -13,20 +13,20 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from '~/components/ui/alert-dialog'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import { productAtom } from '~/routes/services/ecommerce/store/product/context'
+} from "~/components/ui/alert-dialog"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import { productAtom } from "~/routes/services/ecommerce/store/product/context"
 
-import type { action } from '../../resource'
+import type { action } from "../../resource"
 import {
 	isMovingToTrashAtom,
 	isResetAlertOpenAtom as isResetOpenAtom,
 	isRestoreAlertOpenAtom as isRestoreOpenAtom,
 	isToTrashAlertOpenAtom as isToTrashOpenAtom,
-} from '../context'
+} from "../context"
 
-const productIdAtom = atom(get => get(productAtom)?.id ?? null)
-const productNameAtom = atom(get => get(productAtom)?.name ?? null)
+const productIdAtom = atom((get) => get(productAtom)?.id ?? null)
+const productNameAtom = atom((get) => get(productAtom)?.name ?? null)
 
 export function ProductAlerts() {
 	const fetcher = useFetcher<typeof action>()
@@ -41,33 +41,33 @@ export function ProductAlerts() {
 	const [isMovingToTrash, setIsMovingToTrash] = useAtom(isMovingToTrashAtom)
 
 	useEffect(
-		() => setIsMovingToTrash(fetcher.state === 'submitting'),
+		() => setIsMovingToTrash(fetcher.state === "submitting"),
 		[fetcher.state],
 	)
 
 	useEffect(() => {
-		if (!fetcher.data || 'err' in fetcher.data) return
-		navigate('..')
+		if (!fetcher.data || "err" in fetcher.data) return
+		navigate("..")
 	}, [fetcher.data])
 
 	if (!productId || productName === null) return null
 
 	const onReset = () => {
-		console.log('Product reset', productId)
+		console.log("Product reset", productId)
 		setResetAlertOpen(false)
 	}
 
 	const onRestore = () => {
-		console.log('Product restored', productId)
+		console.log("Product restored", productId)
 		setRestoreAlertOpen(false)
 	}
 
 	const onMoveToTrash = () => {
 		if (isMovingToTrash) return
 		fetcher.submit([{ id: productId, name: productName }], {
-			method: 'DELETE',
+			method: "DELETE",
 			action: `/dashboard/ecommerce/products/resource`,
-			encType: 'application/json',
+			encType: "application/json",
 		})
 		setToTrashAlertOpen(false)
 	}
@@ -78,8 +78,8 @@ export function ProductAlerts() {
 				title="Reset Product"
 				description={
 					<>
-						You're going to discard unsaved changes and reset{' '}
-						<span className="text-foreground font-medium">{productName}</span>{' '}
+						You're going to discard unsaved changes and reset{" "}
+						<span className="text-foreground font-medium">{productName}</span>{" "}
 						to latest saved data. This action cannot be undone.
 					</>
 				}
@@ -92,8 +92,8 @@ export function ProductAlerts() {
 				title="Unsaved Content Detected"
 				description={
 					<>
-						You're going to restore{' '}
-						<span className="text-foreground font-medium">{productName}</span>{' '}
+						You're going to restore{" "}
+						<span className="text-foreground font-medium">{productName}</span>{" "}
 						to its last unsaved state. This action will discard current unsaved
 						changes.
 					</>
@@ -108,8 +108,8 @@ export function ProductAlerts() {
 				title="Move Product to Trash"
 				description={
 					<>
-						You're going to move{' '}
-						<span className="text-foreground font-medium">{productName}</span>{' '}
+						You're going to move{" "}
+						<span className="text-foreground font-medium">{productName}</span>{" "}
 						to the trash. You can restore from Trash within 30 days.
 					</>
 				}
@@ -128,7 +128,7 @@ function ProductActionAlert({
 	title,
 	description,
 	actionTitle,
-	cancelTitle = 'Cancel',
+	cancelTitle = "Cancel",
 	onAction,
 	onCancel,
 	render,

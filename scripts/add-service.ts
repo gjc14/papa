@@ -1,7 +1,7 @@
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { mkdir, writeFile } from "fs/promises"
+import { join } from "path"
 
-import { askInput } from './utils'
+import { askInput } from "./utils"
 
 const createPaths = (serviceName: string, frontendRouteName: string) => {
 	const serviceRoutesPath = join(
@@ -381,8 +381,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
 }
 
 try {
-	const serviceName = await askInput('Create new service', 'my-service')
-	const frontendRouteName = await askInput('Service frontend route', 'my-store')
+	const serviceName = await askInput("Create new service", "my-service")
+	const frontendRouteName = await askInput("Service frontend route", "my-store")
 
 	// Create directories
 	await mkdir(join(process.cwd(), `app/routes/services/${serviceName}`), {
@@ -451,21 +451,21 @@ try {
 		`🎉 Service [${serviceName}] created successfully!
 
 		+ 10 files created:
-		1️⃣ ${serviceRoutesPath.split('app/routes')[1]}
-		2️⃣ ${serviceDashboardPath.split('app/routes')[1]}
-		3️⃣ ${serviceSystemEndpointsPath.split('app/routes')[1]}
-		4️⃣ ${dashboardLayoutPath.split('app/routes')[1]}
-		5️⃣ ${dashboardIndexPath.split('app/routes')[1]}
-		6️⃣ ${dashboardProductRoutePath.split('app/routes')[1]}
-		7️⃣ ${storeDataPath.split('app/routes')[1]}
-		8️⃣ ${storeLayoutPath.split('app/routes')[1]}
-		9️⃣ ${storeIndexPath.split('app/routes')[1]}
-		🔟 ${productRoutePath.split('app/routes')[1]}
+		1️⃣ ${serviceRoutesPath.split("app/routes")[1]}
+		2️⃣ ${serviceDashboardPath.split("app/routes")[1]}
+		3️⃣ ${serviceSystemEndpointsPath.split("app/routes")[1]}
+		4️⃣ ${dashboardLayoutPath.split("app/routes")[1]}
+		5️⃣ ${dashboardIndexPath.split("app/routes")[1]}
+		6️⃣ ${dashboardProductRoutePath.split("app/routes")[1]}
+		7️⃣ ${storeDataPath.split("app/routes")[1]}
+		8️⃣ ${storeLayoutPath.split("app/routes")[1]}
+		9️⃣ ${storeIndexPath.split("app/routes")[1]}
+		🔟 ${productRoutePath.split("app/routes")[1]}
 
         -> Navigate to '/${frontendRouteName}' to see the frontend
         -> Navigate to '/dashboard/${serviceName}' to see the dashboard
-        `.replace(/^[ \t]+/gm, ''),
+        `.replace(/^[ \t]+/gm, ""),
 	)
 } catch (err) {
-	console.error('Error creating service files:', err)
+	console.error("Error creating service files:", err)
 }

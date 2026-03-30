@@ -1,4 +1,4 @@
-import { relations, sql, type InferSelectModel } from 'drizzle-orm'
+import { relations, sql, type InferSelectModel } from "drizzle-orm"
 import {
 	check,
 	foreignKey,
@@ -7,40 +7,40 @@ import {
 	primaryKey,
 	serial,
 	varchar,
-} from 'drizzle-orm/pg-core'
+} from "drizzle-orm/pg-core"
 
-import { pgTable } from '~/lib/db/schema/helpers'
+import { pgTable } from "~/lib/db/schema/helpers"
 
-import { post } from './post'
+import { post } from "./post"
 
 export type Tag = InferSelectModel<typeof tag>
 
-export const tag = pgTable('blog_tag', {
-	id: serial('id').primaryKey(),
-	name: varchar('name', { length: 100 }).notNull(),
-	slug: varchar('slug', { length: 100 }).notNull().unique(),
-	description: varchar('description', { length: 255 }),
+export const tag = pgTable("blog_tag", {
+	id: serial("id").primaryKey(),
+	name: varchar("name", { length: 100 }).notNull(),
+	slug: varchar("slug", { length: 100 }).notNull().unique(),
+	description: varchar("description", { length: 255 }),
 })
 
 export type Category = InferSelectModel<typeof category>
 
 export const category = pgTable(
-	'blog_category',
+	"blog_category",
 	{
-		id: serial('id').primaryKey(),
-		name: varchar('name', { length: 100 }).notNull(),
-		slug: varchar('slug', { length: 100 }).notNull().unique(),
-		description: varchar('description', { length: 255 }),
-		parentId: integer('parent_id'),
+		id: serial("id").primaryKey(),
+		name: varchar("name", { length: 100 }).notNull(),
+		slug: varchar("slug", { length: 100 }).notNull().unique(),
+		description: varchar("description", { length: 255 }),
+		parentId: integer("parent_id"),
 	},
-	table => [
+	(table) => [
 		// Prevent self-reference: a category cannot be its own parent
-		check('no_self_reference', sql`${table.id} != ${table.parentId}`),
+		check("no_self_reference", sql`${table.id} != ${table.parentId}`),
 		foreignKey({
-			name: 'parent_category_fk',
+			name: "parent_category_fk",
 			columns: [table.parentId],
 			foreignColumns: [table.id],
-		}).onDelete('cascade'),
+		}).onDelete("cascade"),
 	],
 )
 
@@ -51,20 +51,20 @@ export const category = pgTable(
 export type PostToTag = InferSelectModel<typeof postToTag>
 
 export const postToTag = pgTable(
-	'blog_post_to_tag',
+	"blog_post_to_tag",
 	{
-		postId: integer('post_id')
+		postId: integer("post_id")
 			.notNull()
-			.references(() => post.id, { onDelete: 'cascade' }),
-		tagId: integer('tag_id')
+			.references(() => post.id, { onDelete: "cascade" }),
+		tagId: integer("tag_id")
 			.notNull()
-			.references(() => tag.id, { onDelete: 'cascade' }),
-		order: integer('order').notNull().default(0), // Order of the tag in a post
+			.references(() => tag.id, { onDelete: "cascade" }),
+		order: integer("order").notNull().default(0), // Order of the tag in a post
 	},
-	table => [
+	(table) => [
 		primaryKey({ columns: [table.postId, table.tagId] }), // Composite primary key
-		index('post_to_tag_post_id_idx').on(table.postId),
-		index('post_to_tag_tag_id_idx').on(table.tagId),
+		index("post_to_tag_post_id_idx").on(table.postId),
+		index("post_to_tag_tag_id_idx").on(table.tagId),
 	],
 )
 
@@ -73,20 +73,20 @@ export const postToTag = pgTable(
 export type PostToCategory = InferSelectModel<typeof postToCategory>
 
 export const postToCategory = pgTable(
-	'blog_post_to_category',
+	"blog_post_to_category",
 	{
-		postId: integer('post_id')
+		postId: integer("post_id")
 			.notNull()
-			.references(() => post.id, { onDelete: 'cascade' }),
-		categoryId: integer('category_id')
+			.references(() => post.id, { onDelete: "cascade" }),
+		categoryId: integer("category_id")
 			.notNull()
-			.references(() => category.id, { onDelete: 'cascade' }),
-		order: integer('order').notNull().default(0), // Order of the category in a post
+			.references(() => category.id, { onDelete: "cascade" }),
+		order: integer("order").notNull().default(0), // Order of the category in a post
 	},
-	table => [
+	(table) => [
 		primaryKey({ columns: [table.postId, table.categoryId] }), // Composite primary key
-		index('post_to_category_post_id_idx').on(table.postId),
-		index('post_to_category_category_id_idx').on(table.categoryId),
+		index("post_to_category_post_id_idx").on(table.postId),
+		index("post_to_category_category_id_idx").on(table.categoryId),
 	],
 )
 
@@ -101,10 +101,10 @@ export const categoryRelations = relations(category, ({ one, many }) => ({
 	parent: one(category, {
 		fields: [category.parentId],
 		references: [category.id],
-		relationName: 'parent_child',
+		relationName: "parent_child",
 	}),
 	children: many(category, {
-		relationName: 'parent_child',
+		relationName: "parent_child",
 	}),
 }))
 

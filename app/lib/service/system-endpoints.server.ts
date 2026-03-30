@@ -1,8 +1,8 @@
-import { getSystemEndpoints } from './system-endpoints-registry'
-import type { RobotsConfig, SitemapUrlConfig } from './utils'
+import { getSystemEndpoints } from "./system-endpoints-registry"
+import type { RobotsConfig, SitemapUrlConfig } from "./utils"
 
 // Eagerly import service routes to ensure that they are registered in build time
-import.meta.glob('../../routes/services/**/service.system-endpoints.{ts,tsx}', {
+import.meta.glob("../../routes/services/**/service.system-endpoints.{ts,tsx}", {
 	eager: true,
 })
 
@@ -18,11 +18,11 @@ const getServiceSitemapUrlConfigs = async (
 	 * Automatically includes all service sitemap urls without manual imports
 	 */
 	for (const [index, sitemap] of Object.entries(
-		systemEndpoints.flatMap(s => (s.sitemap ? [s.sitemap] : [])),
+		systemEndpoints.flatMap((s) => (s.sitemap ? [s.sitemap] : [])),
 	)) {
 		try {
 			urlConfigs = urlConfigs.concat(
-				typeof sitemap === 'function' ? await sitemap(url) : sitemap,
+				typeof sitemap === "function" ? await sitemap(url) : sitemap,
 			)
 		} catch (error) {
 			console.error(
@@ -32,9 +32,9 @@ const getServiceSitemapUrlConfigs = async (
 		}
 	}
 
-	return urlConfigs.map(ru => ({
+	return urlConfigs.map((ru) => ({
 		...ru,
-		loc: ru.loc.startsWith('/') // absolute
+		loc: ru.loc.startsWith("/") // absolute
 			? `${url.origin}${ru.loc}`
 			: !ru.loc.startsWith(url.origin) // relative and not matching origin
 				? `${url.origin}/${ru.loc}`
@@ -51,11 +51,11 @@ const getServiceRobotsConfigs = async (url: URL): Promise<RobotsConfig[]> => {
 	 * Automatically includes all service robots.txt string without manual imports
 	 */
 	for (const [index, robots] of Object.entries(
-		systemEndpoints.flatMap(s => (s.robots ? [s.robots] : [])),
+		systemEndpoints.flatMap((s) => (s.robots ? [s.robots] : [])),
 	)) {
 		try {
 			robotsConfigs.push(
-				typeof robots === 'function' ? await robots(url) : robots,
+				typeof robots === "function" ? await robots(url) : robots,
 			)
 		} catch (error) {
 			console.error(`Failed to load robots config #${index}. ${robots}`, error)

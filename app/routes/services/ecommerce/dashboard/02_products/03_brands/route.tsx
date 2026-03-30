@@ -1,20 +1,20 @@
-import type { Route } from './+types/route'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import type { Route } from "./+types/route"
+import { useEffect, useMemo, useRef, useState } from "react"
 
-import { type ColumnDef, type Table } from '@tanstack/react-table'
+import { type ColumnDef, type Table } from "@tanstack/react-table"
 
-import { DashboardDataTable } from '~/components/dashboard/dashboard-data-table'
-import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
+import { DashboardDataTable } from "~/components/dashboard/dashboard-data-table"
+import { useSkipper } from "~/components/dashboard/dashboard-data-table/hooks"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
+} from "~/components/dashboard/dashboard-wrapper"
 
-import { getEcBrands } from '../../../lib/db/taxonomy.server'
-import { CreateTaxonomyDialog } from '../../components/taxonomy/create-taxonomy-dialog'
+import { getEcBrands } from "../../../lib/db/taxonomy.server"
+import { CreateTaxonomyDialog } from "../../components/taxonomy/create-taxonomy-dialog"
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const brands = await getEcBrands()
@@ -43,14 +43,14 @@ export default function ECBrands({ loaderData }: Route.ComponentProps) {
 					<CreateTaxonomyDialog
 						data={loaderData.brands}
 						config={{
-							name: 'Brand',
-							pluralName: 'Brands',
-							actionEndpoint: 'resource',
+							name: "Brand",
+							pluralName: "Brands",
+							actionEndpoint: "resource",
 							hasDescription: true,
 							hasParent: true,
 							hasImage: true,
-							namePlaceholder: 'Papa',
-							slugPlaceholder: 'papa',
+							namePlaceholder: "Papa",
+							slugPlaceholder: "papa",
 						}}
 					/>
 				</DashboardActions>
@@ -74,9 +74,9 @@ export default function ECBrands({ loaderData }: Route.ComponentProps) {
 const createBrandColumns = (): ColumnDef<Brand>[] => {
 	return [
 		{
-			header: 'Image',
-			footer: props => props.column.id,
-			accessorKey: 'image',
+			header: "Image",
+			footer: (props) => props.column.id,
+			accessorKey: "image",
 			cell: ({ row }) => {
 				const src = row.original.image
 				return src ? (
@@ -89,19 +89,19 @@ const createBrandColumns = (): ColumnDef<Brand>[] => {
 			},
 		},
 		{
-			header: 'Name',
-			footer: props => props.column.id,
-			accessorKey: 'name',
+			header: "Name",
+			footer: (props) => props.column.id,
+			accessorKey: "name",
 		},
 		{
-			header: 'Slug',
-			footer: props => props.column.id,
-			accessorKey: 'slug',
+			header: "Slug",
+			footer: (props) => props.column.id,
+			accessorKey: "slug",
 		},
 		{
-			header: 'Description',
-			footer: props => props.column.id,
-			accessorKey: 'description',
+			header: "Description",
+			footer: (props) => props.column.id,
+			accessorKey: "description",
 		},
 	]
 }

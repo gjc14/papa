@@ -7,7 +7,7 @@
 export const getEmailAddressFromENV = (): string => {
 	const emailRegex = /<([^>]+)>/
 
-	const emailFrom = process.env.EMAIL_FROM || process.env.AUTH_EMAIL || ''
+	const emailFrom = process.env.EMAIL_FROM || process.env.AUTH_EMAIL || ""
 
 	const match = emailFrom.match(emailRegex)
 

@@ -1,28 +1,28 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { Image, Plus, X } from 'lucide-react'
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai"
+import { Image, Plus, X } from "lucide-react"
 
-import { Card, CardContent } from '~/components/ui/card'
-import { DialogTrigger } from '~/components/ui/dialog'
-import { Skeleton } from '~/components/ui/skeleton'
-import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
-import { useAssets } from '~/hooks/use-assets'
+import { Card, CardContent } from "~/components/ui/card"
+import { DialogTrigger } from "~/components/ui/dialog"
+import { Skeleton } from "~/components/ui/skeleton"
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
+import { useAssets } from "~/hooks/use-assets"
 
 import {
 	productAtom,
 	productGalleryAtom,
-} from '../../../../store/product/context'
+} from "../../../../store/product/context"
 
-const productImageAtom = atom(get => get(productAtom)?.option.image ?? null)
+const productImageAtom = atom((get) => get(productAtom)?.option.image ?? null)
 const productImageAltAtom = atom(
-	get => get(productAtom)?.option.imageAlt ?? null,
+	(get) => get(productAtom)?.option.imageAlt ?? null,
 )
 const productImageTitleAtom = atom(
-	get => get(productAtom)?.option.imageTitle ?? null,
+	(get) => get(productAtom)?.option.imageTitle ?? null,
 )
-const productIdAtom = atom(get => get(productAtom)?.id ?? null)
-const productNameAtom = atom(get => get(productAtom)?.name ?? null)
+const productIdAtom = atom((get) => get(productAtom)?.id ?? null)
+const productNameAtom = atom((get) => get(productAtom)?.name ?? null)
 
 export function Gallery() {
 	const setProduct = useSetAtom(productAtom)
@@ -37,16 +37,16 @@ export function Gallery() {
 
 	const [openSelectFeature, setOpenSelectFeature] = useState(false)
 	const [openSelectGallery, setOpenSelectGallery] = useState(false)
-	const [srcInput, setSrcInput] = useState('')
-	const [altInput, setAltInput] = useState('')
-	const [titleInput, setTitleInput] = useState('')
+	const [srcInput, setSrcInput] = useState("")
+	const [altInput, setAltInput] = useState("")
+	const [titleInput, setTitleInput] = useState("")
 
 	if (!productId || productName === null) return null
 
 	const handleSetFeatureImage = () => {
 		if (!srcInput) return
 
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
@@ -61,7 +61,7 @@ export function Gallery() {
 	}
 
 	const handleRemoveFeatureImage = () => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
@@ -86,7 +86,7 @@ export function Gallery() {
 			order: gallery.length + 1,
 		}
 
-		setGallery(prev => [...(prev ? prev : []), newImage])
+		setGallery((prev) => [...(prev ? prev : []), newImage])
 	}
 
 	const galleryPending = gallery === null
@@ -109,7 +109,7 @@ export function Gallery() {
 										<div className="relative">
 											<button
 												type="button"
-												onClick={e => {
+												onClick={(e) => {
 													e.stopPropagation()
 													handleRemoveFeatureImage()
 												}}
@@ -134,16 +134,16 @@ export function Gallery() {
 						assets={assets}
 						isLoading={isLoading}
 						open={openSelectFeature}
-						onOpenChange={open => {
+						onOpenChange={(open) => {
 							setOpenSelectFeature(open)
 							if (open) {
-								setSrcInput(productImage || '')
-								setAltInput(productImageAlt || '')
-								setTitleInput(productImageTitle || '')
+								setSrcInput(productImage || "")
+								setAltInput(productImageAlt || "")
+								setTitleInput(productImageTitle || "")
 							} else {
-								setSrcInput('')
-								setAltInput('')
-								setTitleInput('')
+								setSrcInput("")
+								setAltInput("")
+								setTitleInput("")
 							}
 						}}
 						srcInput={srcInput}
@@ -153,8 +153,8 @@ export function Gallery() {
 						titleInput={titleInput}
 						setTitleInput={setTitleInput}
 						onAction={handleSetFeatureImage}
-						onUpload={files =>
-							setAssets(prev => {
+						onUpload={(files) =>
+							setAssets((prev) => {
 								if (!prev) return prev
 								return {
 									...prev,
@@ -212,11 +212,11 @@ export function Gallery() {
 							assets={assets}
 							isLoading={isLoading}
 							open={openSelectGallery}
-							onOpenChange={open => {
+							onOpenChange={(open) => {
 								setOpenSelectGallery(open)
-								setSrcInput('')
-								setAltInput('')
-								setTitleInput('')
+								setSrcInput("")
+								setAltInput("")
+								setTitleInput("")
 							}}
 							srcInput={srcInput}
 							setSrcInput={setSrcInput}
@@ -225,8 +225,8 @@ export function Gallery() {
 							titleInput={titleInput}
 							setTitleInput={setTitleInput}
 							onAction={handleInsertGallery}
-							onUpload={files =>
-								setAssets(prev => {
+							onUpload={(files) =>
+								setAssets((prev) => {
 									if (!prev) return prev
 									return {
 										...prev,

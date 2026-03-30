@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { forwardRef, useEffect, useState } from "react"
+import { useFetcher } from "react-router"
 
 import {
 	AudioWaveform,
@@ -9,8 +9,8 @@ import {
 	Film,
 	Loader2,
 	Trash2,
-} from 'lucide-react'
-import { toast } from 'sonner'
+} from "lucide-react"
+import { toast } from "sonner"
 
 import {
 	AlertDialog,
@@ -22,24 +22,24 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from '~/components/ui/alert-dialog'
-import { Button } from '~/components/ui/button'
+} from "~/components/ui/alert-dialog"
+import { Button } from "~/components/ui/button"
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from '~/components/ui/dialog'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
-import { Separator } from '~/components/ui/separator'
-import { Textarea } from '~/components/ui/textarea'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import type { FileMetadata } from '~/lib/db/schema'
-import { cn } from '~/lib/utils'
+} from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
+import { Separator } from "~/components/ui/separator"
+import { Textarea } from "~/components/ui/textarea"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import type { FileMetadata } from "~/lib/db/schema"
+import { cn } from "~/lib/utils"
 
-import { assetResourceRoute } from '../utils'
+import { assetResourceRoute } from "../utils"
 
 export type FileCardProps = {
 	file: FileMetadata
@@ -76,14 +76,14 @@ export const FileCard = ({
 	const [deleteAlert, setDeleteAlert] = useState(false)
 
 	const [fileName, setFileName] = useState(file.name)
-	const [description, setDescription] = useState(file.description ?? '')
+	const [description, setDescription] = useState(file.description ?? "")
 
 	useEffect(() => {
-		setFileName(file.name || '')
-		setDescription(file.description || '')
+		setFileName(file.name || "")
+		setDescription(file.description || "")
 	}, [file.name, file.description])
 
-	const fileGeneralType = file.type.split('/')[0]
+	const fileGeneralType = file.type.split("/")[0]
 	const url = `/assets/${file.id}`
 
 	const handleUpdate = () => {
@@ -98,8 +98,8 @@ export const FileCard = ({
 		onUpdate?.(fileMetadataUpdated)
 		fetcher.submit(JSON.stringify(fileMetadataUpdated), {
 			action: assetResourceRoute,
-			method: 'PUT',
-			encType: 'application/json',
+			method: "PUT",
+			encType: "application/json",
 		})
 	}
 
@@ -107,8 +107,8 @@ export const FileCard = ({
 		if (mutating) return
 		fetcher.submit(JSON.stringify({ key: file.key }), {
 			action: assetResourceRoute,
-			method: 'DELETE',
-			encType: 'application/json',
+			method: "DELETE",
+			encType: "application/json",
 		})
 		onDeleted?.(file)
 		setDeleteAlert(false)
@@ -116,7 +116,7 @@ export const FileCard = ({
 
 		if (setVisuallySelected) {
 			setTimeout(() => {
-				setVisuallySelected(prev => {
+				setVisuallySelected((prev) => {
 					if (prev?.id === file.id) {
 						return null
 					}
@@ -129,40 +129,40 @@ export const FileCard = ({
 	return (
 		<div
 			className={cn(
-				'group relative flex aspect-square flex-col items-center justify-center overflow-hidden border',
+				"group relative flex aspect-square flex-col items-center justify-center overflow-hidden border",
 				className,
-				onSelect ? 'cursor-pointer' : 'cursor-default',
+				onSelect ? "cursor-pointer" : "cursor-default",
 				visuallySelected?.id === file.id
-					? 'border-primary border-2 border-dashed'
-					: '',
+					? "border-primary border-2 border-dashed"
+					: "",
 			)}
-			onClick={e => {
+			onClick={(e) => {
 				e.stopPropagation()
 				!selectOnDoubleClick && onSelect?.(file)
 				setVisuallySelected?.(file)
 			}}
-			onDoubleClick={e => {
+			onDoubleClick={(e) => {
 				e.stopPropagation()
 				selectOnDoubleClick && onSelect?.(file)
 			}}
 		>
-			{fileGeneralType === 'image' ? (
+			{fileGeneralType === "image" ? (
 				<img src={url} alt={file.name} />
-			) : fileGeneralType === 'video' ? (
+			) : fileGeneralType === "video" ? (
 				<Film />
-			) : fileGeneralType === 'audio' ? (
+			) : fileGeneralType === "audio" ? (
 				<AudioWaveform />
 			) : (
 				<File />
 			)}
 			{deleteAlert && (
 				<div className="bg-background supports-[backdrop-filter]:bg-background/80 absolute flex h-full w-full flex-col items-center justify-center gap-0.5 pt-3 backdrop-blur-xs">
-					<Button variant={'destructive'} size={'xs'} onClick={handleDelete}>
+					<Button variant={"destructive"} size={"xs"} onClick={handleDelete}>
 						Delete
 					</Button>
 					<Button
-						variant={'ghost'}
-						size={'xs'}
+						variant={"ghost"}
+						size={"xs"}
 						onClick={() => setDeleteAlert(false)}
 					>
 						Cancel
@@ -172,9 +172,9 @@ export const FileCard = ({
 			{/* options */}
 			<div
 				className={cn(
-					`hidden ${deleteAlert ? '' : 'group-hover:flex'}`,
-					'bg-background absolute bottom-3 left-[50%] translate-x-[-50%]',
-					'items-center justify-center border p-0.5',
+					`hidden ${deleteAlert ? "" : "group-hover:flex"}`,
+					"bg-background absolute bottom-3 left-[50%] translate-x-[-50%]",
+					"items-center justify-center border p-0.5",
 				)}
 			>
 				<ToolBarButton
@@ -192,21 +192,21 @@ export const FileCard = ({
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent
 					className="max-h-[90vh] overflow-scroll"
-					onDoubleClick={e => e.stopPropagation()}
+					onDoubleClick={(e) => e.stopPropagation()}
 				>
 					<DialogHeader className="space-y-3">
 						<DialogTitle className="flex grid-cols-3 items-center gap-1.5">
 							{file.name}
 						</DialogTitle>
 						<DialogDescription className="flex min-h-36 flex-col items-center justify-center gap-2 overflow-hidden border">
-							{fileGeneralType === 'image' ? (
+							{fileGeneralType === "image" ? (
 								<img className="max-h-[50vh]" src={url} alt={file.name} />
-							) : fileGeneralType === 'video' ? (
+							) : fileGeneralType === "video" ? (
 								<video src={url} controls className="w-full">
 									Your browser does not support the
 									<code>video</code> element.
 								</video>
-							) : fileGeneralType === 'audio' ? (
+							) : fileGeneralType === "audio" ? (
 								<audio src={url} controls className="w-full">
 									Your browser does not support the
 									<code>audio</code> element.
@@ -229,7 +229,7 @@ export const FileCard = ({
 								className="min-h-0 flex-1 cursor-copy overflow-y-auto border px-1.5 py-1 text-sm shadow-xs"
 								onClick={() => {
 									navigator.clipboard.writeText(String(file.id))
-									toast.success('Copied to clipboard')
+									toast.success("Copied to clipboard")
 								}}
 							>
 								{file.id}
@@ -245,13 +245,13 @@ export const FileCard = ({
 									className="min-h-0 flex-1 cursor-copy overflow-y-auto border px-1.5 py-1 text-sm shadow-xs"
 									onClick={() => {
 										navigator.clipboard.writeText(origin + url)
-										toast.success('Copied to clipboard')
+										toast.success("Copied to clipboard")
 									}}
 								>
 									{origin + url}
 								</p>
 								<a href={url} target="_blank" rel="noopener noreferrer">
-									<Button variant={'ghost'} size={'icon'}>
+									<Button variant={"ghost"} size={"icon"}>
 										<ExternalLink className="h-5 w-5" />
 									</Button>
 								</a>
@@ -266,7 +266,7 @@ export const FileCard = ({
 								id="name"
 								placeholder="File name"
 								value={fileName}
-								onChange={e => setFileName(e.target.value)}
+								onChange={(e) => setFileName(e.target.value)}
 							/>
 						</div>
 						<div className="w-full gap-2">
@@ -277,7 +277,7 @@ export const FileCard = ({
 								id="description"
 								placeholder="Description"
 								value={description}
-								onChange={e => setDescription(e.target.value)}
+								onChange={(e) => setDescription(e.target.value)}
 							/>
 						</div>
 
@@ -286,7 +286,7 @@ export const FileCard = ({
 								<strong>File Type:</strong> {file.type}
 							</p>
 							<p className="text-sm">
-								<strong>File Size:</strong>{' '}
+								<strong>File Size:</strong>{" "}
 								{file.size > 1024 * 1024 * 1024
 									? `${Math.round(
 											(file.size || file.size) / 1024 / 1024 / 1024,
@@ -296,20 +296,20 @@ export const FileCard = ({
 										: `${Math.round((file.size || file.size) / 1024)} KB`}
 							</p>
 							<p className="text-sm">
-								<strong>Last Modified:</strong>{' '}
+								<strong>Last Modified:</strong>{" "}
 								{new Date(file.updatedAt).toLocaleString()}
 							</p>
 						</div>
 
 						<Button
 							className="w-full"
-							disabled={mutating && fetcher.formMethod === 'PUT'}
+							disabled={mutating && fetcher.formMethod === "PUT"}
 							onClick={handleUpdate}
 						>
-							{mutating && fetcher.formMethod === 'PUT' ? (
+							{mutating && fetcher.formMethod === "PUT" ? (
 								<Loader2 className="animate-spin" />
 							) : (
-								'Save'
+								"Save"
 							)}
 						</Button>
 						<Separator className="my-3" />
@@ -318,7 +318,7 @@ export const FileCard = ({
 							<AlertDialogTrigger
 								render={
 									<Button
-										variant={'link'}
+										variant={"link"}
 										className="text-destructive h-fit w-fit p-0"
 									>
 										Delete permanently
@@ -331,7 +331,7 @@ export const FileCard = ({
 										Continue delete this file permanently?
 									</AlertDialogTitle>
 									<AlertDialogDescription>
-										This action cannot be undone. This will permanently delete{' '}
+										This action cannot be undone. This will permanently delete{" "}
 										{file.name} from servers.
 									</AlertDialogDescription>
 								</AlertDialogHeader>
@@ -356,10 +356,10 @@ const ToolBarButton = ({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 	return (
 		<Button
-			size={'icon-sm'}
+			size={"icon-sm"}
 			{...props}
 			className={cn(
-				'hover:bg-accent text-foreground inline-flex cursor-pointer items-center justify-center gap-2 bg-transparent p-1 whitespace-nowrap transition-colors',
+				"hover:bg-accent text-foreground inline-flex cursor-pointer items-center justify-center gap-2 bg-transparent p-1 whitespace-nowrap transition-colors",
 				className,
 			)}
 		/>

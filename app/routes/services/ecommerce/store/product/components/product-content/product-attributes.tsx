@@ -1,13 +1,13 @@
-import { Separator } from '~/components/ui/separator'
+import { Separator } from "~/components/ui/separator"
 
-import { useProductContext } from '../../hooks/use-product-context'
+import { useProductContext } from "../../hooks/use-product-context"
 
 export const ProductAttributes = () => {
 	const { product } = useProductContext()
 
 	if (!product) return null
 
-	const visibleAttributes = product.attributes.filter(attr => !!attr.visible)
+	const visibleAttributes = product.attributes.filter((attr) => !!attr.visible)
 
 	if (visibleAttributes.length === 0) return null
 
@@ -18,7 +18,7 @@ export const ProductAttributes = () => {
 				Specifications
 			</h3>
 			<dl className="space-y-3">
-				{visibleAttributes.map(attr => (
+				{visibleAttributes.map((attr) => (
 					<div
 						key={attr.id}
 						className="flex justify-between gap-3 text-end text-sm"

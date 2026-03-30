@@ -1,4 +1,4 @@
-import type { ServiceRoutesModule } from './type'
+import type { ServiceRoutesModule } from "./type"
 
 const ServiceRouteModules: ServiceRoutesModule[] = []
 

@@ -1,4 +1,4 @@
-import type { ServiceDashboard } from './type'
+import type { ServiceDashboard } from "./type"
 
 const Dashboards: ServiceDashboard[] = []
 

@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { Form } from 'react-router'
+import { useState } from "react"
+import { Form } from "react-router"
 
-import { Loader2, Save } from 'lucide-react'
+import { Loader2, Save } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { Checkbox } from '~/components/ui/checkbox'
+import { Button } from "~/components/ui/button"
+import { Checkbox } from "~/components/ui/checkbox"
 import {
 	Dialog,
 	DialogContent,
@@ -12,18 +12,18 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '~/components/ui/dialog'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
+} from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { user } from '~/lib/db/schema'
-import { capitalize } from '~/lib/utils'
+} from "~/components/ui/select"
+import { user } from "~/lib/db/schema"
+import { capitalize } from "~/lib/utils"
 
 type User = typeof user.$inferSelect
 
@@ -47,20 +47,20 @@ export const UserContent = ({
 					<DialogTitle>Edit profile</DialogTitle>
 					<DialogDescription>
 						Make changes to your profile here. Click save when you're done. Last
-						updated on {user.updatedAt.toLocaleString('zh-TW')}
+						updated on {user.updatedAt.toLocaleString("zh-TW")}
 					</DialogDescription>
 				</DialogHeader>
 				<Form
 					id="user-content"
 					className="grid gap-4 py-4"
-					onSubmit={e => {
+					onSubmit={(e) => {
 						if (isSubmitting) return
 						e.preventDefault()
 						const formData = new FormData(e.currentTarget)
 
-						const checkboxFields = ['emailVerified', 'banned']
-						checkboxFields.forEach(field => {
-							const isChecked = formData.get(field) === 'on'
+						const checkboxFields = ["emailVerified", "banned"]
+						checkboxFields.forEach((field) => {
+							const isChecked = formData.get(field) === "on"
 							formData.set(field, isChecked.toString())
 						})
 
@@ -97,7 +97,7 @@ export const UserContent = ({
 interface BulkEditableFieldsProps {
 	user: Pick<
 		User,
-		'name' | 'image' | 'role' | 'emailVerified' | 'banned' | 'banReason'
+		"name" | "image" | "role" | "emailVerified" | "banned" | "banReason"
 	>
 	isBulkEdit?: boolean
 }
@@ -124,15 +124,17 @@ function BulkEditableFields({
 					{isBulkEdit && (
 						<Checkbox
 							name="bulk_name"
-							onCheckedChange={checked => handleFieldToggle('name', !!checked)}
+							onCheckedChange={(checked) =>
+								handleFieldToggle("name", !!checked)
+							}
 						/>
 					)}
 					<Label
 						htmlFor="name"
 						className={
-							isBulkEdit && !enabledFields.has('name')
-								? 'text-muted-foreground'
-								: ''
+							isBulkEdit && !enabledFields.has("name")
+								? "text-muted-foreground"
+								: ""
 						}
 						aria-disabled
 					>
@@ -145,7 +147,7 @@ function BulkEditableFields({
 					defaultValue={user.name ?? undefined}
 					className="col-span-3"
 					placeholder="Your name"
-					disabled={isBulkEdit && !enabledFields.has('name')}
+					disabled={isBulkEdit && !enabledFields.has("name")}
 				/>
 			</div>
 			<div className="grid grid-cols-4 items-center gap-4">
@@ -153,15 +155,17 @@ function BulkEditableFields({
 					{isBulkEdit && (
 						<Checkbox
 							name="bulk_image"
-							onCheckedChange={checked => handleFieldToggle('image', !!checked)}
+							onCheckedChange={(checked) =>
+								handleFieldToggle("image", !!checked)
+							}
 						/>
 					)}
 					<Label
 						htmlFor="image"
 						className={
-							isBulkEdit && !enabledFields.has('image')
-								? 'text-muted-foreground'
-								: ''
+							isBulkEdit && !enabledFields.has("image")
+								? "text-muted-foreground"
+								: ""
 						}
 					>
 						Image
@@ -174,7 +178,7 @@ function BulkEditableFields({
 					defaultValue={user.image ?? undefined}
 					className="col-span-3"
 					placeholder="e.g., https://placecats.com/300/200"
-					disabled={isBulkEdit && !enabledFields.has('image')}
+					disabled={isBulkEdit && !enabledFields.has("image")}
 				/>
 			</div>
 			<div className="grid grid-cols-4 items-center gap-4">
@@ -182,30 +186,32 @@ function BulkEditableFields({
 					{isBulkEdit && (
 						<Checkbox
 							name="bulk_role"
-							onCheckedChange={checked => handleFieldToggle('role', !!checked)}
+							onCheckedChange={(checked) =>
+								handleFieldToggle("role", !!checked)
+							}
 						/>
 					)}
 					<Label
 						htmlFor="role"
 						className={
-							isBulkEdit && !enabledFields.has('role')
-								? 'text-muted-foreground'
-								: ''
+							isBulkEdit && !enabledFields.has("role")
+								? "text-muted-foreground"
+								: ""
 						}
 					>
 						Role
 					</Label>
 				</div>
 
-				<Select name="role" defaultValue={user.role ?? 'user'}>
+				<Select name="role" defaultValue={user.role ?? "user"}>
 					<SelectTrigger
 						className="col-span-3 w-full"
-						disabled={isBulkEdit && !enabledFields.has('role')}
+						disabled={isBulkEdit && !enabledFields.has("role")}
 					>
 						<SelectValue id="role" placeholder="what's your role?" />
 					</SelectTrigger>
 					<SelectContent>
-						{['user', 'admin'].map(role => (
+						{["user", "admin"].map((role) => (
 							<SelectItem key={role} value={role}>
 								{role}
 							</SelectItem>
@@ -218,17 +224,17 @@ function BulkEditableFields({
 					{isBulkEdit && (
 						<Checkbox
 							name="bulk_emailVerified"
-							onCheckedChange={checked =>
-								handleFieldToggle('emailVerified', !!checked)
+							onCheckedChange={(checked) =>
+								handleFieldToggle("emailVerified", !!checked)
 							}
 						/>
 					)}
 					<Label
 						htmlFor="emailVerified"
 						className={
-							isBulkEdit && !enabledFields.has('emailVerified')
-								? 'text-muted-foreground'
-								: ''
+							isBulkEdit && !enabledFields.has("emailVerified")
+								? "text-muted-foreground"
+								: ""
 						}
 					>
 						Verified
@@ -240,7 +246,7 @@ function BulkEditableFields({
 					name="emailVerified"
 					defaultChecked={user.emailVerified}
 					className="col-span-3 ml-2"
-					disabled={isBulkEdit && !enabledFields.has('emailVerified')}
+					disabled={isBulkEdit && !enabledFields.has("emailVerified")}
 				/>
 			</div>
 			<div className="grid grid-cols-4 items-center gap-4">
@@ -248,17 +254,17 @@ function BulkEditableFields({
 					{isBulkEdit && (
 						<Checkbox
 							name="bulk_banned"
-							onCheckedChange={checked =>
-								handleFieldToggle('banned', !!checked)
+							onCheckedChange={(checked) =>
+								handleFieldToggle("banned", !!checked)
 							}
 						/>
 					)}
 					<Label
 						htmlFor="banned"
 						className={
-							isBulkEdit && !enabledFields.has('banned')
-								? 'text-muted-foreground'
-								: ''
+							isBulkEdit && !enabledFields.has("banned")
+								? "text-muted-foreground"
+								: ""
 						}
 					>
 						Banned
@@ -270,7 +276,7 @@ function BulkEditableFields({
 					name="banned"
 					defaultChecked={user.banned ?? false}
 					className="col-span-3 ml-2"
-					disabled={isBulkEdit && !enabledFields.has('banned')}
+					disabled={isBulkEdit && !enabledFields.has("banned")}
 				/>
 			</div>
 			<div className="grid grid-cols-4 items-center gap-4">
@@ -278,17 +284,17 @@ function BulkEditableFields({
 					{isBulkEdit && (
 						<Checkbox
 							name="bulk_banReason"
-							onCheckedChange={checked =>
-								handleFieldToggle('banReason', !!checked)
+							onCheckedChange={(checked) =>
+								handleFieldToggle("banReason", !!checked)
 							}
 						/>
 					)}
 					<Label
 						htmlFor="banReason"
 						className={
-							isBulkEdit && !enabledFields.has('banReason')
-								? 'text-muted-foreground'
-								: ''
+							isBulkEdit && !enabledFields.has("banReason")
+								? "text-muted-foreground"
+								: ""
 						}
 					>
 						Ban reason
@@ -301,7 +307,7 @@ function BulkEditableFields({
 					defaultValue={user.banReason ?? undefined}
 					className="col-span-3"
 					placeholder="Why the user is banned?"
-					disabled={isBulkEdit && !enabledFields.has('banReason')}
+					disabled={isBulkEdit && !enabledFields.has("banReason")}
 				/>
 			</div>
 		</>
@@ -337,14 +343,14 @@ export const UserBulkEditDialog = ({
 				<Form
 					id="update-user"
 					className="grid gap-4 py-4"
-					onSubmit={e => {
+					onSubmit={(e) => {
 						if (isSubmitting) return
 						e.preventDefault()
 						const formData = new FormData(e.currentTarget)
 
-						const checkboxFields = ['emailVerified', 'banned']
-						checkboxFields.forEach(field => {
-							const isChecked = formData.get(field) === 'on'
+						const checkboxFields = ["emailVerified", "banned"]
+						checkboxFields.forEach((field) => {
+							const isChecked = formData.get(field) === "on"
 							formData.set(field, isChecked.toString())
 						})
 

@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
-import { useFetcher } from 'react-router'
+import { useEffect } from "react"
+import { useFetcher } from "react-router"
 
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
-import { assetsAtom } from '~/context/assets'
-import type { loader } from '~/routes/dashboard/assets/resource'
-import { assetResourceRoute } from '~/routes/dashboard/assets/utils'
+import { assetsAtom } from "~/context/assets"
+import type { loader } from "~/routes/dashboard/assets/resource"
+import { assetResourceRoute } from "~/routes/dashboard/assets/utils"
 
 /**
  * Trigger fetcher to load files and save them to assetsAtom.
@@ -58,6 +58,6 @@ export const useAssets = ({
 		load,
 		assets,
 		setAssets,
-		isLoading: fetcher.state === 'loading',
+		isLoading: fetcher.state === "loading",
 	}
 }

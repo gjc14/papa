@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useEffect, useState } from "react"
+import { useFetcher } from "react-router"
 
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai"
 
 import {
 	Card,
@@ -10,41 +10,43 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Input } from '~/components/ui/input'
-import { Spinner } from '~/components/ui/spinner'
-import { CheckboxTree, type TreeNode } from '~/components/checkbox-tree'
-import { MultiSelect } from '~/components/multi-select'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import { generateSlug } from '~/lib/utils/seo'
+} from "~/components/ui/card"
+import { Input } from "~/components/ui/input"
+import { Spinner } from "~/components/ui/spinner"
+import { CheckboxTree, type TreeNode } from "~/components/checkbox-tree"
+import { MultiSelect } from "~/components/multi-select"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import { generateSlug } from "~/lib/utils/seo"
 import {
 	brandsAtom,
 	categoriesAtom,
 	productAtom,
 	tagsAtom,
-} from '~/routes/services/ecommerce/store/product/context'
+} from "~/routes/services/ecommerce/store/product/context"
 
-import type { action as bAction } from '../../03_brands/resource'
-import type { loader as bLoader } from '../../03_brands/route'
-import type { action as cAction } from '../../04_categories/resource'
-import type { loader as cLoader } from '../../04_categories/route'
-import type { action as tAction } from '../../05_tags/resource'
-import type { loader as tLoader } from '../../05_tags/route'
-import { CreateTaxonomyPopover } from './create-taxonomy-popover'
+import type { action as bAction } from "../../03_brands/resource"
+import type { loader as bLoader } from "../../03_brands/route"
+import type { action as cAction } from "../../04_categories/resource"
+import type { loader as cLoader } from "../../04_categories/route"
+import type { action as tAction } from "../../05_tags/resource"
+import type { loader as tLoader } from "../../05_tags/route"
+import { CreateTaxonomyPopover } from "./create-taxonomy-popover"
 
-const productBrandsAtom = atom(get => get(productAtom)?.brands ?? null)
-const productTagsAtom = atom(get => get(productAtom)?.tags ?? null)
-const productCategoriesAtom = atom(get => get(productAtom)?.categories ?? null)
+const productBrandsAtom = atom((get) => get(productAtom)?.brands ?? null)
+const productTagsAtom = atom((get) => get(productAtom)?.tags ?? null)
+const productCategoriesAtom = atom(
+	(get) => get(productAtom)?.categories ?? null,
+)
 
 const generateTaxonomy = (name: string) => {
-	const slug = generateSlug(name, { fallbackPrefix: 'new classification' })
+	const slug = generateSlug(name, { fallbackPrefix: "new classification" })
 
 	return {
 		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1),
 		name: name,
 		slug,
-		description: '',
+		description: "",
 		image: null,
 		parentId: null,
 		children: [],
@@ -73,30 +75,32 @@ export function Taxonomies() {
 	const [brands, setBrands] = useAtom(brandsAtom)
 	const [categories, setCategories] = useAtom(categoriesAtom)
 	const [tags, setTags] = useAtom(tagsAtom)
-	const [brandsFilter, setBrandsFilter] = useState('')
-	const [categoriesFilter, setCategoriesFilter] = useState('')
+	const [brandsFilter, setBrandsFilter] = useState("")
+	const [categoriesFilter, setCategoriesFilter] = useState("")
 
-	const topLevelBrands = brands.filter(b => !b.parentId)
-	const topLevelCategories = categories.filter(c => !c.parentId)
+	const topLevelBrands = brands.filter((b) => !b.parentId)
+	const topLevelCategories = categories.filter((c) => !c.parentId)
 
 	const [selectedBIds, setSelectedBIds] = useState<Set<string>>(
-		new Set(productBrands ? productBrands.map(b => String(b.id)) : []),
+		new Set(productBrands ? productBrands.map((b) => String(b.id)) : []),
 	)
 	const [selectedCIds, setSelectedCIds] = useState<Set<string>>(
-		new Set(productCategories ? productCategories.map(c => String(c.id)) : []),
+		new Set(
+			productCategories ? productCategories.map((c) => String(c.id)) : [],
+		),
 	)
 
 	const bTreeData = taxonomiesToTree(brands)
 	const cTreeData = taxonomiesToTree(categories)
 
 	const filteredBTreeData = brandsFilter
-		? bTreeData.filter(node =>
+		? bTreeData.filter((node) =>
 				node.label.toLowerCase().includes(brandsFilter.toLowerCase()),
 			)
 		: bTreeData
 
 	const filteredCTreeData = categoriesFilter
-		? cTreeData.filter(node =>
+		? cTreeData.filter((node) =>
 				node.label.toLowerCase().includes(categoriesFilter.toLowerCase()),
 			)
 		: cTreeData
@@ -109,66 +113,66 @@ export function Taxonomies() {
 
 	useEffect(() => {
 		!dataInitialized.brands &&
-			bFetcher.load('/dashboard/ecommerce/products/brands')
+			bFetcher.load("/dashboard/ecommerce/products/brands")
 		!dataInitialized.categories &&
-			cFetcher.load('/dashboard/ecommerce/products/categories')
+			cFetcher.load("/dashboard/ecommerce/products/categories")
 
 		// Handle taxonomies response
 		const bData = bFetcher.data
 		const cData = cFetcher.data
 		const tData = tFetcher.data
 
-		if (bData && 'brands' in bData) {
+		if (bData && "brands" in bData) {
 			setBrands(bData.brands)
-			setDataInitialized(prev => ({ ...prev, brands: true }))
+			setDataInitialized((prev) => ({ ...prev, brands: true }))
 		}
 
-		if (cData && 'categories' in cData) {
+		if (cData && "categories" in cData) {
 			setCategories(cData.categories)
-			setDataInitialized(prev => ({ ...prev, categories: true }))
+			setDataInitialized((prev) => ({ ...prev, categories: true }))
 		}
 
-		if (tData && 'tags' in tData) {
+		if (tData && "tags" in tData) {
 			setTags(tData.tags)
-			setDataInitialized(prev => ({ ...prev, tags: true }))
+			setDataInitialized((prev) => ({ ...prev, tags: true }))
 		}
 	}, [bFetcher.data, cFetcher.data, tFetcher.data])
 
 	// Sync selected categories/brands with product
 	useEffect(() => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
-				brands: brands.filter(b => selectedBIds.has(String(b.id))),
-				categories: categories.filter(c => selectedCIds.has(String(c.id))),
+				brands: brands.filter((b) => selectedBIds.has(String(b.id))),
+				categories: categories.filter((c) => selectedCIds.has(String(c.id))),
 			}
 		})
 	}, [selectedBIds, selectedCIds])
 
 	const tSelected = productTags
-		? productTags.map(t => {
+		? productTags.map((t) => {
 				// If tag is pending (id < 0), check if it has been created (exists in tags)
 				// This prevents the "gap" where the tag exists but isn't selected yet
 				if (t.id < 0) {
-					const realTag = tags.find(rt => rt.slug === t.slug)
+					const realTag = tags.find((rt) => rt.slug === t.slug)
 					if (realTag) {
 						return {
 							label: realTag.name,
 							value: String(realTag.id),
-							className: '',
+							className: "",
 						}
 					}
 				}
 				return {
 					label: t.name,
 					value: String(t.id),
-					className: t.id > 0 ? '' : 'opacity-50',
+					className: t.id > 0 ? "" : "opacity-50",
 				}
 			})
 		: []
 
-	const tPending = productTags?.filter(t => t.id < 0) ?? []
+	const tPending = productTags?.filter((t) => t.id < 0) ?? []
 
 	// Auto-submit pending items
 	// 1. Execute when tIsIdle and tPending has items
@@ -177,15 +181,17 @@ export function Taxonomies() {
 	useEffect(() => {
 		if (tPending.length > 0 && tIsIdle) {
 			const [first] = tPending
-			const existingRealTag = tags.find(t => t.slug === first.slug)
+			const existingRealTag = tags.find((t) => t.slug === first.slug)
 
 			if (existingRealTag) {
 				// Replace pending tag with real tag
-				setProduct(prev => {
+				setProduct((prev) => {
 					if (!prev) return prev
 					return {
 						...prev,
-						tags: prev.tags.map(t => (t.id === first.id ? existingRealTag : t)),
+						tags: prev.tags.map((t) =>
+							t.id === first.id ? existingRealTag : t,
+						),
 					}
 				})
 				return
@@ -195,9 +201,9 @@ export function Taxonomies() {
 				tCreateFetcher.submit(
 					{ name: first.name, slug: first.slug },
 					{
-						method: 'post',
-						action: '/dashboard/ecommerce/products/tags/resource',
-						encType: 'application/json',
+						method: "post",
+						action: "/dashboard/ecommerce/products/tags/resource",
+						encType: "application/json",
 					},
 				)
 			}, 600)
@@ -222,7 +228,7 @@ export function Taxonomies() {
 							<div className="m-2 mt-1">
 								<Input
 									value={brandsFilter}
-									onChange={e => setBrandsFilter(e.target.value)}
+									onChange={(e) => setBrandsFilter(e.target.value)}
 									placeholder="Filter brands"
 								/>
 							</div>
@@ -230,7 +236,7 @@ export function Taxonomies() {
 								<CheckboxTree
 									data={filteredBTreeData}
 									selectedIds={Array.from(selectedBIds)}
-									onSelectionChange={s => setSelectedBIds(new Set(s))}
+									onSelectionChange={(s) => setSelectedBIds(new Set(s))}
 								/>
 							) : (
 								<div className="text-muted-foreground w-full p-2 text-center text-sm">
@@ -248,11 +254,11 @@ export function Taxonomies() {
 					<CreateTaxonomyPopover
 						taxonomyType="Brand"
 						parentOptions={topLevelBrands}
-						onCreate={data => {
+						onCreate={(data) => {
 							bCreateFetcher.submit(data, {
-								method: 'post',
-								action: '/dashboard/ecommerce/products/brands/resource',
-								encType: 'application/json',
+								method: "post",
+								action: "/dashboard/ecommerce/products/brands/resource",
+								encType: "application/json",
 							})
 						}}
 						isSubmitting={!dataInitialized.brands || bSubmitting}
@@ -275,7 +281,7 @@ export function Taxonomies() {
 							<div className="m-2 mt-1">
 								<Input
 									value={categoriesFilter}
-									onChange={e => setCategoriesFilter(e.target.value)}
+									onChange={(e) => setCategoriesFilter(e.target.value)}
 									placeholder="Filter categories"
 								/>
 							</div>
@@ -283,7 +289,7 @@ export function Taxonomies() {
 								<CheckboxTree
 									data={filteredCTreeData}
 									selectedIds={Array.from(selectedCIds)}
-									onSelectionChange={s => setSelectedCIds(new Set(s))}
+									onSelectionChange={(s) => setSelectedCIds(new Set(s))}
 								/>
 							) : (
 								<div className="text-muted-foreground w-full p-2 text-center text-sm">
@@ -301,11 +307,11 @@ export function Taxonomies() {
 					<CreateTaxonomyPopover
 						taxonomyType="Category"
 						parentOptions={topLevelCategories}
-						onCreate={data => {
+						onCreate={(data) => {
 							cCreateFetcher.submit(data, {
-								method: 'post',
-								action: '/dashboard/ecommerce/products/categories/resource',
-								encType: 'application/json',
+								method: "post",
+								action: "/dashboard/ecommerce/products/categories/resource",
+								encType: "application/json",
 							})
 						}}
 						isSubmitting={!dataInitialized.categories || cSubmitting}
@@ -321,22 +327,22 @@ export function Taxonomies() {
 				</CardHeader>
 				<CardContent>
 					<MultiSelect
-						options={tags.map(t => ({
+						options={tags.map((t) => ({
 							label: t.name,
 							value: String(t.id),
 						}))}
 						selected={tSelected}
-						onSelectedChange={areSelected => {
-							const newTags = areSelected.map(selected => {
+						onSelectedChange={(areSelected) => {
+							const newTags = areSelected.map((selected) => {
 								// 1. Try to find in global tags by ID
 								const existingGlobal = tags.find(
-									t => String(t.id) === selected.value,
+									(t) => String(t.id) === selected.value,
 								)
 								if (existingGlobal) return existingGlobal
 
 								// 2. Try to find in current product.tags (for pending items)
 								const existingLocal = productTags?.find(
-									t => String(t.id) === selected.value,
+									(t) => String(t.id) === selected.value,
 								)
 								if (existingLocal) return existingLocal
 
@@ -344,14 +350,14 @@ export function Taxonomies() {
 								return generateTaxonomy(selected.label)
 							})
 
-							setProduct(prev => {
+							setProduct((prev) => {
 								if (!prev) return prev
 								return { ...prev, tags: newTags }
 							})
 						}}
 						onInitSearch={() =>
 							!dataInitialized.tags &&
-							tFetcher.load('/dashboard/ecommerce/products/tags')
+							tFetcher.load("/dashboard/ecommerce/products/tags")
 						}
 						isSearching={!dataInitialized.tags}
 					/>
@@ -374,12 +380,12 @@ function taxonomiesToTree(txmies: Taxonomy[]): TreeNode[] {
 	const rootTaxonomies: Taxonomy[] = []
 
 	// Create txmy map
-	txmies.forEach(txmy => {
+	txmies.forEach((txmy) => {
 		tmyMap.set(txmy.id, txmy)
 	})
 
 	// Find root (no parent) taxonomies
-	txmies.forEach(txmy => {
+	txmies.forEach((txmy) => {
 		if (txmy.parentId === null) {
 			rootTaxonomies.push(txmy)
 		}
@@ -388,8 +394,8 @@ function taxonomiesToTree(txmies: Taxonomy[]): TreeNode[] {
 	// Recursively build tree structure
 	function buildTree(txmy: Taxonomy): TreeNode {
 		const children = txmies
-			.filter(t => t.parentId === txmy.id)
-			.map(child => buildTree(child))
+			.filter((t) => t.parentId === txmy.id)
+			.map((child) => buildTree(child))
 
 		return {
 			id: String(txmy.id),
@@ -398,5 +404,5 @@ function taxonomiesToTree(txmies: Taxonomy[]): TreeNode[] {
 		}
 	}
 
-	return rootTaxonomies.map(rootTmy => buildTree(rootTmy))
+	return rootTaxonomies.map((rootTmy) => buildTree(rootTmy))
 }

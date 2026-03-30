@@ -3,12 +3,12 @@ import type {
 	GlobalFilterTableState,
 	PaginationState,
 	SortingState,
-} from '@tanstack/react-table'
+} from "@tanstack/react-table"
 
 import {
 	DEFAULT_TABLE_SEARCH_PARAMS_CONFIG,
 	type TableSearchParamsConfig,
-} from './hooks'
+} from "./hooks"
 
 export function safeJsonParse<T>(value: string | null, fallback: T): T {
 	if (!value) return fallback
@@ -34,7 +34,7 @@ type ParsedTableSearchParams = {
 	pagination: PaginationState
 	sorting: SortingState
 	columnFilters: ColumnFiltersState
-	globalFilter: GlobalFilterTableState['globalFilter']
+	globalFilter: GlobalFilterTableState["globalFilter"]
 }
 
 /**
@@ -100,6 +100,6 @@ export function parseTableSearchParams(
 			searchParams.get(config.columnFiltersParam),
 			[],
 		),
-		globalFilter: searchParams.get(config.globalFilterParam) ?? '',
+		globalFilter: searchParams.get(config.globalFilterParam) ?? "",
 	}
 }

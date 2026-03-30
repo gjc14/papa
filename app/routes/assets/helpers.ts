@@ -1,11 +1,11 @@
-import { getFileUrl } from '~/lib/db/asset.server'
+import { getFileUrl } from "~/lib/db/asset.server"
 
 export const presignedUrlRes = async (key: string) => {
 	const presignedUrl = await getFileUrl(key)
 
 	if (!presignedUrl) {
-		console.error('Error when getting presigned URL')
-		throw new Response('', {
+		console.error("Error when getting presigned URL")
+		throw new Response("", {
 			status: 500,
 		})
 	}
@@ -22,13 +22,13 @@ export const presignedUrlRes = async (key: string) => {
 	const response = await fetch(presignedUrl)
 	if (response.status !== 200) {
 		console.error(
-			'Error when fetching presigned URL:',
+			"Error when fetching presigned URL:",
 			presignedUrl,
 			response.status,
 			response.statusText,
 		)
 
-		throw new Response('', {
+		throw new Response("", {
 			status: response.status,
 			statusText: response.statusText,
 		})
@@ -42,7 +42,7 @@ export const presignedUrlRes = async (key: string) => {
 	for (const [key, value] of responseClone.headers.entries()) {
 		const lowerKey = key.toLowerCase()
 		// Skip encoding-related headers that might cause decoding issues
-		if (lowerKey !== 'content-encoding' && lowerKey !== 'transfer-encoding') {
+		if (lowerKey !== "content-encoding" && lowerKey !== "transfer-encoding") {
 			headers.set(key, value)
 		}
 	}

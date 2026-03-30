@@ -1,15 +1,15 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from "jotai"
 
 import {
 	storeConfigAtom,
 	type Product,
 	type selectedVariantAttributesAtom,
-} from '../context'
+} from "../context"
 import {
 	getFilteredVariants,
 	getHasVariants,
 	getSelectedVariant,
-} from './variants'
+} from "./variants"
 
 // ========================================
 // Price Calculations
@@ -19,15 +19,15 @@ import {
  * Format price, returns 0 when scale > 100
  */
 function toScaledDecimalString(price: bigint, scale: number): string {
-	if (scale < 0) throw new Error('Scale must be non-negative')
-	if (price < 0n) return '-' + toScaledDecimalString(-price, scale)
+	if (scale < 0) throw new Error("Scale must be non-negative")
+	if (price < 0n) return "-" + toScaledDecimalString(-price, scale)
 
 	const str = price.toString()
 
 	if (scale === 0) return str
 
 	if (str.length <= scale) {
-		const zeros = '0'.repeat(scale - str.length)
+		const zeros = "0".repeat(scale - str.length)
 		return `0.${zeros}${str}`
 	}
 
@@ -39,8 +39,8 @@ function toScaledDecimalString(price: bigint, scale: number): string {
 /**
  * Get the lowest price from a list of variants
  */
-const _getLowestPrice = (variants: NonNullable<Product>['variants']) => {
-	const prices = variants.map(variant => ({
+const _getLowestPrice = (variants: NonNullable<Product>["variants"]) => {
+	const prices = variants.map((variant) => ({
 		price: toScaledDecimalString(
 			variant.option.salePrice || variant.option.price,
 			variant.option.scale,
@@ -50,11 +50,11 @@ const _getLowestPrice = (variants: NonNullable<Product>['variants']) => {
 	}))
 
 	if (prices.length === 0) {
-		return { price: '0', currency: '', scale: 0 }
+		return { price: "0", currency: "", scale: 0 }
 	}
 
 	return prices.reduce((min, current) =>
-		BigInt(current.price.split('.')[0]) < BigInt(min.price.split('.')[0])
+		BigInt(current.price.split(".")[0]) < BigInt(min.price.split(".")[0])
 			? current
 			: min,
 	)
@@ -210,7 +210,7 @@ const renderPrice = (
 	const hasDiscount = !!salePrice && salePrice < price
 
 	const fmt = new Intl.NumberFormat(locales || storeConfig.language, {
-		style: 'currency',
+		style: "currency",
 		currency: currency,
 		// RangeError: maximumFractionDigits value is out of range. Must be between 0 and 100.
 		minimumFractionDigits: scale,

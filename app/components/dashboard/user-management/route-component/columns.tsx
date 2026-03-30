@@ -1,28 +1,28 @@
-import { useEffect, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useEffect, useState } from "react"
+import { useFetcher } from "react-router"
 
-import { type ColumnDef } from '@tanstack/react-table'
+import { type ColumnDef } from "@tanstack/react-table"
 
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
-import { Badge } from '~/components/ui/badge'
-import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { DashboardDataTableMoreMenu } from '~/components/dashboard/dashboard-data-table'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import type { user as userTable } from '~/lib/db/schema'
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
+import { Badge } from "~/components/ui/badge"
+import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
+import { DashboardDataTableMoreMenu } from "~/components/dashboard/dashboard-data-table"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import type { user as userTable } from "~/lib/db/schema"
 
-import { UserContent } from '../user-content'
+import { UserContent } from "../user-content"
 
 type User = typeof userTable.$inferSelect
 
 export const columns: ColumnDef<User>[] = [
 	{
-		id: '_avatar',
+		id: "_avatar",
 		cell: ({ row }) => {
 			return (
 				<div className="flex items-center justify-center">
 					<Avatar className="h-8 w-8">
 						<AvatarImage
-							src={row.original.image || '/placeholders/avatar.png'}
+							src={row.original.image || "/placeholders/avatar.png"}
 							alt={row.original.name}
 						/>
 						<AvatarFallback>PA</AvatarFallback>
@@ -32,48 +32,48 @@ export const columns: ColumnDef<User>[] = [
 		},
 	},
 	{
-		accessorKey: 'email',
-		header: 'Email',
+		accessorKey: "email",
+		header: "Email",
 	},
 	{
-		accessorKey: 'name',
-		header: 'Name',
+		accessorKey: "name",
+		header: "Name",
 	},
 	{
-		accessorKey: 'role',
-		header: 'Role',
+		accessorKey: "role",
+		header: "Role",
 	},
 	{
-		accessorKey: 'emailVerified',
-		header: 'Email Verified',
+		accessorKey: "emailVerified",
+		header: "Email Verified",
 		cell: ({ row }) => {
 			return (
 				<Badge
-					variant={row.original.emailVerified ? 'secondary' : 'destructive'}
+					variant={row.original.emailVerified ? "secondary" : "destructive"}
 				>
-					{row.original.emailVerified ? 'Yes' : 'No'}
+					{row.original.emailVerified ? "Yes" : "No"}
 				</Badge>
 			)
 		},
 	},
 	{
-		accessorKey: 'banned',
-		header: 'Banned',
+		accessorKey: "banned",
+		header: "Banned",
 		cell: ({ row }) => {
 			return (
-				<Badge variant={row.original.banned ? 'destructive' : 'secondary'}>
-					{row.original.banned ? 'Yes' : 'No'}
+				<Badge variant={row.original.banned ? "destructive" : "secondary"}>
+					{row.original.banned ? "Yes" : "No"}
 				</Badge>
 			)
 		},
 	},
 	{
-		accessorKey: 'updatedAt',
-		header: 'Updated At',
-		cell: ({ row }) => row.original.updatedAt.toLocaleString('zh-TW'),
+		accessorKey: "updatedAt",
+		header: "Updated At",
+		cell: ({ row }) => row.original.updatedAt.toLocaleString("zh-TW"),
 	},
 	{
-		id: '_actions',
+		id: "_actions",
 		cell: ({ row, table }) => {
 			const fetcher = useFetcher()
 			const { mutating, isSubmitting } = useFetcherNotification(fetcher)
@@ -108,8 +108,8 @@ export const columns: ColumnDef<User>[] = [
 							fetcher.submit(
 								{ id },
 								{
-									method: 'DELETE',
-									action: '/dashboard/user/resource',
+									method: "DELETE",
+									action: "/dashboard/user/resource",
 								},
 							)
 						}}
@@ -119,14 +119,14 @@ export const columns: ColumnDef<User>[] = [
 						</DropdownMenuItem>
 					</DashboardDataTableMoreMenu>
 					<UserContent
-						onSubmit={formData => {
+						onSubmit={(formData) => {
 							fetcher.submit(formData, {
-								method: 'PUT',
-								action: '/dashboard/user/resource',
+								method: "PUT",
+								action: "/dashboard/user/resource",
 							})
 						}}
 						isSubmitting={
-							fetcher.formAction === '/dashboard/user/resource' && isSubmitting
+							fetcher.formAction === "/dashboard/user/resource" && isSubmitting
 						}
 						user={{
 							...row.original,

@@ -1,16 +1,16 @@
-import type { Route } from './+types/route'
-import { useEffect } from 'react'
-import { type ShouldRevalidateFunctionArgs } from 'react-router'
+import type { Route } from "./+types/route"
+import { useEffect } from "react"
+import { type ShouldRevalidateFunctionArgs } from "react-router"
 
-import { useSetAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
+import { useSetAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
 
 import {
 	getCrossSellProducts,
 	getProduct,
 	getProductGallery,
 	getUpsellProducts,
-} from '../../../lib/db/product.server'
+} from "../../../lib/db/product.server"
 import {
 	crossSellProductsAtom,
 	isResolvingAtom,
@@ -18,11 +18,11 @@ import {
 	productGalleryAtom,
 	upsellProductsAtom,
 	type Product,
-} from '../../../store/product/context'
-import { ProductEditPage } from './page'
+} from "../../../store/product/context"
+import { ProductEditPage } from "./page"
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-	if (params.productSlug === 'new') {
+	if (params.productSlug === "new") {
 		return {
 			product: newProduct(),
 			productGalleryPromise: Promise.resolve([]),
@@ -37,7 +37,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 	})
 
 	if (!product) {
-		throw new Response('Product Not Found', { status: 404 })
+		throw new Response("Product Not Found", { status: 404 })
 	}
 
 	const productGalleryPromise = getProductGallery(product.id)
@@ -91,13 +91,15 @@ export default function ECProduct({ loaderData }: Route.ComponentProps) {
 		// Resolve promises
 		loaderData.productGalleryPromise
 			.then(setProductGallery)
-			.finally(() => setIsResolving(r => ({ ...r, productGallery: false })))
+			.finally(() => setIsResolving((r) => ({ ...r, productGallery: false })))
 		loaderData.crossSellProductsPromise
 			.then(setCrossSellProducts)
-			.finally(() => setIsResolving(r => ({ ...r, crossSellProducts: false })))
+			.finally(() =>
+				setIsResolving((r) => ({ ...r, crossSellProducts: false })),
+			)
 		loaderData.upsellProductsPromise
 			.then(setUpsellProducts)
-			.finally(() => setIsResolving(r => ({ ...r, upsellProducts: false })))
+			.finally(() => setIsResolving((r) => ({ ...r, upsellProducts: false })))
 
 		return () => {
 			setProduct(null)
@@ -115,17 +117,17 @@ const newProduct = (): NonNullable<Product> => {
 
 	return {
 		id: -1,
-		status: 'DRAFT',
+		status: "DRAFT",
 		slug: `new-product-${now.getTime()}`,
-		name: 'New Product',
+		name: "New Product",
 		subtitle: null,
 		description: null,
 		instructions: [],
 		purchaseNote: null,
 		productOptionId: -1,
-		visibility: 'PUBLIC',
+		visibility: "PUBLIC",
 		password: null,
-		lang: 'en',
+		lang: "en",
 		authorId: null,
 		seoId: -1,
 		publishedAt: null as unknown as Date,
@@ -142,7 +144,7 @@ const newProduct = (): NonNullable<Product> => {
 			salePrice: 0n,
 			saleStartsAt: null as unknown as Date,
 			saleEndsAt: null as unknown as Date,
-			currency: 'USD',
+			currency: "USD",
 			scale: 2,
 			minQtyAllowed: 1,
 			maxQtyAllowed: null,
@@ -154,7 +156,7 @@ const newProduct = (): NonNullable<Product> => {
 			sku: null,
 			identifier: null,
 			manageStock: 0,
-			stockStatus: 'inStock',
+			stockStatus: "inStock",
 			virtual: 0,
 			weight: null,
 			dimension: { length: 0, width: 0, height: 0 },

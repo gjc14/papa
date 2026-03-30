@@ -1,7 +1,7 @@
-import { Button } from '~/components/ui/button'
-import { cn } from '~/lib/utils'
+import { Button } from "~/components/ui/button"
+import { cn } from "~/lib/utils"
 
-import { useProductContext } from '../../hooks/use-product-context'
+import { useProductContext } from "../../hooks/use-product-context"
 
 export const ProductInformation = () => {
 	const {
@@ -30,7 +30,7 @@ export const ProductInformation = () => {
 	const selectedVariantOption = selectedVariant?.option || product.option
 
 	const fmt = new Intl.NumberFormat(storeConfig.language, {
-		style: 'currency',
+		style: "currency",
 		currency: displayPrice.currency,
 		minimumFractionDigits: selectedVariantOption.scale,
 		maximumFractionDigits: selectedVariantOption.scale,
@@ -48,7 +48,7 @@ export const ProductInformation = () => {
 				</div>
 				<div className="my-8 flex items-baseline gap-3">
 					<span className="text-3xl font-light">
-						{hasVariants && !selectedVariant && 'From '}
+						{hasVariants && !selectedVariant && "From "}
 						{fmt.format(displayPrice.price as Intl.StringNumericLiteral)}
 					</span>
 					{hasDiscount && displayOriginalPrice && (
@@ -76,7 +76,7 @@ export const ProductInformation = () => {
 									{name}
 								</h3>
 								<div className="flex flex-wrap gap-2">
-									{Array.from(valueSet).map(value => {
+									{Array.from(valueSet).map((value) => {
 										const isAvailable = isAttributeValueAvailable(name, value)
 										const isSelected = isAttributeValueSelected(name, value)
 
@@ -87,14 +87,14 @@ export const ProductInformation = () => {
 												onMouseEnter={() => displayAttributeImage(name, value)}
 												onMouseLeave={() => displayAttributeImage(undefined)}
 												disabled={!isAvailable}
-												variant={'ghost'}
+												variant={"ghost"}
 												className={cn(
 													`cursor-pointer border-2 text-sm transition-colors`,
 													isSelected
-														? 'border-primary bg-primary text-primary-foreground hover:text-primary-foreground hover:bg-primary/70 dark:hover:bg-primary/70'
+														? "border-primary bg-primary text-primary-foreground hover:text-primary-foreground hover:bg-primary/70 dark:hover:bg-primary/70"
 														: isAvailable
-															? 'hover:border-muted-foreground border-muted'
-															: 'text-muted-foreground/30 cursor-not-allowed line-through',
+															? "hover:border-muted-foreground border-muted"
+															: "text-muted-foreground/30 cursor-not-allowed line-through",
 												)}
 											>
 												{value}
@@ -108,25 +108,25 @@ export const ProductInformation = () => {
 
 					{/* Selected Option Display */}
 					<div
-						className={`space-y-2 border-2 ${selectedVariant ? '' : 'border-dashed'} p-4`}
+						className={`space-y-2 border-2 ${selectedVariant ? "" : "border-dashed"} p-4`}
 					>
 						<h3 className="text-sm font-medium">Selected Variant</h3>
 						{selectedVariant ? (
 							<>
 								<div className="text-muted-foreground text-xs">
-									SKU: {selectedVariantOption.sku || 'N/A'}
+									SKU: {selectedVariantOption.sku || "N/A"}
 								</div>
 								<p className="text-muted-foreground text-sm">
 									{Object.entries(selectedVariant.combination).map(
 										([attrName, value], index) => (
 											<span key={attrName}>
-												{attrName}:{' '}
+												{attrName}:{" "}
 												<span className="text-foreground font-medium">
 													{value}
 												</span>
 												{index <
 													Object.entries(selectedVariant.combination).length -
-														1 && ' ⨉ '}
+														1 && " ⨉ "}
 											</span>
 										),
 									)}

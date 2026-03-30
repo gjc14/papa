@@ -5,12 +5,12 @@
 		@apply block h-auto max-w-full;
 	}
 
-	img:not([data-type='emoji'] img) {
+	img:not([data-type="emoji"] img) {
 		margin: 2rem 0;
 		outline: 0.125rem solid transparent;
 	}
 
-	img:not([data-type='emoji'] img).ProseMirror-selectednode {
+	img:not([data-type="emoji"] img).ProseMirror-selectednode {
 		@apply outline-yellow-500;
 	}
 

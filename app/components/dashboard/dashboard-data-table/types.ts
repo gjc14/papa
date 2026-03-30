@@ -8,7 +8,7 @@ import {
 	type SortingState,
 	type TableOptions,
 	type Table as TableType,
-} from '@tanstack/react-table'
+} from "@tanstack/react-table"
 
 export interface DashboardDataTableProps<TData, TValue> {
 	/** You should not depend on the table state from this ref directly */
@@ -75,8 +75,8 @@ export interface DashboardDataTableProps<TData, TValue> {
 	 * @link [Should You Use Client-Side Pagination?](https://tanstack.com/table/v8/docs/guide/pagination#should-you-use-client-side-pagination)
 	 */
 	server?: {
-		rowCount?: TableOptions<TData>['rowCount']
-		pageCount?: TableOptions<TData>['pageCount']
+		rowCount?: TableOptions<TData>["rowCount"]
+		pageCount?: TableOptions<TData>["pageCount"]
 
 		/** External pagination state. Falls back to internal state when omitted. */
 		pagination?: PaginationState
@@ -85,12 +85,12 @@ export interface DashboardDataTableProps<TData, TValue> {
 		/** External column filters state. Falls back to `undefined` when omitted. */
 		columnFilters?: ColumnFiltersState
 		/** External global filter value. Falls back to `undefined` when omitted. */
-		globalFilter?: GlobalFilterTableState['globalFilter']
+		globalFilter?: GlobalFilterTableState["globalFilter"]
 
 		onPaginationChange?: OnChangeFn<PaginationState>
 		onSortingChange?: OnChangeFn<SortingState>
 		onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>
-		onGlobalFilterChange?: OnChangeFn<GlobalFilterTableState['globalFilter']>
+		onGlobalFilterChange?: OnChangeFn<GlobalFilterTableState["globalFilter"]>
 	}
 
 	/**
@@ -145,7 +145,7 @@ export interface DashboardDataTableProps<TData, TValue> {
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/global-filtering#globalfilterfn)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/global-filtering)
 	 */
-	globalFilterFn?: TableOptions<TData>['globalFilterFn']
+	globalFilterFn?: TableOptions<TData>["globalFilterFn"]
 
 	className?: string
 }

@@ -1,4 +1,4 @@
-import type { ServiceSystemEndpoints } from './type'
+import type { ServiceSystemEndpoints } from "./type"
 
 const SystemEndpoints: ServiceSystemEndpoints[] = []
 

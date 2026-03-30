@@ -1,30 +1,30 @@
-import type { Route } from './+types/route'
-import { data, Link, useLocation } from 'react-router'
+import type { Route } from "./+types/route"
+import { data, Link, useLocation } from "react-router"
 
-import { ArrowLeft, HeartCrack } from 'lucide-react'
+import { ArrowLeft, HeartCrack } from "lucide-react"
 
-import { createMeta } from '~/lib/utils/seo'
+import { createMeta } from "~/lib/utils/seo"
 
-import { getPostBySlug } from '../../lib/db/post.server'
-import { Post } from '../components/post'
-import { fetchPost, headers, postServerMemoryCache, TTL } from './cache'
+import { getPostBySlug } from "../../lib/db/post.server"
+import { Post } from "../components/post"
+import { fetchPost, headers, postServerMemoryCache, TTL } from "./cache"
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const { searchParams } = url
-	const preview = searchParams.get('preview') === 'true'
+	const preview = searchParams.get("preview") === "true"
 
 	const { postSlug } = params
 
 	if (preview) {
-		const { post, nextPost, prevPost } = await getPostBySlug(postSlug, 'DRAFT')
+		const { post, nextPost, prevPost } = await getPostBySlug(postSlug, "DRAFT")
 		const meta = post?.seo ? createMeta(post.seo, url) : null
 
 		return data(
 			{ meta, post, nextPost, prevPost },
 			{
 				headers: {
-					'Cache-Control': 'no-store',
+					"Cache-Control": "no-store",
 				},
 			},
 		)
@@ -80,7 +80,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
 			)}
 
 			<Link
-				to={'..' + search}
+				to={".." + search}
 				className="mb-3 inline-flex"
 				title="Go back"
 				aria-label="Go back"

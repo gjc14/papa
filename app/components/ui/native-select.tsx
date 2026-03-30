@@ -1,22 +1,22 @@
-import * as React from 'react'
+import * as React from "react"
 
-import { CaretDownIcon } from '@phosphor-icons/react'
+import { CaretDownIcon } from "@phosphor-icons/react"
 
-import { cn } from '~/lib/utils/index'
+import { cn } from "~/lib/utils/index"
 
-type NativeSelectProps = Omit<React.ComponentProps<'select'>, 'size'> & {
-	size?: 'sm' | 'default'
+type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
+	size?: "sm" | "default"
 }
 
 function NativeSelect({
 	className,
-	size = 'default',
+	size = "default",
 	...props
 }: NativeSelectProps) {
 	return (
 		<div
 			className={cn(
-				'group/native-select relative w-fit has-[select:disabled]:opacity-50',
+				"group/native-select relative w-fit has-[select:disabled]:opacity-50",
 				className,
 			)}
 			data-slot="native-select-wrapper"
@@ -37,14 +37,14 @@ function NativeSelect({
 	)
 }
 
-function NativeSelectOption({ ...props }: React.ComponentProps<'option'>) {
+function NativeSelectOption({ ...props }: React.ComponentProps<"option">) {
 	return <option data-slot="native-select-option" {...props} />
 }
 
 function NativeSelectOptGroup({
 	className,
 	...props
-}: React.ComponentProps<'optgroup'>) {
+}: React.ComponentProps<"optgroup">) {
 	return (
 		<optgroup
 			data-slot="native-select-optgroup"

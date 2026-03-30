@@ -1,12 +1,12 @@
 /**
  * Danger zone for post editer
  */
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
-import { Button } from '~/components/ui/button'
-import { Separator } from '~/components/ui/separator'
+import { Button } from "~/components/ui/button"
+import { Separator } from "~/components/ui/separator"
 
-import { isDeleteAlertOpenAtom, postAtom } from '../../context'
+import { isDeleteAlertOpenAtom, postAtom } from "../../context"
 
 export const DangerZone = () => {
 	const [post] = useAtom(postAtom)
@@ -26,7 +26,7 @@ export const DangerZone = () => {
 
 				<Button
 					onClick={() => setIsDeleteAlertOpen(true)}
-					variant={'destructive'}
+					variant={"destructive"}
 				>
 					Delete Post
 				</Button>

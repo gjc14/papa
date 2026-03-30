@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
-import { useFetcher, useNavigate } from 'react-router'
+import { useEffect } from "react"
+import { useFetcher, useNavigate } from "react-router"
 
-import { useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { Loader2 } from 'lucide-react'
+import { useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
+import { Loader2 } from "lucide-react"
 
 import {
 	AlertDialog,
@@ -14,19 +14,19 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '~/components/ui/alert-dialog'
-import { useFetcherNotification } from '~/hooks/use-notification'
+} from "~/components/ui/alert-dialog"
+import { useFetcherNotification } from "~/hooks/use-notification"
 
-import { isDeleteAlertOpenAtom, isDeletingAtom, postAtom } from '../../context'
+import { isDeleteAlertOpenAtom, isDeletingAtom, postAtom } from "../../context"
 
 export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 	const fetcher = useFetcher()
 	const navigate = useNavigate()
 	useFetcherNotification(fetcher)
 
-	const isSubmitting = fetcher.state === 'submitting'
+	const isSubmitting = fetcher.state === "submitting"
 	const method = fetcher.formMethod
-	const isDeleting = isSubmitting && method === 'DELETE'
+	const isDeleting = isSubmitting && method === "DELETE"
 
 	const [post] = useAtom(postAtom)
 	const [, setIsDeleting] = useAtom(isDeletingAtom)
@@ -42,12 +42,12 @@ export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 
 	useEffect(() => {
 		if (
-			fetcher.state === 'loading' &&
+			fetcher.state === "loading" &&
 			fetcher.data &&
-			fetcher.formMethod === 'DELETE' &&
-			'msg' in fetcher.data
+			fetcher.formMethod === "DELETE" &&
+			"msg" in fetcher.data
 		) {
-			navigate('/dashboard/blog')
+			navigate("/dashboard/blog")
 		}
 	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
 
@@ -59,9 +59,9 @@ export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 		fetcher.submit(
 			{ id: post.id },
 			{
-				method: 'DELETE',
-				action: '/dashboard/blog/resource',
-				encType: 'application/json',
+				method: "DELETE",
+				action: "/dashboard/blog/resource",
+				encType: "application/json",
 			},
 		)
 	}
@@ -74,7 +74,7 @@ export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 						Your post will be deleted permanently!
 					</AlertDialogTitle>
 					<AlertDialogDescription>
-						Are you sure to delete{' '}
+						Are you sure to delete{" "}
 						<span className="text-primary font-bold">{post.title}</span>? This
 						action cannot be undone. (id: {post.id}).
 					</AlertDialogDescription>
@@ -83,7 +83,7 @@ export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						disabled={isDeleting}
-						onClick={e => {
+						onClick={(e) => {
 							e.preventDefault()
 							handleDelete()
 							setIsDeleting(true)

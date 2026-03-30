@@ -1,7 +1,7 @@
-import pkg from 'pg'
-import { z } from 'zod'
+import pkg from "pg"
+import { z } from "zod"
 
-import { capitalize } from '~/lib/utils'
+import { capitalize } from "~/lib/utils"
 
 const { DatabaseError } = pkg
 
@@ -18,25 +18,25 @@ export const handleError = (
 ) => {
 	const { errorMessage } = options
 	if (error instanceof z.ZodError) {
-		console.error('handleError:', error.message)
+		console.error("handleError:", error.message)
 		return {
-			err: 'Internal error: Invalid arguments',
+			err: "Internal error: Invalid arguments",
 		}
 	}
 	if (error instanceof DatabaseError) {
-		console.error('handleError:', error)
+		console.error("handleError:", error)
 		return {
-			err: capitalize(error.message) || error.detail || 'Database error',
+			err: capitalize(error.message) || error.detail || "Database error",
 		}
 	}
 	if (error instanceof Error) {
-		console.error('handleError:', error.message)
+		console.error("handleError:", error.message)
 		return {
 			err: error.message,
 		}
 	}
-	console.error('handleError:', error)
+	console.error("handleError:", error)
 	return {
-		err: errorMessage ?? 'Internal error: Unknown error',
+		err: errorMessage ?? "Internal error: Unknown error",
 	}
 }

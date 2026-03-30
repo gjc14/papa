@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
-import { Outlet, useNavigation } from 'react-router'
+import { useEffect, useState } from "react"
+import { Outlet, useNavigation } from "react-router"
 
-import { BlogLoading } from './components/blog-loading'
-import { CTA } from './components/cta'
-import { Footer } from './components/footer'
-import { Nav } from './components/nav'
+import { BlogLoading } from "./components/blog-loading"
+import { CTA } from "./components/cta"
+import { Footer } from "./components/footer"
+import { Nav } from "./components/nav"
 
 export default function Blog() {
 	const navigation = useNavigation()
-	const isLoading = navigation.state === 'loading'
+	const isLoading = navigation.state === "loading"
 
 	const [showLoading, setShowLoading] = useState(false)
 

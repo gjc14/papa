@@ -1,26 +1,26 @@
-import { Outlet } from 'react-router'
+import { Outlet } from "react-router"
 
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
-import { Spinner } from '~/components/ui/spinner'
+import { Spinner } from "~/components/ui/spinner"
 import {
 	AnimatedNav,
 	type RouteButton,
-} from '~/components/animated-horizontal-nav'
+} from "~/components/animated-horizontal-nav"
 import {
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
+} from "~/components/dashboard/dashboard-wrapper"
 
-import { dashboardContextAtom } from '../layout/context'
+import { dashboardContextAtom } from "../layout/context"
 
 const DashboardCompanyRoutes: RouteButton[] = [
-	{ to: '/dashboard/company', title: 'Profile' },
-	{ to: '/dashboard/company/billing', title: 'Billing' },
-	{ to: '/dashboard/company/notification', title: 'Notification' },
-	{ to: '/dashboard/company/security', title: 'Security' },
+	{ to: "/dashboard/company", title: "Profile" },
+	{ to: "/dashboard/company/billing", title: "Billing" },
+	{ to: "/dashboard/company/notification", title: "Notification" },
+	{ to: "/dashboard/company/security", title: "Security" },
 ]
 
 export default function DashboardCompany() {
@@ -32,10 +32,10 @@ export default function DashboardCompany() {
 			<DashboardHeader>
 				<DashboardTitle className="w-full">
 					<AnimatedNav
-						routes={DashboardCompanyRoutes.map(route => ({
+						routes={DashboardCompanyRoutes.map((route) => ({
 							...route,
 							onClick: () =>
-								setDashboardContext(prev => ({
+								setDashboardContext((prev) => ({
 									...prev,
 									navigation: { showGlobalLoader: false },
 								})),

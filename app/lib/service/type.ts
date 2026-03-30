@@ -4,13 +4,13 @@ import type {
 	prefix,
 	route,
 	RouteConfig,
-} from '@react-router/dev/routes'
+} from "@react-router/dev/routes"
 
-import type { SidebarPrimaryItem } from '~/components/dashboard/sidebar/sidebar-primary'
-import type { SidebarSecondaryItem } from '~/components/dashboard/sidebar/sidebar-secondary'
-import type { ServiceDashboardConfig } from '~/components/dashboard/sidebar/sidebar-service'
+import type { SidebarPrimaryItem } from "~/components/dashboard/sidebar/sidebar-primary"
+import type { SidebarSecondaryItem } from "~/components/dashboard/sidebar/sidebar-secondary"
+import type { ServiceDashboardConfig } from "~/components/dashboard/sidebar/sidebar-service"
 
-import type { RobotsConfig, SitemapUrlConfig } from './utils'
+import type { RobotsConfig, SitemapUrlConfig } from "./utils"
 
 type RouteHelper = {
 	index: typeof index

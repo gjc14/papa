@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from "react"
 
-import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { MoreVertical, Plus, XIcon } from 'lucide-react'
-import { nanoid } from 'nanoid'
+import { atom, useAtomValue, useSetAtom } from "jotai"
+import { MoreVertical, Plus, XIcon } from "lucide-react"
+import { nanoid } from "nanoid"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Card,
 	CardContent,
@@ -12,8 +12,8 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog'
+} from "~/components/ui/card"
+import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -22,26 +22,26 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { Field, FieldGroup, FieldLabel, FieldSet } from '~/components/ui/field'
-import { Input } from '~/components/ui/input'
+} from "~/components/ui/dropdown-menu"
+import { Field, FieldGroup, FieldLabel, FieldSet } from "~/components/ui/field"
+import { Input } from "~/components/ui/input"
 import {
 	Item,
 	ItemActions,
 	ItemContent,
 	ItemDescription,
 	ItemTitle,
-} from '~/components/ui/item'
+} from "~/components/ui/item"
 
-import { productAtom } from '../../../../store/product/context'
+import { productAtom } from "../../../../store/product/context"
 
 const productInstructionsAtom = atom(
-	get =>
+	(get) =>
 		get(productAtom)?.instructions.sort((a, b) => a.order - b.order) ?? null,
 )
 
 type InstructionsType = NonNullable<
-	NonNullable<ReturnType<typeof productAtom.read>>['instructions']
+	NonNullable<ReturnType<typeof productAtom.read>>["instructions"]
 >[number]
 
 type InstructionWithId = InstructionsType & { _id: string }
@@ -53,7 +53,7 @@ export const Instructions = () => {
 	// useMemo to ensure each instruction has a unique and stable _id
 	const instructionsWithIds = useMemo<InstructionWithId[]>(() => {
 		return productInstructions
-			? productInstructions.map(d => ({
+			? productInstructions.map((d) => ({
 					...d,
 					_id: (d as InstructionWithId)._id || nanoid(),
 				}))
@@ -63,11 +63,11 @@ export const Instructions = () => {
 	if (!productInstructions) return null
 
 	const handleUpdateInstruction = (updatedInstruction: InstructionWithId) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
-				instructions: instructionsWithIds.map(d =>
+				instructions: instructionsWithIds.map((d) =>
 					d._id === updatedInstruction._id ? updatedInstruction : d,
 				),
 			}
@@ -75,11 +75,11 @@ export const Instructions = () => {
 	}
 
 	const handleDeleteInstruction = (id: string) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
-				instructions: instructionsWithIds.filter(d => d._id !== id),
+				instructions: instructionsWithIds.filter((d) => d._id !== id),
 			}
 		})
 	}
@@ -97,7 +97,7 @@ export const Instructions = () => {
 				{instructionsWithIds.length > 0 ? (
 					instructionsWithIds
 						.sort((a, b) => a.order - b.order)
-						.map(i => (
+						.map((i) => (
 							<InstructionEditDialog
 								key={i._id}
 								instruction={i}
@@ -105,9 +105,9 @@ export const Instructions = () => {
 							>
 								<Item variant="outline" className="overflow-auto">
 									<ItemContent>
-										<ItemTitle>{i.title || 'Untitled'}</ItemTitle>
+										<ItemTitle>{i.title || "Untitled"}</ItemTitle>
 										<ItemDescription>
-											{i.content || 'No content'}
+											{i.content || "No content"}
 										</ItemDescription>
 									</ItemContent>
 									<ItemActions>
@@ -152,8 +152,8 @@ export const Instructions = () => {
 			<CardFooter>
 				<InstructionEditDialog
 					instruction={createNewInstruction(instructionsWithIds)}
-					onSave={i =>
-						setProduct(prev => {
+					onSave={(i) =>
+						setProduct((prev) => {
 							if (!prev) return prev
 							return {
 								...prev,
@@ -182,8 +182,8 @@ export const Instructions = () => {
 export function createNewInstruction(instructionsWithIds: InstructionWithId[]) {
 	return {
 		order: instructionsWithIds.length,
-		title: 'New Instruction',
-		content: 'Content here',
+		title: "New Instruction",
+		content: "Content here",
 		_id: nanoid(),
 	}
 }
@@ -203,7 +203,7 @@ export function InstructionEditDialog({
 	return (
 		<Dialog
 			open={open}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				open && setEditedInstruction(instruction)
 				setOpen(open)
 			}}
@@ -217,7 +217,7 @@ export function InstructionEditDialog({
 							<Input
 								id="title"
 								value={editedInstruction.title}
-								onChange={e =>
+								onChange={(e) =>
 									setEditedInstruction({
 										...editedInstruction,
 										title: e.target.value,
@@ -229,8 +229,8 @@ export function InstructionEditDialog({
 							<FieldLabel htmlFor="content">Content</FieldLabel>
 							<Input
 								id="content"
-								value={editedInstruction.content || ''}
-								onChange={e =>
+								value={editedInstruction.content || ""}
+								onChange={(e) =>
 									setEditedInstruction({
 										...editedInstruction,
 										content: e.target.value,

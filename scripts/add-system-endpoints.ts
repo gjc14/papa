@@ -1,10 +1,10 @@
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { mkdir, writeFile } from "fs/promises"
+import { join } from "path"
 
-import { askInput } from './utils'
+import { askInput } from "./utils"
 
 try {
-	const demoRoute = await askInput('Create demo route', 'demo')
+	const demoRoute = await askInput("Create demo route", "demo")
 
 	// Create directories
 	await mkdir(join(process.cwd(), `app/routes/services/${demoRoute}`), {
@@ -49,11 +49,11 @@ registerSystemEndpoints({
 	console.log(
 		`🎉 Demo [${demoRoute}] created successfully!
 
-		+ 1 files created: ${configFilePath.split('app/routes')[1]}
+		+ 1 files created: ${configFilePath.split("app/routes")[1]}
 
         -> Navigate to '/robots.txt' & '/sitemap.xml' to see in action
-        `.replace(/^[ \t]+/gm, ''),
+        `.replace(/^[ \t]+/gm, ""),
 	)
 } catch (err) {
-	console.error('Error creating service files:', err)
+	console.error("Error creating service files:", err)
 }

@@ -1,19 +1,19 @@
-import { type ActionFunctionArgs } from 'react-router'
+import { type ActionFunctionArgs } from "react-router"
 
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { z } from 'zod'
+import { createInsertSchema, createSelectSchema } from "drizzle-zod"
+import { z } from "zod"
 
-import { type ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
+import { type ActionResponse } from "~/lib/utils"
+import { handleError } from "~/lib/utils/server"
 import {
 	createPost,
 	deletePost,
 	deletePosts,
 	updatePost,
-} from '~/routes/services/blog/lib/db/post.server'
+} from "~/routes/services/blog/lib/db/post.server"
 
-import { category, post, tag } from '../lib/db/schema'
-import { postsServerMemoryCache } from './index/cache'
+import { category, post, tag } from "../lib/db/schema"
+import { postsServerMemoryCache } from "./index/cache"
 
 /**
  * createInsertSchema(post) is used for create and update
@@ -37,7 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const jsonData = (await request.json()) as unknown
 
 	switch (request.method) {
-		case 'POST':
+		case "POST":
 			try {
 				// console.log('Creating new post with data:', jsonData)
 				const postData = postInsertUpdateSchema.parse(jsonData)
@@ -59,14 +59,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 				return handleError(error, request)
 			}
 
-		case 'PUT':
+		case "PUT":
 			try {
 				const postData = postInsertUpdateSchema.parse(jsonData)
 				const taxonomyData = taxonomyInsertUpdateSchema.parse(jsonData)
 				const seoData = seoInsertUpdateSchema.parse(jsonData)
 
 				if (!postData.id) {
-					throw new Error('Post ID is required for update')
+					throw new Error("Post ID is required for update")
 				}
 
 				const { post } = await updatePost({
@@ -85,15 +85,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 				return handleError(error, request)
 			}
 
-		case 'DELETE':
+		case "DELETE":
 			try {
 				// Bulk delete ({ ids: number[] })
 				if (
 					jsonData &&
-					typeof jsonData === 'object' &&
-					'ids' in jsonData &&
+					typeof jsonData === "object" &&
+					"ids" in jsonData &&
 					Array.isArray(jsonData.ids) &&
-					jsonData.ids.every((id: unknown) => typeof id === 'number')
+					jsonData.ids.every((id: unknown) => typeof id === "number")
 				) {
 					// When bulk deleting, jsonData can be an array
 					const { count } = await deletePosts(jsonData.ids)
@@ -107,9 +107,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 				// Single delete
 				if (
 					jsonData &&
-					typeof jsonData === 'object' &&
-					'id' in jsonData &&
-					typeof jsonData.id === 'number'
+					typeof jsonData === "object" &&
+					"id" in jsonData &&
+					typeof jsonData.id === "number"
 				) {
 					const { post } = await deletePost(jsonData.id)
 
@@ -118,13 +118,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 						msg: `Post ${post.title} deleted successfully`,
 					} satisfies ActionResponse
 				} else {
-					throw new Error('Invalid arguments')
+					throw new Error("Invalid arguments")
 				}
 			} catch (error) {
 				return handleError(error, request)
 			}
 
 		default:
-			throw new Response('', { status: 405, statusText: 'Method Not Allowed' })
+			throw new Response("", { status: 405, statusText: "Method Not Allowed" })
 	}
 }

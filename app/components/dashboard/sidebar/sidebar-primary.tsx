@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router'
+import { useState } from "react"
+import { NavLink } from "react-router"
 
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight } from "lucide-react"
 
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from '~/components/ui/collapsible'
+} from "~/components/ui/collapsible"
 import {
 	SidebarGroup,
 	SidebarMenu,
@@ -17,7 +17,7 @@ import {
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
-} from '~/components/ui/sidebar'
+} from "~/components/ui/sidebar"
 
 export interface SidebarPrimaryItem {
 	title: string
@@ -52,8 +52,8 @@ function SidebarPrimaryItem({ item }: { item: SidebarPrimaryItem }) {
 				<SidebarMenuItem>
 					<NavLink
 						to={
-							'/dashboard' +
-							(item.pathname.startsWith('/')
+							"/dashboard" +
+							(item.pathname.startsWith("/")
 								? item.pathname
 								: `/${item.pathname}`)
 						}
@@ -65,8 +65,8 @@ function SidebarPrimaryItem({ item }: { item: SidebarPrimaryItem }) {
 								tooltip={item.title}
 								className={`cursor-pointer ${
 									isActive
-										? 'bg-sidebar-accent text-sidebar-accent-foreground'
-										: ''
+										? "bg-sidebar-accent text-sidebar-accent-foreground"
+										: ""
 								}`}
 							>
 								<item.icon />
@@ -86,15 +86,15 @@ function SidebarPrimaryItem({ item }: { item: SidebarPrimaryItem }) {
 							/>
 							<CollapsibleContent>
 								<SidebarMenuSub>
-									{item.sub?.map(subItem => (
+									{item.sub?.map((subItem) => (
 										<SidebarMenuSubItem key={subItem.title}>
 											<NavLink
 												to={
-													'/dashboard' +
-													(item.pathname.startsWith('/')
+													"/dashboard" +
+													(item.pathname.startsWith("/")
 														? item.pathname
 														: `/${item.pathname}`) +
-													(subItem.pathname.startsWith('/')
+													(subItem.pathname.startsWith("/")
 														? subItem.pathname
 														: `/${subItem.pathname}`)
 												}
@@ -105,8 +105,8 @@ function SidebarPrimaryItem({ item }: { item: SidebarPrimaryItem }) {
 													<SidebarMenuSubButton
 														className={
 															isActive
-																? 'bg-sidebar-accent text-sidebar-accent-foreground'
-																: ''
+																? "bg-sidebar-accent text-sidebar-accent-foreground"
+																: ""
 														}
 														render={<span>{subItem.title}</span>}
 													/>
@@ -130,7 +130,7 @@ export function SidebarPrimary({ items }: SidebarPrimaryProps) {
 	return (
 		<SidebarGroup>
 			<SidebarMenu>
-				{items.map(item => (
+				{items.map((item) => (
 					<SidebarPrimaryItem key={item.title} item={item} />
 				))}
 			</SidebarMenu>

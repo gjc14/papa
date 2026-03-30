@@ -1,13 +1,13 @@
-import type { Route } from './+types/route'
+import type { Route } from "./+types/route"
 
-import { createInsertSchema } from 'drizzle-zod'
-import z from 'zod'
+import { createInsertSchema } from "drizzle-zod"
+import z from "zod"
 
-import type { ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
+import type { ActionResponse } from "~/lib/utils"
+import { handleError } from "~/lib/utils/server"
 
-import { ecBrand } from '../../../lib/db/schema'
-import { createEcBrand, deleteEcBrands } from '../../../lib/db/taxonomy.server'
+import { ecBrand } from "../../../lib/db/schema"
+import { createEcBrand, deleteEcBrands } from "../../../lib/db/taxonomy.server"
 
 const brandInsertUpdateSchema = createInsertSchema(ecBrand)
 
@@ -16,16 +16,16 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 	try {
 		switch (request.method) {
-			case 'POST':
+			case "POST":
 				const brandData = brandInsertUpdateSchema.parse(jsonData)
 				const brand = await createEcBrand(brandData)
 				return {
 					msg: `Brand ${brand.name} created successfully`,
 					data: brand,
 				} satisfies ActionResponse
-			case 'PUT':
+			case "PUT":
 				return {} satisfies ActionResponse
-			case 'DELETE':
+			case "DELETE":
 				const deleteData = z
 					.object({ id: z.number(), name: z.string() })
 					.parse(jsonData)

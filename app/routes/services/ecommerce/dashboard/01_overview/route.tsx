@@ -1,13 +1,13 @@
-import { Link } from 'react-router'
+import { Link } from "react-router"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
+} from "~/components/dashboard/dashboard-wrapper"
 
 export default function ECOverview() {
 	return (
@@ -17,7 +17,7 @@ export default function ECOverview() {
 				<DashboardActions>
 					{/* You may put some buttons here */}
 					<Button
-						variant={'ghost'}
+						variant={"ghost"}
 						className="border-2 border-dashed"
 						render={<Link to="/store">Go to Storefront</Link>}
 					/>

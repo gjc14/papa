@@ -1,4 +1,4 @@
-import type { Route } from './+types/route'
+import type { Route } from "./+types/route"
 
 export default function ECReviews({
 	loaderData,

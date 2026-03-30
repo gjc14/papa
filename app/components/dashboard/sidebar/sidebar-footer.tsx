@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate } from "react-router"
 
 import {
 	Bell,
@@ -9,10 +9,10 @@ import {
 	Sparkles,
 	User2,
 	type LucideIcon,
-} from 'lucide-react'
-import { toast } from 'sonner'
+} from "lucide-react"
+import { toast } from "sonner"
 
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,21 +21,21 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
+} from "~/components/ui/dropdown-menu"
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from '~/components/ui/sidebar'
+} from "~/components/ui/sidebar"
 import {
 	CurrentThemeIcon,
 	ThemeDropdownMenuSubTrigger,
-} from '~/components/theme-toggle'
-import { authClient } from '~/lib/auth/auth-client'
-import type { Session } from '~/lib/auth/auth.server'
+} from "~/components/theme-toggle"
+import { authClient } from "~/lib/auth/auth-client"
+import type { Session } from "~/lib/auth/auth.server"
 
 interface SidebarUserProps {
-	user: Session['user']
+	user: Session["user"]
 }
 
 export const SidebarUser = ({ user }: SidebarUserProps) => {
@@ -46,12 +46,12 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 			fetchOptions: {
 				onRequest: () => {},
 				onSuccess: () => {
-					toast.success('Sign out successfully!')
-					navigate('/')
+					toast.success("Sign out successfully!")
+					navigate("/")
 				},
-				onError: ctx => {
+				onError: (ctx) => {
 					console.error(ctx.error)
-					toast.error('Error signing out: ' + ctx.error.message)
+					toast.error("Error signing out: " + ctx.error.message)
 				},
 			},
 		})
@@ -69,7 +69,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 							>
 								<Avatar className="h-8 w-8">
 									<AvatarImage
-										src={user.image || '/placeholders/avatar.png'}
+										src={user.image || "/placeholders/avatar.png"}
 										alt={user.name}
 									/>
 									<AvatarFallback>PA</AvatarFallback>
@@ -84,7 +84,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 					/>
 					<DropdownMenuContent
 						className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
-						side={'top'}
+						side={"top"}
 						align="end"
 						sideOffset={4}
 					>
@@ -93,7 +93,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 								<div className="flex items-center gap-2 px-1 py-1.5">
 									<Avatar className="h-8 w-8">
 										<AvatarImage
-											src={user.image || '/placeholders/avatar.png'}
+											src={user.image || "/placeholders/avatar.png"}
 											alt={user.name}
 										/>
 										<AvatarFallback>PA</AvatarFallback>
@@ -118,7 +118,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 
 							<DropdownMenuSeparator />
 							<DropdownMenuGroup>
-								{DefaultUserOptions.map(option => (
+								{DefaultUserOptions.map((option) => (
 									<ActionButton key={option.title} {...option} />
 								))}
 
@@ -148,24 +148,24 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 
 const DefaultUserOptions: ActionButtonProps[] = [
 	{
-		title: 'My Profile',
+		title: "My Profile",
 		icon: User2,
-		route: '/dashboard/account',
+		route: "/dashboard/account",
 	},
 	{
-		title: 'Billing',
+		title: "Billing",
 		icon: CreditCard,
-		route: '/dashboard/account/billing',
+		route: "/dashboard/account/billing",
 	},
 	{
-		title: 'Notification',
+		title: "Notification",
 		icon: Bell,
-		route: '/dashboard/account/notification',
+		route: "/dashboard/account/notification",
 	},
 	{
-		title: 'Security',
+		title: "Security",
 		icon: Shield,
-		route: '/dashboard/account/security',
+		route: "/dashboard/account/security",
 	},
 ]
 
@@ -195,7 +195,7 @@ const ActionButton = (props: ActionButtonProps) => {
 	return (
 		<DropdownMenuItem
 			className="group flex items-center gap-2"
-			onClick={() => alert(props.title + ' not implemented')}
+			onClick={() => alert(props.title + " not implemented")}
 		>
 			<props.icon
 				size={16}

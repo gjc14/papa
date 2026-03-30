@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
+import { useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
 
 import {
 	AlertDialog,
@@ -10,18 +10,18 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '~/components/ui/alert-dialog'
-import { convertDateFields } from '~/lib/db/utils'
+} from "~/components/ui/alert-dialog"
+import { convertDateFields } from "~/lib/db/utils"
 
-import type { PostWithRelations } from '../../../lib/db/post.server'
+import type { PostWithRelations } from "../../../lib/db/post.server"
 import {
 	editorAtom,
 	isDraftCheckCompleteAtom,
 	isRestoreAlertOpenAtom,
 	postAtom,
 	serverPostAtom,
-} from '../../context'
-import { postLocalStorageKey } from '../../post-slug/utils'
+} from "../../context"
+import { postLocalStorageKey } from "../../post-slug/utils"
 
 /**
  * Display alert and options to restore or discard unsaved changes.
@@ -72,7 +72,7 @@ export const PostRestoreAlert = () => {
 				<AlertDialogHeader>
 					<AlertDialogTitle>Unsaved Changes Detected!</AlertDialogTitle>
 					<AlertDialogDescription>
-						You made some changes to post <strong>{serverPost.title}</strong>{' '}
+						You made some changes to post <strong>{serverPost.title}</strong>{" "}
 						(id: {serverPost.id}) last time. Restore or Discard?
 					</AlertDialogDescription>
 				</AlertDialogHeader>

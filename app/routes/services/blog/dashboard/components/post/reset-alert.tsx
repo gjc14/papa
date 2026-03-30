@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
 import {
 	AlertDialog,
@@ -9,14 +9,14 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '~/components/ui/alert-dialog'
+} from "~/components/ui/alert-dialog"
 
 import {
 	editorAtom,
 	isResetAlertOpenAtom,
 	postAtom,
 	serverPostAtom,
-} from '../../context'
+} from "../../context"
 
 /**
  * Reset current dirty post to its initial state.
@@ -42,7 +42,7 @@ export const PostResetAlert = () => {
 				<AlertDialogHeader>
 					<AlertDialogTitle>You're resetting the post</AlertDialogTitle>
 					<AlertDialogDescription>
-						You are discarding of all unsaved changes for post{' '}
+						You are discarding of all unsaved changes for post{" "}
 						<strong>{post.title}</strong> (id: {post.id}). Are you sure?
 					</AlertDialogDescription>
 				</AlertDialogHeader>

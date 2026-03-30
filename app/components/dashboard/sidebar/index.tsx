@@ -1,23 +1,23 @@
-import { useMatches } from 'react-router'
+import { useMatches } from "react-router"
 
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from "jotai"
 
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-} from '~/components/ui/sidebar'
-import { SidebarService } from '~/components/dashboard/sidebar/sidebar-service'
-import type { Session } from '~/lib/auth/auth.server'
-import { DEFAULT_SERVICE } from '~/lib/service/data'
-import { dashboardContextAtom } from '~/routes/dashboard/layout/context'
+} from "~/components/ui/sidebar"
+import { SidebarService } from "~/components/dashboard/sidebar/sidebar-service"
+import type { Session } from "~/lib/auth/auth.server"
+import { DEFAULT_SERVICE } from "~/lib/service/data"
+import { dashboardContextAtom } from "~/routes/dashboard/layout/context"
 
-import { SidebarUser } from './sidebar-footer'
-import { SidebarPrimary } from './sidebar-primary'
-import { SidebarSecondary } from './sidebar-secondary'
+import { SidebarUser } from "./sidebar-footer"
+import { SidebarPrimary } from "./sidebar-primary"
+import { SidebarSecondary } from "./sidebar-secondary"
 
-export function DashboardSidebar({ user }: { user: Session['user'] }) {
+export function DashboardSidebar({ user }: { user: Session["user"] }) {
 	const matches = useMatches()
 
 	const dashboardContext = useAtomValue(dashboardContextAtom)
@@ -27,15 +27,15 @@ export function DashboardSidebar({ user }: { user: Session['user'] }) {
 	const currentService = (() => {
 		for (const m of [...matches].reverse()) {
 			if (!m) continue
-			const serviceMatch = services.find(s => s.pathname === m.pathname)
+			const serviceMatch = services.find((s) => s.pathname === m.pathname)
 			if (serviceMatch) return serviceMatch
 		}
 		return DEFAULT_SERVICE
 	})()
 
-	if (!currentService) throw new Error('No Service Found (even default one)')
+	if (!currentService) throw new Error("No Service Found (even default one)")
 
-	if (!currentService) throw new Error('No Service Found (even default one)')
+	if (!currentService) throw new Error("No Service Found (even default one)")
 
 	const sidebarPrimaryItems = currentService.sidebar?.primary
 	const sidebarSecondaryItems = currentService.sidebar?.secondary

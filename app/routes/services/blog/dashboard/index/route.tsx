@@ -1,27 +1,27 @@
-import type { Route } from './+types/route'
-import { useEffect, useRef, useState } from 'react'
-import { data, Link, useFetcher } from 'react-router'
+import type { Route } from "./+types/route"
+import { useEffect, useRef, useState } from "react"
+import { data, Link, useFetcher } from "react-router"
 
-import type { Table } from '@tanstack/react-table'
-import { PlusCircle } from 'lucide-react'
+import type { Table } from "@tanstack/react-table"
+import { PlusCircle } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
-import { useFetcherNotification } from '~/hooks/use-notification'
+} from "~/components/dashboard/dashboard-wrapper"
+import { useFetcherNotification } from "~/hooks/use-notification"
 
-import { DashboardDataTable } from '../../../../../components/dashboard/dashboard-data-table'
-import { useSkipper } from '../../../../../components/dashboard/dashboard-data-table/hooks'
-import type { action } from '../resource'
-import { BulkDeleteAlertDialog } from './bulk-delete'
-import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
-import { columns } from './colums'
-import { Filter } from './filters'
+import { DashboardDataTable } from "../../../../../components/dashboard/dashboard-data-table"
+import { useSkipper } from "../../../../../components/dashboard/dashboard-data-table/hooks"
+import type { action } from "../resource"
+import { BulkDeleteAlertDialog } from "./bulk-delete"
+import { fetchPosts, headers, postsServerMemoryCache, TTL } from "./cache"
+import { columns } from "./colums"
+import { Filter } from "./filters"
 
 /**
  * @link [web blog index route](../../../../web/blog/index/route.tsx)
@@ -29,9 +29,9 @@ import { Filter } from './filters'
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const { searchParams } = url
-	const categories = searchParams.get('category')?.split(',')
-	const tags = searchParams.get('tag')?.split(',')
-	const q = searchParams.get('q') || undefined
+	const categories = searchParams.get("category")?.split(",")
+	const tags = searchParams.get("tag")?.split(",")
+	const q = searchParams.get("q") || undefined
 
 	const cacheKey = searchParams.toString()
 	const now = Date.now()
@@ -76,7 +76,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 	}, [loaderData])
 
 	useEffect(() => {
-		if (!mutating && fetcher.data && 'msg' in fetcher.data) {
+		if (!mutating && fetcher.data && "msg" in fetcher.data) {
 			// // Clear selection after successful delete
 			// setRowSelection({})
 			// // Remove deleted rows from deleting state
@@ -127,7 +127,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 					)} */}
 					<Filter q={q} tagFilter={tagFilter} categoryFilter={categoryFilter} />
 					<Button
-						size={'sm'}
+						size={"sm"}
 						nativeButton={false}
 						render={
 							<Link to="/dashboard/blog/new">

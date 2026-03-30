@@ -1,42 +1,42 @@
-import type { Route } from './+types/route'
-import { useEffect } from 'react'
+import type { Route } from "./+types/route"
+import { useEffect } from "react"
 
-import { useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { HeartCrack } from 'lucide-react'
+import { useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
+import { HeartCrack } from "lucide-react"
 
-import { useIsMobile } from '~/hooks/use-mobile'
+import { useIsMobile } from "~/hooks/use-mobile"
 
-import { getPostBySlug } from '../../lib/db/post.server'
-import { Post } from '../../web/components/post'
-import { ContentEditor } from '../components/editor'
-import { Toolbar } from '../components/editor/editor-toolbar'
-import { PostDeleteAlert } from '../components/post/delete-alert'
-import { PostSettings } from '../components/post/post-settings'
-import { PostResetAlert } from '../components/post/reset-alert'
-import { PostRestoreAlert } from '../components/post/restore-alert'
+import { getPostBySlug } from "../../lib/db/post.server"
+import { Post } from "../../web/components/post"
+import { ContentEditor } from "../components/editor"
+import { Toolbar } from "../components/editor/editor-toolbar"
+import { PostDeleteAlert } from "../components/post/delete-alert"
+import { PostSettings } from "../components/post/post-settings"
+import { PostResetAlert } from "../components/post/reset-alert"
+import { PostRestoreAlert } from "../components/post/restore-alert"
 import {
 	isDeleteAlertOpenAtom,
 	isResetAlertOpenAtom,
 	isSettingsOpenAtom,
 	postAtom,
 	serverPostAtom,
-} from '../context'
-import { FloatingToolbar } from './floating-toolbar'
-import { useAutoSaveDraft } from './use-auto-save-draft'
-import { useCheckDraft } from './use-check-draft'
-import { generateNewPost } from './utils'
+} from "../context"
+import { FloatingToolbar } from "./floating-toolbar"
+import { useAutoSaveDraft } from "./use-auto-save-draft"
+import { useCheckDraft } from "./use-check-draft"
+import { generateNewPost } from "./utils"
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
-	const isCreate = params.postSlug === 'new'
+	const isCreate = params.postSlug === "new"
 	if (isCreate) {
 		return { post: { post: null } }
 	}
 
 	// Get post data from database
-	process.env.NODE_ENV === 'development' && console.time('getPostBySlug')
-	const post = await getPostBySlug(params.postSlug, 'EDIT')
-	process.env.NODE_ENV === 'development' && console.timeEnd('getPostBySlug')
+	process.env.NODE_ENV === "development" && console.time("getPostBySlug")
+	const post = await getPostBySlug(params.postSlug, "EDIT")
+	process.env.NODE_ENV === "development" && console.timeEnd("getPostBySlug")
 
 	return { post }
 }
@@ -51,7 +51,7 @@ export default function DashboardSlugPost({
 	const adminMatch = matches[1]
 	const { admin } = adminMatch.data
 
-	const isCreate = params.postSlug === 'new'
+	const isCreate = params.postSlug === "new"
 	const currentPost = isCreate ? generateNewPost(admin) : sPost.post
 
 	const isMobile = useIsMobile()
@@ -107,13 +107,13 @@ export default function DashboardSlugPost({
 
 			{/* Main Content Section */}
 			<section
-				className={`relative h-full overflow-y-auto py-6 ${isMobile ? 'pb-16' : 'pt-16'}`}
+				className={`relative h-full overflow-y-auto py-6 ${isMobile ? "pb-16" : "pt-16"}`}
 			>
 				<div className="mx-auto w-full max-w-prose px-3">
 					<Post
 						post={post}
 						editable
-						onTitleChange={title => {
+						onTitleChange={(title) => {
 							setPost({
 								...post,
 								title,

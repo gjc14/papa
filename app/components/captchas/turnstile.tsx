@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
 interface Turnstile {
 	render: (element: HTMLElement, options: { sitekey: string }) => void
@@ -18,13 +18,13 @@ export const TurnstileWidget = () => {
 		if (initializedRef.current) return
 		initializedRef.current = true
 
-		const scriptId = 'cf-turnstile-script'
+		const scriptId = "cf-turnstile-script"
 		const existingScript = document.getElementById(scriptId)
 
 		if (!existingScript) {
-			const script = document.createElement('script')
+			const script = document.createElement("script")
 			script.src =
-				'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+				"https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
 			script.async = true
 			script.defer = true
 			script.id = scriptId
@@ -52,26 +52,26 @@ export const TurnstileSiteVerify = async (
 	turnstileResponse: string,
 	TURNSTILE_SECRET_KEY: string,
 ): Promise<boolean> => {
-	const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+	const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 	const data = new URLSearchParams()
-	data.append('secret', TURNSTILE_SECRET_KEY)
-	data.append('response', turnstileResponse)
+	data.append("secret", TURNSTILE_SECRET_KEY)
+	data.append("response", turnstileResponse)
 
 	const res = await fetch(url, {
-		method: 'POST',
+		method: "POST",
 		body: data,
 		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
+			"Content-Type": "application/x-www-form-urlencoded",
 		},
 	})
 	if (!res.ok) {
-		console.error('Network response was not ok', res.status, res.statusText)
+		console.error("Network response was not ok", res.status, res.statusText)
 		return false
 	}
 
 	const result = await res.json()
 	if (!result.success) {
-		console.error('Turnstile verification failed', result)
+		console.error("Turnstile verification failed", result)
 		return false
 	}
 	return true

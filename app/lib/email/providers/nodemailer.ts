@@ -1,7 +1,7 @@
-import { render } from '@react-email/render'
-import * as nodemailer from 'nodemailer'
+import { render } from "@react-email/render"
+import * as nodemailer from "nodemailer"
 
-import type { EmailOptions, EmailProvider } from '../types'
+import type { EmailOptions, EmailProvider } from "../types"
 
 export class NodemailerProvider implements EmailProvider {
 	private transporter: nodemailer.Transporter
@@ -34,13 +34,13 @@ export class NodemailerProvider implements EmailProvider {
 
 			await this.transporter.sendMail({
 				from: options.from,
-				to: Array.isArray(options.to) ? options.to.join(', ') : options.to,
+				to: Array.isArray(options.to) ? options.to.join(", ") : options.to,
 				subject: options.subject,
 				html,
 				text: options.text,
 			})
 		} catch (error) {
-			console.error('Error sending email via Nodemailer:', error)
+			console.error("Error sending email via Nodemailer:", error)
 			throw new Error(`Failed to send email via Nodemailer: ${error}`)
 		}
 	}
@@ -51,7 +51,7 @@ export class NodemailerProvider implements EmailProvider {
 			await this.transporter.verify()
 			return true
 		} catch (error) {
-			console.error('Nodemailer connection verification failed:', error)
+			console.error("Nodemailer connection verification failed:", error)
 			return false
 		}
 	}

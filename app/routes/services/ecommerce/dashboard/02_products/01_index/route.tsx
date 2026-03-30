@@ -1,37 +1,37 @@
-import type { Route } from './+types/route'
-import { useEffect, useRef, useState } from 'react'
-import { Link, useFetcher } from 'react-router'
+import type { Route } from "./+types/route"
+import { useEffect, useRef, useState } from "react"
+import { Link, useFetcher } from "react-router"
 
-import { type ColumnDef, type Table } from '@tanstack/react-table'
-import { useAtomValue } from 'jotai'
-import { PlusCircle } from 'lucide-react'
+import { type ColumnDef, type Table } from "@tanstack/react-table"
+import { useAtomValue } from "jotai"
+import { PlusCircle } from "lucide-react"
 
-import { Badge } from '~/components/ui/badge'
-import { Button } from '~/components/ui/button'
-import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
 import {
 	DashboardDataTable,
 	DashboardDataTableMoreMenu,
-} from '~/components/dashboard/dashboard-data-table'
-import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
+} from "~/components/dashboard/dashboard-data-table"
+import { useSkipper } from "~/components/dashboard/dashboard-data-table/hooks"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
-import { useFetcherNotification } from '~/hooks/use-notification'
+} from "~/components/dashboard/dashboard-wrapper"
+import { useFetcherNotification } from "~/hooks/use-notification"
 
-import { getProducts } from '../../../lib/db/product.server'
-import { storeConfigAtom } from '../../../store/product/context'
+import { getProducts } from "../../../lib/db/product.server"
+import { storeConfigAtom } from "../../../store/product/context"
 import {
 	renderPrice,
 	toScaledDecimalString,
-} from '../../../store/product/utils/price'
+} from "../../../store/product/utils/price"
 
 export const loader = async () => {
-	const products = await getProducts({ relations: true, status: 'ALL' })
+	const products = await getProducts({ relations: true, status: "ALL" })
 	return { products }
 }
 
@@ -53,7 +53,7 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 				<DashboardTitle title="Products"></DashboardTitle>
 				<DashboardActions>
 					<Button
-						size={'sm'}
+						size={"sm"}
 						render={
 							<Link to="new">
 								<PlusCircle /> New Product
@@ -81,8 +81,8 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 export const columns: ColumnDef<Product>[] = [
 	// TODO: stock management
 	{
-		accessorKey: 'id',
-		header: 'Image',
+		accessorKey: "id",
+		header: "Image",
 		cell: ({ row }) => {
 			const storeConfig = useAtomValue(storeConfigAtom)
 			const slug = row.original.slug
@@ -109,8 +109,8 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'name',
-		header: 'Name',
+		accessorKey: "name",
+		header: "Name",
 		cell: ({ row }) => {
 			const slug = row.original.slug
 			const name = row.original.name
@@ -125,8 +125,8 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorFn: originalRow => originalRow.option.price,
-		header: 'Price',
+		accessorFn: (originalRow) => originalRow.option.price,
+		header: "Price",
 		cell: ({ row }) => {
 			const { hasDiscount, formattedPrice, formattedOriginalPrice } =
 				renderPrice(row.original.option)
@@ -161,35 +161,35 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorFn: originalRow => originalRow.option.sku,
-		header: 'SKU',
-		cell: ({ row }) => row.original.option.sku || '—',
+		accessorFn: (originalRow) => originalRow.option.sku,
+		header: "SKU",
+		cell: ({ row }) => row.original.option.sku || "—",
 	},
 	{
-		accessorKey: 'status',
-		header: 'Status',
+		accessorKey: "status",
+		header: "Status",
 		cell: ({ row }) => {
 			const status = row.original.status
-			let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
-				'default'
+			let variant: "default" | "secondary" | "destructive" | "outline" =
+				"default"
 			switch (status) {
-				case 'DRAFT':
-					variant = 'secondary'
+				case "DRAFT":
+					variant = "secondary"
 					break
-				case 'PUBLISHED':
-					variant = 'default'
+				case "PUBLISHED":
+					variant = "default"
 					break
-				case 'SCHEDULED':
-					variant = 'default'
+				case "SCHEDULED":
+					variant = "default"
 					break
-				case 'TRASHED':
-					variant = 'destructive'
+				case "TRASHED":
+					variant = "destructive"
 					break
-				case 'ARCHIVED':
-					variant = 'outline'
+				case "ARCHIVED":
+					variant = "outline"
 					break
-				case 'OTHER':
-					variant = 'outline'
+				case "OTHER":
+					variant = "outline"
 					break
 				default:
 					break
@@ -202,12 +202,12 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'updatedAt',
-		header: 'Updated At',
-		cell: ({ row }) => row.original.updatedAt.toLocaleString('zh-TW'),
+		accessorKey: "updatedAt",
+		header: "Updated At",
+		cell: ({ row }) => row.original.updatedAt.toLocaleString("zh-TW"),
 	},
 	{
-		id: '_actions',
+		id: "_actions",
 		cell: ({ row }) => {
 			const fetcher = useFetcher()
 			const { mutating } = useFetcherNotification(fetcher)
@@ -222,9 +222,9 @@ export const columns: ColumnDef<Product>[] = [
 					deletable={true}
 					onDelete={() => {
 						fetcher.submit([{ id, name }], {
-							method: 'DELETE',
+							method: "DELETE",
 							action: `resource`,
-							encType: 'application/json',
+							encType: "application/json",
 						})
 					}}
 					permanent={false}

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import type { CellContext } from '@tanstack/react-table'
+import type { CellContext } from "@tanstack/react-table"
 
-import { Input } from '~/components/ui/input'
+import { Input } from "~/components/ui/input"
 
 export function EditableCell<TData>({
 	getValue,
@@ -26,8 +26,8 @@ export function EditableCell<TData>({
 
 	return (
 		<Input
-			value={(value || '') as string}
-			onChange={e => setValue(e.target.value)}
+			value={(value || "") as string}
+			onChange={(e) => setValue(e.target.value)}
 			onBlur={onBlur}
 			className="h-12 border-0 px-2 py-1 focus-visible:ring-inset"
 		/>

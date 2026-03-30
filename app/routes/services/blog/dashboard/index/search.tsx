@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from 'react'
-import { Form, useSubmit } from 'react-router'
+import { useEffect, useMemo } from "react"
+import { Form, useSubmit } from "react-router"
 
-import debounce from 'lodash/debounce'
+import debounce from "lodash/debounce"
 
-import { InputSearch } from '~/components/ui/xui/input-search'
+import { InputSearch } from "~/components/ui/xui/input-search"
 
 export const Search = ({
 	q,
@@ -16,9 +16,9 @@ export const Search = ({
 
 	// Sync search input with URL param
 	useEffect(() => {
-		const searchField = document.getElementById('q')
+		const searchField = document.getElementById("q")
 		if (searchField instanceof HTMLInputElement) {
-			searchField.value = q || ''
+			searchField.value = q || ""
 		}
 	}, [q])
 
@@ -40,7 +40,7 @@ export const Search = ({
 		<Form
 			id="search-form"
 			role="search"
-			onChange={event => {
+			onChange={(event) => {
 				debouncedSearch(event.currentTarget)
 			}}
 			className="relative"
@@ -48,7 +48,7 @@ export const Search = ({
 			<InputSearch
 				isLoading={searching}
 				aria-label="Search posts"
-				defaultValue={q || ''}
+				defaultValue={q || ""}
 				id="q"
 				name="q"
 			/>

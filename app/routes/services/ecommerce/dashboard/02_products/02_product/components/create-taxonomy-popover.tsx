@@ -1,15 +1,15 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { Plus } from 'lucide-react'
+import { Plus } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from '~/components/ui/popover'
+} from "~/components/ui/popover"
 import {
 	Select,
 	SelectContent,
@@ -17,13 +17,13 @@ import {
 	SelectSeparator,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { Spinner } from '~/components/ui/spinner'
-import { generateSlug } from '~/lib/utils/seo'
+} from "~/components/ui/select"
+import { Spinner } from "~/components/ui/spinner"
+import { generateSlug } from "~/lib/utils/seo"
 
 interface CreateTaxonomyPopoverProps {
 	/** Display name for the taxonomy type (e.g., 'Category', 'Brand') */
-	taxonomyType: 'Category' | 'Brand'
+	taxonomyType: "Category" | "Brand"
 	/** Available parent options (only top-level items without children) */
 	parentOptions: Array<{ id: number; name: string }>
 	/** Callback when create */
@@ -43,7 +43,7 @@ export function CreateTaxonomyPopover({
 	isSubmitting,
 }: CreateTaxonomyPopoverProps) {
 	const [open, setOpen] = useState(false)
-	const [name, setName] = useState('')
+	const [name, setName] = useState("")
 	const [parentId, setParentId] = useState<string | null>(null)
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -59,7 +59,7 @@ export function CreateTaxonomyPopover({
 		})
 
 		// Reset form
-		setName('')
+		setName("")
 		setParentId(null)
 		setOpen(false)
 	}
@@ -93,14 +93,14 @@ export function CreateTaxonomyPopover({
 							id="name"
 							placeholder={`${taxonomyType} name`}
 							value={name}
-							onChange={e => setName(e.target.value)}
+							onChange={(e) => setName(e.target.value)}
 							autoFocus
 						/>
 					</div>
 					{parentOptions.length > 0 && (
 						<div className="space-y-2">
 							<Label htmlFor="parent">Parent (Optional) {parentId}</Label>
-							<Select value={parentId} onValueChange={v => setParentId(v)}>
+							<Select value={parentId} onValueChange={(v) => setParentId(v)}>
 								<SelectTrigger id="parent" className="w-full">
 									<SelectValue
 										placeholder={`None (Top-level ${taxonomyType.toLowerCase()})`}
@@ -111,7 +111,7 @@ export function CreateTaxonomyPopover({
 										None (Top-level {taxonomyType.toLowerCase()})
 									</SelectItem>
 									<SelectSeparator />
-									{parentOptions.map(option => (
+									{parentOptions.map((option) => (
 										<SelectItem key={option.id} value={String(option.id)}>
 											{option.name}
 										</SelectItem>

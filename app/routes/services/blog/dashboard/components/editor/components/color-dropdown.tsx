@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { Editor, useEditorState } from '@tiptap/react'
-import { useAtom } from 'jotai'
-import { ChevronDown } from 'lucide-react'
+import { Editor, useEditorState } from "@tiptap/react"
+import { useAtom } from "jotai"
+import { ChevronDown } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -12,34 +12,34 @@ import {
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { Skeleton } from '~/components/ui/skeleton'
+} from "~/components/ui/dropdown-menu"
+import { Skeleton } from "~/components/ui/skeleton"
 
-import { editorAtom } from '../../../context'
-import type { EditOptionProps } from '../edit-options'
-import { TooltipWrapper } from './tooltip-wrapper'
+import { editorAtom } from "../../../context"
+import type { EditOptionProps } from "../edit-options"
+import { TooltipWrapper } from "./tooltip-wrapper"
 
 const activeIndicatorStyles =
 	(indicator: ActiveIndicator) =>
 	(color: string): React.CSSProperties => {
 		switch (indicator) {
-			case 'background':
+			case "background":
 				return { backgroundColor: color }
-			case 'text':
+			case "text":
 				return { color }
 		}
 	}
 
-type ActiveIndicator = 'background' | 'text'
+type ActiveIndicator = "background" | "text"
 
 export function ColorDropdownMenu({
 	icon,
-	activeIndicator = 'text',
+	activeIndicator = "text",
 	options,
 	canRemove,
 	onRemove,
-	tooltip = 'Color options',
-	side = 'bottom',
+	tooltip = "Color options",
+	side = "bottom",
 	displayText = true,
 }: {
 	icon: React.ReactNode
@@ -50,7 +50,7 @@ export function ColorDropdownMenu({
 	canRemove?: (editor: Editor) => boolean
 	onRemove?: (editor: Editor) => void
 	tooltip?: string
-	side?: 'top' | 'right' | 'bottom' | 'left'
+	side?: "top" | "right" | "bottom" | "left"
 	displayText?: boolean
 }) {
 	const [editor] = useAtom(editorAtom)
@@ -58,11 +58,11 @@ export function ColorDropdownMenu({
 
 	const activeColor = useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			if (!editor) return null
 
-			return options.find(o => o.isActive?.(editor)) || null
+			return options.find((o) => o.isActive?.(editor)) || null
 		},
 	})
 
@@ -72,11 +72,11 @@ export function ColorDropdownMenu({
 	 */
 	useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			if (!editor) return
 
-			return options.map(o => o.canRun(editor))
+			return options.map((o) => o.canRun(editor))
 		},
 	})
 
@@ -85,7 +85,7 @@ export function ColorDropdownMenu({
 	return (
 		<DropdownMenu
 			open={open}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				setOpen(open)
 				// Focus editor when closing the menu
 				if (!open) editor.commands.focus()

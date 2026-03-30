@@ -1,19 +1,19 @@
-import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
-import type { SitemapUrlConfig } from '~/lib/service/utils'
+import { registerSystemEndpoints } from "~/lib/service/system-endpoints-registry"
+import type { SitemapUrlConfig } from "~/lib/service/utils"
 
-import { dbBlog as db } from './lib/db/db.server'
+import { dbBlog as db } from "./lib/db/db.server"
 
 registerSystemEndpoints({
-	sitemap: async url => getBlogSitemap(url.origin),
+	sitemap: async (url) => getBlogSitemap(url.origin),
 	robots: () => {
 		// TODO: Now there are duplicate `/blog` loc. Add blog routes from db (configurable blog base path)
-		const blogUrls = ['/blog']
+		const blogUrls = ["/blog"]
 
 		return {
 			groups: [
 				{
-					userAgents: ['*'],
-					allow: blogUrls.map(p => (p.endsWith('/') ? p : p + '/')),
+					userAgents: ["*"],
+					allow: blogUrls.map((p) => (p.endsWith("/") ? p : p + "/")),
 					crawlDelay: 300,
 				},
 			],
@@ -30,7 +30,7 @@ async function getBlogSitemap(origin: string): Promise<SitemapUrlConfig[]> {
 
 	const posts = await db.query.post.findMany({
 		where(fields, { eq }) {
-			return eq(fields.status, 'PUBLISHED')
+			return eq(fields.status, "PUBLISHED")
 		},
 		columns: {
 			slug: true,
@@ -39,7 +39,7 @@ async function getBlogSitemap(origin: string): Promise<SitemapUrlConfig[]> {
 	})
 
 	// TODO: Now there are duplicate `/blog` loc. Add blog routes from db (configurable blog base path)
-	const blogUrls = ['/blog']
+	const blogUrls = ["/blog"]
 
 	// Generate URLs for blogs and their posts
 	for (const blogUrl of blogUrls) {

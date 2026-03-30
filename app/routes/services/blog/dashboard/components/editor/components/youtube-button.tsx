@@ -1,33 +1,33 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { useEditorState } from '@tiptap/react'
-import { atom, useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { ExternalLink } from 'lucide-react'
+import { useEditorState } from "@tiptap/react"
+import { atom, useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
+import { ExternalLink } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from '~/components/ui/popover'
-import { Skeleton } from '~/components/ui/skeleton'
+} from "~/components/ui/popover"
+import { Skeleton } from "~/components/ui/skeleton"
 
-import { editorAtom } from '../../../context'
+import { editorAtom } from "../../../context"
 import {
 	createYoutubeOption,
 	type SetYoutubeVideoOptions,
-} from '../edit-options'
-import { TooltipWrapper } from './tooltip-wrapper'
+} from "../edit-options"
+import { TooltipWrapper } from "./tooltip-wrapper"
 
 export const isYoutubeOpenAtom = atom(false)
 const YoutubeIcon = createYoutubeOption().icon
 
 export const YoutubeButton = () => {
 	const [options, setOptions] = useState<SetYoutubeVideoOptions>({
-		src: '',
+		src: "",
 	})
 	const [isInsert, setIsInsert] = useState(true)
 
@@ -41,14 +41,14 @@ export const YoutubeButton = () => {
 	 */
 	const ytStates = useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			if (!editor) return
 
 			// setYoutubeVideo has a stric check if src is a valid youtube url
 			const runDisplay = createYoutubeOption({
 				...options,
-				src: options.src || 'https://youtube.com/watch?v=placeholder',
+				src: options.src || "https://youtube.com/watch?v=placeholder",
 			})
 			const runInsert = createYoutubeOption(options)
 
@@ -77,9 +77,9 @@ export const YoutubeButton = () => {
 			})
 		} catch (error) {
 			if (error instanceof Error) {
-				console.error('Error unsetting link:', error.message)
+				console.error("Error unsetting link:", error.message)
 			} else {
-				console.error('Unexpected error unsetting link:', error)
+				console.error("Unexpected error unsetting link:", error)
 			}
 		}
 	}
@@ -87,23 +87,23 @@ export const YoutubeButton = () => {
 	const handleOpenYoutube = () => {
 		if (!canInsert) return
 
-		window.open(options.src, '_blank', 'noopener,noreferrer')
+		window.open(options.src, "_blank", "noopener,noreferrer")
 	}
 
 	return (
 		<Popover
 			open={isYoutubeOpen}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				setIsYoutubeOpen(open)
 
 				if (open) {
-					const attr = editor.getAttributes('youtube')
+					const attr = editor.getAttributes("youtube")
 					if (Object.keys(attr).length === 0) {
 						setIsInsert(true)
-						setOptions({ src: '' })
+						setOptions({ src: "" })
 					} else {
 						setIsInsert(false)
-						if (attr.width === '100%') {
+						if (attr.width === "100%") {
 							// convert back to number for input value
 							attr.width = undefined
 						}
@@ -121,9 +121,9 @@ export const YoutubeButton = () => {
 					<PopoverTrigger
 						render={
 							<Button
-								size={'icon'}
-								variant={'ghost'}
-								className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+								size={"icon"}
+								variant={"ghost"}
+								className={`${isActive ? "bg-accent text-accent-foreground" : ""}`}
 								disabled={!canRun}
 							>
 								<YoutubeIcon />
@@ -138,8 +138,8 @@ export const YoutubeButton = () => {
 					<Input
 						id="yt-src"
 						value={options.src}
-						onChange={e =>
-							setOptions(prev => ({ ...prev, src: e.target.value }))
+						onChange={(e) =>
+							setOptions((prev) => ({ ...prev, src: e.target.value }))
 						}
 						placeholder="https://youtube.com/..."
 					/>
@@ -149,9 +149,9 @@ export const YoutubeButton = () => {
 					<Label htmlFor="yt-width">Fixed width</Label>
 					<Input
 						id="yt-width"
-						value={options.width ?? ''}
-						onChange={e =>
-							setOptions(prev => {
+						value={options.width ?? ""}
+						onChange={(e) =>
+							setOptions((prev) => {
 								const value = Number(e.target.value)
 								return {
 									...prev,
@@ -167,9 +167,9 @@ export const YoutubeButton = () => {
 					<Label htmlFor="yt-height">Fixed height</Label>
 					<Input
 						id="yt-height"
-						value={options.height ?? ''}
-						onChange={e =>
-							setOptions(prev => {
+						value={options.height ?? ""}
+						onChange={(e) =>
+							setOptions((prev) => {
 								const value = Number(e.target.value)
 								return {
 									...prev,
@@ -185,9 +185,9 @@ export const YoutubeButton = () => {
 					<Label htmlFor="yt-start">Start (seconds)</Label>
 					<Input
 						id="yt-start"
-						value={options.start ?? ''}
-						onChange={e =>
-							setOptions(prev => {
+						value={options.start ?? ""}
+						onChange={(e) =>
+							setOptions((prev) => {
 								const value = Number(e.target.value)
 								return {
 									...prev,
@@ -211,7 +211,7 @@ export const YoutubeButton = () => {
 								}}
 								disabled={!canInsert}
 							>
-								{isInsert ? 'Insert' : 'Update'}
+								{isInsert ? "Insert" : "Update"}
 							</Button>
 						}
 					/>
@@ -220,7 +220,7 @@ export const YoutubeButton = () => {
 						render={
 							<Button
 								variant="ghost"
-								size={'icon'}
+								size={"icon"}
 								onClick={handleOpenYoutube}
 								disabled={!canInsert}
 							>

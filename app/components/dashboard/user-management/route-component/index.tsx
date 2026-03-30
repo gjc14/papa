@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useFetcher } from "react-router"
 
-import { type RowSelectionState, type Table } from '@tanstack/react-table'
-import { ChevronDown, Loader2, PlusCircle } from 'lucide-react'
+import { type RowSelectionState, type Table } from "@tanstack/react-table"
+import { ChevronDown, Loader2, PlusCircle } from "lucide-react"
 
 import {
 	AlertDialog,
@@ -13,8 +13,8 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '~/components/ui/alert-dialog'
-import { Button } from '~/components/ui/button'
+} from "~/components/ui/alert-dialog"
+import { Button } from "~/components/ui/button"
 import {
 	Dialog,
 	DialogContent,
@@ -22,7 +22,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '~/components/ui/dialog'
+} from "~/components/ui/dialog"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -30,23 +30,23 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
+} from "~/components/ui/dropdown-menu"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import type { user as userTable } from '~/lib/db/schema'
+} from "~/components/dashboard/dashboard-wrapper"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import type { user as userTable } from "~/lib/db/schema"
 
-import { DashboardDataTable } from '../../dashboard-data-table'
-import { useSkipper } from '../../dashboard-data-table/hooks'
-import { UserBulkEditDialog } from '../user-content'
-import { columns } from './columns'
+import { DashboardDataTable } from "../../dashboard-data-table"
+import { useSkipper } from "../../dashboard-data-table/hooks"
+import { UserBulkEditDialog } from "../user-content"
+import { columns } from "./columns"
 
 type User = typeof userTable.$inferSelect
 
@@ -55,7 +55,7 @@ export const UserManagementRoute = ({
 	role,
 }: {
 	users: User[]
-	role: 'admin' | 'user'
+	role: "admin" | "user"
 }) => {
 	const fetcher = useFetcher()
 	const { isLoading, isSubmitting } = useFetcherNotification(fetcher)
@@ -98,13 +98,13 @@ export const UserManagementRoute = ({
 	useEffect(() => {
 		if (isLoading) {
 			switch (fetcher.formMethod) {
-				case 'DELETE':
+				case "DELETE":
 					setOpenBulkDeleteAlert(false)
 					break
-				case 'PUT':
+				case "PUT":
 					setOpenBulkEdit(false)
 					break
-				case 'POST':
+				case "POST":
 					setOpenInviteDialog(false)
 					break
 			}
@@ -115,21 +115,21 @@ export const UserManagementRoute = ({
 		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle
-					title={role === 'admin' ? 'Admins' : 'Users'}
+					title={role === "admin" ? "Admins" : "Users"}
 				></DashboardTitle>
 				<DashboardActions>
 					<Button
-						size={'sm'}
-						disabled={isSubmitting && fetcher.formMethod === 'POST'}
+						size={"sm"}
+						disabled={isSubmitting && fetcher.formMethod === "POST"}
 						onClick={() => setOpenInviteDialog(true)}
 					>
-						{isSubmitting && fetcher.formMethod === 'POST' ? (
+						{isSubmitting && fetcher.formMethod === "POST" ? (
 							<Loader2 className="animate-spin" />
 						) : (
 							<PlusCircle />
 						)}
 						<p className="text-xs">
-							Invite {role === 'admin' ? 'admin' : 'user'}
+							Invite {role === "admin" ? "admin" : "user"}
 						</p>
 					</Button>
 				</DashboardActions>
@@ -192,7 +192,7 @@ export const UserManagementRoute = ({
 					<DialogContent>
 						<DialogHeader>
 							<DialogTitle>
-								Invite {role === 'admin' ? 'admin' : 'user'}
+								Invite {role === "admin" ? "admin" : "user"}
 							</DialogTitle>
 							<DialogDescription>
 								We'll send an invitation link to email address provided.
@@ -228,9 +228,9 @@ export const UserManagementRoute = ({
 							<Button
 								form="invite-user"
 								type="submit"
-								disabled={isSubmitting && fetcher.formMethod === 'POST'}
+								disabled={isSubmitting && fetcher.formMethod === "POST"}
 							>
-								{isSubmitting && fetcher.formMethod === 'POST' ? (
+								{isSubmitting && fetcher.formMethod === "POST" ? (
 									<Loader2 className="animate-spin" />
 								) : (
 									<PlusCircle />

@@ -1,9 +1,9 @@
-import { index, layout, prefix, route } from '@react-router/dev/routes'
+import { index, layout, prefix, route } from "@react-router/dev/routes"
 
-import { getServiceRouteModules } from './routes-registry'
+import { getServiceRouteModules } from "./routes-registry"
 
 // Eagerly import service routes to ensure that they are registered in build time
-import.meta.glob('../../routes/services/**/service.routes.{ts,tsx}', {
+import.meta.glob("../../routes/services/**/service.routes.{ts,tsx}", {
 	eager: true,
 })
 
@@ -43,22 +43,22 @@ const getWebRoutes = () => {
 	const routes = getServicesRoutes()
 
 	const SYSTEM_ROUTES = {
-		'/': index('./routes/web/index.tsx'),
-		'/*': route('/*', './routes/web/splat.tsx'),
-		'/robots.txt': route('/robots.txt', './routes/web/robots.txt.ts'),
-		'/sitemap.xml': route('/sitemap.xml', './routes/web/sitemap.xml.ts'),
+		"/": index("./routes/web/index.tsx"),
+		"/*": route("/*", "./routes/web/splat.tsx"),
+		"/robots.txt": route("/robots.txt", "./routes/web/robots.txt.ts"),
+		"/sitemap.xml": route("/sitemap.xml", "./routes/web/sitemap.xml.ts"),
 	}
 
-	console.log('Adding default routes (if not configured):')
-	const paths = new Set(routes.map(r => r.path))
+	console.log("Adding default routes (if not configured):")
+	const paths = new Set(routes.map((r) => r.path))
 
 	for (const [k, v] of Object.entries(SYSTEM_ROUTES)) {
 		const pathExists = paths.has(k)
 
 		if (pathExists) {
-			const matches = routes.flatMap(r => (r.path === k ? [r.file] : [])) // for type
+			const matches = routes.flatMap((r) => (r.path === k ? [r.file] : [])) // for type
 			if (matches.length > 1) {
-				console.log(`! [${k}](DUPLICATE): ${matches.join('; ')}`)
+				console.log(`! [${k}](DUPLICATE): ${matches.join("; ")}`)
 			} else {
 				console.log(`= [${k}]: ${matches[0]}`)
 			}

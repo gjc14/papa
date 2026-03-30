@@ -1,8 +1,8 @@
-import { randomBytes } from 'node:crypto'
-import { createContext } from 'react-router'
+import { randomBytes } from "node:crypto"
+import { createContext } from "react-router"
 
 export function generateNonce() {
-	return randomBytes(16).toString('base64')
+	return randomBytes(16).toString("base64")
 }
 
 export const nonceContext = createContext<string>()
@@ -53,6 +53,6 @@ export function getContentSecurityPolicy(nonce: string) {
 		// `trusted-types`,
 		// `upgrade-insecure-requests`,
 	]
-		.join('; ')
+		.join("; ")
 		.trim()
 }

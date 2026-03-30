@@ -1,7 +1,7 @@
-import { getSeo } from '~/lib/db/seo.server'
-import { createMeta } from '~/lib/utils/seo'
+import { getSeo } from "~/lib/db/seo.server"
+import { createMeta } from "~/lib/utils/seo"
 
-import { getPosts } from '../../lib/db/post.server'
+import { getPosts } from "../../lib/db/post.server"
 
 type PostPromise = ReturnType<typeof fetchPosts> // Promise<{ meta, post, ... }>
 type PostPayload = Awaited<PostPromise> // { meta, post, ... }
@@ -15,7 +15,7 @@ type CacheEntry = {
 export const postsServerMemoryCache = new Map<string, CacheEntry>()
 export const TTL = 60 * 1000 // 60s
 export const headers = {
-	'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=30',
+	"Cache-Control": "public, max-age=0, s-maxage=60, stale-while-revalidate=30",
 }
 
 export async function fetchPosts(
@@ -28,7 +28,7 @@ export async function fetchPosts(
 	const meta = seo ? createMeta(seo, url) : null
 
 	const { posts, categoryFilter, tagFilter } = await getPosts({
-		status: 'PUBLISHED',
+		status: "PUBLISHED",
 		categories,
 		tags,
 		title: q,

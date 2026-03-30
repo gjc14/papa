@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from "react"
 import {
 	Form,
 	Link,
@@ -7,17 +7,17 @@ import {
 	useNavigate,
 	useNavigation,
 	useSubmit,
-} from 'react-router'
+} from "react-router"
 
-import debounce from 'lodash/debounce'
-import { CircleCheckIcon, XCircle } from 'lucide-react'
-import { motion } from 'motion/react'
+import debounce from "lodash/debounce"
+import { CircleCheckIcon, XCircle } from "lucide-react"
+import { motion } from "motion/react"
 
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
-import { Badge } from '~/components/ui/badge'
-import { InputSearch } from '~/components/ui/xui/input-search'
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
+import { Badge } from "~/components/ui/badge"
+import { InputSearch } from "~/components/ui/xui/input-search"
 
-import type { PostWithRelations } from '../..//lib/db/post.server'
+import type { PostWithRelations } from "../..//lib/db/post.server"
 
 export const PostCollection = ({
 	title,
@@ -36,7 +36,7 @@ export const PostCollection = ({
 				<motion.h2
 					initial={{ y: 48, opacity: 0 }}
 					whileInView={{ y: 0, opacity: 1 }}
-					transition={{ ease: 'easeInOut', duration: 0.5 }}
+					transition={{ ease: "easeInOut", duration: 0.5 }}
 					className="text-8xl font-black md:text-9xl"
 				>
 					{title}
@@ -74,7 +74,7 @@ export const PostCollection = ({
 			<Search q={q} />
 
 			<section className="flex flex-col space-y-3">
-				{posts.map(post => (
+				{posts.map((post) => (
 					<Post key={post.id} post={post} />
 				))}
 			</section>
@@ -96,11 +96,11 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 		>
 			<div className="flex flex-col px-4 md:px-6">
 				<div className="mb-3 flex gap-1.5">
-					{post.categories.map(category => (
+					{post.categories.map((category) => (
 						<Badge
 							key={category.id}
 							className="bg-brand text-brand-foreground hover:border-primary rounded-full"
-							onClick={e => {
+							onClick={(e) => {
 								e.stopPropagation()
 								navigate(`/blog?category=${category.slug}`)
 							}}
@@ -123,16 +123,16 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 					<Avatar className="size-8">
 						<AvatarImage
 							src={post.author?.image ?? undefined}
-							alt={post.author?.name ?? 'A'}
+							alt={post.author?.name ?? "A"}
 						/>
-						<AvatarFallback>{post.author?.name?.[0] ?? 'A'}</AvatarFallback>
+						<AvatarFallback>{post.author?.name?.[0] ?? "A"}</AvatarFallback>
 					</Avatar>
 					<div className="flex flex-col">
 						<span className="text-sm font-semibold">
-							{post.author?.name ?? 'Anonymous'}
+							{post.author?.name ?? "Anonymous"}
 						</span>
 						<span className="text-muted-foreground text-xs">
-							{post.updatedAt.toLocaleDateString('zh-TW')}
+							{post.updatedAt.toLocaleDateString("zh-TW")}
 						</span>
 					</div>
 				</div>
@@ -147,13 +147,13 @@ const Search = ({ q }: { q?: string }) => {
 
 	const searching =
 		navigation.location &&
-		new URLSearchParams(navigation.location.search).has('q')
+		new URLSearchParams(navigation.location.search).has("q")
 
 	// Sync search input with URL param
 	useEffect(() => {
-		const searchField = document.getElementById('q')
+		const searchField = document.getElementById("q")
 		if (searchField instanceof HTMLInputElement) {
-			searchField.value = q || ''
+			searchField.value = q || ""
 		}
 	}, [q])
 
@@ -175,7 +175,7 @@ const Search = ({ q }: { q?: string }) => {
 		<Form
 			id="search-form"
 			role="search"
-			onChange={event => {
+			onChange={(event) => {
 				debouncedSearch(event.currentTarget)
 			}}
 			className="relative px-5 md:px-6"
@@ -183,7 +183,7 @@ const Search = ({ q }: { q?: string }) => {
 			<InputSearch
 				isLoading={searching}
 				aria-label="Search posts"
-				defaultValue={q || ''}
+				defaultValue={q || ""}
 				id="q"
 				name="q"
 			/>

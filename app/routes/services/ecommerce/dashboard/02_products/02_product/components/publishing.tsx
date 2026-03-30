@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from "jotai"
 
 import {
 	Card,
@@ -6,27 +6,29 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Field, FieldDescription, FieldLabel } from '~/components/ui/field'
-import { Input } from '~/components/ui/input'
+} from "~/components/ui/card"
+import { Field, FieldDescription, FieldLabel } from "~/components/ui/field"
+import { Input } from "~/components/ui/input"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { Separator } from '~/components/ui/separator'
+} from "~/components/ui/select"
+import { Separator } from "~/components/ui/separator"
 
-import { ProductStatus, ProductVisibility } from '../../../../lib/db/schema'
-import { productAtom } from '../../../../store/product/context'
+import { ProductStatus, ProductVisibility } from "../../../../lib/db/schema"
+import { productAtom } from "../../../../store/product/context"
 
-const productStatusAtom = atom(get => get(productAtom)?.status ?? null)
+const productStatusAtom = atom((get) => get(productAtom)?.status ?? null)
 const productPublishedAtAtom = atom(
-	get => get(productAtom)?.publishedAt ?? null,
+	(get) => get(productAtom)?.publishedAt ?? null,
 )
-const productVisibilityAtom = atom(get => get(productAtom)?.visibility ?? null)
-const productPasswordAtom = atom(get => get(productAtom)?.password ?? null)
+const productVisibilityAtom = atom(
+	(get) => get(productAtom)?.visibility ?? null,
+)
+const productPasswordAtom = atom((get) => get(productAtom)?.password ?? null)
 
 export function Publishing() {
 	const setProduct = useSetAtom(productAtom)
@@ -38,7 +40,7 @@ export function Publishing() {
 	const handleProductChange = (
 		updatedProduct: Partial<typeof productAtom.read>,
 	) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return { ...prev, ...updatedProduct }
 		})
@@ -55,7 +57,7 @@ export function Publishing() {
 					<FieldLabel htmlFor="p-status">Status</FieldLabel>
 					<Select
 						value={productStatus || ProductStatus[0]}
-						onValueChange={value =>
+						onValueChange={(value) =>
 							handleProductChange({
 								status: value as ProductStatus,
 							})
@@ -65,7 +67,7 @@ export function Publishing() {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							{ProductStatus.map(status => (
+							{ProductStatus.map((status) => (
 								<SelectItem key={status} value={status}>
 									{status}
 								</SelectItem>
@@ -74,7 +76,7 @@ export function Publishing() {
 					</Select>
 				</Field>
 
-				{productStatus === 'SCHEDULED' && (
+				{productStatus === "SCHEDULED" && (
 					<Field>
 						<FieldLabel htmlFor="p-published-at">
 							Publish Date & Time
@@ -85,9 +87,9 @@ export function Publishing() {
 							value={
 								productPublishedAt
 									? new Date(productPublishedAt).toISOString().slice(0, 16)
-									: ''
+									: ""
 							}
-							onChange={e =>
+							onChange={(e) =>
 								handleProductChange({
 									publishedAt: e.target.value
 										? new Date(e.target.value).toISOString()
@@ -107,7 +109,7 @@ export function Publishing() {
 					<FieldLabel htmlFor="p-visibility">Visibility</FieldLabel>
 					<Select
 						value={productVisibility || ProductVisibility[0]}
-						onValueChange={value =>
+						onValueChange={(value) =>
 							handleProductChange({
 								visibility: value as ProductVisibility,
 							})
@@ -117,7 +119,7 @@ export function Publishing() {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							{ProductVisibility.map(visibility => (
+							{ProductVisibility.map((visibility) => (
 								<SelectItem key={visibility} value={visibility}>
 									{visibility}
 								</SelectItem>
@@ -126,7 +128,7 @@ export function Publishing() {
 					</Select>
 				</Field>
 
-				{productVisibility === 'PROTECTED' && (
+				{productVisibility === "PROTECTED" && (
 					<Field>
 						<FieldLabel htmlFor="p-password">Password</FieldLabel>
 						<Input
@@ -134,8 +136,10 @@ export function Publishing() {
 							name="password"
 							type="password"
 							placeholder="Enter protection password"
-							value={productPassword || ''}
-							onChange={e => handleProductChange({ password: e.target.value })}
+							value={productPassword || ""}
+							onChange={(e) =>
+								handleProductChange({ password: e.target.value })
+							}
 						/>
 						<FieldDescription>
 							Required password to view this product

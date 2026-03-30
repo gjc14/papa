@@ -1,22 +1,22 @@
-import { Link } from 'react-router'
+import { Link } from "react-router"
 
-import { StackIcon } from '@phosphor-icons/react'
+import { StackIcon } from "@phosphor-icons/react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from '~/components/ui/tooltip'
+} from "~/components/ui/tooltip"
 import {
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
-import { getServicesDashboards } from '~/lib/service/dashboard'
+} from "~/components/dashboard/dashboard-wrapper"
+import { getServicesDashboards } from "~/lib/service/dashboard"
 
-import { renderServiceLogo } from '../../../lib/utils/render-service-logo'
+import { renderServiceLogo } from "../../../lib/utils/render-service-logo"
 
 export default function DashboardIndex() {
 	const services = getServicesDashboards()
@@ -70,7 +70,7 @@ export default function DashboardIndex() {
 											className="hover:bg-accent grid h-40 w-full cursor-pointer grid-rows-5 items-center gap-2 border p-5 transition-colors"
 										>
 											<div className="row-span-2 m-auto flex size-8 items-center justify-center overflow-hidden [&_svg]:size-6">
-												{renderServiceLogo({ logo: service.logo, size: 'lg' })}
+												{renderServiceLogo({ logo: service.logo, size: "lg" })}
 											</div>
 											<div className="row-span-3 flex min-h-0 flex-col justify-start gap-1 overflow-hidden">
 												<p className="truncate text-center font-semibold">

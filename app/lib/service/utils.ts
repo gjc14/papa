@@ -28,13 +28,13 @@ export interface SitemapUrlConfig {
 	 * Please note that the value of this tag is considered a hint and not a command. Even though search engine crawlers may consider this information when making decisions, they may crawl pages marked "hourly" less frequently than that, and they may crawl pages marked "yearly" more frequently than that. Crawlers may periodically crawl pages marked "never" so that they can handle unexpected changes to those pages.
 	 */
 	changefreq?:
-		| 'always'
-		| 'hourly'
-		| 'daily'
-		| 'weekly'
-		| 'monthly'
-		| 'yearly'
-		| 'never'
+		| "always"
+		| "hourly"
+		| "daily"
+		| "weekly"
+		| "monthly"
+		| "yearly"
+		| "never"
 	/**
 	 * The priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. This value does not affect how your pages are compared to pages on other sites—it only lets the search engines know which pages you deem most important for the crawlers.
 	 *
@@ -54,17 +54,17 @@ export interface SitemapUrlConfig {
  * @returns XML url tag strings representation of the URLs.
  */
 export const configsToSitemapXml = (configs: SitemapUrlConfig[]): string[] => {
-	const xmlUrlTags = configs.map(url =>
+	const xmlUrlTags = configs.map((url) =>
 		`
             <url>
                 <loc>${url.loc}</loc>
-                ${url.lastmod ? `<lastmod>${url.lastmod.toISOString()}</lastmod>` : ''}
-				${url.changefreq ? `<changefreq>${url.changefreq}</changefreq>` : ''}
-				${url.priority ? `<priority>${url.priority}</priority>` : ''}
+                ${url.lastmod ? `<lastmod>${url.lastmod.toISOString()}</lastmod>` : ""}
+				${url.changefreq ? `<changefreq>${url.changefreq}</changefreq>` : ""}
+				${url.priority ? `<priority>${url.priority}</priority>` : ""}
             </url>
         `
 			.trim()
-			.replace(/\s+/g, ''),
+			.replace(/\s+/g, ""),
 	)
 
 	return xmlUrlTags
@@ -92,9 +92,9 @@ type CanonicalGroup = {
 
 function sanitizedPath(path: string): string {
 	const p = path.trim()
-	if (!p) return ''
+	if (!p) return ""
 	// with leading `/`
-	return p.startsWith('/') ? p : '/' + p
+	return p.startsWith("/") ? p : "/" + p
 }
 
 function sortedString(s: Set<string>): string[] {
@@ -149,8 +149,8 @@ export function mergeRobotsConfigs(configs: RobotsConfig[]) {
 
 	// * last
 	const groups = Array.from(uaMap.values()).sort((a, b) => {
-		if (a.userAgent === '*' && b.userAgent !== '*') return 1
-		if (b.userAgent === '*' && a.userAgent !== '*') return -1
+		if (a.userAgent === "*" && b.userAgent !== "*") return 1
+		if (b.userAgent === "*" && a.userAgent !== "*") return -1
 		return a.userAgent.localeCompare(b.userAgent)
 	})
 
@@ -171,12 +171,12 @@ export function configsToRobotsTxt(configs: RobotsConfig[]): string {
 			lines.push(`Crawl-delay: ${g.crawlDelay}`)
 		}
 
-		lines.push('') // blank line between groups
+		lines.push("") // blank line between groups
 	}
 
 	for (const sm of sortedString(sitemaps)) {
 		lines.push(`Sitemap: ${sm}`)
 	}
 
-	return lines.join('\n').trim()
+	return lines.join("\n").trim()
 }

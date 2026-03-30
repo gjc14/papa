@@ -1,12 +1,12 @@
-import { Link, useLocation, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from "react-router"
 
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from "lucide-react"
 
-import { Badge } from '~/components/ui/badge'
-import { Button } from '~/components/ui/button'
-import { Separator } from '~/components/ui/separator'
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { Separator } from "~/components/ui/separator"
 
-import type { PostWithRelations } from '../../../lib/db/post.server'
+import type { PostWithRelations } from "../../../lib/db/post.server"
 
 export const PostFooter = ({
 	post,
@@ -25,7 +25,7 @@ export const PostFooter = ({
 			{/* Tags area */}
 			{post.tags.length > 0 && (
 				<ul className="my-8 flex flex-wrap items-center gap-1.5 md:my-12 md:gap-2">
-					{post.tags.map(tag => (
+					{post.tags.map((tag) => (
 						<li key={tag.id}>
 							<Badge
 								className="cursor-pointer rounded-full px-2.5 py-1 md:text-sm"

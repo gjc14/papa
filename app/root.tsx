@@ -1,4 +1,4 @@
-import './app.css'
+import "./app.css"
 
 import {
 	Link,
@@ -7,38 +7,38 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
-} from 'react-router'
+} from "react-router"
 
-import { AlertCircle, ArrowLeft } from 'lucide-react'
-import { motion, MotionConfig } from 'motion/react'
-import { ThemeProvider } from 'next-themes'
+import { AlertCircle, ArrowLeft } from "lucide-react"
+import { motion, MotionConfig } from "motion/react"
+import { ThemeProvider } from "next-themes"
 
-import { Button } from '~/components/ui/button'
-import { fade } from '~/components/motions'
+import { Button } from "~/components/ui/button"
+import { fade } from "~/components/motions"
 
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
-} from './components/error-boundary-template'
-import { FloatingToolkit } from './components/floating-toolkit'
-import { Toaster } from './components/ui/sonner'
+} from "./components/error-boundary-template"
+import { FloatingToolkit } from "./components/floating-toolkit"
+import { Toaster } from "./components/ui/sonner"
 
 export function links() {
 	return [
-		{ rel: 'icon', href: '/favicon.ico' },
+		{ rel: "icon", href: "/favicon.ico" },
 		// Import Inter and Noto Serif TC from Google Fonts
 		{
-			rel: 'stylesheet',
-			href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Serif+TC:wght@200..900&display=swap',
+			rel: "stylesheet",
+			href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Serif+TC:wght@200..900&display=swap",
 		},
 		{
-			rel: 'preconnect',
-			href: 'https://fonts.googleapis.com',
+			rel: "preconnect",
+			href: "https://fonts.googleapis.com",
 		},
 		{
-			rel: 'preconnect',
-			href: 'https://fonts.gstatic.com',
-			crossOrigin: 'anonymous',
+			rel: "preconnect",
+			href: "https://fonts.gstatic.com",
+			crossOrigin: "anonymous",
 		},
 	]
 }
@@ -89,7 +89,7 @@ export default function App() {
 				closeButton
 				toastOptions={{
 					classNames: {
-						closeButton: 'border border-primary',
+						closeButton: "border border-primary",
 					},
 				}}
 				className="z-50"
@@ -102,7 +102,7 @@ export default function App() {
 export function ErrorBoundary() {
 	return (
 		<ErrorBoundaryTemplate>
-			{props => <ErrorTemplate {...props} />}
+			{(props) => <ErrorTemplate {...props} />}
 		</ErrorBoundaryTemplate>
 	)
 }
@@ -137,9 +137,9 @@ const ErrorTemplate = ({
 				</p>
 
 				<Button
-					variant={'link'}
+					variant={"link"}
 					render={
-						<Link to={'/'}>
+						<Link to={"/"}>
 							<ArrowLeft /> Back to Home
 						</Link>
 					}
@@ -176,7 +176,7 @@ const ErrorTemplate = ({
 					<Button
 						className="rounded-full"
 						render={
-							<Link to={'/'}>
+							<Link to={"/"}>
 								<ArrowLeft className="h-4 w-4" /> Back to Home
 							</Link>
 						}
@@ -203,7 +203,7 @@ const ErrorTemplate = ({
 			</title>
 			<meta
 				name="description"
-				content={statusMessage.description || 'Route Error Response'}
+				content={statusMessage.description || "Route Error Response"}
 			/>
 
 			<a
@@ -229,10 +229,10 @@ const ErrorTemplate = ({
 			)}
 
 			<Button
-				variant={'outline'}
+				variant={"outline"}
 				className="rounded-full"
 				render={
-					<Link to={'/'}>
+					<Link to={"/"}>
 						<ArrowLeft /> Back to Home
 					</Link>
 				}

@@ -8,9 +8,9 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from '~/components/ui/alert-dialog'
-import { Button } from '~/components/ui/button'
-import { Spinner } from '~/components/ui/spinner'
+} from "~/components/ui/alert-dialog"
+import { Button } from "~/components/ui/button"
+import { Spinner } from "~/components/ui/spinner"
 
 export const BulkDeleteAlertDialog = ({
 	numberOfRowsDeleting,
@@ -25,7 +25,7 @@ export const BulkDeleteAlertDialog = ({
 		<AlertDialog>
 			<AlertDialogTrigger
 				render={
-					<Button size={'sm'} variant={'destructive'} disabled={isDeleting}>
+					<Button size={"sm"} variant={"destructive"} disabled={isDeleting}>
 						{isDeleting && <Spinner />}
 						{`Delete Posts (${numberOfRowsDeleting})`}
 					</Button>
@@ -35,9 +35,9 @@ export const BulkDeleteAlertDialog = ({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete{' '}
+						This action cannot be undone. This will permanently delete{" "}
 						{numberOfRowsDeleting} selected post
-						{numberOfRowsDeleting > 1 ? 's' : ''} from the server.
+						{numberOfRowsDeleting > 1 ? "s" : ""} from the server.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

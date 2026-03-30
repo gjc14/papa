@@ -16,7 +16,7 @@ type ConvertToDate<T, K extends string> = T extends (infer U)[]
  */
 type ConvertDateFields<
 	T,
-	K extends string = 'createdAt' | 'updatedAt' | 'deletedAt' | 'publishedAt',
+	K extends string = "createdAt" | "updatedAt" | "deletedAt" | "publishedAt",
 > = ConvertToDate<T, K>
 
 /**
@@ -27,18 +27,18 @@ type ConvertDateFields<
  */
 export function convertDateFields<
 	T,
-	K extends string = 'createdAt' | 'updatedAt' | 'deletedAt' | 'publishedAt',
+	K extends string = "createdAt" | "updatedAt" | "deletedAt" | "publishedAt",
 >(obj: T, dateFields?: K[]): ConvertDateFields<T, K> {
 	const fieldsToConvert =
 		dateFields ??
-		(['createdAt', 'updatedAt', 'deletedAt', 'publishedAt'] as K[])
+		(["createdAt", "updatedAt", "deletedAt", "publishedAt"] as K[])
 
-	if (obj === null || typeof obj !== 'object') {
+	if (obj === null || typeof obj !== "object") {
 		return obj as ConvertDateFields<T, K>
 	}
 
 	if (Array.isArray(obj)) {
-		return obj.map(item =>
+		return obj.map((item) =>
 			convertDateFields(item, fieldsToConvert),
 		) as ConvertDateFields<T, K>
 	}
@@ -59,7 +59,7 @@ export function convertDateFields<
 				console.warn(`Failed to convert ${key} to Date:`, value)
 				result[key] = new Date(value as string | number)
 			}
-		} else if (value !== null && typeof value === 'object') {
+		} else if (value !== null && typeof value === "object") {
 			// Recursively process nested objects
 			result[key] = convertDateFields(value, fieldsToConvert)
 		} else {

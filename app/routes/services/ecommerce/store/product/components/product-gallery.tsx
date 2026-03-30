@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { Skeleton } from '~/components/ui/skeleton'
+import { Button } from "~/components/ui/button"
+import { Skeleton } from "~/components/ui/skeleton"
 
-import { productGallery as productGalleryTable } from '../../../lib/db/schema'
-import { useProductContext } from '../hooks/use-product-context'
+import { productGallery as productGalleryTable } from "../../../lib/db/schema"
+import { useProductContext } from "../hooks/use-product-context"
 
 const ProductGalleryWrapper = ({
 	sticky = true,
@@ -16,7 +16,7 @@ const ProductGalleryWrapper = ({
 	children?: React.ReactNode
 }) => {
 	return (
-		<div className={`${sticky ? 'md:sticky md:top-16' : ''} h-min`}>
+		<div className={`${sticky ? "md:sticky md:top-16" : ""} h-min`}>
 			{children}
 		</div>
 	)
@@ -47,11 +47,11 @@ export const ProductGallery = () => {
 	]
 
 	const nextImage = () => {
-		setCurrentImageIndex(prev => (prev + 1) % gallery.length)
+		setCurrentImageIndex((prev) => (prev + 1) % gallery.length)
 	}
 
 	const prevImage = () => {
-		setCurrentImageIndex(prev => (prev - 1 + gallery.length) % gallery.length)
+		setCurrentImageIndex((prev) => (prev - 1 + gallery.length) % gallery.length)
 	}
 
 	return (
@@ -101,8 +101,8 @@ export const ProductGallery = () => {
 						onClick={() => setCurrentImageIndex(idx)}
 						className={`h-20 w-20 cursor-pointer border-2 transition-colors ${
 							idx === currentImageIndex
-								? 'border-primary'
-								: 'border-transparent'
+								? "border-primary"
+								: "border-transparent"
 						}`}
 					>
 						<img

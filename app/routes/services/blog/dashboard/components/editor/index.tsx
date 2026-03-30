@@ -3,26 +3,26 @@
  * editor will be saved in jotai, so when navigating away and back, the editor instance is still there.
  * editorContent will update if serverPost changes (e.g., switch to another post, or update post)
  */
-import './styles.css'
-import './styles/image-node.css'
-import './styles/youtube-node.css'
+import "./styles.css"
+import "./styles/image-node.css"
+import "./styles/youtube-node.css"
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { EditorContent, useEditor } from '@tiptap/react'
-import { useAtom } from 'jotai'
-import debounce from 'lodash/debounce'
-import { toast } from 'sonner'
+import { EditorContent, useEditor } from "@tiptap/react"
+import { useAtom } from "jotai"
+import debounce from "lodash/debounce"
+import { toast } from "sonner"
 
-import { ExtensionKit } from '~/components/editor/extension-kit'
-import { authClient } from '~/lib/auth/auth-client'
+import { ExtensionKit } from "~/components/editor/extension-kit"
+import { authClient } from "~/lib/auth/auth-client"
 import {
 	useFileUpload,
 	type FileWithFileMetadata,
-} from '~/routes/dashboard/assets/utils'
+} from "~/routes/dashboard/assets/utils"
 
-import { editorAtom, editorContentAtom, serverPostAtom } from '../../context'
-import { defaultContent } from '../../post-slug/utils'
+import { editorAtom, editorContentAtom, serverPostAtom } from "../../context"
+import { defaultContent } from "../../post-slug/utils"
 
 export function ContentEditor() {
 	const [postId, setPostId] = useState<number | null>(null)
@@ -35,14 +35,14 @@ export function ContentEditor() {
 
 	// Drop configurations
 	const allowedMimeTypes = [
-		'image/jpeg',
-		'image/png',
-		'image/gif',
-		'image/webp',
-		'image/avif',
+		"image/jpeg",
+		"image/png",
+		"image/gif",
+		"image/webp",
+		"image/avif",
 		// apple
-		'image/heic',
-		'image/heif',
+		"image/heic",
+		"image/heif",
 	]
 
 	// Content realtime update for hasChanges check
@@ -66,7 +66,7 @@ export function ContentEditor() {
 		content: serverPost?.content ? JSON.parse(serverPost.content) : undefined,
 		editorProps: {
 			attributes: {
-				class: 'mt-6 prose-article focus:outline-hidden',
+				class: "mt-6 prose-article focus:outline-hidden",
 			},
 			// https://github.com/ueberdosis/tiptap/blob/develop/packages/extension-file-handler/src/FileHandlePlugin.ts
 			handleDrop(view, event, slice, moved) {
@@ -85,24 +85,24 @@ export function ContentEditor() {
 				event.preventDefault()
 				event.stopPropagation()
 
-				filesArray.map(file => {
+				filesArray.map((file) => {
 					if (file.size > MAX_FILE_SIZE) {
 						toast.error(`File too large: ${file.name} (max 10MB)`)
 						return
 					}
 					if (allowedMimeTypes.includes(file.type)) {
-						switch (file.type.split('/')[0]) {
-							case 'image':
-								console.log('Image dropped:', file)
+						switch (file.type.split("/")[0]) {
+							case "image":
+								console.log("Image dropped:", file)
 								return handleImageDrop(file, dropPos?.pos || 0)
 							default:
 								toast.error(`File type not implemented: ${file.type}`)
-								console.warn('File type not implemented:', file.type, file)
+								console.warn("File type not implemented:", file.type, file)
 								return
 						}
 					} else {
 						toast.error(`Unsupported file type: ${file.type}`)
-						console.warn('Unsupported file type:', file.type, file)
+						console.warn("Unsupported file type:", file.type, file)
 					}
 				})
 
@@ -162,7 +162,7 @@ export function ContentEditor() {
 			editor
 				.chain()
 				.insertContentAt(dropPos, {
-					type: 'image',
+					type: "image",
 					attrs: {
 						src: previewURL,
 						alt: file.name,
@@ -172,7 +172,7 @@ export function ContentEditor() {
 				.focus()
 				.run()
 
-			await oneStepUpload([file], userSession.user.id, files =>
+			await oneStepUpload([file], userSession.user.id, (files) =>
 				tmpImage.set(files[0].key, { ...files[0], previewURL }),
 			)
 		},
@@ -187,13 +187,13 @@ export function ContentEditor() {
 			const file = tmpImage.get(key)
 			if (!file) return
 
-			if (progress.status === 'error' || progress.status === 'completed') {
+			if (progress.status === "error" || progress.status === "completed") {
 				// Find the image node with previewURL
-				const imagePreviewNode = editor.$node('image', { src: file.previewURL })
+				const imagePreviewNode = editor.$node("image", { src: file.previewURL })
 				if (!imagePreviewNode) return
 
 				switch (progress.status) {
-					case 'error':
+					case "error":
 						toast.error(`Upload failed: ${progress.error}`)
 
 						// Remove the image node with previewUrl
@@ -205,7 +205,7 @@ export function ContentEditor() {
 							})
 							.run()
 						break
-					case 'completed':
+					case "completed":
 						const url = `/assets/${file.id}`
 
 						// Prefetch the image before replacing
@@ -215,13 +215,13 @@ export function ContentEditor() {
 							editor
 								.chain()
 								.command(({ tr }) => {
-									tr.setNodeAttribute(imagePreviewNode.pos, 'src', url)
+									tr.setNodeAttribute(imagePreviewNode.pos, "src", url)
 									return true
 								})
 								.run()
 						}
 						img.onerror = () => {
-							console.error('Failed to load uploaded image:', url)
+							console.error("Failed to load uploaded image:", url)
 						}
 						img.src = url
 						break

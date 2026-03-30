@@ -1,16 +1,16 @@
-import type { Route } from './+types/route'
+import type { Route } from "./+types/route"
 
-import { createInsertSchema } from 'drizzle-zod'
-import z from 'zod'
+import { createInsertSchema } from "drizzle-zod"
+import z from "zod"
 
-import type { ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
+import type { ActionResponse } from "~/lib/utils"
+import { handleError } from "~/lib/utils/server"
 
-import { ecCategory } from '../../../lib/db/schema'
+import { ecCategory } from "../../../lib/db/schema"
 import {
 	createEcCategory,
 	deleteEcCategories,
-} from '../../../lib/db/taxonomy.server'
+} from "../../../lib/db/taxonomy.server"
 
 const categoryInsertUpdateSchema = createInsertSchema(ecCategory)
 
@@ -19,16 +19,16 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 	try {
 		switch (request.method) {
-			case 'POST':
+			case "POST":
 				const categoryData = categoryInsertUpdateSchema.parse(jsonData)
 				const category = await createEcCategory(categoryData)
 				return {
 					msg: `Category ${category.name} created successfully`,
 					data: category,
 				} satisfies ActionResponse
-			case 'PUT':
+			case "PUT":
 				return {} satisfies ActionResponse
-			case 'DELETE':
+			case "DELETE":
 				const deleteData = z
 					.object({ id: z.number(), name: z.string() })
 					.parse(jsonData)

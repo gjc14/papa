@@ -2,16 +2,16 @@
  * @see https://developers.google.com/search/docs/advanced/sitemaps/build-sitemap
  * @see https://www.sitemaps.org/protocol.html
  */
-import type { Route } from './+types/sitemap.xml'
+import type { Route } from "./+types/sitemap.xml"
 
-import * as serverBuild from 'virtual:react-router/server-build'
+import * as serverBuild from "virtual:react-router/server-build"
 
-import { getServiceSitemapUrlConfigs } from '~/lib/service/system-endpoints.server'
+import { getServiceSitemapUrlConfigs } from "~/lib/service/system-endpoints.server"
 
 import {
 	configsToSitemapXml,
 	type SitemapUrlConfig,
-} from '../../lib/service/utils'
+} from "../../lib/service/utils"
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
@@ -35,20 +35,20 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 				<urlset
 					xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
 				>
-					${urlTags.join('\n')}
+					${urlTags.join("\n")}
 				</urlset>`,
 			{
 				status: 200,
 				headers: {
-					'Content-Type': 'application/xml',
-					'X-Content-Type-Options': 'nosniff',
-					'Cache-Control': 'public, max-age=3600',
+					"Content-Type": "application/xml",
+					"X-Content-Type-Options": "nosniff",
+					"Cache-Control": "public, max-age=3600",
 				},
 			},
 		)
 	} catch (e) {
-		console.error('Error generating sitemap:', e)
-		throw new Response('', { status: 500 })
+		console.error("Error generating sitemap:", e)
+		throw new Response("", { status: 500 })
 	}
 }
 
@@ -81,8 +81,8 @@ function sitemapUrlsFromServerBuild(
 		const path = route.path
 
 		if (
-			!path.includes(':') && // exclude dynamic segments
-			!path.includes('*') // exclude catch-all segments
+			!path.includes(":") && // exclude dynamic segments
+			!path.includes("*") // exclude catch-all segments
 		) {
 			let parentRoute = route.parentId ? routes[route.parentId] : undefined
 			let fullPath = path
@@ -98,9 +98,9 @@ function sitemapUrlsFromServerBuild(
 
 			// filter
 			if (
-				fullPath.startsWith('/dashboard') ||
-				fullPath.startsWith('/api') ||
-				['/sitemap.xml', '/robots.txt'].includes(fullPath)
+				fullPath.startsWith("/dashboard") ||
+				fullPath.startsWith("/api") ||
+				["/sitemap.xml", "/robots.txt"].includes(fullPath)
 			) {
 				continue
 			}

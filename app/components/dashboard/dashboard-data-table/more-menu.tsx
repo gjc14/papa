@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { Loader2, MoreHorizontal } from 'lucide-react'
+import { Loader2, MoreHorizontal } from "lucide-react"
 
 import {
 	AlertDialog,
@@ -11,8 +11,8 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '~/components/ui/alert-dialog'
-import { Button } from '~/components/ui/button'
+} from "~/components/ui/alert-dialog"
+import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,14 +21,14 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { Spinner } from '~/components/ui/spinner'
+} from "~/components/ui/dropdown-menu"
+import { Spinner } from "~/components/ui/spinner"
 
 export const DashboardDataTableMoreMenu = ({
 	id,
 	children,
 	deletable = true,
-	deleteTarget = '-->',
+	deleteTarget = "-->",
 	onDelete,
 	mutating,
 	permanent = true,
@@ -53,7 +53,7 @@ export const DashboardDataTableMoreMenu = ({
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger
 				render={
-					<Button variant="ghost" size={'icon'} disabled={mutating}>
+					<Button variant="ghost" size={"icon"} disabled={mutating}>
 						<span className="sr-only">Open menu</span>
 						{mutating ? (
 							<Loader2 className="animate-spin" />
@@ -82,7 +82,7 @@ export const DashboardDataTableMoreMenu = ({
 								variant="destructive"
 								onClick={() => setOpen(true)}
 							>
-								{permanent ? 'Delete Permanently' : 'Move to Trash'}
+								{permanent ? "Delete Permanently" : "Move to Trash"}
 							</DropdownMenuItem>
 						</>
 					)}
@@ -93,7 +93,7 @@ export const DashboardDataTableMoreMenu = ({
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>
-							{permanent ? 'Delete Permanently' : 'Move to Trash?'}
+							{permanent ? "Delete Permanently" : "Move to Trash?"}
 						</AlertDialogTitle>
 						<AlertDialogDescription>
 							{permanent ? (
@@ -120,9 +120,9 @@ export const DashboardDataTableMoreMenu = ({
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction variant={'destructive'} onClick={onDelete}>
+						<AlertDialogAction variant={"destructive"} onClick={onDelete}>
 							{mutating && <Spinner />}
-							{permanent ? 'Delete Permanently' : 'Move to Trash'}
+							{permanent ? "Delete Permanently" : "Move to Trash"}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

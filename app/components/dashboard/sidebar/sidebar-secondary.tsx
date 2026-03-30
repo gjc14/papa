@@ -1,7 +1,7 @@
-import * as React from 'react'
-import { Link } from 'react-router'
+import * as React from "react"
+import { Link } from "react-router"
 
-import { type LucideIcon } from 'lucide-react'
+import { type LucideIcon } from "lucide-react"
 
 import {
 	SidebarGroup,
@@ -9,7 +9,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from '~/components/ui/sidebar'
+} from "~/components/ui/sidebar"
 
 export type SidebarSecondaryItem =
 	| {
@@ -35,7 +35,7 @@ export function SidebarSecondary({
 		<SidebarGroup {...props}>
 			<SidebarGroupContent>
 				<SidebarMenu>
-					{items.map(item => (
+					{items.map((item) => (
 						<SidebarMenuItem key={item.title}>
 							<SidebarMenuButton
 								size="default"

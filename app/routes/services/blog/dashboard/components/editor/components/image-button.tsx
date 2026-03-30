@@ -1,31 +1,31 @@
-import { useState } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
+import { useState } from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 
-import { useEditorState } from '@tiptap/react'
-import { atom, useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { Image } from 'lucide-react'
+import { useEditorState } from "@tiptap/react"
+import { atom, useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
+import { Image } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { DialogTrigger } from '~/components/ui/dialog'
-import { Skeleton } from '~/components/ui/skeleton'
-import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
-import { useAssets } from '~/hooks/use-assets'
+import { Button } from "~/components/ui/button"
+import { DialogTrigger } from "~/components/ui/dialog"
+import { Skeleton } from "~/components/ui/skeleton"
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
+import { useAssets } from "~/hooks/use-assets"
 
-import { editorAtom } from '../../../context'
-import { createImageOption } from '../edit-options'
-import { TooltipWrapper } from './tooltip-wrapper'
+import { editorAtom } from "../../../context"
+import { createImageOption } from "../edit-options"
+import { TooltipWrapper } from "./tooltip-wrapper"
 
 export const isImageSelectorOpenAtom = atom(false)
 
 export const ImageButton = () => {
-	const IMAGE_SHORTCUT = createImageOption({ src: '' }).shortcut
+	const IMAGE_SHORTCUT = createImageOption({ src: "" }).shortcut
 
 	const { assets, isLoading, setAssets } = useAssets({ fetchOnLoad: true })
 
-	const [srcInput, setSrcInput] = useState('')
-	const [altInput, setAltInput] = useState('')
-	const [titleInput, setTitleInput] = useState('')
+	const [srcInput, setSrcInput] = useState("")
+	const [altInput, setAltInput] = useState("")
+	const [titleInput, setTitleInput] = useState("")
 
 	useHydrateAtoms([[isImageSelectorOpenAtom, false]])
 
@@ -40,7 +40,7 @@ export const ImageButton = () => {
 	 */
 	const imageStates = useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			if (!editor) return
 
@@ -58,8 +58,8 @@ export const ImageButton = () => {
 	// Open Image selector
 	useHotkeys(
 		IMAGE_SHORTCUT,
-		e => {
-			setIsImageSelectorOpen(prev => !prev)
+		(e) => {
+			setIsImageSelectorOpen((prev) => !prev)
 			e.preventDefault()
 			e.stopPropagation()
 		},
@@ -81,9 +81,9 @@ export const ImageButton = () => {
 				.run()
 		} catch (error) {
 			if (error instanceof Error) {
-				console.error('Error unsetting image:', error.message)
+				console.error("Error unsetting image:", error.message)
 			} else {
-				console.error('Unexpected error unsetting image:', error)
+				console.error("Unexpected error unsetting image:", error)
 			}
 		}
 	}
@@ -100,9 +100,9 @@ export const ImageButton = () => {
 						<DialogTrigger
 							render={
 								<Button
-									size={'icon'}
-									variant={'ghost'}
-									className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+									size={"icon"}
+									variant={"ghost"}
+									className={`${isActive ? "bg-accent text-accent-foreground" : ""}`}
 									disabled={!canRun}
 								>
 									<Image />
@@ -115,14 +115,14 @@ export const ImageButton = () => {
 			assets={assets}
 			isLoading={isLoading}
 			open={isImageSelectorOpen}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				setIsImageSelectorOpen(open)
 
 				if (open) {
-					const { src, alt, title } = editor.getAttributes('image')
-					setSrcInput(src || '')
-					setAltInput(alt || '')
-					setTitleInput(title || '')
+					const { src, alt, title } = editor.getAttributes("image")
+					setSrcInput(src || "")
+					setAltInput(alt || "")
+					setTitleInput(title || "")
 				} else {
 					// Focus editor when closing the menu
 					editor.commands.focus()
@@ -136,8 +136,8 @@ export const ImageButton = () => {
 			titleInput={titleInput}
 			setTitleInput={setTitleInput}
 			onAction={handleInsert}
-			onUpload={files =>
-				setAssets(prev => {
+			onUpload={(files) =>
+				setAssets((prev) => {
 					if (!prev) return prev
 					return {
 						...prev,

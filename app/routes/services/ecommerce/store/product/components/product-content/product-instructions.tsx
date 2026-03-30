@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { Button } from '~/components/ui/button'
-import { Separator } from '~/components/ui/separator'
+import { Button } from "~/components/ui/button"
+import { Separator } from "~/components/ui/separator"
 
-import { useProductContext } from '../../hooks/use-product-context'
+import { useProductContext } from "../../hooks/use-product-context"
 
 export const ProductInstructions = () => {
 	const [activeTab, setActiveTab] = useState(0)
@@ -22,10 +22,10 @@ export const ProductInstructions = () => {
 						onClick={() => setActiveTab(idx)}
 						className={`cursor-pointer border-b-2 px-0 pb-5 text-sm font-medium transition-colors hover:no-underline ${
 							activeTab === idx
-								? 'border-primary'
-								: 'text-foreground/70 hover:text-foreground border-transparent'
+								? "border-primary"
+								: "text-foreground/70 hover:text-foreground border-transparent"
 						}`}
-						variant={'link'}
+						variant={"link"}
 					>
 						{detail.title}
 					</Button>

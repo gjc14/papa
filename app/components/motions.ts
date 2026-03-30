@@ -1,27 +1,27 @@
-import type { MotionProps } from 'motion/react'
+import type { MotionProps } from "motion/react"
 
 type FadeProps = {
-	direction?: 'up' | 'down' | 'left' | 'right'
+	direction?: "up" | "down" | "left" | "right"
 	delay?: number
 	duration?: number
 	distance?: number
 }
 
 export function fade({
-	direction = 'up',
+	direction = "up",
 	delay = 0,
 	duration = 0.5,
 	distance = 15,
 }: FadeProps = {}): MotionProps {
 	const hidden = () => {
 		switch (direction) {
-			case 'up':
+			case "up":
 				return { opacity: 0, y: distance }
-			case 'down':
+			case "down":
 				return { opacity: 0, y: -distance }
-			case 'left':
+			case "left":
 				return { opacity: 0, x: distance }
-			case 'right':
+			case "right":
 				return { opacity: 0, x: -distance }
 		}
 	}
@@ -35,9 +35,9 @@ export function fade({
 				x: 0,
 			},
 		},
-		initial: 'hidden',
-		whileInView: 'visible',
+		initial: "hidden",
+		whileInView: "visible",
 		viewport: { once: true },
-		transition: { delay, type: 'spring', duration },
+		transition: { delay, type: "spring", duration },
 	}
 }

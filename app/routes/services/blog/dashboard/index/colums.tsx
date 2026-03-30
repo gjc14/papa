@@ -1,19 +1,19 @@
-import { useEffect } from 'react'
-import { Link, useFetcher } from 'react-router'
+import { useEffect } from "react"
+import { Link, useFetcher } from "react-router"
 
-import { type ColumnDef } from '@tanstack/react-table'
+import { type ColumnDef } from "@tanstack/react-table"
 
-import { Badge } from '~/components/ui/badge'
-import { DropdownMenuItem } from '~/components/ui/dropdown-menu'
-import { DashboardDataTableMoreMenu } from '~/components/dashboard/dashboard-data-table'
-import { useFetcherNotification } from '~/hooks/use-notification'
+import { Badge } from "~/components/ui/badge"
+import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
+import { DashboardDataTableMoreMenu } from "~/components/dashboard/dashboard-data-table"
+import { useFetcherNotification } from "~/hooks/use-notification"
 
-import type { PostWithRelations } from '../../lib/db/post.server'
+import type { PostWithRelations } from "../../lib/db/post.server"
 
 export const columns: ColumnDef<PostWithRelations>[] = [
 	{
-		accessorKey: 'title',
-		header: 'Title',
+		accessorKey: "title",
+		header: "Title",
 		cell: ({ row }) => {
 			const slug = row.original.slug
 			const title = row.original.title
@@ -30,44 +30,44 @@ export const columns: ColumnDef<PostWithRelations>[] = [
 		},
 	},
 	{
-		accessorKey: 'excerpt',
-		header: 'Excerpt',
+		accessorKey: "excerpt",
+		header: "Excerpt",
 		cell: ({ row }) => {
 			const excerpt = row.original.excerpt
 			return (
 				<div className="py-2">
 					<p className="line-clamp-3 text-sm break-words whitespace-normal">
-						{excerpt || '-'}
+						{excerpt || "-"}
 					</p>
 				</div>
 			)
 		},
 	},
 	{
-		accessorKey: 'status',
-		header: 'Status',
+		accessorKey: "status",
+		header: "Status",
 		cell: ({ row }) => {
 			const status = row.original.status
-			let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
-				'default'
+			let variant: "default" | "secondary" | "destructive" | "outline" =
+				"default"
 			switch (status.toLowerCase()) {
-				case 'draft':
-					variant = 'secondary'
+				case "draft":
+					variant = "secondary"
 					break
-				case 'published':
-					variant = 'default'
+				case "published":
+					variant = "default"
 					break
-				case 'scheduled':
-					variant = 'default'
+				case "scheduled":
+					variant = "default"
 					break
-				case 'trashed':
-					variant = 'destructive'
+				case "trashed":
+					variant = "destructive"
 					break
-				case 'archived':
-					variant = 'outline'
+				case "archived":
+					variant = "outline"
 					break
-				case 'other':
-					variant = 'outline'
+				case "other":
+					variant = "outline"
 					break
 				default:
 					break
@@ -80,18 +80,18 @@ export const columns: ColumnDef<PostWithRelations>[] = [
 		},
 	},
 	{
-		accessorKey: 'author',
-		header: 'Author',
-		cell: ({ row }) => row.original.author?.name || '—',
+		accessorKey: "author",
+		header: "Author",
+		cell: ({ row }) => row.original.author?.name || "—",
 	},
 	{
-		accessorKey: 'updatedAt',
-		header: 'Updated At',
-		cell: ({ row }) => row.original.updatedAt.toLocaleString('zh-TW'),
+		accessorKey: "updatedAt",
+		header: "Updated At",
+		cell: ({ row }) => row.original.updatedAt.toLocaleString("zh-TW"),
 	},
 	{
-		id: '_actions',
-		cell: props => {
+		id: "_actions",
+		cell: (props) => {
 			const row = props.row
 			const fetcher = useFetcher()
 			const { mutating } = useFetcherNotification(fetcher)
@@ -125,9 +125,9 @@ export const columns: ColumnDef<PostWithRelations>[] = [
 						fetcher.submit(
 							{ id },
 							{
-								method: 'DELETE',
+								method: "DELETE",
 								action: `/dashboard/blog/resource`,
-								encType: 'application/json',
+								encType: "application/json",
 							},
 						)
 					}}

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
-import { Link, useFetcher } from 'react-router'
+import { useEffect, useState } from "react"
+import { Link, useFetcher } from "react-router"
 
-import { useAtom, useAtomValue } from 'jotai'
-import { ExternalLink, Plus, X } from 'lucide-react'
+import { useAtom, useAtomValue } from "jotai"
+import { ExternalLink, Plus, X } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Card,
 	CardContent,
@@ -12,8 +12,8 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Checkbox } from '~/components/ui/checkbox'
+} from "~/components/ui/card"
+import { Checkbox } from "~/components/ui/checkbox"
 import {
 	Dialog,
 	DialogContent,
@@ -22,23 +22,23 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '~/components/ui/dialog'
-import { Input } from '~/components/ui/input'
-import { Spinner } from '~/components/ui/spinner'
+} from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
+import { Spinner } from "~/components/ui/spinner"
 import type {
 	CrossSellProduct,
 	ProductListing,
 	UpsellProduct,
-} from '~/routes/services/ecommerce/lib/db/product.server'
+} from "~/routes/services/ecommerce/lib/db/product.server"
 import {
 	crossSellProductsAtom,
 	storeConfigAtom,
 	upsellProductsAtom,
 	type StoreConfig,
-} from '~/routes/services/ecommerce/store/product/context'
-import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
+} from "~/routes/services/ecommerce/store/product/context"
+import { renderPrice } from "~/routes/services/ecommerce/store/product/utils/price"
 
-import type { loader } from '../resource'
+import type { loader } from "../resource"
 
 export function LinkedProducts() {
 	const storeConfig = useAtomValue(storeConfigAtom)
@@ -75,14 +75,14 @@ export function LinkedProducts() {
 	}
 
 	const handleRemoveCSProduct = (productId: number) => {
-		setCrossSellProducts(prev =>
-			!prev ? null : prev.filter(p => p.id !== productId),
+		setCrossSellProducts((prev) =>
+			!prev ? null : prev.filter((p) => p.id !== productId),
 		)
 	}
 
 	const handleRemoveUSProduct = (productId: number) => {
-		setUpsellProducts(prev =>
-			!prev ? null : prev.filter(p => p.id !== productId),
+		setUpsellProducts((prev) =>
+			!prev ? null : prev.filter((p) => p.id !== productId),
 		)
 	}
 
@@ -112,7 +112,7 @@ export function LinkedProducts() {
 						<div className="max-h-[360px] space-y-2 overflow-scroll">
 							{crossSellProducts
 								.sort((a, b) => a.order - b.order)
-								.map(product => (
+								.map((product) => (
 									<LinkedProductItem
 										key={product.id}
 										storeConfig={storeConfig}
@@ -131,14 +131,14 @@ export function LinkedProducts() {
 						onConfirm={handleSetCSProducts}
 						selected={crossSellProducts ?? []}
 						products={productsAvailable}
-						isLoading={fetcher.state === 'loading'}
+						isLoading={fetcher.state === "loading"}
 						trigger={
 							<Button
 								size="sm"
 								variant="outline"
 								className="w-full"
 								onClick={() => {
-									!productsLoaded && fetcher.load('resource')
+									!productsLoaded && fetcher.load("resource")
 									setIsCSOpen(true)
 								}}
 							>
@@ -172,7 +172,7 @@ export function LinkedProducts() {
 						<div className="max-h-[360px] space-y-2 overflow-scroll">
 							{upsellProducts
 								.sort((a, b) => a.order - b.order)
-								.map(product => (
+								.map((product) => (
 									<LinkedProductItem
 										key={product.id}
 										storeConfig={storeConfig}
@@ -191,14 +191,14 @@ export function LinkedProducts() {
 						onConfirm={handleSetUSProducts}
 						selected={upsellProducts ?? []}
 						products={productsAvailable}
-						isLoading={fetcher.state === 'loading'}
+						isLoading={fetcher.state === "loading"}
 						trigger={
 							<Button
 								size="sm"
 								variant="outline"
 								className="w-full"
 								onClick={() => {
-									!productsLoaded && fetcher.load('resource')
+									!productsLoaded && fetcher.load("resource")
 									setIsUSOpen(true)
 								}}
 							>
@@ -262,7 +262,7 @@ function LinkedProductItem({
 					variant="ghost"
 					size="icon"
 					className="size-8"
-					onClick={e => e.stopPropagation()}
+					onClick={(e) => e.stopPropagation()}
 					render={
 						<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
 							<ExternalLink />
@@ -308,18 +308,18 @@ function AddLinkedProductsDialog({
 }: AddLinkedProductsDialogProps) {
 	const [selectedProducts, setSelectedProducts] =
 		useState<(ProductListing & { order: number })[]>(selected)
-	const [search, setSearch] = useState('')
+	const [search, setSearch] = useState("")
 
 	useEffect(() => {
 		setSelectedProducts(selected)
 	}, [selected])
 
 	const handleToggleProduct = (product: ProductListing) => {
-		setSelectedProducts(prev => {
-			const exists = prev.some(p => p.id === product.id)
+		setSelectedProducts((prev) => {
+			const exists = prev.some((p) => p.id === product.id)
 			if (exists) {
 				return prev
-					.filter(p => p.id !== product.id)
+					.filter((p) => p.id !== product.id)
 					.map((p, index) => ({ ...p, order: index + 1 }))
 			}
 			return [...prev, { ...product, order: prev.length + 1 }]
@@ -332,7 +332,7 @@ function AddLinkedProductsDialog({
 		}
 	}
 
-	const filteredProducts = products.filter(p =>
+	const filteredProducts = products.filter((p) =>
 		p.name.toLowerCase().includes(search.toLowerCase()),
 	)
 
@@ -349,7 +349,7 @@ function AddLinkedProductsDialog({
 					className="shrink-0"
 					placeholder="Search products..."
 					value={search}
-					onChange={e => setSearch(e.target.value)}
+					onChange={(e) => setSearch(e.target.value)}
 				/>
 
 				{/* Scrollable content area */}
@@ -367,14 +367,14 @@ function AddLinkedProductsDialog({
 					) : (
 						/* Product selection list */
 						<div className="space-y-2">
-							{filteredProducts.map(product => {
+							{filteredProducts.map((product) => {
 								return (
 									<SelectableProductItem
 										key={product.id}
 										storeConfig={storeConfig}
 										product={product}
 										selectedOrder={
-											selectedProducts.find(p => p.id === product.id)?.order
+											selectedProducts.find((p) => p.id === product.id)?.order
 										}
 										onToggle={handleToggleProduct}
 									/>
@@ -386,18 +386,18 @@ function AddLinkedProductsDialog({
 
 				<DialogFooter className="shrink-0">
 					<Button
-						size={'sm'}
+						size={"sm"}
 						variant="outline"
 						onClick={() => onOpenChange(false)}
 					>
 						Cancel
 					</Button>
 					<Button
-						size={'sm'}
+						size={"sm"}
 						onClick={handleConfirm}
 						disabled={selectedProducts.length === 0}
 					>
-						Select{' '}
+						Select{" "}
 						{selectedProducts.length > 0 && `(${selectedProducts.length})`}
 					</Button>
 				</DialogFooter>
@@ -427,7 +427,7 @@ function SelectableProductItem({
 	return (
 		<div
 			className={`hover:bg-muted/50 flex min-w-0 cursor-pointer items-center gap-3 overflow-auto border p-3 transition-colors ${
-				isSelected ? 'border-primary bg-primary/5' : ''
+				isSelected ? "border-primary bg-primary/5" : ""
 			}`}
 			onClick={() => onToggle(product)}
 		>
@@ -472,7 +472,7 @@ function SelectableProductItem({
 				variant="ghost"
 				size="icon"
 				className="size-8"
-				onClick={e => e.stopPropagation()}
+				onClick={(e) => e.stopPropagation()}
 				render={
 					<Link to={`../${product.slug}`} target="_blank" rel="noreferrer">
 						<ExternalLink />

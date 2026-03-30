@@ -9,7 +9,7 @@ import {
 	Preview,
 	Section,
 	Text,
-} from '@react-email/components'
+} from "@react-email/components"
 
 interface OtpEmailProps {
 	otp: string
@@ -20,16 +20,16 @@ interface OtpEmailProps {
 }
 
 const baseURL =
-	process.env.NODE_ENV === 'production'
-		? process.env.VITE_BASE_URL || 'http://localhost:5173'
-		: 'http://localhost:5173'
+	process.env.NODE_ENV === "production"
+		? process.env.VITE_BASE_URL || "http://localhost:5173"
+		: "http://localhost:5173"
 
 export const OtpEmail = ({
 	otp,
 	expireIn,
 	username,
 	companyName,
-	logoUrl = baseURL + '/logo.png',
+	logoUrl = baseURL + "/logo.png",
 }: OtpEmailProps) => {
 	return (
 		<Html>
@@ -86,76 +86,76 @@ export default OtpEmail
 
 // Styles
 const main = {
-	backgroundColor: '#f6f9fc',
+	backgroundColor: "#f6f9fc",
 	fontFamily:
 		'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
 }
 
 const container = {
-	backgroundColor: '#ffffff',
-	margin: '0 auto',
-	padding: '20px 0',
-	maxWidth: '600px',
-	borderRadius: '4px',
-	boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+	backgroundColor: "#ffffff",
+	margin: "0 auto",
+	padding: "20px 0",
+	maxWidth: "600px",
+	borderRadius: "4px",
+	boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
 }
 
 const logoContainer = {
-	padding: '20px 30px',
-	textAlign: 'center' as const,
+	padding: "20px 30px",
+	textAlign: "center" as const,
 }
 
 const logo = {
-	margin: '0 auto',
+	margin: "0 auto",
 }
 
 const hr = {
-	borderColor: '#e6ebf1',
-	margin: '20px 0',
+	borderColor: "#e6ebf1",
+	margin: "20px 0",
 }
 
 const section = {
-	padding: '0 30px',
+	padding: "0 30px",
 }
 
 const heading = {
-	fontSize: '24px',
-	color: '#333',
-	textAlign: 'center' as const,
-	margin: '30px 0',
+	fontSize: "24px",
+	color: "#333",
+	textAlign: "center" as const,
+	margin: "30px 0",
 }
 
 const paragraph = {
-	fontSize: '16px',
-	lineHeight: '1.5',
-	color: '#444',
-	margin: '16px 0',
+	fontSize: "16px",
+	lineHeight: "1.5",
+	color: "#444",
+	margin: "16px 0",
 }
 
 const otpContainer = {
-	textAlign: 'center' as const,
-	margin: '30px 0',
-	padding: '20px 0',
+	textAlign: "center" as const,
+	margin: "30px 0",
+	padding: "20px 0",
 }
 
 const otpCode = {
-	fontSize: '32px',
-	fontWeight: 'bold',
-	color: '#333',
-	letterSpacing: '8px',
-	padding: '12px 24px',
-	background: '#f4f4f7',
-	borderRadius: '4px',
-	display: 'inline-block',
+	fontSize: "32px",
+	fontWeight: "bold",
+	color: "#333",
+	letterSpacing: "8px",
+	padding: "12px 24px",
+	background: "#f4f4f7",
+	borderRadius: "4px",
+	display: "inline-block",
 }
 
 const footer = {
-	padding: '0 30px 20px',
+	padding: "0 30px 20px",
 }
 
 const footerText = {
-	fontSize: '12px',
-	color: '#777',
-	textAlign: 'center' as const,
-	margin: '8px 0',
+	fontSize: "12px",
+	color: "#777",
+	textAlign: "center" as const,
+	margin: "8px 0",
 }

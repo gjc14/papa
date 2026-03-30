@@ -1,43 +1,43 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { useEditorState } from '@tiptap/react'
-import { useAtom } from 'jotai'
-import { ChevronDown } from 'lucide-react'
+import { useEditorState } from "@tiptap/react"
+import { useAtom } from "jotai"
+import { ChevronDown } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { Skeleton } from '~/components/ui/skeleton'
+} from "~/components/ui/dropdown-menu"
+import { Skeleton } from "~/components/ui/skeleton"
 
-import { editorAtom } from '../../../context'
-import { type EditOptionProps } from '../edit-options'
-import { TooltipWrapper } from './tooltip-wrapper'
+import { editorAtom } from "../../../context"
+import { type EditOptionProps } from "../edit-options"
+import { TooltipWrapper } from "./tooltip-wrapper"
 
 export function SelectDropdownMenu({
 	options,
-	tooltip = 'Select options',
-	side = 'bottom',
+	tooltip = "Select options",
+	side = "bottom",
 }: {
 	options: EditOptionProps[]
 	tooltip?: string
-	side?: 'top' | 'right' | 'bottom' | 'left'
+	side?: "top" | "right" | "bottom" | "left"
 }) {
 	const [editor] = useAtom(editorAtom)
 	const [open, setOpen] = useState(false)
 
 	const ActiveIcon = useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			const fallback = options[0].icon
 			if (!editor) return fallback // Default icon if editor is not available
 
-			const activeOption = options.find(o => o.isActive?.(editor))
+			const activeOption = options.find((o) => o.isActive?.(editor))
 			return activeOption?.icon || fallback
 		},
 	})
@@ -48,11 +48,11 @@ export function SelectDropdownMenu({
 	 */
 	useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			if (!editor) return
 
-			return options.map(o => o.canRun(editor))
+			return options.map((o) => o.canRun(editor))
 		},
 	})
 
@@ -61,7 +61,7 @@ export function SelectDropdownMenu({
 	return (
 		<DropdownMenu
 			open={open}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				setOpen(open)
 				// Focus editor when closing the menu
 				if (!open) editor.commands.focus()
@@ -74,7 +74,7 @@ export function SelectDropdownMenu({
 					<DropdownMenuTrigger
 						render={
 							<Button variant="ghost" className="gap-0 px-1">
-								{ActiveIcon && <ActiveIcon />}{' '}
+								{ActiveIcon && <ActiveIcon />}{" "}
 								<ChevronDown className="scale-75" />
 							</Button>
 						}
@@ -92,9 +92,9 @@ export function SelectDropdownMenu({
 								side="right"
 								render={
 									<Button
-										size={'sm'}
-										variant={'ghost'}
-										className={`justify-start ${isActive?.(editor) ? 'bg-accent' : ''}`}
+										size={"sm"}
+										variant={"ghost"}
+										className={`justify-start ${isActive?.(editor) ? "bg-accent" : ""}`}
 										render={
 											<DropdownMenuRadioItem
 												value={name}

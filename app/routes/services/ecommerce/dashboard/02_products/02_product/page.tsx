@@ -1,32 +1,32 @@
-import React from 'react'
+import React from "react"
 
-import { useInPageNavigation } from '~/hooks/use-in-page-navigation'
+import { useInPageNavigation } from "~/hooks/use-in-page-navigation"
 
-import { ProductAlerts } from './components/alerts'
-import { Attributes } from './components/attributes'
-import { Gallery } from './components/gallery'
-import { GeneralInformation } from './components/general-information'
-import { ProductEditPageHeader } from './components/header'
-import { Instructions } from './components/instruction'
-import { LinkedProducts } from './components/linked-products'
-import { MainOption } from './components/main-option'
-import { Publishing } from './components/publishing'
-import { Seo } from './components/seo'
-import { Taxonomies } from './components/taxonomies'
-import { Variants } from './components/variants'
+import { ProductAlerts } from "./components/alerts"
+import { Attributes } from "./components/attributes"
+import { Gallery } from "./components/gallery"
+import { GeneralInformation } from "./components/general-information"
+import { ProductEditPageHeader } from "./components/header"
+import { Instructions } from "./components/instruction"
+import { LinkedProducts } from "./components/linked-products"
+import { MainOption } from "./components/main-option"
+import { Publishing } from "./components/publishing"
+import { Seo } from "./components/seo"
+import { Taxonomies } from "./components/taxonomies"
+import { Variants } from "./components/variants"
 
 // Static sections definition
 const SECTIONS = [
-	{ id: 'general-information', label: 'General Information' },
-	{ id: 'gallery', label: 'Gallery' },
-	{ id: 'main-option', label: 'Product & Inventory' },
-	{ id: 'attributes', label: 'Attributes' },
-	{ id: 'variants', label: 'Variants' },
-	{ id: 'instruction', label: 'Instruction' },
-	{ id: 'linked-products', label: 'Linked Products' },
-	{ id: 'taxonomies', label: 'Classification' },
-	{ id: 'publishing', label: 'Publishing' },
-	{ id: 'seo', label: 'SEO' },
+	{ id: "general-information", label: "General Information" },
+	{ id: "gallery", label: "Gallery" },
+	{ id: "main-option", label: "Product & Inventory" },
+	{ id: "attributes", label: "Attributes" },
+	{ id: "variants", label: "Variants" },
+	{ id: "instruction", label: "Instruction" },
+	{ id: "linked-products", label: "Linked Products" },
+	{ id: "taxonomies", label: "Classification" },
+	{ id: "publishing", label: "Publishing" },
+	{ id: "seo", label: "SEO" },
 ]
 
 export function ProductEditPage() {
@@ -102,7 +102,7 @@ const Sidebar = ({ sections, containerRef }: SidebarProps) => {
 				container.getBoundingClientRect().top +
 				container.scrollTop -
 				80
-			container.scrollTo({ top, behavior: 'smooth' })
+			container.scrollTo({ top, behavior: "smooth" })
 		}
 	}
 
@@ -116,16 +116,16 @@ const Sidebar = ({ sections, containerRef }: SidebarProps) => {
 		<aside className="sticky top-20 z-5 hidden w-full flex-col overflow-y-auto border-r p-8 md:flex">
 			<div className="mb-5 text-xs font-bold uppercase">On this page</div>
 			<nav className="space-y-1">
-				{sections.map(section => {
+				{sections.map((section) => {
 					return (
 						<a
 							key={section.id}
 							href={`#${section.id}`}
-							onClick={e => handleLinkClick(e, section.id)}
+							onClick={(e) => handleLinkClick(e, section.id)}
 							className={`block truncate px-3 py-2 text-xs font-medium whitespace-nowrap transition-all duration-300 ${
 								activeId === section.id
-									? 'text-primary scale-105'
-									: 'text-muted-foreground hover:text-foreground border-transparent hover:scale-105'
+									? "text-primary scale-105"
+									: "text-muted-foreground hover:text-foreground border-transparent hover:scale-105"
 							} `}
 						>
 							{section.label}

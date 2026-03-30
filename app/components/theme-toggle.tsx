@@ -1,7 +1,7 @@
-import { forwardRef } from 'react'
+import { forwardRef } from "react"
 
-import { Moon, Sun, SunMoon } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { Moon, Sun, SunMoon } from "lucide-react"
+import { useTheme } from "next-themes"
 
 import {
 	DropdownMenu,
@@ -13,54 +13,54 @@ import {
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { useIsMounted } from '~/hooks/use-is-mounted'
-import { useViewTransition } from '~/hooks/use-view-transition'
-import { cn } from '~/lib/utils'
+} from "~/components/ui/dropdown-menu"
+import { useIsMounted } from "~/hooks/use-is-mounted"
+import { useViewTransition } from "~/hooks/use-view-transition"
+import { cn } from "~/lib/utils"
 
-import { Button } from './ui/button'
+import { Button } from "./ui/button"
 
 type ThemeToggleProps = {
-	size?: 'sm' | 'md' | 'lg'
+	size?: "sm" | "md" | "lg"
 	className?: string
 }
 
 export const CurrentThemeIcon = ({
-	size = 'sm',
+	size = "sm",
 	className,
 }: {
-	size?: 'sm' | 'md' | 'lg'
+	size?: "sm" | "md" | "lg"
 	className?: string
 }) => {
 	const { theme } = useTheme()
 	const isMounted = useIsMounted()
 
 	const iconSizes = {
-		sm: 'size-4',
-		md: 'size-5',
-		lg: 'size-6',
+		sm: "size-4",
+		md: "size-5",
+		lg: "size-6",
 	}
 
 	return (
 		<span
 			className={cn(
-				'relative flex items-center justify-center transition-opacity duration-300',
-				isMounted ? 'opacity-100' : 'opacity-0',
+				"relative flex items-center justify-center transition-opacity duration-300",
+				isMounted ? "opacity-100" : "opacity-0",
 				className,
 			)}
 		>
 			{isMounted && (
 				<>
 					<Sun
-						className={`absolute ${iconSizes[size]} ${theme === 'light' ? 'scale-100 rotate-0' : 'scale-0 -rotate-90'} transition-transform`}
+						className={`absolute ${iconSizes[size]} ${theme === "light" ? "scale-100 rotate-0" : "scale-0 -rotate-90"} transition-transform`}
 					/>
 
 					<Moon
-						className={`absolute ${iconSizes[size]} ${theme === 'dark' ? 'scale-100 rotate-0' : 'scale-0 -rotate-90'} transition-transform`}
+						className={`absolute ${iconSizes[size]} ${theme === "dark" ? "scale-100 rotate-0" : "scale-0 -rotate-90"} transition-transform`}
 					/>
 
 					<SunMoon
-						className={`absolute ${iconSizes[size]} ${theme === 'system' || theme === undefined ? 'scale-100 rotate-0' : 'scale-0 -rotate-90'} transition-transform`}
+						className={`absolute ${iconSizes[size]} ${theme === "system" || theme === undefined ? "scale-100 rotate-0" : "scale-0 -rotate-90"} transition-transform`}
 					/>
 
 					<span className="sr-only">Toggle theme</span>
@@ -73,7 +73,7 @@ export const CurrentThemeIcon = ({
 export const ThemeToggle = forwardRef<
 	HTMLButtonElement,
 	ThemeToggleProps & ViewTransitionThemeOptions
->(({ size = 'sm', className, start, variant, duration }, ref) => {
+>(({ size = "sm", className, start, variant, duration }, ref) => {
 	const { setTheme } = useTheme()
 	const { startViewTransition } = useViewTransition()
 	const { styles } = getViewTransitionStyles({
@@ -83,9 +83,9 @@ export const ThemeToggle = forwardRef<
 	})
 
 	const buttonSizes = {
-		sm: 'size-7',
-		md: 'size-9',
-		lg: 'size-11',
+		sm: "size-7",
+		md: "size-9",
+		lg: "size-11",
 	}
 
 	return (
@@ -107,7 +107,7 @@ export const ThemeToggle = forwardRef<
 				<DropdownMenuGroup>
 					<DropdownMenuItem
 						onClick={() => {
-							startViewTransition(() => setTheme('light'))
+							startViewTransition(() => setTheme("light"))
 						}}
 					>
 						Light
@@ -115,7 +115,7 @@ export const ThemeToggle = forwardRef<
 
 					<DropdownMenuItem
 						onClick={() => {
-							startViewTransition(() => setTheme('dark'))
+							startViewTransition(() => setTheme("dark"))
 						}}
 					>
 						Dark
@@ -123,7 +123,7 @@ export const ThemeToggle = forwardRef<
 
 					<DropdownMenuItem
 						onClick={() => {
-							startViewTransition(() => setTheme('system'))
+							startViewTransition(() => setTheme("system"))
 						}}
 					>
 						System
@@ -147,15 +147,15 @@ export const ThemeDropdownMenuWrapper = ({
 			<DropdownMenuTrigger render={render} />
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => setTheme('light')}>
+					<DropdownMenuItem onClick={() => setTheme("light")}>
 						<Sun size={16} className="mr-2" />
 						Light
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => setTheme('dark')}>
+					<DropdownMenuItem onClick={() => setTheme("dark")}>
 						<Moon size={16} className="mr-2" />
 						Dark
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => setTheme('system')}>
+					<DropdownMenuItem onClick={() => setTheme("system")}>
 						<SunMoon size={16} className="mr-2" />
 						System
 					</DropdownMenuItem>
@@ -185,15 +185,15 @@ export const ThemeDropdownMenuSubTrigger = ({
 			</DropdownMenuSubTrigger>
 			<DropdownMenuPortal>
 				<DropdownMenuSubContent {...contentProps}>
-					<DropdownMenuItem onClick={() => setTheme('light')}>
+					<DropdownMenuItem onClick={() => setTheme("light")}>
 						<Sun size={16} className="mr-2" />
 						Light
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => setTheme('dark')}>
+					<DropdownMenuItem onClick={() => setTheme("dark")}>
 						<Moon size={16} className="mr-2" />
 						Dark
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => setTheme('system')}>
+					<DropdownMenuItem onClick={() => setTheme("system")}>
 						<SunMoon size={16} className="mr-2" />
 						System
 					</DropdownMenuItem>
@@ -205,44 +205,44 @@ export const ThemeDropdownMenuSubTrigger = ({
 
 // === Transition Styles ===
 
-type Start = 'top left' | 'bottom left' | 'top right' | 'bottom right'
-type Variant = 'circle' | 'circle-blur'
+type Start = "top left" | "bottom left" | "top right" | "bottom right"
+type Variant = "circle" | "circle-blur"
 
 const maskMap: Record<
 	Start,
 	{ cx: string; cy: string; origin: string; pos: string }
 > = {
-	'top left': { cx: '0', cy: '0', origin: 'top left', pos: 'top left' },
-	'top right': { cx: '40', cy: '0', origin: 'top right', pos: 'top right' },
-	'bottom left': {
-		cx: '0',
-		cy: '40',
-		origin: 'bottom left',
-		pos: 'bottom left',
+	"top left": { cx: "0", cy: "0", origin: "top left", pos: "top left" },
+	"top right": { cx: "40", cy: "0", origin: "top right", pos: "top right" },
+	"bottom left": {
+		cx: "0",
+		cy: "40",
+		origin: "bottom left",
+		pos: "bottom left",
 	},
-	'bottom right': {
-		cx: '40',
-		cy: '40',
-		origin: 'bottom right',
-		pos: 'bottom right',
+	"bottom right": {
+		cx: "40",
+		cy: "40",
+		origin: "bottom right",
+		pos: "bottom right",
 	},
 }
 
 const maskSvg = (variant: Variant, cx: string, cy: string) => {
 	switch (variant) {
-		case 'circle':
+		case "circle":
 			return `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><circle cx="${cx}" cy="${cy}" r="18" fill="white"/></svg>')`
-		case 'circle-blur':
+		case "circle-blur":
 			return `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><defs><filter id="blur"><feGaussianBlur stdDeviation="2"/></filter></defs><circle cx="${cx}" cy="${cy}" r="18" fill="white" filter="url(%23blur)"/></svg>')`
 		default:
-			return ''
+			return ""
 	}
 }
 
 const keyframes = (variant: Variant) => {
 	switch (variant) {
-		case 'circle':
-		case 'circle-blur':
+		case "circle":
+		case "circle-blur":
 			return `
 			@keyframes scale {
 			to {
@@ -250,7 +250,7 @@ const keyframes = (variant: Variant) => {
 			}
 		`
 		default:
-			return ''
+			return ""
 	}
 }
 
@@ -263,7 +263,7 @@ export interface ViewTransitionThemeOptions {
 export const getViewTransitionStyles = (
 	options: ViewTransitionThemeOptions = {},
 ) => {
-	const { start = 'top left', variant = 'circle', duration = 0.8 } = options
+	const { start = "top left", variant = "circle", duration = 0.8 } = options
 
 	const { cx, cy, origin, pos } = maskMap[start]
 	const mask = maskSvg(variant, cx, cy)

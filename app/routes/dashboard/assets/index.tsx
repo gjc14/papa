@@ -1,50 +1,50 @@
-import { useEffect, useState } from 'react'
-import { useLoaderData, useRevalidator } from 'react-router'
+import { useEffect, useState } from "react"
+import { useLoaderData, useRevalidator } from "react-router"
 
-import { CloudAlert } from 'lucide-react'
+import { CloudAlert } from "lucide-react"
 
-import { Label } from '~/components/ui/label'
+import { Label } from "~/components/ui/label"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
+} from "~/components/ui/select"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
-import { capitalize } from '~/lib/utils'
+} from "~/components/dashboard/dashboard-wrapper"
+import { capitalize } from "~/lib/utils"
 
-import { FileGrid } from './components/file-grid'
-import type { loader } from './resource'
-import { MIMETypes } from './utils'
+import { FileGrid } from "./components/file-grid"
+import type { loader } from "./resource"
+import { MIMETypes } from "./utils"
 
-const displayOptions = ['all', 'file', ...MIMETypes]
+const displayOptions = ["all", "file", ...MIMETypes]
 
-export { loader } from './resource'
+export { loader } from "./resource"
 
 export default function DashboardAsset() {
 	const { hasObjectStorage, files, origin } = useLoaderData<typeof loader>()
 	const { revalidate } = useRevalidator()
 	const [filesState, setFilesState] = useState(files)
-	const [display, setDisplay] = useState<(typeof displayOptions)[number]>('all')
+	const [display, setDisplay] = useState<(typeof displayOptions)[number]>("all")
 
 	const filesDisplayed =
-		display === 'all'
+		display === "all"
 			? filesState
-			: filesState.filter(file => {
-					if (display === 'file') {
-						const fileGeneralType = file.type.split('/')[0]
-						return ['application', 'model', 'font', 'text'].includes(
+			: filesState.filter((file) => {
+					if (display === "file") {
+						const fileGeneralType = file.type.split("/")[0]
+						return ["application", "model", "font", "text"].includes(
 							fileGeneralType,
 						)
 					}
-					const fileGeneralType = file.type.split('/')[0]
+					const fileGeneralType = file.type.split("/")[0]
 					return fileGeneralType === display
 				})
 
@@ -63,7 +63,7 @@ export default function DashboardAsset() {
 					<Label htmlFor="asset-filter">Filter by</Label>
 					<Select
 						defaultValue="all"
-						onValueChange={v => {
+						onValueChange={(v) => {
 							if (!v) return
 							setDisplay(v)
 						}}
@@ -72,7 +72,7 @@ export default function DashboardAsset() {
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							{displayOptions.map(option => (
+							{displayOptions.map((option) => (
 								<SelectItem key={option} value={option}>
 									{capitalize(option)}
 								</SelectItem>
@@ -85,15 +85,17 @@ export default function DashboardAsset() {
 				{hasObjectStorage ? (
 					<FileGrid
 						files={filesDisplayed}
-						onFileUpdate={fileMeta => {
+						onFileUpdate={(fileMeta) => {
 							setFilesState(
-								filesState.map(file =>
+								filesState.map((file) =>
 									file.id === fileMeta.id ? fileMeta : file,
 								),
 							)
 						}}
-						onFileDeleted={fileMeta => {
-							setFilesState(filesState.filter(file => file.id !== fileMeta.id))
+						onFileDeleted={(fileMeta) => {
+							setFilesState(
+								filesState.filter((file) => file.id !== fileMeta.id),
+							)
 						}}
 						onUpload={() => revalidate()}
 						origin={origin}

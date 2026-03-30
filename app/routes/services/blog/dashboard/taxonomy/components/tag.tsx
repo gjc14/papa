@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { Form, useFetcher, useSubmit } from 'react-router'
+import { useState } from "react"
+import { Form, useFetcher, useSubmit } from "react-router"
 
-import { CircleX, PlusCircle } from 'lucide-react'
+import { CircleX, PlusCircle } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Dialog,
 	DialogClose,
@@ -12,14 +12,14 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '~/components/ui/dialog'
-import { Input } from '~/components/ui/input'
-import { ScrollArea } from '~/components/ui/scroll-area'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import { generateSlug } from '~/lib/utils/seo'
+} from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
+import { ScrollArea } from "~/components/ui/scroll-area"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import { generateSlug } from "~/lib/utils/seo"
 
-import { actionRoute } from '..'
-import type { TagType } from '../type'
+import { actionRoute } from ".."
+import type { TagType } from "../type"
 
 // Tag Component
 const TagComponent = ({ tag }: { tag: TagType & { _isPending?: true } }) => {
@@ -29,24 +29,24 @@ const TagComponent = ({ tag }: { tag: TagType & { _isPending?: true } }) => {
 	return (
 		<div
 			className={`bg-muted flex items-center justify-between p-3 ${
-				mutating ? 'opacity-50' : ''
+				mutating ? "opacity-50" : ""
 			}`}
 		>
 			<div className="font-medium">{tag.name}</div>
 			<CircleX
 				className={
-					'h-5 w-5' +
+					"h-5 w-5" +
 					(mutating || tag._isPending
-						? ' cursor-not-allowed opacity-50'
-						: ' hover:text-destructive cursor-pointer')
+						? " cursor-not-allowed opacity-50"
+						: " hover:text-destructive cursor-pointer")
 				}
 				onClick={() => {
 					if (mutating || tag._isPending) return
 
 					fetcher.submit(
-						{ id: tag.id, intent: 'tag' },
+						{ id: tag.id, intent: "tag" },
 						{
-							method: 'DELETE',
+							method: "DELETE",
 							action: actionRoute,
 						},
 					)
@@ -57,22 +57,22 @@ const TagComponent = ({ tag }: { tag: TagType & { _isPending?: true } }) => {
 }
 
 export const generateNewTag = (newTagName: string) => {
-	const slug = generateSlug(newTagName, { fallbackPrefix: 'tag' })
+	const slug = generateSlug(newTagName, { fallbackPrefix: "tag" })
 
 	return {
 		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1),
 		name: newTagName,
 		slug,
-		description: '',
+		description: "",
 		posts: [],
 	} satisfies TagType
 }
 
 // Tags Section Component (Left)
 export const TagsSection = ({ tags }: { tags: TagType[] }) => {
-	const [newTagName, setNewTagName] = useState('')
-	const [filter, setFilter] = useState('')
+	const [newTagName, setNewTagName] = useState("")
+	const [filter, setFilter] = useState("")
 	const submit = useSubmit()
 
 	const addTag = () => {
@@ -80,13 +80,13 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 		const newTag = generateNewTag(newTagName)
 
 		submit(
-			{ ...newTag, intent: 'tag' },
-			{ method: 'POST', action: actionRoute, navigate: false },
+			{ ...newTag, intent: "tag" },
+			{ method: "POST", action: actionRoute, navigate: false },
 		)
-		setNewTagName('')
+		setNewTagName("")
 	}
 
-	const filteredTags = tags.filter(tag =>
+	const filteredTags = tags.filter((tag) =>
 		tag.name.toLowerCase().includes(filter.toLowerCase()),
 	)
 
@@ -104,7 +104,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 							<DialogDescription></DialogDescription>
 						</DialogHeader>
 						<Form
-							onSubmit={e => {
+							onSubmit={(e) => {
 								e.preventDefault()
 								addTag()
 							}}
@@ -113,7 +113,7 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 							<Input
 								placeholder="New tag name..."
 								value={newTagName}
-								onChange={e => setNewTagName(e.target.value)}
+								onChange={(e) => setNewTagName(e.target.value)}
 								className="flex-1"
 							/>
 							<DialogClose
@@ -132,17 +132,17 @@ export const TagsSection = ({ tags }: { tags: TagType[] }) => {
 			<Input
 				placeholder="Filter tags..."
 				value={filter}
-				onChange={e => setFilter(e.target.value)}
+				onChange={(e) => setFilter(e.target.value)}
 				className="mb-4"
 			/>
 
 			<ScrollArea className="min-h-0 flex-1">
 				<div className="space-y-2">
 					{filteredTags.length > 0 ? (
-						filteredTags.map(tag => <TagComponent tag={tag} key={tag.id} />)
+						filteredTags.map((tag) => <TagComponent tag={tag} key={tag.id} />)
 					) : (
 						<div className="text-muted-foreground py-8 text-center">
-							{filter ? 'No tags found' : 'No tags yet'}
+							{filter ? "No tags found" : "No tags yet"}
 						</div>
 					)}
 				</div>

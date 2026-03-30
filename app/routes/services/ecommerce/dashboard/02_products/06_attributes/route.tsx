@@ -1,20 +1,20 @@
-import type { Route } from './+types/route'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import type { Route } from "./+types/route"
+import { useEffect, useMemo, useRef, useState } from "react"
 
-import type { ColumnDef, Table } from '@tanstack/react-table'
+import type { ColumnDef, Table } from "@tanstack/react-table"
 
-import { DashboardDataTable } from '~/components/dashboard/dashboard-data-table'
-import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
+import { DashboardDataTable } from "~/components/dashboard/dashboard-data-table"
+import { useSkipper } from "~/components/dashboard/dashboard-data-table/hooks"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
+} from "~/components/dashboard/dashboard-wrapper"
 
-import { getEcAttributes } from '../../../lib/db/taxonomy.server'
-import { CreateTaxonomyDialog } from '../../components/taxonomy/create-taxonomy-dialog'
+import { getEcAttributes } from "../../../lib/db/taxonomy.server"
+import { CreateTaxonomyDialog } from "../../components/taxonomy/create-taxonomy-dialog"
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const attrs = await getEcAttributes()
@@ -43,12 +43,12 @@ export default function ECAttributes({ loaderData }: Route.ComponentProps) {
 					<CreateTaxonomyDialog
 						data={loaderData.attrs}
 						config={{
-							name: 'Attribute',
-							pluralName: 'Attributes',
-							actionEndpoint: 'resource',
+							name: "Attribute",
+							pluralName: "Attributes",
+							actionEndpoint: "resource",
 							hasValue: true,
-							namePlaceholder: 'Papa',
-							slugPlaceholder: 'papa',
+							namePlaceholder: "Papa",
+							slugPlaceholder: "papa",
 						}}
 					/>
 				</DashboardActions>
@@ -72,19 +72,19 @@ export default function ECAttributes({ loaderData }: Route.ComponentProps) {
 const createAttributeColumns = (): ColumnDef<Attribute>[] => {
 	return [
 		{
-			header: 'Name',
-			footer: props => props.column.id,
-			accessorKey: 'name',
+			header: "Name",
+			footer: (props) => props.column.id,
+			accessorKey: "name",
 		},
 		{
-			header: 'Slug',
-			footer: props => props.column.id,
-			accessorKey: 'slug',
+			header: "Slug",
+			footer: (props) => props.column.id,
+			accessorKey: "slug",
 		},
 		{
-			header: 'Value',
-			footer: props => props.column.id,
-			accessorKey: 'value',
+			header: "Value",
+			footer: (props) => props.column.id,
+			accessorKey: "value",
 		},
 	]
 }

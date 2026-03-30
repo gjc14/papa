@@ -1,4 +1,4 @@
-import type { Product, selectedVariantAttributesAtom } from '../context'
+import type { Product, selectedVariantAttributesAtom } from "../context"
 
 /**
  * Get ordered variant attribute keys based on product attributes and variants
@@ -8,8 +8,8 @@ import type { Product, selectedVariantAttributesAtom } from '../context'
  * console.log(variantAttributes) // { color: Set{'black','white'}, size: Set{'S','M','L'} }
  */
 const getVariantAttributes = (
-	attributes: NonNullable<Product>['attributes'],
-	variants?: NonNullable<Product>['variants'],
+	attributes: NonNullable<Product>["attributes"],
+	variants?: NonNullable<Product>["variants"],
 ) => {
 	const options: Record<string, Set<string>> = {}
 
@@ -29,19 +29,19 @@ const getVariantAttributes = (
 		)
 	}
 
-	attributes.forEach(attr => {
-		if (attr.selectType !== 'HIDDEN' && attr.name && attr.value) {
+	attributes.forEach((attr) => {
+		if (attr.selectType !== "HIDDEN" && attr.name && attr.value) {
 			const aName = attr.name
 			if (availableCombinations) {
 				Object.keys(availableCombinations).includes(aName) &&
-					availableCombinations[aName].forEach(value => {
+					availableCombinations[aName].forEach((value) => {
 						if (!options[aName]) {
 							options[aName] = new Set()
 						}
 						options[aName].add(value)
 					})
 			} else {
-				options[aName] = new Set(attr.value.split('|').map(v => v.trim()))
+				options[aName] = new Set(attr.value.split("|").map((v) => v.trim()))
 			}
 		}
 	})
@@ -71,7 +71,7 @@ const getIsAttributeValueAvailable = (props: {
 		...selectedVariantAttributes,
 		[attributeName]: attributeValue, // Simulate selecting this value
 	}
-	return product.variants.some(variant => {
+	return product.variants.some((variant) => {
 		const combination = variant.combination
 		return Object.entries(testSelection).every(
 			([key, value]) => combination[key] === value,
@@ -97,7 +97,7 @@ const getVariantsFromAttributeValue = (props: {
 		...selectedVariantAttributes,
 		[attributeName]: attributeValue, // Simulate selecting this value
 	}
-	return product.variants.filter(variant => {
+	return product.variants.filter((variant) => {
 		const combination = variant.combination
 		return Object.entries(testSelection).every(
 			([key, value]) => combination[key] === value,
@@ -122,7 +122,7 @@ const getAttributeValueImage = (props: {
 	// Find the first variant (after ordering) that has an image and return its image info
 	const match = variants
 		.sort((a, b) => a.order - b.order)
-		.find(variant => !!variant.option.image)
+		.find((variant) => !!variant.option.image)
 
 	if (!match || !match.option.image) return undefined
 

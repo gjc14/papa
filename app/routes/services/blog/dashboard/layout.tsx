@@ -1,12 +1,12 @@
-import type { Route } from './+types/layout'
-import { useEffect } from 'react'
-import { Outlet } from 'react-router'
+import type { Route } from "./+types/layout"
+import { useEffect } from "react"
+import { Outlet } from "react-router"
 
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
-import type { Category, Tag } from '../lib/db/schema'
-import { getCategories, getTags } from '../lib/db/taxonomy.server'
-import { categoriesAtom, tagsAtom } from './context'
+import type { Category, Tag } from "../lib/db/schema"
+import { getCategories, getTags } from "../lib/db/taxonomy.server"
+import { categoriesAtom, tagsAtom } from "./context"
 
 export const loader = async () => {
 	const tagsPromise = getTags()
@@ -50,7 +50,7 @@ function TaxonomiesLoader({
 				setTags(tags)
 				setCategories(categories)
 			} catch (error) {
-				console.error('Failed to load taxonomies:', error)
+				console.error("Failed to load taxonomies:", error)
 			}
 		}
 

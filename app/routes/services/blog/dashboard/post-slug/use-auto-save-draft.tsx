@@ -1,16 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect } from "react"
 
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
-import type { PostWithRelations } from '../../lib/db/post.server'
+import type { PostWithRelations } from "../../lib/db/post.server"
 import {
 	editorContentAtom,
 	hasChangesAtom,
 	isDraftCheckCompleteAtom,
 	isRestoreAlertOpenAtom,
 	postAtom,
-} from '../context'
-import { postLocalStorageKey } from './utils'
+} from "../context"
+import { postLocalStorageKey } from "./utils"
 
 /**
  * Auto save draft to local storage when there are changes

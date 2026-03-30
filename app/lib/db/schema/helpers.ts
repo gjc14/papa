@@ -1,6 +1,6 @@
-import { pgSchema, timestamp } from 'drizzle-orm/pg-core'
+import { pgSchema, timestamp } from "drizzle-orm/pg-core"
 
-export const papaSchema = pgSchema('papa')
+export const papaSchema = pgSchema("papa")
 /** This is the schema for the Papa application */
 export const pgTable = papaSchema.table
 export const pgEnum = papaSchema.enum
@@ -10,20 +10,20 @@ export const timestampAttribute = {
 }
 
 export const createdAtAttribute = {
-	createdAt: timestamp('created_at', { withTimezone: true })
+	createdAt: timestamp("created_at", { withTimezone: true })
 		.notNull()
 		.defaultNow(),
 }
 
 export const updatedAtAttribute = {
-	updatedAt: timestamp('updated_at', { withTimezone: true })
+	updatedAt: timestamp("updated_at", { withTimezone: true })
 		.notNull()
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 }
 
 export const deletedAtAttribute = {
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	deletedAt: timestamp("deleted_at", { withTimezone: true }),
 }
 
 export const timestampAttributes = {

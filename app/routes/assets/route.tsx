@@ -1,13 +1,13 @@
 /**
  * Proxy requests to the presigned URL of the asset
  */
-import { type LoaderFunctionArgs } from 'react-router'
+import { type LoaderFunctionArgs } from "react-router"
 
-import { auth } from '~/lib/auth/auth.server'
-import { db } from '~/lib/db/db.server'
+import { auth } from "~/lib/auth/auth.server"
+import { db } from "~/lib/db/db.server"
 
-import { metadataCache, type MetadataCache } from './cache'
-import { isValidUUID, presignedUrlRes } from './helpers'
+import { metadataCache, type MetadataCache } from "./cache"
+import { isValidUUID, presignedUrlRes } from "./helpers"
 
 // Usage: example.com/assets/{assetId}
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -15,18 +15,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	if (!assetId) {
 		console.log(`Asset ${assetId} not found`)
-		throw new Response('Invalid arguments', {
+		throw new Response("Invalid arguments", {
 			status: 400,
-			statusText: 'Invalid arguments',
+			statusText: "Invalid arguments",
 		})
 	}
 
 	// Validate UUID format before database query
 	if (!isValidUUID(assetId)) {
 		console.log(`Invalid UUID format: ${assetId}`)
-		throw new Response('Invalid arguments', {
+		throw new Response("Invalid arguments", {
 			status: 400,
-			statusText: 'Invalid arguments',
+			statusText: "Invalid arguments",
 		})
 	}
 
@@ -57,16 +57,16 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	console.timeEnd(`Fetching asset ${assetId}`)
 
 	if (!metadata)
-		throw new Response('asset not found', {
+		throw new Response("asset not found", {
 			status: 404,
-			statusText: 'Asset not found',
+			statusText: "Asset not found",
 		})
 
 	if (!metadata.public) {
 		// TODO: check ACL (access control) here
 		const session = await auth.api.getSession(request)
 		if (metadata.ownerId !== session?.user.id) {
-			throw new Response('', { status: 401 })
+			throw new Response("", { status: 401 })
 		}
 	}
 

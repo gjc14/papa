@@ -1,7 +1,7 @@
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { mkdir, writeFile } from "fs/promises"
+import { join } from "path"
 
-import { askInput } from './utils'
+import { askInput } from "./utils"
 
 const createPaths = (routeName: string) => {
 	return {
@@ -59,7 +59,7 @@ export default function Component({
 }
 
 try {
-	const newRoute = await askInput('Create new route', 'new-route')
+	const newRoute = await askInput("Create new route", "new-route")
 
 	// Create directories
 	await mkdir(join(process.cwd(), `app/routes/services/${newRoute}`), {
@@ -77,12 +77,12 @@ try {
 		`🎉 Route [${newRoute}] created successfully!
 
 		+ 2 files created:
-		1️⃣ ${serviceRoutesPath.split('app/routes')[1]}
-		2️⃣ ${routeFilePath.split('app/routes')[1]}
+		1️⃣ ${serviceRoutesPath.split("app/routes")[1]}
+		2️⃣ ${routeFilePath.split("app/routes")[1]}
 
         -> Navigate to '/${newRoute}' to see the new route
-        `.replace(/^[ \t]+/gm, ''),
+        `.replace(/^[ \t]+/gm, ""),
 	)
 } catch (err) {
-	console.error('Error creating service files:', err)
+	console.error("Error creating service files:", err)
 }

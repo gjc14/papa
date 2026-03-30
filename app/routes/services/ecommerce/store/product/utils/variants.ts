@@ -1,4 +1,4 @@
-import type { Product, selectedVariantAttributesAtom } from '../context'
+import type { Product, selectedVariantAttributesAtom } from "../context"
 
 // ========================================
 // Variant Selection & Filtering
@@ -23,7 +23,7 @@ const getFilteredVariants = (props: {
 	}
 
 	// Filter variants that match the selected attributes
-	return props.product.variants.filter(variant => {
+	return props.product.variants.filter((variant) => {
 		const combination = variant.combination
 		return Object.entries(props.selectedVariantAttributes).every(
 			([key, value]) => combination[key] === value,
@@ -40,7 +40,7 @@ const getSelectedVariant = (props: {
 		typeof selectedVariantAttributesAtom.read
 	>
 }) => {
-	return props.product.variants.find(variant => {
+	return props.product.variants.find((variant) => {
 		const selectedKeys = Object.keys(props.selectedVariantAttributes)
 		const combinationKeys = Object.keys(variant.combination)
 
@@ -51,7 +51,8 @@ const getSelectedVariant = (props: {
 
 		// Check if all selected attributes match
 		return selectedKeys.every(
-			key => props.selectedVariantAttributes[key] === variant.combination[key],
+			(key) =>
+				props.selectedVariantAttributes[key] === variant.combination[key],
 		)
 	})
 }

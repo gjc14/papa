@@ -1,20 +1,20 @@
-import type { Route } from './+types/route'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import type { Route } from "./+types/route"
+import { useEffect, useMemo, useRef, useState } from "react"
 
-import type { ColumnDef, Table } from '@tanstack/react-table'
+import type { ColumnDef, Table } from "@tanstack/react-table"
 
-import { DashboardDataTable } from '~/components/dashboard/dashboard-data-table'
-import { useSkipper } from '~/components/dashboard/dashboard-data-table/hooks'
+import { DashboardDataTable } from "~/components/dashboard/dashboard-data-table"
+import { useSkipper } from "~/components/dashboard/dashboard-data-table/hooks"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
+} from "~/components/dashboard/dashboard-wrapper"
 
-import { getEcCategories } from '../../../lib/db/taxonomy.server'
-import { CreateTaxonomyDialog } from '../../components/taxonomy/create-taxonomy-dialog'
+import { getEcCategories } from "../../../lib/db/taxonomy.server"
+import { CreateTaxonomyDialog } from "../../components/taxonomy/create-taxonomy-dialog"
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const categories = await getEcCategories()
@@ -43,14 +43,14 @@ export default function ECCategories({ loaderData }: Route.ComponentProps) {
 					<CreateTaxonomyDialog
 						data={loaderData.categories}
 						config={{
-							name: 'Category',
-							pluralName: 'Categories',
-							actionEndpoint: 'resource',
+							name: "Category",
+							pluralName: "Categories",
+							actionEndpoint: "resource",
 							hasDescription: true,
 							hasParent: true,
 							hasImage: true,
-							namePlaceholder: 'Literatures',
-							slugPlaceholder: 'literatures',
+							namePlaceholder: "Literatures",
+							slugPlaceholder: "literatures",
 						}}
 					/>
 				</DashboardActions>
@@ -74,9 +74,9 @@ export default function ECCategories({ loaderData }: Route.ComponentProps) {
 const createCategoryColumns = (): ColumnDef<Category>[] => {
 	return [
 		{
-			header: 'Image',
-			footer: props => props.column.id,
-			accessorKey: 'image',
+			header: "Image",
+			footer: (props) => props.column.id,
+			accessorKey: "image",
 			cell: ({ row }) => {
 				const src = row.original.image
 				return src ? (
@@ -89,19 +89,19 @@ const createCategoryColumns = (): ColumnDef<Category>[] => {
 			},
 		},
 		{
-			header: 'Name',
-			footer: props => props.column.id,
-			accessorKey: 'name',
+			header: "Name",
+			footer: (props) => props.column.id,
+			accessorKey: "name",
 		},
 		{
-			header: 'Slug',
-			footer: props => props.column.id,
-			accessorKey: 'slug',
+			header: "Slug",
+			footer: (props) => props.column.id,
+			accessorKey: "slug",
 		},
 		{
-			header: 'Description',
-			footer: props => props.column.id,
-			accessorKey: 'description',
+			header: "Description",
+			footer: (props) => props.column.id,
+			accessorKey: "description",
 		},
 	]
 }

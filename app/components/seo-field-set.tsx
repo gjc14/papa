@@ -1,41 +1,41 @@
 /**
  * Reusable SEO edit form if you use the data from seo table
  */
-import { useState } from 'react'
-import { Link } from 'react-router'
+import { useState } from "react"
+import { Link } from "react-router"
 
 import {
 	ArrowSquareOutIcon,
 	DotsThreeVerticalIcon,
 	ImageIcon,
 	QuestionIcon,
-} from '@phosphor-icons/react'
+} from "@phosphor-icons/react"
 
-import { Button } from '~/components/ui/button'
-import { DialogTrigger } from '~/components/ui/dialog'
+import { Button } from "~/components/ui/button"
+import { DialogTrigger } from "~/components/ui/dialog"
 import {
 	Field,
 	FieldDescription,
 	FieldLabel,
 	FieldSet,
-} from '~/components/ui/field'
-import { Input } from '~/components/ui/input'
+} from "~/components/ui/field"
+import { Input } from "~/components/ui/input"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { Textarea } from '~/components/ui/textarea'
+} from "~/components/ui/select"
+import { Textarea } from "~/components/ui/textarea"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from '~/components/ui/tooltip'
-import { AssetSelectionDialog } from '~/components/asset-selection-dialog'
-import { useAssets } from '~/hooks/use-assets'
-import type { Seo } from '~/lib/db/schema'
+} from "~/components/ui/tooltip"
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
+import { useAssets } from "~/hooks/use-assets"
+import type { Seo } from "~/lib/db/schema"
 
 /**
  * @example
@@ -70,13 +70,13 @@ export function SeoFieldSet({
 	seo,
 	linkPreview = import.meta.env.VITE_BASE_URL +
 		`${
-			!seo.route || seo.route === '/'
-				? '/'
-				: ' > ' +
+			!seo.route || seo.route === "/"
+				? "/"
+				: " > " +
 					seo.route
-						.replace(/^\/+|\/+$/g, '')
-						.split('/')
-						.join(' > ')
+						.replace(/^\/+|\/+$/g, "")
+						.split("/")
+						.join(" > ")
 		}`,
 	onFillInTitle,
 	onTitleChange,
@@ -98,11 +98,11 @@ export function SeoFieldSet({
 }) {
 	const { assets, setAssets, load, isLoading } = useAssets()
 
-	const [aspectRatio, setAspectRatio] = useState('1200x630')
+	const [aspectRatio, setAspectRatio] = useState("1200x630")
 	const [openSelectGallery, setOpenSelectGallery] = useState(false)
-	const [srcInput, setSrcInput] = useState('')
-	const [altInput, setAltInput] = useState('')
-	const [titleInput, setTitleInput] = useState('')
+	const [srcInput, setSrcInput] = useState("")
+	const [altInput, setAltInput] = useState("")
+	const [titleInput, setTitleInput] = useState("")
 
 	return (
 		<FieldSet className="min-w-0">
@@ -116,8 +116,8 @@ export function SeoFieldSet({
 					name="seo-title"
 					type="text"
 					placeholder="Meta title should match Title (H1) for SEO."
-					value={seo.metaTitle || ''}
-					onChange={e => onTitleChange(e.target.value)}
+					value={seo.metaTitle || ""}
+					onChange={(e) => onTitleChange(e.target.value)}
 				/>
 			</Field>
 
@@ -134,8 +134,8 @@ export function SeoFieldSet({
 					name="seo-description"
 					rows={3}
 					placeholder="Short description about your post..."
-					value={seo.metaDescription || ''}
-					onChange={e => onDescriptionChange(e.target.value)}
+					value={seo.metaDescription || ""}
+					onChange={(e) => onDescriptionChange(e.target.value)}
 				/>
 
 				<div className="bg-muted/50 flex w-full min-w-0 flex-col border p-3">
@@ -169,14 +169,14 @@ export function SeoFieldSet({
 						onClick={onFillInOgImage}
 					/>
 				</FieldLabel>
-				<Field orientation={'horizontal'}>
+				<Field orientation={"horizontal"}>
 					<Input
 						id="seo-og-image"
 						name="seo-og-image"
 						type="text"
 						placeholder="https://example.com/image.webp"
-						value={seo.ogImage || ''}
-						onChange={e =>
+						value={seo.ogImage || ""}
+						onChange={(e) =>
 							onOgImageChange({
 								src: e.target.value,
 								alt: altInput,
@@ -195,8 +195,8 @@ export function SeoFieldSet({
 										<DialogTrigger
 											render={
 												<Button
-													variant={'outline'}
-													size={'icon'}
+													variant={"outline"}
+													size={"icon"}
 													onClick={() => !assets && load()}
 												>
 													<ImageIcon />
@@ -211,11 +211,11 @@ export function SeoFieldSet({
 						assets={assets}
 						isLoading={isLoading}
 						open={openSelectGallery}
-						onOpenChange={open => {
+						onOpenChange={(open) => {
 							setOpenSelectGallery(open)
-							setSrcInput('')
-							setAltInput('')
-							setTitleInput('')
+							setSrcInput("")
+							setAltInput("")
+							setTitleInput("")
 						}}
 						srcInput={srcInput}
 						setSrcInput={setSrcInput}
@@ -230,8 +230,8 @@ export function SeoFieldSet({
 								title: titleInput,
 							})
 						}
-						onUpload={files =>
-							setAssets(prev => {
+						onUpload={(files) =>
+							setAssets((prev) => {
 								if (!prev) return prev
 								return {
 									...prev,
@@ -242,7 +242,7 @@ export function SeoFieldSet({
 					/>
 				</Field>
 				<FieldDescription>
-					Image that appears when product is shared on social media.{' '}
+					Image that appears when product is shared on social media.{" "}
 					<Link
 						to="https://www.ogimage.gallery/libary/the-ultimate-guide-to-og-image-dimensions-2024-update"
 						target="_blank"
@@ -263,7 +263,7 @@ export function SeoFieldSet({
 						<div className="flex items-center gap-1">
 							<Select
 								value={aspectRatio}
-								onValueChange={v => v && setAspectRatio(v)}
+								onValueChange={(v) => v && setAspectRatio(v)}
 							>
 								<SelectTrigger className="h-8 w-fit gap-2">
 									<SelectValue />
@@ -297,12 +297,12 @@ export function SeoFieldSet({
 					<div
 						className="relative flex max-w-md shrink items-center justify-center overflow-hidden border"
 						style={{
-							aspectRatio: aspectRatio.replace('x', '/'),
+							aspectRatio: aspectRatio.replace("x", "/"),
 						}}
 					>
 						<img
-							src={seo.ogImage || '/placeholders/image.webp'}
-							alt={seo?.metaTitle || 'OG Image Preview'}
+							src={seo.ogImage || "/placeholders/image.webp"}
+							alt={seo?.metaTitle || "OG Image Preview"}
 							className="object-cover"
 						/>
 					</div>
@@ -316,8 +316,8 @@ export function SeoFieldSet({
 					name="seo-keywords"
 					type="text"
 					placeholder="keyword1, keyword2, keyword3"
-					value={seo.keywords || ''}
-					onChange={e => onKeywordsChange(e.target.value)}
+					value={seo.keywords || ""}
+					onChange={(e) => onKeywordsChange(e.target.value)}
 				/>
 				<FieldDescription>Separate keywords with commas (,).</FieldDescription>
 			</Field>

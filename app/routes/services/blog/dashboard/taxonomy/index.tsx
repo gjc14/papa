@@ -1,35 +1,35 @@
-import type { Route } from './+types'
-import { useMemo, useState } from 'react'
+import type { Route } from "./+types"
+import { useMemo, useState } from "react"
 
-import { useAtom } from 'jotai'
+import { useAtom } from "jotai"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DashboardActions,
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-} from '~/components/dashboard/dashboard-wrapper'
+} from "~/components/dashboard/dashboard-wrapper"
 
-import { getPosts } from '../../lib/db/post.server'
-import { categoriesAtom, tagsAtom } from '../context'
+import { getPosts } from "../../lib/db/post.server"
+import { categoriesAtom, tagsAtom } from "../context"
 import {
 	CategoriesSection,
 	CategoryHierarchySection,
-} from './components/category'
-import { TagsSection } from './components/tag'
-import type { CategoryType, TagType } from './type'
+} from "./components/category"
+import { TagsSection } from "./components/tag"
+import type { CategoryType, TagType } from "./type"
 import {
 	usePendingCategories,
 	usePendingChildCategories,
 	usePendingTags,
-} from './utils'
+} from "./utils"
 
-export const actionRoute = '/dashboard/blog/taxonomy/resource'
+export const actionRoute = "/dashboard/blog/taxonomy/resource"
 
 export const loader = async () => {
-	return await getPosts({ status: 'ALL' })
+	return await getPosts({ status: "ALL" })
 }
 
 // Main Component
@@ -40,12 +40,12 @@ export default function DashboardTaxonomy({
 	const [categoriesContext] = useAtom(categoriesAtom)
 
 	const pendingTags: (TagType & { _isPending: true })[] = usePendingTags().map(
-		p => ({ ...p, _isPending: true }),
+		(p) => ({ ...p, _isPending: true }),
 	)
 	const pendingCategories: (CategoryType & { _isPending: true })[] =
-		usePendingCategories().map(p => ({ ...p, _isPending: true }))
+		usePendingCategories().map((p) => ({ ...p, _isPending: true }))
 	const pendingChildCategories: (CategoryType & { _isPending: true })[] =
-		usePendingChildCategories().map(p => ({ ...p, _isPending: true }))
+		usePendingChildCategories().map((p) => ({ ...p, _isPending: true }))
 
 	const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
 		null,
@@ -53,16 +53,17 @@ export default function DashboardTaxonomy({
 
 	const tags: (TagType & { _isPending?: true })[] = useMemo(
 		() => [
-			...tagsContext.map(tag => {
+			...tagsContext.map((tag) => {
 				return {
 					...tag,
-					posts: postsLoader.filter(post =>
-						(post.tags ?? []).map(t => t.id).includes(tag.id),
+					posts: postsLoader.filter((post) =>
+						(post.tags ?? []).map((t) => t.id).includes(tag.id),
 					),
 				}
 			}),
 			...pendingTags.filter(
-				pendingTag => !tagsContext.some(tag => tag.slug === pendingTag.slug),
+				(pendingTag) =>
+					!tagsContext.some((tag) => tag.slug === pendingTag.slug),
 			),
 		],
 		[tagsContext, postsLoader, pendingTags],
@@ -70,27 +71,27 @@ export default function DashboardTaxonomy({
 
 	const categories: (CategoryType & { _isPending?: true })[] = useMemo(
 		() => [
-			...categoriesContext.map(category => {
+			...categoriesContext.map((category) => {
 				const thisPendingChildren = pendingChildCategories.filter(
-					pendingChild => pendingChild.parentId === category.id,
+					(pendingChild) => pendingChild.parentId === category.id,
 				)
 				return {
 					...category,
 					children: [
 						...category.children,
 						...thisPendingChildren.filter(
-							p => !category.children.some(child => child.slug === p.slug),
+							(p) => !category.children.some((child) => child.slug === p.slug),
 						),
 					],
-					posts: postsLoader.filter(post =>
-						(post.categories ?? []).map(c => c.id).includes(category.id),
+					posts: postsLoader.filter((post) =>
+						(post.categories ?? []).map((c) => c.id).includes(category.id),
 					),
 				}
 			}),
 			...pendingCategories.filter(
-				pendingCategory =>
+				(pendingCategory) =>
 					!categoriesContext.some(
-						category => category.slug === pendingCategory.slug,
+						(category) => category.slug === pendingCategory.slug,
 					),
 			),
 		],
@@ -99,14 +100,14 @@ export default function DashboardTaxonomy({
 
 	const selectedCategory = useMemo(
 		() =>
-			categories.find(category => category.id === selectedCategoryId) ?? null,
+			categories.find((category) => category.id === selectedCategoryId) ?? null,
 		[categories, selectedCategoryId],
 	)
 
 	// Panel for mobile to show selected taxonomy
 	const [activePanel, setActivePanel] = useState<
-		'tags' | 'categories' | 'hierarchy'
-	>('tags')
+		"tags" | "categories" | "hierarchy"
+	>("tags")
 
 	return (
 		<DashboardLayout>
@@ -124,7 +125,7 @@ export default function DashboardTaxonomy({
 
 				{/* Categories Section (Middle) */}
 				<CategoriesSection
-					categories={categories.filter(c => !c.parentId)}
+					categories={categories.filter((c) => !c.parentId)}
 					selectedCategoryId={selectedCategoryId}
 					setSelectedCategoryId={setSelectedCategoryId}
 				/>
@@ -137,43 +138,43 @@ export default function DashboardTaxonomy({
 				{/* Tabs */}
 				<div className="grid h-fit w-full grid-cols-3 border p-0.5">
 					<Button
-						variant={activePanel === 'tags' ? 'default' : 'ghost'}
-						size={'sm'}
-						onClick={() => setActivePanel('tags')}
-						aria-pressed={activePanel === 'tags'}
+						variant={activePanel === "tags" ? "default" : "ghost"}
+						size={"sm"}
+						onClick={() => setActivePanel("tags")}
+						aria-pressed={activePanel === "tags"}
 					>
 						<span className="truncate">Tags</span>
 					</Button>
 					<Button
-						variant={activePanel === 'categories' ? 'default' : 'ghost'}
-						size={'sm'}
-						onClick={() => setActivePanel('categories')}
-						aria-pressed={activePanel === 'categories'}
+						variant={activePanel === "categories" ? "default" : "ghost"}
+						size={"sm"}
+						onClick={() => setActivePanel("categories")}
+						aria-pressed={activePanel === "categories"}
 					>
 						<span className="truncate">Categories</span>
 					</Button>
 					<Button
-						variant={activePanel === 'hierarchy' ? 'default' : 'ghost'}
-						size={'sm'}
-						onClick={() => setActivePanel('hierarchy')}
-						aria-pressed={activePanel === 'hierarchy'}
+						variant={activePanel === "hierarchy" ? "default" : "ghost"}
+						size={"sm"}
+						onClick={() => setActivePanel("hierarchy")}
+						aria-pressed={activePanel === "hierarchy"}
 					>
 						<span className="truncate">Subcategories</span>
 					</Button>
 				</div>
 
 				{/* Panels */}
-				{activePanel === 'tags' && <TagsSection tags={tags} />}
+				{activePanel === "tags" && <TagsSection tags={tags} />}
 
-				{activePanel === 'categories' && (
+				{activePanel === "categories" && (
 					<CategoriesSection
-						categories={categories.filter(c => !c.parentId)}
+						categories={categories.filter((c) => !c.parentId)}
 						selectedCategoryId={selectedCategoryId}
 						setSelectedCategoryId={setSelectedCategoryId}
 					/>
 				)}
 
-				{activePanel === 'hierarchy' && (
+				{activePanel === "hierarchy" && (
 					<CategoryHierarchySection category={selectedCategory} />
 				)}
 			</DashboardContent>

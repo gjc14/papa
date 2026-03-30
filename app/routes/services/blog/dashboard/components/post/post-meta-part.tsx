@@ -3,29 +3,29 @@
  * This component is responsible for rendering the meta part of the post editor.
  */
 
-import { useAtom } from 'jotai'
-import { CloudAlert, Loader } from 'lucide-react'
-import { toast } from 'sonner'
+import { useAtom } from "jotai"
+import { CloudAlert, Loader } from "lucide-react"
+import { toast } from "sonner"
 
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { Spinner } from '~/components/ui/spinner'
-import { Textarea } from '~/components/ui/textarea'
-import { SeparatorWithText } from '~/components/separator-with-text'
-import { useAssets } from '~/hooks/use-assets'
-import { generateSeoDescription, generateSlug } from '~/lib/utils/seo'
-import { FileGrid } from '~/routes/dashboard/assets/components/file-grid'
+} from "~/components/ui/select"
+import { Spinner } from "~/components/ui/spinner"
+import { Textarea } from "~/components/ui/textarea"
+import { SeparatorWithText } from "~/components/separator-with-text"
+import { useAssets } from "~/hooks/use-assets"
+import { generateSeoDescription, generateSlug } from "~/lib/utils/seo"
+import { FileGrid } from "~/routes/dashboard/assets/components/file-grid"
 
-import { PostStatus } from '../../../lib/db/schema'
-import { editorAtom, postAtom } from '../../context'
+import { PostStatus } from "../../../lib/db/schema"
+import { editorAtom, postAtom } from "../../context"
 
 export const PostMetaPart = () => {
 	const [post, setPost] = useAtom(postAtom)
@@ -33,17 +33,17 @@ export const PostMetaPart = () => {
 
 	const { assets, isLoading } = useAssets({ fetchOnLoad: true })
 	const files = assets?.files || []
-	const origin = assets?.origin || ''
+	const origin = assets?.origin || ""
 	const hasObjectStorage = assets?.hasObjectStorage || false
 
 	if (!editor || !post) return <Spinner />
 
 	const handleSlug = () => {
 		const slug = generateSlug(post.title, {
-			fallbackPrefix: 'post',
+			fallbackPrefix: "post",
 		})
 
-		setPost(prev => {
+		setPost((prev) => {
 			if (!prev) return prev
 			const newPost = {
 				...prev,
@@ -54,11 +54,11 @@ export const PostMetaPart = () => {
 	}
 
 	const handleExcerpt = () => {
-		setPost(prev => {
+		setPost((prev) => {
 			if (!prev) return prev
-			const text = editor.getText() || ''
+			const text = editor.getText() || ""
 			if (!text) {
-				toast.error('No content to generate excerpt')
+				toast.error("No content to generate excerpt")
 				return prev
 			}
 			const newPost = {
@@ -73,7 +73,7 @@ export const PostMetaPart = () => {
 		<>
 			<div>
 				<img
-					src={post.featuredImage || '/logo.png'}
+					src={post.featuredImage || "/logo.png"}
 					alt="featured image"
 					className="mb-2 h-40 w-full object-cover"
 				/>
@@ -83,9 +83,9 @@ export const PostMetaPart = () => {
 					name="imageUrl"
 					type="text"
 					placeholder="Featured image URL?"
-					value={post.featuredImage || ''}
-					onChange={e => {
-						setPost(prev => {
+					value={post.featuredImage || ""}
+					onChange={(e) => {
+						setPost((prev) => {
 							if (!prev) return prev
 							const newPost = {
 								...prev,
@@ -98,8 +98,8 @@ export const PostMetaPart = () => {
 				<SeparatorWithText text="Or" />
 				{isLoading ? (
 					<Button
-						size={'sm'}
-						variant={'secondary'}
+						size={"sm"}
+						variant={"secondary"}
 						className="mt-2 w-full"
 						disabled
 					>
@@ -110,12 +110,12 @@ export const PostMetaPart = () => {
 						files={files}
 						origin={origin}
 						dialogTrigger={
-							<Button size={'sm'} variant={'secondary'} className="mt-2 w-full">
+							<Button size={"sm"} variant={"secondary"} className="mt-2 w-full">
 								Select from Gallery
 							</Button>
 						}
-						onFileSelect={file => {
-							setPost(prev => {
+						onFileSelect={(file) => {
+							setPost((prev) => {
 								if (!prev) return prev
 								const newPost = {
 									...prev,
@@ -139,9 +139,9 @@ export const PostMetaPart = () => {
 				<Select
 					value={post.status}
 					name="status"
-					onValueChange={v => {
+					onValueChange={(v) => {
 						if (!v) return
-						setPost(prev => {
+						setPost((prev) => {
 							if (!prev) return prev
 							const newPost = {
 								...prev,
@@ -155,7 +155,7 @@ export const PostMetaPart = () => {
 						<SelectValue placeholder="Status" />
 					</SelectTrigger>
 					<SelectContent>
-						{PostStatus.map(status => (
+						{PostStatus.map((status) => (
 							<SelectItem key={status} value={status}>
 								{status}
 							</SelectItem>
@@ -176,8 +176,8 @@ export const PostMetaPart = () => {
 						type="text"
 						placeholder="How to display your post in the URL?"
 						value={post.slug}
-						onChange={e => {
-							setPost(prev => {
+						onChange={(e) => {
+							setPost((prev) => {
 								if (!prev) return prev
 								const newPost = {
 									...prev,
@@ -201,9 +201,9 @@ export const PostMetaPart = () => {
 					name="excerpt"
 					rows={3}
 					placeholder="Short description about your post..."
-					value={post.excerpt || ''}
-					onChange={e => {
-						setPost(prev => {
+					value={post.excerpt || ""}
+					onChange={(e) => {
+						setPost((prev) => {
 							if (!prev) return prev
 							const newPost = {
 								...prev,
@@ -219,7 +219,7 @@ export const PostMetaPart = () => {
 }
 
 const TinyLinkButton = ({
-	title = 'Generate',
+	title = "Generate",
 	onClick,
 }: {
 	title?: string

@@ -1,14 +1,14 @@
-import assert from 'node:assert/strict'
-import { type ActionFunctionArgs } from 'react-router'
+import assert from "node:assert/strict"
+import { type ActionFunctionArgs } from "react-router"
 
-import { createUpdateSchema } from 'drizzle-zod'
+import { createUpdateSchema } from "drizzle-zod"
 
-import { auth } from '~/lib/auth/auth.server'
-import { user } from '~/lib/db/schema'
-import { deleteUser, updateUser } from '~/lib/db/user.server'
-import { isValidEmail, type ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
-import { authContext } from '~/middleware/context/auth'
+import { auth } from "~/lib/auth/auth.server"
+import { user } from "~/lib/db/schema"
+import { deleteUser, updateUser } from "~/lib/db/user.server"
+import { isValidEmail, type ActionResponse } from "~/lib/utils"
+import { handleError } from "~/lib/utils/server"
+import { authContext } from "~/middleware/context/auth"
 
 const userUpdateSchema = createUpdateSchema(user).omit({
 	id: true, // id will be checked separately, may be a string or comma-separated string of IDs
@@ -34,9 +34,9 @@ const userUpdateSchema = createUpdateSchema(user).omit({
  * @returns
  */
 export const action = async ({ request, context }: ActionFunctionArgs) => {
-	if (!['POST', 'PUT', 'DELETE'].includes(request.method)) {
+	if (!["POST", "PUT", "DELETE"].includes(request.method)) {
 		return {
-			err: 'Method not allowed',
+			err: "Method not allowed",
 		} satisfies ActionResponse
 	}
 
@@ -46,34 +46,34 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 	const userData: Record<string, string | boolean | File> = {}
 
 	for (const [key, value] of formData.entries()) {
-		if (['emailVerified', 'banned'].includes(key)) {
-			userData[key] = value === 'true'
+		if (["emailVerified", "banned"].includes(key)) {
+			userData[key] = value === "true"
 		} else {
 			userData[key] = value
 		}
 	}
 
 	switch (request.method) {
-		case 'POST':
+		case "POST":
 			try {
 				const email = userData.email
 				const name = userData.name
 				const role = userData.role
 
 				assert(
-					typeof name === 'string' &&
-						typeof email === 'string' &&
-						(role === 'admin' || role === 'user'),
-					'Invalid arguments',
+					typeof name === "string" &&
+						typeof email === "string" &&
+						(role === "admin" || role === "user"),
+					"Invalid arguments",
 				)
 
-				assert(isValidEmail(email), 'Invalid email')
+				assert(isValidEmail(email), "Invalid email")
 
 				const { user } = await auth.api.createUser({
 					body: {
 						email,
 						name,
-						password: '',
+						password: "",
 						role,
 					},
 				})
@@ -81,7 +81,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 				await auth.api.sendVerificationEmail({
 					body: {
 						email: user.email,
-						callbackURL: role === 'admin' ? '/dashboard' : '/',
+						callbackURL: role === "admin" ? "/dashboard" : "/",
 					},
 				})
 
@@ -91,18 +91,18 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 			} catch (error) {
 				return handleError(error, request)
 			}
-		case 'PUT':
+		case "PUT":
 			try {
 				let user = userUpdateSchema.parse(userData)
 				const userIds = userData.id
 
-				console.log('userData', userData)
+				console.log("userData", userData)
 
 				assert(
-					typeof userIds === 'string' && userIds.split(',').length > 0,
-					'Invalid user ID',
+					typeof userIds === "string" && userIds.split(",").length > 0,
+					"Invalid user ID",
 				)
-				const userIdArray = userIds.split(',')
+				const userIdArray = userIds.split(",")
 
 				const { user: userUpdated } = await updateUser({
 					id: userIdArray,
@@ -117,11 +117,11 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 					},
 				})
 
-				assert(userUpdated.length > 0, 'User not found')
+				assert(userUpdated.length > 0, "User not found")
 
 				const userNames = userUpdated
-					.map(u => u.name || u.email || u.id)
-					.join(', ')
+					.map((u) => u.name || u.email || u.id)
+					.join(", ")
 
 				return {
 					msg: `${userNames} updated successfully`,
@@ -129,26 +129,26 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 			} catch (error) {
 				return handleError(error, request)
 			}
-		case 'DELETE':
+		case "DELETE":
 			try {
 				const userIds = userData.id
 
 				assert(
-					typeof userIds === 'string' && userIds.split(',').length > 0,
-					'Invalid user ID',
+					typeof userIds === "string" && userIds.split(",").length > 0,
+					"Invalid user ID",
 				)
-				const userIdArray = userIds.split(',')
+				const userIdArray = userIds.split(",")
 
 				assert(
 					!userIdArray.includes(adminSession.user.id),
-					'You cannot delete yourself! 😠',
+					"You cannot delete yourself! 😠",
 				)
 
 				const { user } = await deleteUser(userIdArray)
 
-				assert(user.length > 0, 'User not found')
+				assert(user.length > 0, "User not found")
 
-				const userNames = user.map(u => u.name || u.email || u.id).join(', ')
+				const userNames = user.map((u) => u.name || u.email || u.id).join(", ")
 
 				return {
 					msg: `${userNames} deleted successfully`,

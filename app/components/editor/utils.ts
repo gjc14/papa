@@ -1,11 +1,11 @@
-import { capitalize as cap } from '~/lib/utils'
+import { capitalize as cap } from "~/lib/utils"
 
 export const MAC_SYMBOLS: Record<string, string> = {
-	mod: '⌘',
-	ctrl: '⌘',
-	alt: '⌥',
-	shift: '⇧',
-	backspace: '⌫',
+	mod: "⌘",
+	ctrl: "⌘",
+	alt: "⌥",
+	shift: "⇧",
+	backspace: "⌫",
 }
 
 /**
@@ -14,8 +14,8 @@ export const MAC_SYMBOLS: Record<string, string> = {
  */
 export function isMac(): boolean {
 	return (
-		typeof navigator !== 'undefined' &&
-		navigator.platform.toLowerCase().includes('mac')
+		typeof navigator !== "undefined" &&
+		navigator.platform.toLowerCase().includes("mac")
 	)
 }
 
@@ -38,8 +38,8 @@ export const formatShortcutKey = (
 	}
 
 	// Handle 'mod' key for non-Mac platforms (mod = ctrl on Windows/Linux)
-	if (lowerKey === 'mod') {
-		return capitalize ? 'Ctrl' : 'ctrl'
+	if (lowerKey === "mod") {
+		return capitalize ? "Ctrl" : "ctrl"
 	}
 
 	return capitalize ? cap(key) : key
@@ -57,12 +57,12 @@ export const parseShortcutKeys = (props: {
 	delimiter?: string
 	capitalize?: boolean
 }) => {
-	const { shortcutKeys, delimiter = '+', capitalize = true } = props
+	const { shortcutKeys, delimiter = "+", capitalize = true } = props
 
 	if (!shortcutKeys) return []
 
 	return shortcutKeys
 		.split(delimiter)
-		.map(key => key.trim())
-		.map(key => formatShortcutKey(key, isMac(), capitalize))
+		.map((key) => key.trim())
+		.map((key) => formatShortcutKey(key, isMac(), capitalize))
 }

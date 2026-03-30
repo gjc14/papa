@@ -1,21 +1,21 @@
-import type { Session } from '~/lib/auth/auth-client'
-import { type user as userTable } from '~/lib/db/schema'
+import type { Session } from "~/lib/auth/auth-client"
+import { type user as userTable } from "~/lib/db/schema"
 
-import type { PostWithRelations } from '../../lib/db/post.server'
-import { PostStatus } from '../../lib/db/schema'
+import type { PostWithRelations } from "../../lib/db/post.server"
+import { PostStatus } from "../../lib/db/schema"
 
 export const postLocalStorageKey = (id: number) => `papa:blog:draft:${id}`
 
 export const defaultContent = `{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":null}}]}`
 
-export const generateNewPost = (user: Session['user']): PostWithRelations => {
+export const generateNewPost = (user: Session["user"]): PostWithRelations => {
 	const now = new Date()
 	return {
 		id: -1,
 		createdAt: now,
 		updatedAt: now,
-		title: '',
-		slug: '',
+		title: "",
+		slug: "",
 		content: defaultContent,
 		excerpt: null,
 		featuredImage: null,
@@ -41,7 +41,7 @@ export const generateNewPost = (user: Session['user']): PostWithRelations => {
 
 /** Normalize undefined values to null to match database schema*/
 function normalizeUndefinedToNull(
-	user: Session['user'],
+	user: Session["user"],
 ): typeof userTable.$inferSelect {
 	const normalized: any = { ...user }
 

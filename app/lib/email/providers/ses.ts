@@ -1,7 +1,7 @@
-import { SendEmailCommand, SESClient } from '@aws-sdk/client-ses'
-import { render } from '@react-email/render'
+import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses"
+import { render } from "@react-email/render"
 
-import type { EmailOptions, EmailProvider } from '../types'
+import type { EmailOptions, EmailProvider } from "../types"
 
 export class SESProvider implements EmailProvider {
 	private sesClient: SESClient
@@ -39,19 +39,19 @@ export class SESProvider implements EmailProvider {
 				Message: {
 					Subject: {
 						Data: options.subject,
-						Charset: 'UTF-8',
+						Charset: "UTF-8",
 					},
 					Body: {
 						Html: html
 							? {
 									Data: html,
-									Charset: 'UTF-8',
+									Charset: "UTF-8",
 								}
 							: undefined,
 						Text: options.text
 							? {
 									Data: options.text,
-									Charset: 'UTF-8',
+									Charset: "UTF-8",
 								}
 							: undefined,
 					},
@@ -60,7 +60,7 @@ export class SESProvider implements EmailProvider {
 
 			await this.sesClient.send(command)
 		} catch (error) {
-			console.error('Error sending email via AWS SES:', error)
+			console.error("Error sending email via AWS SES:", error)
 			throw new Error(`Failed to send email via AWS SES: ${error}`)
 		}
 	}

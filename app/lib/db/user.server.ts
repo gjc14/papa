@@ -1,8 +1,8 @@
-import { eq, inArray } from 'drizzle-orm'
+import { eq, inArray } from "drizzle-orm"
 
-import { user as userTable } from '~/lib/db/schema'
+import { user as userTable } from "~/lib/db/schema"
 
-import { db } from './db.server'
+import { db } from "./db.server"
 
 type User = typeof userTable.$inferSelect
 
@@ -13,9 +13,9 @@ type User = typeof userTable.$inferSelect
  * @param direction direction of the pagination
  */
 export const getUsers = async ({
-	role = 'user',
+	role = "user",
 }: {
-	role?: 'admin' | 'user'
+	role?: "admin" | "user"
 } = {}): Promise<{
 	users: User[]
 }> => {
@@ -33,7 +33,7 @@ export const getUsers = async ({
 export const updateUser = async (props: {
 	id: string | string[]
 	data: Partial<
-		Omit<typeof userTable.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>
+		Omit<typeof userTable.$inferInsert, "id" | "createdAt" | "updatedAt">
 	>
 }): Promise<{ user: User[] }> => {
 	const user = await db

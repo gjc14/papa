@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from "jotai"
 
 import {
 	Card,
@@ -6,21 +6,21 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { SeoFieldSet } from '~/components/seo-field-set'
+} from "~/components/ui/card"
+import { SeoFieldSet } from "~/components/seo-field-set"
 import {
 	productAtom,
 	storeConfigAtom,
-} from '~/routes/services/ecommerce/store/product/context'
+} from "~/routes/services/ecommerce/store/product/context"
 
-const productSeoAtom = atom(get => get(productAtom)?.seo ?? null)
-const productNameAtom = atom(get => get(productAtom)?.name ?? null)
-const productSlugAtom = atom(get => get(productAtom)?.slug ?? null)
+const productSeoAtom = atom((get) => get(productAtom)?.seo ?? null)
+const productNameAtom = atom((get) => get(productAtom)?.name ?? null)
+const productSlugAtom = atom((get) => get(productAtom)?.slug ?? null)
 const productDescriptionAtom = atom(
-	get => get(productAtom)?.description ?? null,
+	(get) => get(productAtom)?.description ?? null,
 )
 const productFeatureImageAtom = atom(
-	get => get(productAtom)?.option.image ?? null,
+	(get) => get(productAtom)?.option.image ?? null,
 )
 
 export function Seo() {
@@ -33,7 +33,7 @@ export function Seo() {
 	const featureImage = useAtomValue(productFeatureImageAtom)
 
 	const handleChange = (field: string, value: string) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
@@ -56,16 +56,16 @@ export function Seo() {
 			<CardContent className="space-y-6">
 				<SeoFieldSet
 					seo={seo}
-					onFillInTitle={() => handleChange('metaTitle', name || '')}
-					onTitleChange={title => handleChange('metaTitle', title)}
+					onFillInTitle={() => handleChange("metaTitle", name || "")}
+					onTitleChange={(title) => handleChange("metaTitle", title)}
 					onFillInDescription={() =>
-						handleChange('metaDescription', description || '')
+						handleChange("metaDescription", description || "")
 					}
-					onDescriptionChange={desc => handleChange('metaDescription', desc)}
+					onDescriptionChange={(desc) => handleChange("metaDescription", desc)}
 					linkPreview={`${import.meta.env.VITE_BASE_URL} › ${storeConfig.storeFrontPath.slice(1)} › product › ${slug}`}
-					onFillInOgImage={() => handleChange('ogImage', featureImage || '')}
-					onOgImageChange={({ src }) => handleChange('ogImage', src)}
-					onKeywordsChange={keywords => handleChange('keywords', keywords)}
+					onFillInOgImage={() => handleChange("ogImage", featureImage || "")}
+					onOgImageChange={({ src }) => handleChange("ogImage", src)}
+					onKeywordsChange={(keywords) => handleChange("keywords", keywords)}
 				/>
 			</CardContent>
 		</Card>

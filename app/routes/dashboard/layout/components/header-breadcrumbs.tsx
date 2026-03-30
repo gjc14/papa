@@ -1,21 +1,21 @@
-import React from 'react'
-import { NavLink, useLocation } from 'react-router'
+import React from "react"
+import { NavLink, useLocation } from "react-router"
 
 import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbSeparator,
-} from '~/components/ui/breadcrumb'
-import { Separator } from '~/components/ui/separator'
-import { SidebarTrigger } from '~/components/ui/sidebar'
+} from "~/components/ui/breadcrumb"
+import { Separator } from "~/components/ui/separator"
+import { SidebarTrigger } from "~/components/ui/sidebar"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '~/components/ui/tooltip'
-import { capitalize } from '~/lib/utils'
+} from "~/components/ui/tooltip"
+import { capitalize } from "~/lib/utils"
 
 export const HeaderWithBreadcrumbs = () => {
 	return (
@@ -34,21 +34,21 @@ export const HeaderWithBreadcrumbs = () => {
 
 const DashboardBreadcrumbs = () => {
 	const { pathname } = useLocation()
-	const paths = pathname.split('/').filter(Boolean)
+	const paths = pathname.split("/").filter(Boolean)
 
 	const getPathName = (path: string) => {
 		return decodeURIComponent(path)
-			.replace(/[-_]/g, ' ')
-			.split(' ')
-			.map(word => capitalize(word))
-			.join(' ')
+			.replace(/[-_]/g, " ")
+			.split(" ")
+			.map((word) => capitalize(word))
+			.join(" ")
 	}
 
 	return (
 		<Breadcrumb>
 			<BreadcrumbList className="flex w-full flex-nowrap">
 				{paths.map((path, i) => {
-					const link = `/${paths.slice(0, i + 1).join('/')}`
+					const link = `/${paths.slice(0, i + 1).join("/")}`
 					const name = getPathName(path)
 
 					return (
@@ -60,7 +60,7 @@ const DashboardBreadcrumbs = () => {
 											<NavLink
 												to={link}
 												className={({ isActive }) =>
-													`${isActive ? 'text-foreground' : 'hover:text-foreground'} max-w-20 overflow-hidden text-xs text-nowrap text-ellipsis md:max-w-36`
+													`${isActive ? "text-foreground" : "hover:text-foreground"} max-w-20 overflow-hidden text-xs text-nowrap text-ellipsis md:max-w-36`
 												}
 												end
 											>

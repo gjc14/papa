@@ -1,12 +1,12 @@
-import { Link } from 'react-router'
+import { Link } from "react-router"
 
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from "jotai"
 
-import { Skeleton } from '~/components/ui/skeleton'
+import { Skeleton } from "~/components/ui/skeleton"
 
-import type { ProductListing } from '../../../lib/db/product.server'
-import { storeConfigAtom } from '../context'
-import { renderPrice } from '../utils/price'
+import type { ProductListing } from "../../../lib/db/product.server"
+import { storeConfigAtom } from "../context"
+import { renderPrice } from "../utils/price"
 
 type ProductCardProps = {
 	product: ProductListing

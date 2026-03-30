@@ -1,15 +1,15 @@
-import { Suspense, useEffect, useMemo } from 'react'
-import { Await, Form, useNavigation, useSubmit } from 'react-router'
+import { Suspense, useEffect, useMemo } from "react"
+import { Await, Form, useNavigation, useSubmit } from "react-router"
 
-import debounce from 'lodash/debounce'
+import debounce from "lodash/debounce"
 
-import { InputSearch } from '~/components/ui/xui/input-search'
+import { InputSearch } from "~/components/ui/xui/input-search"
 
-import type { ProductListing } from '../../lib/db/product.server'
+import type { ProductListing } from "../../lib/db/product.server"
 import {
 	ProductCard,
 	ProductCardSkeleton,
-} from '../product/components/product-card'
+} from "../product/components/product-card"
 
 type StorePageProps = {
 	productsPromise: Promise<ProductListing[]>
@@ -35,8 +35,8 @@ export function StorePage(props: StorePageProps) {
 					}
 				>
 					<Await resolve={productsPromise}>
-						{products =>
-							products.map(product => (
+						{(products) =>
+							products.map((product) => (
 								<ProductCard key={product.id} product={product} />
 							))
 						}
@@ -53,13 +53,13 @@ const Search = ({ q }: { q?: string }) => {
 
 	const searching =
 		navigation.location &&
-		new URLSearchParams(navigation.location.search).has('q')
+		new URLSearchParams(navigation.location.search).has("q")
 
 	// Sync search input with URL param
 	useEffect(() => {
-		const searchField = document.getElementById('q')
+		const searchField = document.getElementById("q")
 		if (searchField instanceof HTMLInputElement) {
-			searchField.value = q || ''
+			searchField.value = q || ""
 		}
 	}, [q])
 
@@ -81,7 +81,7 @@ const Search = ({ q }: { q?: string }) => {
 		<Form
 			id="search-form"
 			role="search"
-			onChange={event => {
+			onChange={(event) => {
 				debouncedSearch(event.currentTarget)
 			}}
 			className="relative"
@@ -89,7 +89,7 @@ const Search = ({ q }: { q?: string }) => {
 			<InputSearch
 				isLoading={searching}
 				aria-label="Search posts"
-				defaultValue={q || ''}
+				defaultValue={q || ""}
 				id="q"
 				name="q"
 			/>

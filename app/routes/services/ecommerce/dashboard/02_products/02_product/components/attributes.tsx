@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { Eye, EyeOff, ListChecksIcon, MoreVertical, Plus } from 'lucide-react'
+import { atom, useAtomValue, useSetAtom } from "jotai"
+import { Eye, EyeOff, ListChecksIcon, MoreVertical, Plus } from "lucide-react"
 
-import { Badge } from '~/components/ui/badge'
-import { Button } from '~/components/ui/button'
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
 import {
 	Card,
 	CardContent,
@@ -12,9 +12,9 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Checkbox } from '~/components/ui/checkbox'
-import { Dialog, DialogContent, DialogTrigger } from '~/components/ui/dialog'
+} from "~/components/ui/card"
+import { Checkbox } from "~/components/ui/checkbox"
+import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -23,7 +23,7 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
+} from "~/components/ui/dropdown-menu"
 import {
 	Field,
 	FieldContent,
@@ -31,40 +31,41 @@ import {
 	FieldGroup,
 	FieldLabel,
 	FieldSet,
-} from '~/components/ui/field'
-import { Input } from '~/components/ui/input'
+} from "~/components/ui/field"
+import { Input } from "~/components/ui/input"
 import {
 	Item,
 	ItemActions,
 	ItemContent,
 	ItemDescription,
 	ItemTitle,
-} from '~/components/ui/item'
+} from "~/components/ui/item"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { ProductAttributeSelectType } from '~/routes/services/ecommerce/lib/db/schema'
+} from "~/components/ui/select"
+import { ProductAttributeSelectType } from "~/routes/services/ecommerce/lib/db/schema"
 
-import { productAtom } from '../../../../store/product/context'
+import { productAtom } from "../../../../store/product/context"
 
 const productAttributesAtom = atom(
-	get => get(productAtom)?.attributes.sort((a, b) => a.order - b.order) ?? null,
+	(get) =>
+		get(productAtom)?.attributes.sort((a, b) => a.order - b.order) ?? null,
 )
 const productVariantsAtom = atom(
-	get => get(productAtom)?.variants.sort((a, b) => a.order - b.order) ?? null,
+	(get) => get(productAtom)?.variants.sort((a, b) => a.order - b.order) ?? null,
 )
 
 type AttributeType = NonNullable<
 	ReturnType<typeof productAtom.read>
->['attributes'][number]
+>["attributes"][number]
 
 type VariantType = NonNullable<
 	ReturnType<typeof productAtom.read>
->['variants'][number]
+>["variants"][number]
 
 export function Attributes() {
 	const attributes = useAtomValue(productAttributesAtom)
@@ -80,7 +81,7 @@ export function Attributes() {
 			variants,
 		)
 
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
@@ -95,13 +96,13 @@ export function Attributes() {
 	 * when attribute deleted, key in "variant combination" matching the attribute name should also be removed
 	 */
 	const handleDeleteAttribute = (id: number) => {
-		const targetAttribute = attributes.find(attr => attr.id === id)
+		const targetAttribute = attributes.find((attr) => attr.id === id)
 		if (!targetAttribute) return
 
-		const updatedAttributes = attributes.filter(attr => attr.id !== id)
+		const updatedAttributes = attributes.filter((attr) => attr.id !== id)
 
 		const updatedVariants = variants
-			? variants.map(variant => {
+			? variants.map((variant) => {
 					if (!targetAttribute.name) return variant
 					const newCombination = { ...variant.combination }
 					delete newCombination[targetAttribute.name]
@@ -109,7 +110,7 @@ export function Attributes() {
 				})
 			: []
 
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			return {
 				...prev,
@@ -132,7 +133,7 @@ export function Attributes() {
 				{attributes.length > 0 ? (
 					attributes
 						.sort((a, b) => a.order - b.order)
-						.map(a => (
+						.map((a) => (
 							<AttributeEditDialog
 								key={a.id}
 								attribute={a}
@@ -148,7 +149,7 @@ export function Attributes() {
 												<span className="text-muted-foreground">-</span>
 											)}
 										</ItemTitle>
-										<ItemDescription>{a.value || '-'}</ItemDescription>
+										<ItemDescription>{a.value || "-"}</ItemDescription>
 										<ItemDescription>
 											<Badge>{a.selectType}</Badge>
 										</ItemDescription>
@@ -195,8 +196,8 @@ export function Attributes() {
 			<CardFooter className="flex-col gap-2 md:flex-row">
 				<AttributeEditDialog
 					attribute={createNewAttribute(attributes)}
-					onSave={a => {
-						setProduct(prev => {
+					onSave={(a) => {
+						setProduct((prev) => {
 							if (!prev) return prev
 							return {
 								...prev,
@@ -221,7 +222,7 @@ export function Attributes() {
 					variant="outline"
 					size="sm"
 					className="w-full md:w-auto md:flex-1"
-					onClick={() => alert('not implemented')}
+					onClick={() => alert("not implemented")}
 				>
 					<ListChecksIcon />
 					{/* 1. Post 2. Get ID 3. Update productAtom */}
@@ -236,10 +237,10 @@ export function createNewAttribute(attributes: AttributeType[]): AttributeType {
 	return {
 		// postgres integer -2147483648 to +2147483647
 		id: -(Math.floor(Math.random() * 2147483648) + 1), // id doesn't matter, backend will delete all and recreate
-		name: 'Untitled',
-		value: 'A | B | C',
+		name: "Untitled",
+		value: "A | B | C",
 		order: attributes.length + 1,
-		selectType: 'SELECTOR',
+		selectType: "SELECTOR",
 		visible: 1,
 		attributeId: null,
 	}
@@ -265,19 +266,19 @@ export function updateAttribute(
 		}
 	const newAttrName = updatedAttribute.name.trim()
 
-	const oldAttr = attributes.find(attr => attr.id === updatedAttribute.id)
+	const oldAttr = attributes.find((attr) => attr.id === updatedAttribute.id)
 	if (!oldAttr)
 		return {
 			updatedAttributes: attributes,
 			updatedVariants: variants,
 		}
 
-	const updatedAttributes: AttributeType[] = attributes.map(attr =>
+	const updatedAttributes: AttributeType[] = attributes.map((attr) =>
 		attr.id === updatedAttribute.id ? updatedAttribute : attr,
 	)
 
 	const updatedVariants: VariantType[] = variants
-		? variants.map(variant => {
+		? variants.map((variant) => {
 				if (!oldAttr.name || newAttrName === oldAttr.name) return variant
 
 				// Update key in combination
@@ -308,7 +309,7 @@ export function AttributeEditDialog({
 	return (
 		<Dialog
 			open={open}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				open && setEditedAttribute(attribute)
 				setOpen(open)
 			}}
@@ -321,8 +322,8 @@ export function AttributeEditDialog({
 							<FieldLabel htmlFor="name">Name</FieldLabel>
 							<Input
 								id="name"
-								value={editedAttribute.name || ''}
-								onChange={e =>
+								value={editedAttribute.name || ""}
+								onChange={(e) =>
 									setEditedAttribute({
 										...editedAttribute,
 										name: e.target.value,
@@ -339,8 +340,8 @@ export function AttributeEditDialog({
 							</FieldDescription>
 							<Input
 								id="value"
-								value={editedAttribute.value || ''}
-								onChange={e =>
+								value={editedAttribute.value || ""}
+								onChange={(e) =>
 									setEditedAttribute({
 										...editedAttribute,
 										value: e.target.value,
@@ -357,10 +358,10 @@ export function AttributeEditDialog({
 							</FieldDescription>
 							<Select
 								value={editedAttribute.selectType}
-								onValueChange={value =>
+								onValueChange={(value) =>
 									setEditedAttribute({
 										...editedAttribute,
-										selectType: value as AttributeType['selectType'],
+										selectType: value as AttributeType["selectType"],
 									})
 								}
 							>
@@ -368,7 +369,7 @@ export function AttributeEditDialog({
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
-									{ProductAttributeSelectType.map(type => (
+									{ProductAttributeSelectType.map((type) => (
 										<SelectItem key={type} value={type}>
 											{type}
 										</SelectItem>
@@ -380,7 +381,7 @@ export function AttributeEditDialog({
 							<Checkbox
 								id="visible"
 								checked={!!editedAttribute.visible}
-								onCheckedChange={checked =>
+								onCheckedChange={(checked) =>
 									setEditedAttribute({
 										...editedAttribute,
 										visible: checked ? 1 : 0,
@@ -404,9 +405,9 @@ export function AttributeEditDialog({
 										...editedAttribute,
 										value:
 											editedAttribute.value
-												?.split('|')
-												.map(v => v.trim())
-												.join(' | ') || '',
+												?.split("|")
+												.map((v) => v.trim())
+												.join(" | ") || "",
 									})
 									setOpen(false)
 								}}

@@ -1,11 +1,11 @@
-import camelcaseKeys from 'camelcase-keys'
-import { eq, inArray, sql } from 'drizzle-orm'
+import camelcaseKeys from "camelcase-keys"
+import { eq, inArray, sql } from "drizzle-orm"
 
-import { seo, type Seo } from '~/lib/db/schema'
-import { convertDateFields } from '~/lib/db/utils'
-import { handleError } from '~/lib/utils/server'
+import { seo, type Seo } from "~/lib/db/schema"
+import { convertDateFields } from "~/lib/db/utils"
+import { handleError } from "~/lib/utils/server"
 
-import { dbEcommerce } from './db.server'
+import { dbEcommerce } from "./db.server"
 import {
 	product,
 	productAttribute,
@@ -18,11 +18,11 @@ import {
 	productUpsell,
 	productVariant,
 	type ProductStatus,
-} from './schema/product'
-import { ecAttribute, ecBrand, ecCategory, ecTag } from './schema/taxonomy'
+} from "./schema/product"
+import { ecAttribute, ecBrand, ecCategory, ecTag } from "./schema/taxonomy"
 
 type TransactionType = Parameters<
-	Parameters<(typeof dbEcommerce)['transaction']>[0]
+	Parameters<(typeof dbEcommerce)["transaction"]>[0]
 >[0]
 
 type Product = typeof product.$inferSelect
@@ -33,19 +33,19 @@ type Brand = typeof ecBrand.$inferSelect
 
 export type ProductListing = Pick<
 	Product,
-	'id' | 'name' | 'slug' | 'status' | 'updatedAt'
+	"id" | "name" | "slug" | "status" | "updatedAt"
 > & {
 	option: Pick<
 		ProductOption,
-		| 'id'
-		| 'image'
-		| 'price'
-		| 'salePrice'
-		| 'scale'
-		| 'currency'
-		| 'sku'
-		| 'manageStock'
-		| 'stockStatus'
+		| "id"
+		| "image"
+		| "price"
+		| "salePrice"
+		| "scale"
+		| "currency"
+		| "sku"
+		| "manageStock"
+		| "stockStatus"
 		// TODO: add stockQuantity if manageStock is 1
 	>
 }
@@ -58,7 +58,7 @@ export type ProductListingWithRelations = ProductListing & {
 
 type GetProductsParamsBase = {
 	/** Filter by product status. Use 'ALL' to fetch all statuses. @default 'PUBLISHED' */
-	status?: ProductStatus | 'ALL'
+	status?: ProductStatus | "ALL"
 	/** Array of category slugs to filter products by category. */
 	categories?: string[]
 	/** Array of tag slugs to filter products by tags. */
@@ -79,11 +79,11 @@ type PriceFields = {
 function convertPriceStringToBigInt<T extends PriceFields>(data: T): T {
 	const result = { ...data }
 
-	if (typeof result.price === 'string') {
+	if (typeof result.price === "string") {
 		result.price = BigInt(result.price)
 	}
 
-	if (typeof result.salePrice === 'string') {
+	if (typeof result.salePrice === "string") {
 		result.salePrice = BigInt(result.salePrice)
 	}
 
@@ -105,7 +105,7 @@ export async function getProducts(
  * @returns An object containing an array of products matching the filters.
  */
 export async function getProducts({
-	status = 'PUBLISHED',
+	status = "PUBLISHED",
 	categories = [],
 	tags = [],
 	attributes = [],
@@ -113,7 +113,7 @@ export async function getProducts({
 	title,
 	relations = false,
 }: GetProductsParamsBase & { relations?: boolean } = {}) {
-	console.time('getProducts')
+	console.time("getProducts")
 	const products = await dbEcommerce.execute<
 		ProductListing | ProductListingWithRelations
 	>(sql`
@@ -215,19 +215,19 @@ export async function getProducts({
 		LEFT JOIN ${ecBrand} eb ON ptb.brand_id = eb.id
 
 		WHERE
-			${status !== 'ALL' ? sql`p.status = ${status}` : sql`TRUE`}
-			AND	${title ? sql`p.name ILIKE ${'%' + title + '%'}` : sql`TRUE`}
+			${status !== "ALL" ? sql`p.status = ${status}` : sql`TRUE`}
+			AND	${title ? sql`p.name ILIKE ${"%" + title + "%"}` : sql`TRUE`}
 			AND	${categories.length ? sql`ec.slug = ANY(ARRAY[${sql.join(categories, sql`,`)}])` : sql`TRUE`}
 			AND	${tags.length ? sql`et.slug = ANY(ARRAY[${sql.join(tags, sql`,`)}])` : sql`TRUE`}
 			AND	${brands.length ? sql`eb.slug = ANY(ARRAY[${sql.join(brands, sql`,`)}])` : sql`TRUE`}
 			AND	${attributes.length ? sql`ea.slug = ANY(ARRAY[${sql.join(attributes, sql`,`)}])` : sql`TRUE`}
 	`)
-	console.timeEnd('getProducts')
+	console.timeEnd("getProducts")
 
 	const validProducts = convertDateFields(
 		camelcaseKeys(products.rows, { deep: true }),
-		['updatedAt'],
-	).filter(product => {
+		["updatedAt"],
+	).filter((product) => {
 		if (!product.option) {
 			console.error(`Product ${product.id} has no productOption`)
 			return false
@@ -235,7 +235,7 @@ export async function getProducts({
 		return true
 	})
 
-	return validProducts.map(p => ({
+	return validProducts.map((p) => ({
 		...p,
 		option: convertPriceStringToBigInt(p.option),
 	}))
@@ -253,7 +253,7 @@ export type ProductVariant = typeof productVariant.$inferSelect & {
 /** Single product select attribute type */
 export type ProductAttribute = Omit<
 	typeof productAttribute.$inferSelect,
-	'productId'
+	"productId"
 >
 
 /**
@@ -266,14 +266,14 @@ export const getProduct = async ({
 	slug,
 	preview = false,
 	edit = false,
-	status = 'PUBLISHED',
+	status = "PUBLISHED",
 }: {
 	slug: string
 	preview?: boolean
 	edit?: boolean
 	status?: ProductStatus
 }) => {
-	console.time('getProduct')
+	console.time("getProduct")
 	const products = await dbEcommerce.execute<
 		ProductWithOption & {
 			categories: Category[]
@@ -425,7 +425,7 @@ export const getProduct = async ({
 			p.slug = ${slug}
 			AND ${!(preview || edit) ? sql`p.status = ${status}` : sql`TRUE`}
 	`)
-	console.timeEnd('getProduct')
+	console.timeEnd("getProduct")
 
 	const pLength = products.rows.length
 
@@ -440,21 +440,21 @@ export const getProduct = async ({
 		}
 
 		const product = convertDateFields(
-			camelcaseKeys(p, { deep: true, stopPaths: ['variants.combination'] }),
+			camelcaseKeys(p, { deep: true, stopPaths: ["variants.combination"] }),
 			[
-				'createdAt',
-				'updatedAt',
-				'deletedAt',
-				'publishedAt',
-				'saleStartsAt',
-				'saleEndsAt',
+				"createdAt",
+				"updatedAt",
+				"deletedAt",
+				"publishedAt",
+				"saleStartsAt",
+				"saleEndsAt",
 			],
 		)
 
 		return {
 			...product,
 			option: convertPriceStringToBigInt(product.option),
-			variants: product.variants.map(variant => ({
+			variants: product.variants.map((variant) => ({
 				...variant,
 				option: convertPriceStringToBigInt(variant.option),
 			})),
@@ -474,7 +474,7 @@ export const getProductGallery = async (productId: number) => {
 }
 
 export type CrossSellProduct = ProductListing &
-	Pick<typeof productCrossSell.$inferSelect, 'order'>
+	Pick<typeof productCrossSell.$inferSelect, "order">
 
 export const getCrossSellProducts = async (
 	productId: number,
@@ -511,17 +511,17 @@ export const getCrossSellProducts = async (
 
 	const converted = convertDateFields(
 		camelcaseKeys(crossSells.rows, { deep: true }),
-		['updatedAt'],
+		["updatedAt"],
 	)
 
-	return converted.map(p => ({
+	return converted.map((p) => ({
 		...p,
 		option: convertPriceStringToBigInt(p.option),
 	}))
 }
 
 export type UpsellProduct = ProductListing &
-	Pick<typeof productUpsell.$inferSelect, 'order'>
+	Pick<typeof productUpsell.$inferSelect, "order">
 
 export const getUpsellProducts = async (
 	productId: number,
@@ -558,10 +558,10 @@ export const getUpsellProducts = async (
 
 	const converted = convertDateFields(
 		camelcaseKeys(upsells.rows, { deep: true }),
-		['updatedAt'],
+		["updatedAt"],
 	)
 
-	return converted.map(p => ({
+	return converted.map((p) => ({
 		...p,
 		option: convertPriceStringToBigInt(p.option),
 	}))
@@ -575,8 +575,8 @@ type InsertUpsell = typeof productUpsell.$inferInsert
 type InsertCrossSell = typeof productCrossSell.$inferInsert
 
 export const createProduct = async (
-	data: Omit<Product, 'id' | 'productOptionId' | 'seoId'> & {
-		option: Omit<ProductOption, 'id'>
+	data: Omit<Product, "id" | "productOptionId" | "seoId"> & {
+		option: Omit<ProductOption, "id">
 		categories: Category[]
 		tags: Tag[]
 		brands: Brand[]
@@ -585,7 +585,7 @@ export const createProduct = async (
 		gallery: Awaited<ReturnType<typeof getProductGallery>>
 		crossSellProductIds: ConnectCrossSellProducts
 		upsellProductIds: ConnectUpsellProducts
-		seo: Omit<Seo, 'autoGenerated' | 'id'>
+		seo: Omit<Seo, "autoGenerated" | "id">
 	},
 ) => {
 	const {
@@ -601,20 +601,20 @@ export const createProduct = async (
 		...productData
 	} = data
 
-	console.time('createProduct')
+	console.time("createProduct")
 
-	await dbEcommerce.transaction(async tx => {
+	await dbEcommerce.transaction(async (tx) => {
 		const promiseProductOption = async () => {
-			console.time('productOption insert')
+			console.time("productOption insert")
 			const rows = await tx
 				.insert(productOption)
 				.values({ ...option, id: undefined })
 				.returning()
-			console.timeEnd('productOption insert')
+			console.timeEnd("productOption insert")
 			return rows[0]
 		}
 		const promiseProductSeo = async () => {
-			console.time('productSeo insert')
+			console.time("productSeo insert")
 			const rows = await tx
 				.insert(seo)
 				.values({
@@ -624,7 +624,7 @@ export const createProduct = async (
 					route: null,
 				})
 				.returning()
-			console.timeEnd('productSeo insert')
+			console.timeEnd("productSeo insert")
 			return rows[0]
 		}
 
@@ -634,7 +634,7 @@ export const createProduct = async (
 		])
 
 		const promiseProduct = async () => {
-			console.time('product insert')
+			console.time("product insert")
 			const rows = await tx
 				.insert(product)
 				.values({
@@ -644,7 +644,7 @@ export const createProduct = async (
 					seoId: seoInserted.id,
 				})
 				.returning()
-			console.timeEnd('product insert')
+			console.timeEnd("product insert")
 			return rows[0]
 		}
 
@@ -666,7 +666,7 @@ export const createProduct = async (
 		])
 	})
 
-	console.timeEnd('createProduct')
+	console.timeEnd("createProduct")
 }
 
 export const updateProduct = async (
@@ -680,7 +680,7 @@ export const updateProduct = async (
 		gallery: Awaited<ReturnType<typeof getProductGallery>>
 		crossSellProductIds: ConnectCrossSellProducts
 		upsellProductIds: ConnectUpsellProducts
-		seo: Omit<Seo, 'autoGenerated' | 'createdAt' | 'updatedAt' | 'id'>
+		seo: Omit<Seo, "autoGenerated" | "createdAt" | "updatedAt" | "id">
 	},
 ) => {
 	const {
@@ -696,32 +696,32 @@ export const updateProduct = async (
 		...productData
 	} = data
 
-	console.time('updateProduct')
+	console.time("updateProduct")
 
-	await dbEcommerce.transaction(async tx => {
+	await dbEcommerce.transaction(async (tx) => {
 		const promiseProduct = async () => {
-			console.time('product')
+			console.time("product")
 			await tx
 				.update(product)
 				.set(productData)
 				.where(eq(product.id, productData.id))
-			console.timeEnd('product')
+			console.timeEnd("product")
 		}
 		const promiseProductOption = async () => {
-			console.time('productOption')
+			console.time("productOption")
 			await tx
 				.update(productOption)
 				.set(option)
 				.where(eq(productOption.id, option.id))
-			console.timeEnd('productOption')
+			console.timeEnd("productOption")
 		}
 		const promiseProductSeo = async () => {
-			console.time('productSeo')
+			console.time("productSeo")
 			await tx
 				.update(seo)
 				.set({ ...productData.seo, autoGenerated: true, route: null }) // seo will be query along with product
 				.where(eq(seo.id, productData.seoId))
-			console.timeEnd('productSeo')
+			console.timeEnd("productSeo")
 		}
 
 		await Promise.all([
@@ -739,7 +739,7 @@ export const updateProduct = async (
 		])
 	})
 
-	console.timeEnd('updateProduct')
+	console.timeEnd("updateProduct")
 }
 
 // ===== Helper Functions =====
@@ -761,7 +761,7 @@ async function connectProductCategories(
 	productId: number,
 	categories: Category[],
 ) {
-	console.time('connectProductCategories')
+	console.time("connectProductCategories")
 
 	// Delete existing associations
 	await tx
@@ -779,7 +779,7 @@ async function connectProductCategories(
 		)
 	}
 
-	console.timeEnd('connectProductCategories')
+	console.timeEnd("connectProductCategories")
 }
 
 /** Replace product tags */
@@ -788,7 +788,7 @@ async function connectProductTags(
 	productId: number,
 	tags: Tag[],
 ) {
-	console.time('connectProductTags')
+	console.time("connectProductTags")
 
 	// Delete existing associations
 	await tx.delete(productToTag).where(eq(productToTag.productId, productId))
@@ -804,7 +804,7 @@ async function connectProductTags(
 		)
 	}
 
-	console.timeEnd('connectProductTags')
+	console.timeEnd("connectProductTags")
 }
 
 /** Replace product brands */
@@ -813,7 +813,7 @@ async function connectProductBrands(
 	productId: number,
 	brands: Brand[],
 ) {
-	console.time('connectProductBrands')
+	console.time("connectProductBrands")
 
 	// Delete existing associations
 	await tx.delete(productToBrand).where(eq(productToBrand.productId, productId))
@@ -829,7 +829,7 @@ async function connectProductBrands(
 		)
 	}
 
-	console.timeEnd('connectProductBrands')
+	console.timeEnd("connectProductBrands")
 }
 
 /** Replace product variants */
@@ -838,7 +838,7 @@ async function connectProductVariants(
 	productId: number,
 	variants: ProductVariant[],
 ) {
-	console.time('connectProductVariants')
+	console.time("connectProductVariants")
 
 	const existingVariants = await tx.query.productVariant.findMany({
 		where: eq(productVariant.productId, productId),
@@ -846,10 +846,10 @@ async function connectProductVariants(
 
 	// Collect option IDs to delete (those not being reused)
 	// Use Set for O(1) lookup instead of O(n) array.includes()
-	const incomingOptionIds = new Set(variants.map(v => v.optionId))
+	const incomingOptionIds = new Set(variants.map((v) => v.optionId))
 	const optionIdsToDelete = existingVariants
-		.map(v => v.optionId)
-		.filter(id => !incomingOptionIds.has(id))
+		.map((v) => v.optionId)
+		.filter((id) => !incomingOptionIds.has(id))
 
 	// Delete orphaned options
 	if (optionIdsToDelete.length > 0) {
@@ -864,7 +864,7 @@ async function connectProductVariants(
 		.from(productOption)
 		.where(inArray(productOption.id, Array.from(incomingOptionIds)))
 
-	const existingOptionIds = new Set(existingOptions.map(o => o.id))
+	const existingOptionIds = new Set(existingOptions.map((o) => o.id))
 
 	// Classify and prevent duplicate: 1. toInsert (bulk), 2. toUpdate (loop)
 	const oUpdateMap = new Map<number, ProductOption>()
@@ -890,7 +890,7 @@ async function connectProductVariants(
 	if (optionsToInsert.length > 0) {
 		const inserted = await tx
 			.insert(productOption)
-			.values(optionsToInsert.map(opt => ({ ...opt, id: undefined })))
+			.values(optionsToInsert.map((opt) => ({ ...opt, id: undefined })))
 			.returning({ id: productOption.id })
 
 		optionsToInsert.forEach((opt, index) => {
@@ -899,17 +899,17 @@ async function connectProductVariants(
 	}
 
 	// Update optionId in variants to match inserted options
-	const incomingVariants = variants.map(variant => {
+	const incomingVariants = variants.map((variant) => {
 		return {
 			...variant,
 			optionId: insertedOptionIds.get(variant.optionId) ?? variant.optionId,
 		}
 	})
 
-	const incomingVariantIds = new Set(incomingVariants.map(v => v.id))
+	const incomingVariantIds = new Set(incomingVariants.map((v) => v.id))
 	const variantIdsToDelete = existingVariants
-		.map(v => v.id)
-		.filter(id => !incomingVariantIds.has(id))
+		.map((v) => v.id)
+		.filter((id) => !incomingVariantIds.has(id))
 
 	// Delete orphaned variants
 	if (variantIdsToDelete.length > 0) {
@@ -919,7 +919,7 @@ async function connectProductVariants(
 	}
 
 	// Update/Insert variants
-	const existingVariantIds = new Set(existingVariants.map(v => v.id))
+	const existingVariantIds = new Set(existingVariants.map((v) => v.id))
 
 	// Classify and prevent duplicate: 1. toInsert (bulk), 2. toUpdate (loop)
 	const vUpdateMap = new Map<number, ProductVariant>()
@@ -946,10 +946,10 @@ async function connectProductVariants(
 	if (variantsToInsert.length > 0) {
 		await tx
 			.insert(productVariant)
-			.values(variantsToInsert.map(v => ({ ...v, id: undefined })))
+			.values(variantsToInsert.map((v) => ({ ...v, id: undefined })))
 	}
 
-	console.timeEnd('connectProductVariants')
+	console.timeEnd("connectProductVariants")
 }
 
 /** Replace product attributes */
@@ -958,7 +958,7 @@ async function connectProductAttributes(
 	productId: number,
 	attributes: ProductAttribute[],
 ) {
-	console.time('connectProductAttributes')
+	console.time("connectProductAttributes")
 
 	// Delete existing attributes
 	await tx
@@ -969,7 +969,7 @@ async function connectProductAttributes(
 	if (attributes.length > 0) {
 		await tx.insert(productAttribute).values(
 			attributes.map(
-				attr =>
+				(attr) =>
 					({
 						productId,
 						name: attr.name,
@@ -983,7 +983,7 @@ async function connectProductAttributes(
 		)
 	}
 
-	console.timeEnd('connectProductAttributes')
+	console.timeEnd("connectProductAttributes")
 }
 
 /** Replace product gallery images */
@@ -992,7 +992,7 @@ async function connectProductGallery(
 	productId: number,
 	gallery: Awaited<ReturnType<typeof getProductGallery>>,
 ) {
-	console.time('connectProductGallery')
+	console.time("connectProductGallery")
 
 	// Delete existing associations
 	await tx.delete(productGallery).where(eq(productGallery.productId, productId))
@@ -1002,12 +1002,12 @@ async function connectProductGallery(
 		await tx.insert(productGallery).values(gallery)
 	}
 
-	console.timeEnd('connectProductGallery')
+	console.timeEnd("connectProductGallery")
 }
 
 export type ConnectCrossSellProducts = Pick<
 	InsertCrossSell,
-	'crossSellProductId' | 'order'
+	"crossSellProductId" | "order"
 >[]
 
 /** Replace cross-sell products */
@@ -1016,7 +1016,7 @@ async function connectCrossSellProducts(
 	productId: number,
 	values: ConnectCrossSellProducts,
 ) {
-	console.time('connectCrossSellProducts')
+	console.time("connectCrossSellProducts")
 
 	// Delete existing associations
 	await tx
@@ -1027,15 +1027,15 @@ async function connectCrossSellProducts(
 	if (values.length > 0) {
 		await tx
 			.insert(productCrossSell)
-			.values(values.map(v => ({ ...v, productId })))
+			.values(values.map((v) => ({ ...v, productId })))
 	}
 
-	console.timeEnd('connectCrossSellProducts')
+	console.timeEnd("connectCrossSellProducts")
 }
 
 export type ConnectUpsellProducts = Pick<
 	InsertUpsell,
-	'upsellProductId' | 'order'
+	"upsellProductId" | "order"
 >[]
 
 /** Replace upsell products */
@@ -1044,7 +1044,7 @@ async function connectUpsellProducts(
 	productId: number,
 	values: ConnectUpsellProducts,
 ) {
-	console.time('connectUpsellProducts')
+	console.time("connectUpsellProducts")
 
 	// Delete existing associations
 	await tx.delete(productUpsell).where(eq(productUpsell.productId, productId))
@@ -1053,10 +1053,10 @@ async function connectUpsellProducts(
 	if (values.length > 0) {
 		await tx
 			.insert(productUpsell)
-			.values(values.map(v => ({ ...v, productId })))
+			.values(values.map((v) => ({ ...v, productId })))
 	}
 
-	console.timeEnd('connectUpsellProducts')
+	console.timeEnd("connectUpsellProducts")
 }
 
 type DeleteProductResult = {
@@ -1081,7 +1081,7 @@ export async function deleteProducts(
 		return result
 	}
 
-	await dbEcommerce.transaction(async tx => {
+	await dbEcommerce.transaction(async (tx) => {
 		// 1. Query existing products
 		const existingProducts = await tx
 			.select({
@@ -1094,8 +1094,8 @@ export async function deleteProducts(
 			.where(inArray(product.id, productIds))
 
 		// 2. Collect not found IDs
-		const foundIds = existingProducts.map(p => p.id)
-		result.notFound = productIds.filter(id => !foundIds.includes(id))
+		const foundIds = existingProducts.map((p) => p.id)
+		result.notFound = productIds.filter((id) => !foundIds.includes(id))
 
 		// 3. Early return if no existing products
 		if (existingProducts.length === 0) {
@@ -1151,19 +1151,19 @@ export async function moveProductsToTrash(
 	try {
 		const deletedProducts = await dbEcommerce
 			.update(product)
-			.set({ status: 'TRASHED', deletedAt: new Date() })
+			.set({ status: "TRASHED", deletedAt: new Date() })
 			.where(inArray(product.id, productIds))
 			.returning({ id: product.id, name: product.name })
 
 		result.deleted = deletedProducts
 		result.notFound = productIds.filter(
-			id => !deletedProducts.some(p => p.id === id),
+			(id) => !deletedProducts.some((p) => p.id === id),
 		)
 		result.success = result.deleted.length > 0
 	} catch (error) {
 		const errorResult = handleError(error, undefined, {})
 		// If the bulk delete fails, try deleting one by one to collect errors
-		productIds.forEach(id => {
+		productIds.forEach((id) => {
 			result.errors.push({
 				id,
 				error: errorResult.err,

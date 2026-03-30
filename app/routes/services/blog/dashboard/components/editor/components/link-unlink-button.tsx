@@ -1,29 +1,29 @@
-import { useState } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
+import { useState } from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 
-import { useEditorState } from '@tiptap/react'
-import { atom, useAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { Circle, ExternalLink, Link, Trash } from 'lucide-react'
+import { useEditorState } from "@tiptap/react"
+import { atom, useAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
+import { Circle, ExternalLink, Link, Trash } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from '~/components/ui/popover'
-import { Skeleton } from '~/components/ui/skeleton'
+} from "~/components/ui/popover"
+import { Skeleton } from "~/components/ui/skeleton"
 
-import { editorAtom } from '../../../context'
-import { createLinkUnlinkOption } from '../edit-options'
-import { TooltipWrapper } from './tooltip-wrapper'
+import { editorAtom } from "../../../context"
+import { createLinkUnlinkOption } from "../edit-options"
+import { TooltipWrapper } from "./tooltip-wrapper"
 
 export const isLinkUnlinkOpenAtom = atom(false)
 
 export const LinkUnlinkButtons = () => {
 	const LINK_UNKINK_SHORTCUT = createLinkUnlinkOption().shortcut
-	const [linkInput, setLinkInput] = useState('')
+	const [linkInput, setLinkInput] = useState("")
 
 	useHydrateAtoms([[isLinkUnlinkOpenAtom, false]])
 	const [editor] = useAtom(editorAtom)
@@ -35,7 +35,7 @@ export const LinkUnlinkButtons = () => {
 	 */
 	const linkStates = useEditorState({
 		editor,
-		selector: ctx => {
+		selector: (ctx) => {
 			const { editor } = ctx
 			if (!editor) return
 
@@ -52,8 +52,8 @@ export const LinkUnlinkButtons = () => {
 	// Open link/unlink input
 	useHotkeys(
 		LINK_UNKINK_SHORTCUT,
-		e => {
-			setIsLinkUnlinkOpen(prev => !prev)
+		(e) => {
+			setIsLinkUnlinkOpen((prev) => !prev)
 			e.preventDefault()
 		},
 		{
@@ -73,9 +73,9 @@ export const LinkUnlinkButtons = () => {
 			editor.chain().focus().setLink({ href: linkInput }).run()
 		} catch (error) {
 			if (error instanceof Error) {
-				console.error('Error unsetting link:', error.message)
+				console.error("Error unsetting link:", error.message)
 			} else {
-				console.error('Unexpected error unsetting link:', error)
+				console.error("Unexpected error unsetting link:", error)
 			}
 		}
 	}
@@ -85,11 +85,11 @@ export const LinkUnlinkButtons = () => {
 	const handleOpenLink = () => {
 		if (!linkInput) return
 
-		window.open(linkInput, '_blank', 'noopener,noreferrer')
+		window.open(linkInput, "_blank", "noopener,noreferrer")
 	}
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {
-		if (event.key === 'Enter') {
+		if (event.key === "Enter") {
 			event.preventDefault()
 			setLink()
 		}
@@ -98,13 +98,13 @@ export const LinkUnlinkButtons = () => {
 	return (
 		<Popover
 			open={isLinkUnlinkOpen}
-			onOpenChange={open => {
+			onOpenChange={(open) => {
 				setIsLinkUnlinkOpen(open)
 				if (!editor) return
 
 				if (open) {
-					const { href } = editor.getAttributes('link')
-					setLinkInput(href || '')
+					const { href } = editor.getAttributes("link")
+					setLinkInput(href || "")
 				} else {
 					// Focus editor when closing the menu
 					editor.commands.focus()
@@ -118,9 +118,9 @@ export const LinkUnlinkButtons = () => {
 					<PopoverTrigger
 						render={
 							<Button
-								size={'icon'}
-								variant={'ghost'}
-								className={`${isActive ? 'bg-accent text-accent-foreground' : ''}`}
+								size={"icon"}
+								variant={"ghost"}
+								className={`${isActive ? "bg-accent text-accent-foreground" : ""}`}
 								disabled={!canRun}
 							>
 								<Link size={14} />
@@ -137,7 +137,7 @@ export const LinkUnlinkButtons = () => {
 						placeholder="https://example.com"
 						className="rounded-full border-2 pr-8 focus:ring-2 focus:ring-offset-2"
 						value={linkInput}
-						onChange={e => setLinkInput(e.target.value)}
+						onChange={(e) => setLinkInput(e.target.value)}
 						onKeyDown={handleKeyDown}
 					/>
 					<Button
@@ -161,7 +161,7 @@ export const LinkUnlinkButtons = () => {
 					render={
 						<Button
 							variant="ghost"
-							size={'icon'}
+							size={"icon"}
 							className="rounded-full"
 							onClick={unsetLink}
 						>
@@ -174,7 +174,7 @@ export const LinkUnlinkButtons = () => {
 					render={
 						<Button
 							variant="ghost"
-							size={'icon'}
+							size={"icon"}
 							className="rounded-full"
 							onClick={handleOpenLink}
 						>

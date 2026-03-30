@@ -3,7 +3,7 @@
  * This is a catch-all route, not a resource route nor a redirect route.
  */
 
-import type { Route } from './+types/route'
+import type { Route } from "./+types/route"
 
 export function loader({ request }: Route.LoaderArgs) {
 	const url = new URL(request.url)

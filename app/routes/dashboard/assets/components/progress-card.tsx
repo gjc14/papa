@@ -1,19 +1,19 @@
 /**
  * Display progress cards for file uploads. Tracking upload progress.
  */
-import { useState } from 'react'
+import { useState } from "react"
 
-import { Check, ChevronsUpDown, X } from 'lucide-react'
+import { Check, ChevronsUpDown, X } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from '~/components/ui/collapsible'
-import { AnimatedCircularProgressBar } from '~/components/ui/xui/animated-circular-progress-bar'
+} from "~/components/ui/collapsible"
+import { AnimatedCircularProgressBar } from "~/components/ui/xui/animated-circular-progress-bar"
 
-import type { UploadState } from '../utils'
+import type { UploadState } from "../utils"
 
 export const ProgressCard = ({
 	uploadProgress,
@@ -34,7 +34,7 @@ export const ProgressCard = ({
 		<Collapsible
 			className="absolute right-3 bottom-3 space-y-2 md:w-[300px]"
 			defaultOpen
-			onClick={e => e.stopPropagation()}
+			onClick={(e) => e.stopPropagation()}
 		>
 			{/* Upload progress card */}
 			<CollapsibleTrigger
@@ -43,11 +43,11 @@ export const ProgressCard = ({
 						variant="ghost"
 						size="sm"
 						className="bg-muted flex w-full items-center justify-between space-x-4 border px-4 py-0"
-						onClick={e => e.stopPropagation()}
+						onClick={(e) => e.stopPropagation()}
 					>
 						<h4 className="text-sm font-semibold">
-							{visibleUploadProgress.length}{' '}
-							{visibleUploadProgress.length > 1 ? 'files' : 'file'} created
+							{visibleUploadProgress.length}{" "}
+							{visibleUploadProgress.length > 1 ? "files" : "file"} created
 						</h4>
 						<ChevronsUpDown className="h-4 w-4" />
 						<span className="sr-only">Toggle</span>
@@ -70,10 +70,10 @@ export const ProgressCard = ({
 									title={`${file}`}
 								>
 									<span className="mr-1 truncate text-sm font-medium">
-										{file.name.split('.')[0]}
+										{file.name.split(".")[0]}
 									</span>
 									<span className="shrink-0 text-sm font-medium">
-										.{file.name.split('.')[1]}
+										.{file.name.split(".")[1]}
 									</span>
 								</div>
 
@@ -86,14 +86,14 @@ export const ProgressCard = ({
 							</div>
 
 							<div className="flex shrink-0 items-center">
-								{status === 'completed' ? (
+								{status === "completed" ? (
 									<Button
 										variant="outline"
 										size="icon"
 										className="border-primary group h-5 w-5 rounded-full border-0 bg-lime-500 p-0 transition-colors duration-200 hover:border hover:bg-transparent dark:bg-lime-600 dark:hover:bg-transparent"
-										onClick={e => {
+										onClick={(e) => {
 											e.stopPropagation()
-											setHiddenProgressCards(prev => {
+											setHiddenProgressCards((prev) => {
 												const newSet = new Set(prev)
 												newSet.add(key)
 												return newSet
@@ -103,19 +103,19 @@ export const ProgressCard = ({
 										<Check className="h-3 w-3 group-hover:hidden" />
 										<X className="hidden h-3 w-3 group-hover:block" />
 										<span className="sr-only">
-											{status === 'completed'
-												? 'Mark as incomplete'
-												: 'Mark as complete'}
+											{status === "completed"
+												? "Mark as incomplete"
+												: "Mark as complete"}
 										</span>
 									</Button>
-								) : status === 'error' ? (
+								) : status === "error" ? (
 									<Button
 										variant="outline"
 										size="icon"
 										className="border-primary group h-5 w-5 rounded-full border-0 bg-red-500 p-0 transition-colors duration-200 hover:border hover:bg-transparent dark:bg-red-600 dark:hover:bg-transparent"
-										onClick={e => {
+										onClick={(e) => {
 											e.stopPropagation()
-											setHiddenProgressCards(prev => {
+											setHiddenProgressCards((prev) => {
 												const newSet = new Set(prev)
 												newSet.add(key)
 												return newSet

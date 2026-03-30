@@ -1,4 +1,4 @@
-export const Youtube = (props: React.ComponentProps<'svg'>) => {
+export const Youtube = (props: React.ComponentProps<"svg">) => {
 	return (
 		<svg
 			role="img"

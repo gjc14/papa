@@ -1,15 +1,12 @@
-import { useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useState } from "react"
+import { useFetcher } from "react-router"
 
-import { ZodError } from 'zod'
+import { ZodError } from "zod"
 
-import { useFetcherNotification } from '~/hooks/use-notification'
-import type { FileMetadata } from '~/lib/db/schema'
-import { isActionSuccess } from '~/lib/utils'
-import {
-	presignUrlResponseSchema,
-	type PresignRequest,
-} from './schema'
+import { useFetcherNotification } from "~/hooks/use-notification"
+import type { FileMetadata } from "~/lib/db/schema"
+import { isActionSuccess } from "~/lib/utils"
+import { presignUrlResponseSchema, type PresignRequest } from "./schema"
 
 export type FileWithFileMetadata = FileMetadata & { file: File }
 
@@ -17,19 +14,19 @@ export type FileWithFileMetadata = FileMetadata & { file: File }
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types#see_also
  */
 export const MIMETypes = [
-	'image',
-	'video',
-	'audio',
-	'application',
-	'model',
-	'font',
-	'text',
+	"image",
+	"video",
+	"audio",
+	"application",
+	"model",
+	"font",
+	"text",
 ] as const
 
 export const isMIMEType = (
 	type: string,
 ): type is (typeof MIMETypes)[number] => {
-	return MIMETypes.some(mimeType => type.startsWith(mimeType))
+	return MIMETypes.some((mimeType) => type.startsWith(mimeType))
 }
 
 /**
@@ -40,7 +37,7 @@ export const isMIMEType = (
  * @returns the key (path) of the file
  */
 export const generateStorageKey = (file: File, userId: string) => {
-	const fileType = file.type.split('/')[0]
+	const fileType = file.type.split("/")[0]
 	const uuid = crypto.randomUUID()
 	return `${userId}/assets/${fileType}/${uuid}`
 }
@@ -48,13 +45,13 @@ export const generateStorageKey = (file: File, userId: string) => {
 // Generate SHA-256 checksum for a file
 async function generateChecksum(file: File): Promise<string> {
 	const arrayBuffer = await file.arrayBuffer()
-	const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer)
+	const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer)
 	const hashArray = Array.from(new Uint8Array(hashBuffer))
-	const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("")
 	return hashHex
 }
 
-export const assetResourceRoute = '/dashboard/assets/resource'
+export const assetResourceRoute = "/dashboard/assets/resource"
 
 export type FileUploading = { file: File; key: string }
 
@@ -82,10 +79,10 @@ export const fetchPresignedPutUrls = async (
 		const fileMetadata = await Promise.all(fileMetadataPromise)
 
 		const postPresignedUrl = await fetch(assetResourceRoute, {
-			method: 'POST',
+			method: "POST",
 			body: JSON.stringify(fileMetadata),
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type": "application/json",
 			},
 		})
 
@@ -103,8 +100,8 @@ export const fetchPresignedPutUrls = async (
 
 		// Update files with presigned URLs, and new id, updatedAt
 		const updatedFiles = files.map(({ file, key }) => {
-			const matched = presignedUrls.find(url => url.metadata.key === key)
-			if (!matched) throw new Error('Presign data not found')
+			const matched = presignedUrls.find((url) => url.metadata.key === key)
+			if (!matched) throw new Error("Presign data not found")
 			const { metadata, presignedUrl } = matched
 			return {
 				file,
@@ -122,7 +119,7 @@ export const fetchPresignedPutUrls = async (
 type UploadProgress = {
 	file: File
 	progress: number
-	status: 'pending' | 'uploading' | 'completed' | 'error'
+	status: "pending" | "uploading" | "completed" | "error"
 	error?: string
 }
 export type UploadState = {
@@ -141,8 +138,8 @@ export const useFileUpload = () => {
 	const handleDelete = (key: string) => {
 		fetcher.submit(JSON.stringify({ key }), {
 			action: assetResourceRoute,
-			method: 'DELETE',
-			encType: 'application/json',
+			method: "DELETE",
+			encType: "application/json",
 		})
 	}
 
@@ -153,15 +150,15 @@ export const useFileUpload = () => {
 			const xhr = new XMLHttpRequest()
 
 			// Track upload progress
-			xhr.upload.onprogress = event => {
+			xhr.upload.onprogress = (event) => {
 				if (event.lengthComputable) {
 					const progress = Math.round((event.loaded / event.total) * 98)
-					setUploadProgress(prev => ({
+					setUploadProgress((prev) => ({
 						...prev,
 						[file.key]: {
 							...prev[file.key],
 							progress,
-							status: 'uploading',
+							status: "uploading",
 						},
 					}))
 				}
@@ -170,22 +167,22 @@ export const useFileUpload = () => {
 			// Handle successful upload
 			xhr.onload = () => {
 				if (xhr.status >= 200 && xhr.status < 300) {
-					setUploadProgress(prev => ({
+					setUploadProgress((prev) => ({
 						...prev,
 						[file.key]: {
 							...prev[file.key],
 							progress: 100,
-							status: 'completed',
+							status: "completed",
 						},
 					}))
 					resolve()
 				} else {
 					const error = `Upload failed with status ${xhr.status}`
-					setUploadProgress(prev => ({
+					setUploadProgress((prev) => ({
 						...prev,
 						[file.key]: {
 							...prev[file.key],
-							status: 'error',
+							status: "error",
 							error,
 						},
 					}))
@@ -196,12 +193,12 @@ export const useFileUpload = () => {
 
 			// Handle network errors
 			xhr.onerror = () => {
-				const error = 'Network error occurred'
-				setUploadProgress(prev => ({
+				const error = "Network error occurred"
+				setUploadProgress((prev) => ({
 					...prev,
 					[file.key]: {
 						...prev[file.key],
-						status: 'error',
+						status: "error",
 						error,
 					},
 				}))
@@ -210,10 +207,10 @@ export const useFileUpload = () => {
 			}
 
 			// Open connection
-			xhr.open('PUT', file.presignedUrl)
+			xhr.open("PUT", file.presignedUrl)
 
 			// Set headers for CORS and content
-			xhr.setRequestHeader('Content-Type', file.file.type)
+			xhr.setRequestHeader("Content-Type", file.file.type)
 
 			// Important: Set withCredentials to false for CORS with presigned URLs
 			xhr.withCredentials = false
@@ -237,19 +234,21 @@ export const useFileUpload = () => {
 			} else {
 				console.error(`Upload failed for ${file.name}`, error)
 
-				let errorMessage = 'Upload failed'
+				let errorMessage = "Upload failed"
 				if (error instanceof ZodError) {
-					const errorMessages = error.errors.map(err => err.message).join('; ')
+					const errorMessages = error.errors
+						.map((err) => err.message)
+						.join("; ")
 					errorMessage = `Validation error: ${errorMessages}.`
 				} else if (error instanceof Error) {
 					errorMessage = error.message
 				}
 
-				setUploadProgress(prev => ({
+				setUploadProgress((prev) => ({
 					...prev,
 					[file.key]: {
 						...prev[file.key],
-						status: 'error',
+						status: "error",
 						error: errorMessage,
 					},
 				}))
@@ -262,10 +261,12 @@ export const useFileUpload = () => {
 	) => {
 		try {
 			// Upload all files simultaneously
-			const uploadPromises = files.map(file => uploadSingleFileWithRetry(file))
+			const uploadPromises = files.map((file) =>
+				uploadSingleFileWithRetry(file),
+			)
 			await Promise.allSettled(uploadPromises)
 		} catch (error) {
-			console.error('Upload failed:', error)
+			console.error("Upload failed:", error)
 		}
 	}
 
@@ -279,7 +280,7 @@ export const useFileUpload = () => {
 		filesInput: File[],
 		ownerId: string,
 	): FileUploading[] => {
-		return filesInput.map(file => ({
+		return filesInput.map((file) => ({
 			file,
 			key: generateStorageKey(file, ownerId),
 		}))
@@ -291,14 +292,14 @@ export const useFileUpload = () => {
 	 */
 	const initUploadProcess = (newFiles: FileUploading[]) => {
 		// Initialize progress state for files (showing pending status)
-		setUploadProgress(prev => {
+		setUploadProgress((prev) => {
 			const initial = newFiles.reduce(
 				(acc, { file, key }) => ({
 					...acc,
 					[key]: {
 						file: file,
 						progress: 0,
-						status: 'pending' as const,
+						status: "pending" as const,
 					},
 				}),
 				{},
@@ -331,7 +332,7 @@ export const useFileUpload = () => {
 			// Now fetch presigned URLs (files will show as "pending" during this time), then upload
 			filesWithPresignedUrl = await fetchPresignedPutUrls(preparedFiles)
 		} catch (error) {
-			console.error('Error fetching presigned URLs:', error)
+			console.error("Error fetching presigned URLs:", error)
 			return []
 		}
 

@@ -1,7 +1,7 @@
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path'
+import { mkdir, writeFile } from "fs/promises"
+import { join } from "path"
 
-import { askInput } from './utils'
+import { askInput } from "./utils"
 
 const createPaths = (websiteName: string) => {
 	const serviceRoutesPath = join(
@@ -139,7 +139,7 @@ export default function About() {
 }
 
 try {
-	const newWebsite = await askInput('Create new website', 'my-website')
+	const newWebsite = await askInput("Create new website", "my-website")
 
 	// Create directories
 	await mkdir(join(process.cwd(), `app/routes/services/${newWebsite}`), {
@@ -161,15 +161,15 @@ try {
 		`🎉 Website [${newWebsite}] created successfully!
 
 		+ 4 files created:
-		1️⃣ ${serviceRoutesPath.split('app/routes')[1]}
-		2️⃣ ${layoutPath.split('app/routes')[1]}
-		3️⃣ ${indexPath.split('app/routes')[1]}
-		4️⃣ ${aboutPath.split('app/routes')[1]}
+		1️⃣ ${serviceRoutesPath.split("app/routes")[1]}
+		2️⃣ ${layoutPath.split("app/routes")[1]}
+		3️⃣ ${indexPath.split("app/routes")[1]}
+		4️⃣ ${aboutPath.split("app/routes")[1]}
         
         -> Navigate to '/${newWebsite}' to see the new website
         -> Navigate to '/${newWebsite}/about' to see the about page
-        `.replace(/^[ \t]+/gm, ''),
+        `.replace(/^[ \t]+/gm, ""),
 	)
 } catch (err) {
-	console.error('Error creating service files:', err)
+	console.error("Error creating service files:", err)
 }

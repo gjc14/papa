@@ -2,20 +2,20 @@
  * This is a post display component for a blog post.
  * It make the page layout, including the title, meta information, and content.
  */
-import 'highlight.js/styles/base16/framer.min.css'
+import "highlight.js/styles/base16/framer.min.css"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react"
 
-import { generateHTML } from '@tiptap/html'
-import hljs from 'highlight.js'
+import { generateHTML } from "@tiptap/html"
+import hljs from "highlight.js"
 
-import { Spinner } from '~/components/ui/spinner'
-import { ExtensionKit } from '~/components/editor/extension-kit'
-import { useHydrated } from '~/hooks/use-hydrated'
+import { Spinner } from "~/components/ui/spinner"
+import { ExtensionKit } from "~/components/editor/extension-kit"
+import { useHydrated } from "~/hooks/use-hydrated"
 
-import type { PostWithRelations } from '../../../lib/db/post.server'
-import { PostFooter } from './post-footer'
-import { PostMeta } from './post-meta'
+import type { PostWithRelations } from "../../../lib/db/post.server"
+import { PostFooter } from "./post-footer"
+import { PostMeta } from "./post-meta"
 
 export const Post = ({
 	post,
@@ -44,13 +44,13 @@ export const Post = ({
 				...ExtensionKit({ openOnClick: true }),
 			])
 
-			const tempDiv = document.createElement('div')
+			const tempDiv = document.createElement("div")
 			tempDiv.innerHTML = generatedHtml
 
-			const codeBlocks = tempDiv.querySelectorAll('pre code')
-			codeBlocks.forEach(block => {
+			const codeBlocks = tempDiv.querySelectorAll("pre code")
+			codeBlocks.forEach((block) => {
 				hljs.highlightElement(block as HTMLElement)
-				block.classList.remove('hljs') // Remove the default hljs class to remove background-color
+				block.classList.remove("hljs") // Remove the default hljs class to remove background-color
 			})
 
 			setHtml(tempDiv.innerHTML)
@@ -70,7 +70,7 @@ export const Post = ({
 						name="title"
 						placeholder={placeholder}
 						value={post.title}
-						onChange={e => onTitleChange?.(e.target.value)}
+						onChange={(e) => onTitleChange?.(e.target.value)}
 						className="block field-sizing-content min-h-0 w-full resize-none border-none bg-transparent text-3xl leading-normal font-bold tracking-tight outline-none md:text-4xl md:leading-tight"
 					/>
 				) : (
@@ -102,16 +102,16 @@ export const Post = ({
 
 function getRandomTitlePlaceholder() {
 	const titles = [
-		'This Cuisine is...',
-		'Future of Finance...',
-		'New Innovation in...',
-		'Next Month We Expect...',
-		'My Journey...',
-		'Personal Growth...',
-		'New Bug Found...',
-		'How to Turn on the Light...',
-		'Next Typhoon Comes in...',
-		'Doraemon is AI...',
+		"This Cuisine is...",
+		"Future of Finance...",
+		"New Innovation in...",
+		"Next Month We Expect...",
+		"My Journey...",
+		"Personal Growth...",
+		"New Bug Found...",
+		"How to Turn on the Light...",
+		"Next Typhoon Comes in...",
+		"Doraemon is AI...",
 	]
 	const randomIndex = Math.floor(Math.random() * titles.length)
 	return titles[randomIndex]

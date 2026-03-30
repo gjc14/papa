@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect } from "react"
 
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from "jotai"
 
 import {
 	crossSellProductsAtom,
@@ -11,14 +11,14 @@ import {
 	selectedVariantAttributesAtom,
 	storeConfigAtom,
 	upsellProductsAtom,
-} from '../context'
+} from "../context"
 import {
 	getAttributeValueImage,
 	getIsAttributeValueAvailable,
 	getVariantAttributes,
-} from '../utils/attributes'
-import { getPricing } from '../utils/price'
-import { getHasVariants, getSelectedVariant } from '../utils/variants'
+} from "../utils/attributes"
+import { getPricing } from "../utils/price"
+import { getHasVariants, getSelectedVariant } from "../utils/variants"
 
 /**
  * Hook to get product page context
@@ -70,7 +70,7 @@ export const useProductContext = () => {
 	// ========================================
 	/** Handle attribute selection */
 	const handleAttributeSelect = (attributeName: string, value: string) => {
-		setSelectedVariantAttributes(prev => {
+		setSelectedVariantAttributes((prev) => {
 			const newSelection = { ...prev }
 			if (newSelection[attributeName] === value) {
 				delete newSelection[attributeName] // Deselect if clicking the same value

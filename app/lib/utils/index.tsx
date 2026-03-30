@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -12,7 +12,7 @@ export type ActionResponse = {
 } & Record<string, unknown>
 
 export const isActionSuccess = (fetcherData: unknown): boolean => {
-	if (fetcherData && typeof fetcherData === 'object' && 'err' in fetcherData) {
+	if (fetcherData && typeof fetcherData === "object" && "err" in fetcherData) {
 		return false
 	}
 	return true
@@ -28,12 +28,12 @@ export const isValidEmail = (email: string) => {
 }
 
 export const defaultValidUrlProtocols = [
-	'http:',
-	'https:',
-	'mailto:',
-	'tel:',
-	'sms:',
-	'ftp:',
+	"http:",
+	"https:",
+	"mailto:",
+	"tel:",
+	"sms:",
+	"ftp:",
 ]
 export function isValidUrl(string: string, allowedProtocols?: string[]) {
 	let url

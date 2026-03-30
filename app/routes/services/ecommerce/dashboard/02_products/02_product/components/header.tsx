@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Link, useFetcher, useNavigate } from 'react-router'
+import { useCallback, useEffect, useState } from "react"
+import { Link, useFetcher, useNavigate } from "react-router"
 
-import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom, useStore } from "jotai"
 import {
 	Check,
 	ExternalLink,
@@ -10,9 +10,9 @@ import {
 	RefreshCcw,
 	Trash,
 	X,
-} from 'lucide-react'
+} from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,21 +21,21 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
-import { Input } from '~/components/ui/input'
+} from "~/components/ui/dropdown-menu"
+import { Input } from "~/components/ui/input"
 import {
 	Item,
 	ItemActions,
 	ItemContent,
 	ItemDescription,
 	ItemTitle,
-} from '~/components/ui/item'
-import { Spinner } from '~/components/ui/spinner'
-import { useFetcherNotification } from '~/hooks/use-notification'
+} from "~/components/ui/item"
+import { Spinner } from "~/components/ui/spinner"
+import { useFetcherNotification } from "~/hooks/use-notification"
 import type {
 	ConnectCrossSellProducts,
 	ConnectUpsellProducts,
-} from '~/routes/services/ecommerce/lib/db/product.server'
+} from "~/routes/services/ecommerce/lib/db/product.server"
 
 import {
 	crossSellProductsAtom,
@@ -43,18 +43,18 @@ import {
 	productGalleryAtom,
 	storeConfigAtom,
 	upsellProductsAtom,
-} from '../../../../store/product/context'
+} from "../../../../store/product/context"
 import {
 	isMovingToTrashAtom,
 	isResetAlertOpenAtom,
 	isSavingAtom,
 	isToTrashAlertOpenAtom,
-} from '../context'
-import type { action } from '../resource'
+} from "../context"
+import type { action } from "../resource"
 
-const productIdAtom = atom(get => get(productAtom)?.id ?? null)
-const productNameAtom = atom(get => get(productAtom)?.name ?? null)
-const productSlugAtom = atom(get => get(productAtom)?.slug ?? null)
+const productIdAtom = atom((get) => get(productAtom)?.id ?? null)
+const productNameAtom = atom((get) => get(productAtom)?.name ?? null)
+const productSlugAtom = atom((get) => get(productAtom)?.slug ?? null)
 
 export function ProductEditPageHeader() {
 	const store = useStore()
@@ -70,7 +70,7 @@ export function ProductEditPageHeader() {
 
 	const isNew = productId === -1
 
-	const [slugInput, setSlugInput] = useState(productSlug || '')
+	const [slugInput, setSlugInput] = useState(productSlug || "")
 	const [editSlug, setEditSlug] = useState(false)
 
 	const fetcher = useFetcher<typeof action>()
@@ -109,12 +109,12 @@ export function ProductEditPageHeader() {
 					order: i,
 				})) satisfies ConnectUpsellProducts,
 			},
-			(_, v) => (typeof v === 'bigint' ? v.toString() : v),
+			(_, v) => (typeof v === "bigint" ? v.toString() : v),
 		)
 		fetcher.submit(payload, {
-			method: isNew ? 'POST' : 'PUT',
-			action: 'resource', // :productSlug/resource route is where the action defined
-			encType: 'application/json',
+			method: isNew ? "POST" : "PUT",
+			action: "resource", // :productSlug/resource route is where the action defined
+			encType: "application/json",
 		})
 	}, [store, isNew])
 
@@ -125,7 +125,7 @@ export function ProductEditPageHeader() {
 			<ItemContent>
 				<ItemTitle className="truncate whitespace-nowrap">
 					<span className="text-muted-foreground">
-						({!isNew ? 'Edit' : 'Create'}){' '}
+						({!isNew ? "Edit" : "Create"}){" "}
 					</span>
 					{productName}
 					{!isNew && (
@@ -143,14 +143,14 @@ export function ProductEditPageHeader() {
 								type="text"
 								placeholder="enter slug..."
 								value={slugInput}
-								onChange={e => setSlugInput(e.target.value)}
+								onChange={(e) => setSlugInput(e.target.value)}
 								autoFocus
 							/>
 							<Button
 								size="icon"
 								className="size-6"
 								onClick={() => {
-									setProduct(pv => (pv ? { ...pv, slug: slugInput } : pv))
+									setProduct((pv) => (pv ? { ...pv, slug: slugInput } : pv))
 									setEditSlug(false)
 								}}
 							>
@@ -210,12 +210,12 @@ export function ProductEditPageHeader() {
 					className="flex-1"
 				>
 					{isSaving && <Spinner />}
-					{isNew ? 'Create Product' : 'Save Product'}
+					{isNew ? "Create Product" : "Save Product"}
 				</Button>
 				<DropdownMenu>
 					<DropdownMenuTrigger
 						render={
-							<Button variant={'outline'} size={'icon-sm'}>
+							<Button variant={"outline"} size={"icon-sm"}>
 								<MoreVertical />
 							</Button>
 						}

@@ -1,21 +1,21 @@
-import { Link, NavLink } from 'react-router'
+import { Link, NavLink } from "react-router"
 
-import { Menu } from 'lucide-react'
+import { Menu } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Sheet,
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
-} from '~/components/ui/sheet'
+} from "~/components/ui/sheet"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-	{ href: '/', label: 'Home' },
-	{ href: '/store', label: 'Store' },
-	{ href: '/blog', label: 'Blog' },
+	{ href: "/", label: "Home" },
+	{ href: "/store", label: "Store" },
+	{ href: "/blog", label: "Blog" },
 ]
 
 export function Header() {
@@ -30,13 +30,13 @@ export function Header() {
 				</div>
 
 				<nav className="hidden items-center space-x-6 md:flex">
-					{navigationLinks.map(link => (
+					{navigationLinks.map((link) => (
 						<NavLink
 							key={link.href}
 							to={link.href}
 							className={({ isActive }) =>
 								`hover:text-foreground text-sm font-medium transition-colors ${
-									isActive ? 'text-foreground' : 'text-muted-foreground'
+									isActive ? "text-foreground" : "text-muted-foreground"
 								}`
 							}
 						>
@@ -60,13 +60,13 @@ export function Header() {
 								<SheetTitle>Navigation</SheetTitle>
 							</SheetHeader>
 							<nav className="mt-6 flex flex-col space-y-4">
-								{navigationLinks.map(link => (
+								{navigationLinks.map((link) => (
 									<NavLink
 										key={link.href}
 										to={link.href}
 										className={({ isActive }) =>
 											`hover:text-foreground mx-auto text-lg font-medium transition-colors ${
-												isActive ? 'text-foreground' : 'text-muted-foreground'
+												isActive ? "text-foreground" : "text-muted-foreground"
 											}`
 										}
 									>

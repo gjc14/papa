@@ -1,17 +1,17 @@
-import type { Route } from './+types/route'
-import { data } from 'react-router'
+import type { Route } from "./+types/route"
+import { data } from "react-router"
 
-import { Badge } from '~/components/ui/badge'
+import { Badge } from "~/components/ui/badge"
 
-import { PostCollection } from '../components/posts'
-import { fetchPosts, headers, postsServerMemoryCache, TTL } from './cache'
+import { PostCollection } from "../components/posts"
+import { fetchPosts, headers, postsServerMemoryCache, TTL } from "./cache"
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const { searchParams } = url
-	const categories = searchParams.get('category')?.split(',')
-	const tags = searchParams.get('tag')?.split(',')
-	const q = searchParams.get('q') || undefined
+	const categories = searchParams.get("category")?.split(",")
+	const tags = searchParams.get("tag")?.split(",")
+	const q = searchParams.get("q") || undefined
 
 	const cacheKey = searchParams.toString()
 	const now = Date.now()
@@ -49,8 +49,8 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
 	const categoryFilters = isCategoryFiltering ? (
 		<span className="space-x-1">
-			category:{' '}
-			{categoryFilter.map(cat => (
+			category:{" "}
+			{categoryFilter.map((cat) => (
 				<Badge
 					key={cat.id}
 					className="border-primary bg-brand text-brand-foreground rounded-full"
@@ -63,8 +63,8 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
 	const tagFilters = isTagFiltering ? (
 		<span className="space-x-1">
-			tag:{' '}
-			{tagFilter.map(tag => (
+			tag:{" "}
+			{tagFilter.map((tag) => (
 				<Badge
 					key={tag.id}
 					className="border-primary bg-brand text-brand-foreground rounded-full"
@@ -98,7 +98,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 			<h1 className="visually-hidden">{meta?.seo.metaTitle}</h1>
 
 			<PostCollection
-				title={'Blog.'}
+				title={"Blog."}
 				posts={posts}
 				description={description}
 				q={q}

@@ -1,5 +1,5 @@
-import React from 'react'
-import { useSearchParams } from 'react-router'
+import React from "react"
+import { useSearchParams } from "react-router"
 
 import type {
 	ColumnFiltersState,
@@ -7,13 +7,13 @@ import type {
 	PaginationState,
 	SortingState,
 	Updater,
-} from '@tanstack/react-table'
-import { useSetAtom } from 'jotai'
+} from "@tanstack/react-table"
+import { useSetAtom } from "jotai"
 
-import { dashboardContextAtom } from '~/routes/dashboard/layout/context'
+import { dashboardContextAtom } from "~/routes/dashboard/layout/context"
 
-import type { DashboardDataTableProps } from './types'
-import { getNumber, parseTableSearchParams, safeJsonParse } from './utils'
+import type { DashboardDataTableProps } from "./types"
+import { getNumber, parseTableSearchParams, safeJsonParse } from "./utils"
 
 /**
  * A hook that returns a tuple of `[shouldSkip, skip]` to control auto-resetting of pagination.
@@ -43,8 +43,8 @@ function useSkipper() {
 	return [shouldSkip, skip] as const
 }
 
-type ServerModeProps = NonNullable<DashboardDataTableProps<any, any>['server']>
-type StateKeys = 'pagination' | 'sorting' | 'columnFilters' | 'globalFilter'
+type ServerModeProps = NonNullable<DashboardDataTableProps<any, any>["server"]>
+type StateKeys = "pagination" | "sorting" | "columnFilters" | "globalFilter"
 
 /** Discriminated union — each member pairs a key with its correct Updater */
 type QueryParamUpdate = {
@@ -55,11 +55,11 @@ type QueryParamUpdate = {
 }[StateKeys]
 
 export const DEFAULT_TABLE_SEARCH_PARAMS_CONFIG = {
-	pageIndexParam: 'page',
-	pageSizeParam: 'pageSize',
-	sortingParam: 'sorting',
-	columnFiltersParam: 'filter',
-	globalFilterParam: 'q',
+	pageIndexParam: "page",
+	pageSizeParam: "pageSize",
+	sortingParam: "sorting",
+	columnFiltersParam: "filter",
+	globalFilterParam: "q",
 	pageIndex: 0,
 	pageSize: 10,
 } as const satisfies TableSearchParamsConfig
@@ -180,16 +180,16 @@ function useTableSearchParams(overrides?: Partial<TableSearchParamsConfig>) {
 	const onQueryParamsChange = React.useCallback(
 		function onQueryParamsChange(update: QueryParamUpdate) {
 			/** Prevent global loader */
-			setDashboardContext(prev => ({
+			setDashboardContext((prev) => ({
 				...prev,
 				navigation: { showGlobalLoader: false },
 			}))
 
-			setSearchParams(prev => {
+			setSearchParams((prev) => {
 				const next = new URLSearchParams(prev)
 
 				switch (update.key) {
-					case 'pagination': {
+					case "pagination": {
 						const current: PaginationState = {
 							pageIndex:
 								getNumber(prev, config.pageIndexParam, config.pageIndex + 1) -
@@ -205,7 +205,7 @@ function useTableSearchParams(overrides?: Partial<TableSearchParamsConfig>) {
 							: next.set(config.pageSizeParam, String(updated.pageSize))
 						break
 					}
-					case 'sorting': {
+					case "sorting": {
 						const current: SortingState = safeJsonParse(
 							prev.get(config.sortingParam),
 							[] as SortingState,
@@ -216,7 +216,7 @@ function useTableSearchParams(overrides?: Partial<TableSearchParamsConfig>) {
 							: next.set(config.sortingParam, JSON.stringify(updated))
 						break
 					}
-					case 'columnFilters': {
+					case "columnFilters": {
 						const current: ColumnFiltersState = safeJsonParse(
 							prev.get(config.columnFiltersParam),
 							[] as ColumnFiltersState,
@@ -227,9 +227,9 @@ function useTableSearchParams(overrides?: Partial<TableSearchParamsConfig>) {
 							: next.set(config.columnFiltersParam, JSON.stringify(updated))
 						break
 					}
-					case 'globalFilter': {
-						const current: GlobalFilterTableState['globalFilter'] =
-							prev.get(config.globalFilterParam) ?? ''
+					case "globalFilter": {
+						const current: GlobalFilterTableState["globalFilter"] =
+							prev.get(config.globalFilterParam) ?? ""
 						const updated = resolve(update.updater, current)
 						updated
 							? next.set(config.globalFilterParam, updated)

@@ -1,10 +1,10 @@
-import React, { useId } from 'react'
+import React, { useId } from "react"
 
-import { LoaderCircle, Search } from 'lucide-react'
+import { LoaderCircle, Search } from "lucide-react"
 
-import { cn } from '~/lib/utils'
+import { cn } from "~/lib/utils"
 
-import { Input } from '../input'
+import { Input } from "../input"
 
 export function InputSearch(
 	props: React.ComponentProps<typeof Input> & {
@@ -19,7 +19,7 @@ export function InputSearch(
 		<div className="relative">
 			<Input
 				id={id}
-				className={cn('peer ps-9', className)}
+				className={cn("peer ps-9", className)}
 				placeholder="Search..."
 				type="search"
 				{...inputProps}
@@ -40,4 +40,4 @@ export function InputSearch(
 		</div>
 	)
 }
-InputSearch.displayName = 'InputSearch'
+InputSearch.displayName = "InputSearch"

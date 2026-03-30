@@ -1,17 +1,17 @@
-import 'dotenv/config'
+import "dotenv/config"
 
-import { defineConfig } from 'drizzle-kit'
+import { defineConfig } from "drizzle-kit"
 
 export default defineConfig({
-	dialect: 'postgresql',
+	dialect: "postgresql",
 	schema: [
-		'./app/lib/db/schema/**/*',
-		'./app/routes/**/lib/db/schema/**/*',
-		'./app/routes/services/**/lib/db/schema/**/*',
+		"./app/lib/db/schema/**/*",
+		"./app/routes/**/lib/db/schema/**/*",
+		"./app/routes/services/**/lib/db/schema/**/*",
 	],
-	schemaFilter: ['public', 'papa'],
+	schemaFilter: ["public", "papa"],
 	dbCredentials: {
 		url: process.env.DATABASE_URL!,
 	},
-	out: './database',
+	out: "./database",
 })

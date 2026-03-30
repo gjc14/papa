@@ -9,7 +9,7 @@ import {
 	Preview,
 	Section,
 	Text,
-} from '@react-email/components'
+} from "@react-email/components"
 
 export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 	<Html>
@@ -29,7 +29,7 @@ export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 					</Text>
 				</Section>
 				<Text style={paragraph}>
-					Best, <br />- Papa Team {'<3'}
+					Best, <br />- Papa Team {"<3"}
 				</Text>
 				<Hr style={hr} />
 				<Text style={footer}>
@@ -43,44 +43,44 @@ export const MagicLinkEmail = ({ magicLink }: { magicLink: string }) => (
 export default MagicLinkEmail
 
 const main = {
-	backgroundColor: '#ffffff',
+	backgroundColor: "#ffffff",
 	fontFamily:
 		'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 }
 
 const container = {
-	margin: '0 auto',
-	padding: '20px 25px 48px',
-	backgroundPosition: 'bottom',
-	backgroundRepeat: 'no-repeat, no-repeat',
+	margin: "0 auto",
+	padding: "20px 25px 48px",
+	backgroundPosition: "bottom",
+	backgroundRepeat: "no-repeat, no-repeat",
 }
 
 const heading = {
-	fontSize: '28px',
-	fontWeight: 'bold',
-	marginTop: '48px',
+	fontSize: "28px",
+	fontWeight: "bold",
+	marginTop: "48px",
 }
 
 const body = {
-	margin: '24px 0',
+	margin: "24px 0",
 }
 
 const paragraph = {
-	fontSize: '16px',
-	lineHeight: '26px',
+	fontSize: "16px",
+	lineHeight: "26px",
 }
 
 const link = {
-	color: '#ffcc00',
+	color: "#ffcc00",
 }
 
 const hr = {
-	borderColor: '#dddddd',
-	marginTop: '48px',
+	borderColor: "#dddddd",
+	marginTop: "48px",
 }
 
 const footer = {
-	color: '#8898aa',
-	fontSize: '12px',
-	marginLeft: '4px',
+	color: "#8898aa",
+	fontSize: "12px",
+	marginLeft: "4px",
 }

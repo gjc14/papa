@@ -1,6 +1,6 @@
-import { Link } from 'react-router'
+import { Link } from "react-router"
 
-import { ChevronsUpDown } from 'lucide-react'
+import { ChevronsUpDown } from "lucide-react"
 
 import {
 	DropdownMenu,
@@ -9,15 +9,15 @@ import {
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
+} from "~/components/ui/dropdown-menu"
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	useSidebar,
-} from '~/components/ui/sidebar'
+} from "~/components/ui/sidebar"
 
-import { renderServiceLogo } from '../../../lib/utils/render-service-logo'
+import { renderServiceLogo } from "../../../lib/utils/render-service-logo"
 
 export interface ServiceDashboardConfig {
 	/**
@@ -81,7 +81,7 @@ export function SidebarService({
 									<div className="flex aspect-square size-8 items-center justify-center overflow-hidden border">
 										{renderServiceLogo({
 											logo: currentService.logo,
-											className: 'size-8',
+											className: "size-8",
 										})}
 									</div>
 									<div className="grid flex-1 text-left text-sm leading-tight">
@@ -100,14 +100,14 @@ export function SidebarService({
 					<DropdownMenuContent
 						className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
 						align="start"
-						side={isMobile ? 'bottom' : 'right'}
+						side={isMobile ? "bottom" : "right"}
 						sideOffset={4}
 					>
 						<DropdownMenuGroup>
 							<DropdownMenuLabel className="text-muted-foreground text-xs">
 								Services
 							</DropdownMenuLabel>
-							{services.map(service => (
+							{services.map((service) => (
 								<DropdownMenuItem
 									className="[& gap-2 p-2"
 									render={
@@ -115,7 +115,7 @@ export function SidebarService({
 											<div className="flex size-6 items-center justify-center overflow-hidden border [&_svg]:size-4">
 												{renderServiceLogo({
 													logo: service.logo,
-													className: 'size-6',
+													className: "size-6",
 												})}
 											</div>
 											{service.name}

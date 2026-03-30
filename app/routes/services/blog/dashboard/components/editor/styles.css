@@ -15,7 +15,7 @@
 	/* Task list specific styles */
 	/* https://tiptap.dev/docs/editor/extensions/nodes/task-list */
 	/* https://github.com/tailwindlabs/tailwindcss-typography/blob/main/src/styles.js#L124-L126 */
-	ul[data-type='taskList'] {
+	ul[data-type="taskList"] {
 		list-style-type: none;
 		padding-inline-start: 0.2em;
 
@@ -40,11 +40,11 @@
 			}
 		}
 
-		input[type='checkbox'] {
+		input[type="checkbox"] {
 			cursor: pointer;
 		}
 
-		ul[data-type='taskList'] {
+		ul[data-type="taskList"] {
 			margin: 0;
 		}
 	}
@@ -54,7 +54,7 @@
 .tiptap .selection {
 	outline: 2px solid var(--color-teal-800);
 }
-[data-theme='dark'] .tiptap .selection {
+[data-theme="dark"] .tiptap .selection {
 	outline: 2px solid var(--color-teal-200);
 }
 
@@ -63,7 +63,7 @@
  * This is not for syntax highlighting, but for text highlighting.
  *
  * Generating static CSS variables for all selectable colors
- * reference: https://tailwindcss.com/docs/theme#generating-all-css-variables 
+ * reference: https://tailwindcss.com/docs/theme#generating-all-css-variables
  */
 @theme static {
 	--highlight-red: var(--highlight-red);
@@ -139,7 +139,7 @@
 	--text-rose: var(--color-rose-500);
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
 	--highlight-red: var(--color-red-800);
 	--highlight-orange: var(--color-orange-800);
 	--highlight-amber: var(--color-amber-800);

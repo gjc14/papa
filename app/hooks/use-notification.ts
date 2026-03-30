@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
-import { type FetcherWithComponents } from 'react-router'
+import { useEffect } from "react"
+import { type FetcherWithComponents } from "react-router"
 
-import { toast, type ExternalToast } from 'sonner'
+import { toast, type ExternalToast } from "sonner"
 
-import type { ActionResponse } from '~/lib/utils'
+import type { ActionResponse } from "~/lib/utils"
 
 /**
  * Hook extends fetcher to show notification based on conventional action response {@link ActionResponse}
@@ -50,7 +50,7 @@ export function useFetcherNotification<
 	} = props
 
 	useEffect(() => {
-		if (fetcher.state === 'idle' && fetcher.data) {
+		if (fetcher.state === "idle" && fetcher.data) {
 			const prevented = !!fetcher.data.preventNotification
 			if (fetcher.data.msg) {
 				if (!prevented || !preventSuccessAlert) {
@@ -69,9 +69,9 @@ export function useFetcherNotification<
 	}, [fetcher.state, fetcher.data])
 
 	return {
-		mutating: fetcher.state !== 'idle',
-		isSubmitting: fetcher.state === 'submitting',
-		isLoading: fetcher.state === 'loading',
-		isIdle: fetcher.state === 'idle',
+		mutating: fetcher.state !== "idle",
+		isSubmitting: fetcher.state === "submitting",
+		isLoading: fetcher.state === "loading",
+		isIdle: fetcher.state === "idle",
 	}
 }

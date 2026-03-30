@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import * as React from 'react'
+import * as React from "react"
 
-import { Combobox as ComboboxPrimitive } from '@base-ui/react'
-import { CaretDownIcon, CheckIcon, XIcon } from '@phosphor-icons/react'
+import { Combobox as ComboboxPrimitive } from "@base-ui/react"
+import { CaretDownIcon, CheckIcon, XIcon } from "@phosphor-icons/react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupInput,
-} from '~/components/ui/input-group'
-import { cn } from '~/lib/utils/index'
+} from "~/components/ui/input-group"
+import { cn } from "~/lib/utils/index"
 
 const Combobox = ComboboxPrimitive.Root
 
@@ -62,7 +62,7 @@ function ComboboxInput({
 	showClear?: boolean
 }) {
 	return (
-		<InputGroup className={cn('w-auto', className)}>
+		<InputGroup className={cn("w-auto", className)}>
 			<ComboboxPrimitive.Input
 				render={<InputGroupInput disabled={disabled} />}
 				{...props}
@@ -87,16 +87,16 @@ function ComboboxInput({
 
 function ComboboxContent({
 	className,
-	side = 'bottom',
+	side = "bottom",
 	sideOffset = 6,
-	align = 'start',
+	align = "start",
 	alignOffset = 0,
 	anchor,
 	...props
 }: ComboboxPrimitive.Popup.Props &
 	Pick<
 		ComboboxPrimitive.Positioner.Props,
-		'side' | 'align' | 'sideOffset' | 'alignOffset' | 'anchor'
+		"side" | "align" | "sideOffset" | "alignOffset" | "anchor"
 	>) {
 	return (
 		<ComboboxPrimitive.Portal>
@@ -112,7 +112,7 @@ function ComboboxContent({
 					data-slot="combobox-content"
 					data-chips={!!anchor}
 					className={cn(
-						'bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:border-input/30 data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2 group/combobox-content relative max-h-(--available-height) max-h-72 w-(--anchor-width) max-w-(--available-width) min-w-36 min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-none shadow-md ring-1 duration-100 data-[chips=true]:min-w-(--anchor-width) *:data-[slot=input-group]:m-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:shadow-none',
+						"bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:border-input/30 data-[side=inline-start]:slide-in-from-right-2 data-[side=inline-end]:slide-in-from-left-2 group/combobox-content relative max-h-(--available-height) max-h-72 w-(--anchor-width) max-w-(--available-width) min-w-36 min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-none shadow-md ring-1 duration-100 data-[chips=true]:min-w-(--anchor-width) *:data-[slot=input-group]:m-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:shadow-none",
 						className,
 					)}
 					{...props}
@@ -127,7 +127,7 @@ function ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props) {
 		<ComboboxPrimitive.List
 			data-slot="combobox-list"
 			className={cn(
-				'no-scrollbar max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto overscroll-contain data-empty:p-0',
+				"no-scrollbar max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))] scroll-py-1 overflow-y-auto overscroll-contain data-empty:p-0",
 				className,
 			)}
 			{...props}
@@ -178,7 +178,7 @@ function ComboboxLabel({
 	return (
 		<ComboboxPrimitive.GroupLabel
 			data-slot="combobox-label"
-			className={cn('text-muted-foreground px-2 py-2 text-xs', className)}
+			className={cn("text-muted-foreground px-2 py-2 text-xs", className)}
 			{...props}
 		/>
 	)
@@ -195,7 +195,7 @@ function ComboboxEmpty({ className, ...props }: ComboboxPrimitive.Empty.Props) {
 		<ComboboxPrimitive.Empty
 			data-slot="combobox-empty"
 			className={cn(
-				'text-muted-foreground hidden w-full justify-center py-2 text-center text-xs group-data-empty/combobox-content:flex',
+				"text-muted-foreground hidden w-full justify-center py-2 text-center text-xs group-data-empty/combobox-content:flex",
 				className,
 			)}
 			{...props}
@@ -210,7 +210,7 @@ function ComboboxSeparator({
 	return (
 		<ComboboxPrimitive.Separator
 			data-slot="combobox-separator"
-			className={cn('bg-border -mx-1 h-px', className)}
+			className={cn("bg-border -mx-1 h-px", className)}
 			{...props}
 		/>
 	)
@@ -225,7 +225,7 @@ function ComboboxChips({
 		<ComboboxPrimitive.Chips
 			data-slot="combobox-chips"
 			className={cn(
-				'dark:bg-input/30 border-input focus-within:border-ring focus-within:ring-ring/50 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive dark:has-aria-invalid:border-destructive/50 flex min-h-8 flex-wrap items-center gap-1 rounded-none border bg-transparent bg-clip-padding px-2.5 py-1 text-xs transition-colors focus-within:ring-1 has-aria-invalid:ring-1 has-data-[slot=combobox-chip]:px-1',
+				"dark:bg-input/30 border-input focus-within:border-ring focus-within:ring-ring/50 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive dark:has-aria-invalid:border-destructive/50 flex min-h-8 flex-wrap items-center gap-1 rounded-none border bg-transparent bg-clip-padding px-2.5 py-1 text-xs transition-colors focus-within:ring-1 has-aria-invalid:ring-1 has-data-[slot=combobox-chip]:px-1",
 				className,
 			)}
 			{...props}
@@ -245,7 +245,7 @@ function ComboboxChip({
 		<ComboboxPrimitive.Chip
 			data-slot="combobox-chip"
 			className={cn(
-				'bg-muted text-foreground flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-none px-1.5 text-xs font-medium whitespace-nowrap has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0',
+				"bg-muted text-foreground flex h-[calc(--spacing(5.25))] w-fit items-center justify-center gap-1 rounded-none px-1.5 text-xs font-medium whitespace-nowrap has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
 				className,
 			)}
 			{...props}
@@ -271,7 +271,7 @@ function ComboboxChipsInput({
 	return (
 		<ComboboxPrimitive.Input
 			data-slot="combobox-chip-input"
-			className={cn('min-w-16 flex-1 outline-none', className)}
+			className={cn("min-w-16 flex-1 outline-none", className)}
 			{...props}
 		/>
 	)

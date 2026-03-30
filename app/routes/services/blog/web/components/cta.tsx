@@ -1,17 +1,17 @@
-import { useFetcher } from 'react-router'
+import { useFetcher } from "react-router"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
-import { Input } from '~/components/ui/input'
-import { Spinner } from '~/components/ui/spinner'
+} from "~/components/ui/card"
+import { Input } from "~/components/ui/input"
+import { Spinner } from "~/components/ui/spinner"
 
 export const CTA = ({
-	subscribeRoute = '/blog/subscribe',
+	subscribeRoute = "/blog/subscribe",
 }: {
 	subscribeRoute?: string
 }) => {
@@ -27,7 +27,7 @@ export const CTA = ({
 				<CardHeader>
 					<CardTitle>Subscribe to new posts!</CardTitle>
 					<CardDescription>
-						If you like topics like{' '}
+						If you like topics like{" "}
 						<span>Tech, Software Development, or Travel</span>. Welcome to
 						subscribe for free to get some fresh ideas!
 					</CardDescription>
@@ -39,13 +39,13 @@ export const CTA = ({
 						action={subscribeRoute}
 					>
 						<Input placeholder="your@ema.il" name="email" />
-						<Button size={'sm'}>
+						<Button size={"sm"}>
 							<Spinner
 								className={`absolute ${
-									isSubmitting ? 'opacity-100' : 'opacity-0'
+									isSubmitting ? "opacity-100" : "opacity-0"
 								}`}
 							/>
-							<span className={`${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>
+							<span className={`${isSubmitting ? "opacity-0" : "opacity-100"}`}>
 								Subscribe
 							</span>
 						</Button>

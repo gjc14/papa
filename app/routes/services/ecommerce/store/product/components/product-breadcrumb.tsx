@@ -1,6 +1,6 @@
-import { Link } from 'react-router'
+import { Link } from "react-router"
 
-import { ChevronDownIcon, Slash } from 'lucide-react'
+import { ChevronDownIcon, Slash } from "lucide-react"
 
 import {
 	Breadcrumb,
@@ -9,16 +9,16 @@ import {
 	BreadcrumbList,
 	BreadcrumbPage,
 	BreadcrumbSeparator,
-} from '~/components/ui/breadcrumb'
+} from "~/components/ui/breadcrumb"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu'
+} from "~/components/ui/dropdown-menu"
 
-import { useProductContext } from '../hooks/use-product-context'
+import { useProductContext } from "../hooks/use-product-context"
 
 export function ProductBreadcrumb() {
 	const { storeConfig, product } = useProductContext()
@@ -51,7 +51,7 @@ export function ProductBreadcrumb() {
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="start">
 										<DropdownMenuGroup>
-											{categories.map(cat => (
+											{categories.map((cat) => (
 												<DropdownMenuItem
 													key={cat.id}
 													render={

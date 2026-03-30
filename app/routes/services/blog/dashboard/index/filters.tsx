@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router"
 
-import { useAtom } from 'jotai'
-import { Check, ChevronDown, Loader2 } from 'lucide-react'
+import { useAtom } from "jotai"
+import { Check, ChevronDown, Loader2 } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Command,
 	CommandEmpty,
@@ -13,17 +13,17 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-} from '~/components/ui/command'
+} from "~/components/ui/command"
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from '~/components/ui/popover'
-import { cn } from '~/lib/utils'
-import { dashboardContextAtom } from '~/routes/dashboard/layout/context'
+} from "~/components/ui/popover"
+import { cn } from "~/lib/utils"
+import { dashboardContextAtom } from "~/routes/dashboard/layout/context"
 
-import type { Category, Tag } from '../../lib/db/schema'
-import { categoriesAtom, tagsAtom } from '../context'
+import type { Category, Tag } from "../../lib/db/schema"
+import { categoriesAtom, tagsAtom } from "../context"
 
 export const Filter = ({
 	q,
@@ -31,8 +31,8 @@ export const Filter = ({
 	categoryFilter,
 }: {
 	q?: string
-	tagFilter?: Pick<Tag, 'id' | 'slug' | 'name'>[]
-	categoryFilter?: Pick<Category, 'id' | 'slug' | 'name'>[]
+	tagFilter?: Pick<Tag, "id" | "slug" | "name">[]
+	categoryFilter?: Pick<Category, "id" | "slug" | "name">[]
 }) => {
 	const [params, setSearchParams] = useSearchParams()
 	const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom)
@@ -42,12 +42,12 @@ export const Filter = ({
 	const [categories] = useAtom(categoriesAtom)
 
 	const [open, setOpen] = useState(false)
-	const [query, setQuery] = useState(q || '')
+	const [query, setQuery] = useState(q || "")
 	const [tagsInFilter, setTagsInFilter] = useState<
-		Pick<Tag, 'id' | 'slug' | 'name'>[]
+		Pick<Tag, "id" | "slug" | "name">[]
 	>(tagFilter || [])
 	const [categoryInFilter, setCategoryInFilter] = useState<
-		Pick<Category, 'id' | 'slug' | 'name'>[]
+		Pick<Category, "id" | "slug" | "name">[]
 	>(categoryFilter || [])
 
 	// inner popovers open state
@@ -61,24 +61,24 @@ export const Filter = ({
 
 		// start from the current URL search to preserve all other params (q, category, etc.)
 		if (query) {
-			params.set('q', query)
+			params.set("q", query)
 		} else {
-			params.delete('q')
+			params.delete("q")
 		}
 
 		if (tagsInFilter.length) {
-			params.set('tag', tagsInFilter.map(t => t.slug).join(','))
+			params.set("tag", tagsInFilter.map((t) => t.slug).join(","))
 		} else {
-			params.delete('tag')
+			params.delete("tag")
 		}
 
 		if (categoryInFilter.length) {
-			params.set('category', categoryInFilter.map(c => c.slug).join(','))
+			params.set("category", categoryInFilter.map((c) => c.slug).join(","))
 		} else {
-			params.delete('category')
+			params.delete("category")
 		}
 
-		setDashboardContext(prev => ({
+		setDashboardContext((prev) => ({
 			...prev,
 			navigation: { showGlobalLoader: false },
 		}))
@@ -90,7 +90,7 @@ export const Filter = ({
 	}
 
 	useEffect(() => {
-		setQuery(q || '')
+		setQuery(q || "")
 		setTagsInFilter(tagFilter || [])
 		setCategoryInFilter(categoryFilter || [])
 	}, [q, tagFilter, categoryFilter])
@@ -100,8 +100,8 @@ export const Filter = ({
 			<PopoverTrigger
 				render={
 					<Button
-						variant={'outline'}
-						size={'sm'}
+						variant={"outline"}
+						size={"sm"}
 						role="combobox"
 						aria-expanded={open}
 						className="justify-between"
@@ -158,14 +158,14 @@ export const Filter = ({
 								<CommandList>
 									<CommandEmpty>No tags found.</CommandEmpty>
 									<CommandGroup>
-										{tags.map(t => (
+										{tags.map((t) => (
 											<CommandItem
 												key={t.slug}
 												value={t.slug}
-												onSelect={currentValue => {
-													setTagsInFilter(prev =>
-														prev.some(tag => tag.slug === currentValue)
-															? prev.filter(tag => tag.slug !== currentValue)
+												onSelect={(currentValue) => {
+													setTagsInFilter((prev) =>
+														prev.some((tag) => tag.slug === currentValue)
+															? prev.filter((tag) => tag.slug !== currentValue)
 															: [...prev, t],
 													)
 												}}
@@ -173,10 +173,10 @@ export const Filter = ({
 												{t.name}
 												<Check
 													className={cn(
-														'ml-auto',
-														tagsInFilter.some(tag => tag.slug === t.slug)
-															? 'opacity-100'
-															: 'opacity-0',
+														"ml-auto",
+														tagsInFilter.some((tag) => tag.slug === t.slug)
+															? "opacity-100"
+															: "opacity-0",
 													)}
 												/>
 											</CommandItem>
@@ -228,14 +228,14 @@ export const Filter = ({
 								<CommandList>
 									<CommandEmpty>No categories found.</CommandEmpty>
 									<CommandGroup>
-										{categories.map(c => (
+										{categories.map((c) => (
 											<CommandItem
 												key={c.slug}
 												value={c.slug}
-												onSelect={currentValue => {
-													setCategoryInFilter(prev =>
-														prev.some(cat => cat.slug === currentValue)
-															? prev.filter(cat => cat.slug !== currentValue)
+												onSelect={(currentValue) => {
+													setCategoryInFilter((prev) =>
+														prev.some((cat) => cat.slug === currentValue)
+															? prev.filter((cat) => cat.slug !== currentValue)
 															: [...prev, c],
 													)
 												}}
@@ -243,10 +243,10 @@ export const Filter = ({
 												{c.name}
 												<Check
 													className={cn(
-														'ml-auto',
-														categoryInFilter.some(cat => cat.slug === c.slug)
-															? 'opacity-100'
-															: 'opacity-0',
+														"ml-auto",
+														categoryInFilter.some((cat) => cat.slug === c.slug)
+															? "opacity-100"
+															: "opacity-0",
 													)}
 												/>
 											</CommandItem>

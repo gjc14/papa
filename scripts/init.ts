@@ -1,34 +1,34 @@
-import { spawn } from 'child_process'
+import { spawn } from "child_process"
 
 const scripts = [
-	'tsx scripts/init-env.ts',
-	'pnpm run db:push',
-	'tsx scripts/init-object-storage.ts',
-	'tsx scripts/init-user.ts',
-	'pnpm run dev',
+	"tsx scripts/init-env.ts",
+	"pnpm run db:push",
+	"tsx scripts/init-object-storage.ts",
+	"tsx scripts/init-user.ts",
+	"pnpm run dev",
 ]
 
 let currentProcess: ReturnType<typeof spawn> | null = null
 
 // Handle Signal Interrupt (e.g., Ctrl+C)
-process.on('SIGINT', () => {
-	console.log('\n🛑 Received SIGINT, cleaning up...')
+process.on("SIGINT", () => {
+	console.log("\n🛑 Received SIGINT, cleaning up...")
 	if (currentProcess) {
-		currentProcess.kill('SIGINT')
+		currentProcess.kill("SIGINT")
 	}
 	process.exit(0)
 })
 
 async function runScript(command: string): Promise<void> {
 	return new Promise((resolve, reject) => {
-		const [cmd, ...args] = command.split(' ')
+		const [cmd, ...args] = command.split(" ")
 
 		currentProcess = spawn(cmd, args, {
-			stdio: 'inherit',
+			stdio: "inherit",
 			shell: true,
 		})
 
-		currentProcess.on('exit', code => {
+		currentProcess.on("exit", (code) => {
 			currentProcess = null
 			if (code === 0) {
 				resolve()
@@ -37,7 +37,7 @@ async function runScript(command: string): Promise<void> {
 			}
 		})
 
-		currentProcess.on('error', error => {
+		currentProcess.on("error", (error) => {
 			currentProcess = null
 			reject(error)
 		})

@@ -10,7 +10,7 @@
 .spinner::before {
 	box-sizing: border-box;
 	position: absolute;
-	content: '';
+	content: "";
 	width: var(--size);
 	height: var(--size);
 	top: 50%;

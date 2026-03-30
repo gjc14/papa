@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from "react"
 
-type Direction = 'up' | 'down'
+type Direction = "up" | "down"
 
 /**
  * Pass in section ids to subscribe to container scroll. Handle scroll efect yourself.
@@ -37,7 +37,7 @@ export function useInPageNavigation({
 	UP_THRESHOLD_VH: number
 } {
 	const [activeId, setActiveId] = useState<string>(SECTIONS[0].id)
-	const [scrollDir, setScrollDir] = useState<Direction>('down')
+	const [scrollDir, setScrollDir] = useState<Direction>("down")
 
 	// Use a ref to track the last scroll position for direction calculation
 	const lastScrollY = useRef(0)
@@ -53,7 +53,7 @@ export function useInPageNavigation({
 		if (Math.abs(currentScrollY - lastScrollY.current) === 0) return
 
 		const currentDirection =
-			currentScrollY > lastScrollY.current ? 'down' : 'up'
+			currentScrollY > lastScrollY.current ? "down" : "up"
 
 		// Update state and ref
 		setScrollDir(currentDirection)
@@ -62,7 +62,7 @@ export function useInPageNavigation({
 		// 2. Select Threshold based on Direction
 		const vh = container.clientHeight
 		const threshold =
-			currentDirection === 'down'
+			currentDirection === "down"
 				? vh * DOWN_THRESHOLD_VH
 				: vh * UP_THRESHOLD_VH
 
@@ -95,10 +95,10 @@ export function useInPageNavigation({
 		if (!container) return
 
 		const onScroll = () => requestAnimationFrame(handleScroll)
-		container.addEventListener('scroll', onScroll, { passive: true })
+		container.addEventListener("scroll", onScroll, { passive: true })
 		// Run once on mount to set initial state
 		handleScroll()
-		return () => container.removeEventListener('scroll', onScroll)
+		return () => container.removeEventListener("scroll", onScroll)
 	}, [handleScroll])
 
 	return {

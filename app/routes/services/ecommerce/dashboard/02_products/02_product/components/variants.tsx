@@ -1,4 +1,4 @@
-import { Fragment, memo, useEffect, useMemo, useState } from 'react'
+import { Fragment, memo, useEffect, useMemo, useState } from "react"
 
 import {
 	flexRender,
@@ -8,9 +8,9 @@ import {
 	type ColumnDef,
 	type ExpandedState,
 	type Row,
-} from '@tanstack/react-table'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+} from "@tanstack/react-table"
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai"
+import { atomFamily } from "jotai/utils"
 import {
 	ChevronDown,
 	ChevronRight,
@@ -19,9 +19,9 @@ import {
 	ClipboardPaste,
 	Grid,
 	Plus,
-} from 'lucide-react'
+} from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Card,
 	CardContent,
@@ -29,7 +29,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
+} from "~/components/ui/card"
 import {
 	Dialog,
 	DialogContent,
@@ -38,46 +38,48 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '~/components/ui/dialog'
+} from "~/components/ui/dialog"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
+} from "~/components/ui/select"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from '~/components/ui/tooltip'
-import { cn } from '~/lib/utils'
-import { productAtom } from '~/routes/services/ecommerce/store/product/context'
-import { getVariantAttributes } from '~/routes/services/ecommerce/store/product/utils/attributes'
-import { renderPrice } from '~/routes/services/ecommerce/store/product/utils/price'
+} from "~/components/ui/tooltip"
+import { cn } from "~/lib/utils"
+import { productAtom } from "~/routes/services/ecommerce/store/product/context"
+import { getVariantAttributes } from "~/routes/services/ecommerce/store/product/utils/attributes"
+import { renderPrice } from "~/routes/services/ecommerce/store/product/utils/price"
 
 import {
 	AttributeEditDialog,
 	createNewAttribute,
 	updateAttribute,
-} from './attributes'
-import { OptionForm } from './option-form'
+} from "./attributes"
+import { OptionForm } from "./option-form"
 
 type VariantType = NonNullable<
 	ReturnType<typeof productAtom.read>
->['variants'][number]
+>["variants"][number]
 
 const productAttributesAtom = atom(
-	get => get(productAtom)?.attributes.sort((a, b) => a.order - b.order) ?? null,
+	(get) =>
+		get(productAtom)?.attributes.sort((a, b) => a.order - b.order) ?? null,
 )
 const productVariantsAtom = atom(
-	get => get(productAtom)?.variants.sort((a, b) => a.order - b.order) ?? null,
+	(get) => get(productAtom)?.variants.sort((a, b) => a.order - b.order) ?? null,
 )
 
 // Split the variants array into individual atoms
 const variantAtomFamily = atomFamily((variantId: number) => {
 	return atom(
-		get => get(productAtom)?.variants?.find(v => v.id === variantId) ?? null,
+		(get) =>
+			get(productAtom)?.variants?.find((v) => v.id === variantId) ?? null,
 	)
 })
 
@@ -91,7 +93,7 @@ function combinationExists({
 	variants: VariantType[]
 	combination: Record<string, string>
 }) {
-	return variants.some(v => {
+	return variants.some((v) => {
 		// Check if there are variant that matches this option
 		return Object.entries(combination).every(
 			([key, value]) => v.combination[key] === value,
@@ -187,7 +189,7 @@ function VariantCard({
 						No variants available. Click "Generate Variants" to create one.
 					</p>
 				) : (
-					productVariants.map(v => (
+					productVariants.map((v) => (
 						<VariantItem key={v.id} variant={v} onEdit={onEditVariant} />
 					))
 				)}
@@ -235,7 +237,7 @@ function VariantItem({
 		<div className="flex items-center justify-between gap-2 overflow-scroll border p-3">
 			<div className="flex-1">
 				<p className="text-muted-foreground text-xs">
-					{variant.option.sku || '- (sku)'}
+					{variant.option.sku || "- (sku)"}
 				</p>
 				<p>
 					{Object.entries(variant.combination).map(([attr, val], i) => (
@@ -279,8 +281,8 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 		<div className="flex items-center gap-1">
 			<Tooltip
 				open={copyState.open}
-				onOpenChange={open => {
-					setCopyState(prev => ({
+				onOpenChange={(open) => {
+					setCopyState((prev) => ({
 						open,
 						copied: open ? false : prev.copied,
 					}))
@@ -294,13 +296,13 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 								const option = row.original.option
 								navigator.clipboard.writeText(
 									JSON.stringify(option, (_, v) =>
-										typeof v === 'bigint' ? v.toString() : v,
+										typeof v === "bigint" ? v.toString() : v,
 									),
 								)
 								setCopyState({ open: true, copied: true })
 							}}
-							variant={'ghost'}
-							size={'icon'}
+							variant={"ghost"}
+							size={"icon"}
 							className="hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground size-6 rounded-full focus:ring-0 focus-visible:ring-0"
 						>
 							<ClipboardCopy />
@@ -309,15 +311,15 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 				/>
 				<TooltipContent>
 					<p className="text-sm">
-						{copyState.copied ? 'Copied' : 'Copy variant'}
+						{copyState.copied ? "Copied" : "Copy variant"}
 					</p>
 				</TooltipContent>
 			</Tooltip>
 
 			<Tooltip
 				open={pasteState.open}
-				onOpenChange={open => {
-					setPasteState(prev => ({
+				onOpenChange={(open) => {
+					setPasteState((prev) => ({
 						open,
 						pasted: open ? false : prev.pasted,
 					}))
@@ -338,12 +340,12 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 									salePrice: option.salePrice ? BigInt(option.salePrice) : null,
 								}
 
-								setProduct(prev => {
+								setProduct((prev) => {
 									if (!prev) return prev
 
 									return {
 										...prev,
-										variants: prev.variants.map(v => {
+										variants: prev.variants.map((v) => {
 											if (v.id === row.original.id) {
 												return {
 													...v,
@@ -360,8 +362,8 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 
 								setPasteState({ open: true, pasted: true })
 							}}
-							variant={'ghost'}
-							size={'icon'}
+							variant={"ghost"}
+							size={"icon"}
 							className="hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground size-6 rounded-full focus:ring-0 focus-visible:ring-0"
 						>
 							<ClipboardPaste />
@@ -370,7 +372,7 @@ function VariantActionCell({ row }: { row: Row<VariantType> }) {
 				/>
 				<TooltipContent>
 					<p className="text-sm">
-						{pasteState.pasted ? 'Pasted' : 'Paste variant'}
+						{pasteState.pasted ? "Pasted" : "Paste variant"}
 					</p>
 				</TooltipContent>
 			</Tooltip>
@@ -404,16 +406,16 @@ function VariantManagementDialog({
 	const columns: ColumnDef<VariantType>[] = useMemo(() => {
 		return [
 			{
-				id: '_expander',
+				id: "_expander",
 				header: () => null,
 				cell: ({ row }: { row: Row<VariantType> }) => {
 					return row.getCanExpand() ? (
 						<Button
 							onClick={row.getToggleExpandedHandler()}
-							variant={'ghost'}
-							size={'icon'}
+							variant={"ghost"}
+							size={"icon"}
 							className="h-full w-full focus:ring-0 focus-visible:ring-0"
-							aria-label={row.getIsExpanded() ? 'Collapse row' : 'Expand row'}
+							aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
 							aria-expanded={row.getIsExpanded()}
 							data-row-id={row.id}
 						>
@@ -429,18 +431,18 @@ function VariantManagementDialog({
 						header: () => {
 							if (!productAttributes) return null
 
-							const a = productAttributes.find(a => a.name === attr)
+							const a = productAttributes.find((a) => a.name === attr)
 							if (!a) return attr
 
 							return (
 								<AttributeEditDialog
 									attribute={a}
-									onSave={a => {
+									onSave={(a) => {
 										if (!productAttributes || !productVariants) return
 										const { updatedAttributes, updatedVariants } =
 											updateAttribute(a, productAttributes, productVariants)
 
-										setProduct(prev => {
+										setProduct((prev) => {
 											if (!prev) return prev
 											return {
 												...prev,
@@ -462,18 +464,18 @@ function VariantManagementDialog({
 						cell: ({ row }: { row: Row<VariantType> }) => {
 							const setProduct = useSetAtom(productAtom)
 							const variant = row.original
-							const currentValue = variant.combination[attr] || ''
+							const currentValue = variant.combination[attr] || ""
 							const options = Array.from(optSet)
 
 							const handleCombinationChange = (value: string) => {
-								setProduct(prev => {
+								setProduct((prev) => {
 									if (!prev) return prev
 
 									// Append new combination value to the current variant combination in order of attributes
 									const attributeNameInOrder = productAttributes
 										? productAttributes
 												.sort((a, b) => a.order - b.order)
-												.map(a => a.name || a.id.toString())
+												.map((a) => a.name || a.id.toString())
 										: []
 
 									let combination: Record<string, string> = {}
@@ -483,7 +485,7 @@ function VariantManagementDialog({
 
 									return {
 										...prev,
-										variants: prev.variants.map(v =>
+										variants: prev.variants.map((v) =>
 											v.id === variant.id ? { ...v, combination } : v,
 										),
 									}
@@ -493,13 +495,13 @@ function VariantManagementDialog({
 							return (
 								<Select
 									value={currentValue}
-									onValueChange={v => v && handleCombinationChange(v)}
+									onValueChange={(v) => v && handleCombinationChange(v)}
 								>
 									<SelectTrigger className="h-8 w-full">
 										<SelectValue placeholder={`Select ${attr}`} />
 									</SelectTrigger>
 									<SelectContent className="">
-										{options.map(option => {
+										{options.map((option) => {
 											const exists = productVariants
 												? combinationExists({
 														variants: productVariants,
@@ -529,18 +531,18 @@ function VariantManagementDialog({
 					}))
 				: []),
 			{
-				id: '_action',
+				id: "_action",
 				cell: VariantActionCell,
 				size: 80,
 			},
 			{
-				id: '_',
+				id: "_",
 				header: () =>
 					productAttributes ? (
 						<AttributeEditDialog
 							attribute={createNewAttribute(productAttributes)}
-							onSave={a => {
-								setProduct(prev => {
+							onSave={(a) => {
+								setProduct((prev) => {
 									if (!prev) return prev
 									return {
 										...prev,
@@ -565,13 +567,13 @@ function VariantManagementDialog({
 					<Button
 						onClick={() => {
 							const variantId = row.original.id
-							setProduct(prev => {
+							setProduct((prev) => {
 								if (!prev) return prev
 
 								return {
 									...prev,
 									variants: prev.variants
-										.filter(v => v.id !== variantId)
+										.filter((v) => v.id !== variantId)
 										.map((v, i) => ({
 											...v,
 											order: i,
@@ -579,8 +581,8 @@ function VariantManagementDialog({
 								}
 							})
 						}}
-						variant={'destructive'}
-						size={'icon'}
+						variant={"destructive"}
+						size={"icon"}
 						className="size-6 rounded-full focus:ring-0 focus-visible:ring-0"
 					>
 						<CircleMinus />
@@ -601,7 +603,7 @@ function VariantManagementDialog({
 		getCoreRowModel: getCoreRowModel(),
 		getExpandedRowModel: getExpandedRowModel(),
 		getRowCanExpand: () => true,
-		getRowId: row => row.id.toString(),
+		getRowId: (row) => row.id.toString(),
 	})
 
 	return (
@@ -621,13 +623,13 @@ function VariantManagementDialog({
 							style={{
 								gridTemplateColumns: table
 									.getHeaderGroups()[0]
-									.headers.map(header => `${header.getSize()}px`)
-									.join(' '),
+									.headers.map((header) => `${header.getSize()}px`)
+									.join(" "),
 							}}
 							role="row"
 						>
-							{table.getHeaderGroups().map(g =>
-								g.headers.map(header => (
+							{table.getHeaderGroups().map((g) =>
+								g.headers.map((header) => (
 									<div
 										key={header.id}
 										className="text-foreground flex items-center justify-center px-3 py-2 text-sm font-medium"
@@ -645,24 +647,24 @@ function VariantManagementDialog({
 						</div>
 
 						<div role="rowgroup">
-							{table.getRowModel().rows.map(row => (
+							{table.getRowModel().rows.map((row) => (
 								<Fragment key={row.id}>
 									<div
 										className="hover:bg-accent/50 grid w-full min-w-fit border-b last:border-b-0"
 										style={{
 											gridTemplateColumns: row
 												.getVisibleCells()
-												.map(cell => `${cell.column.getSize()}px`)
-												.join(' '),
+												.map((cell) => `${cell.column.getSize()}px`)
+												.join(" "),
 										}}
 										role="row"
 									>
-										{row.getVisibleCells().map(cell => (
+										{row.getVisibleCells().map((cell) => (
 											<div
 												key={cell.id}
 												className={cn(
-													'focus-within:bg-accent flex items-center justify-center text-sm',
-													cell.column.id === '_expander' ? 'p-0' : 'p-2',
+													"focus-within:bg-accent flex items-center justify-center text-sm",
+													cell.column.id === "_expander" ? "p-0" : "p-2",
 												)}
 												role="gridcell"
 												tabIndex={-1}
@@ -679,7 +681,7 @@ function VariantManagementDialog({
 										<div role="row">
 											<div
 												role="gridcell"
-												style={{ gridColumn: '1 / -1' }}
+												style={{ gridColumn: "1 / -1" }}
 												className="p-3"
 											>
 												<VariantRowExpand variantId={row.original.id} />
@@ -696,14 +698,14 @@ function VariantManagementDialog({
 								style={{
 									gridTemplateColumns: table
 										.getHeaderGroups()[0]
-										.headers.map(header => `${header.getSize()}px`)
-										.join(' '),
+										.headers.map((header) => `${header.getSize()}px`)
+										.join(" "),
 								}}
 								role="row"
 							>
 								<div
 									role="gridcell"
-									style={{ gridColumn: '1 / -1' }}
+									style={{ gridColumn: "1 / -1" }}
 									className="p-3"
 								>
 									<Button
@@ -735,12 +737,12 @@ const VariantRowExpand = memo(({ variantId }: { variantId: number }) => {
 	if (!product || !variant) return null
 
 	const handleOptionChange = (field: Partial<VariantType>) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 
 			return {
 				...prev,
-				variants: prev.variants.map(v => {
+				variants: prev.variants.map((v) => {
 					if (v.id === variantId) {
 						return {
 							...v,
@@ -761,7 +763,7 @@ const VariantRowExpand = memo(({ variantId }: { variantId: number }) => {
 		/>
 	)
 })
-VariantRowExpand.displayName = 'VariantRowExpand'
+VariantRowExpand.displayName = "VariantRowExpand"
 
 function AddVariantDialog({
 	open,
@@ -811,7 +813,7 @@ function AddVariantDialog({
 			combinations = newCombinations
 		}
 
-		combinations.forEach(combination => {
+		combinations.forEach((combination) => {
 			if (!combinationExists({ variants: productVariants, combination })) {
 				const newId = -(Math.floor(Math.random() * 2147483648) + 1) // id doesn't matter, backend will delete all and recreate
 				newVariants.push({
@@ -827,9 +829,9 @@ function AddVariantDialog({
 					option: {
 						...product.option,
 						id: newId,
-						image: '',
-						imageAlt: '',
-						imageTitle: '',
+						image: "",
+						imageAlt: "",
+						imageTitle: "",
 					},
 				})
 			}
@@ -837,7 +839,7 @@ function AddVariantDialog({
 
 		// Update product with new variants
 		if (newVariants.length > 0) {
-			setProduct(prev => {
+			setProduct((prev) => {
 				if (!prev) return prev
 
 				return {
@@ -877,10 +879,10 @@ function AddVariantDialog({
 								return (
 									<div key={attr} className="flex items-center gap-2">
 										<Select
-											value={newVariantCombination[attr] || ''}
-											onValueChange={v =>
+											value={newVariantCombination[attr] || ""}
+											onValueChange={(v) =>
 												v &&
-												setNewVariantCombination(prev => ({
+												setNewVariantCombination((prev) => ({
 													...prev,
 													[attr]: v,
 												}))
@@ -892,7 +894,7 @@ function AddVariantDialog({
 												/>
 											</SelectTrigger>
 											<SelectContent className="">
-												{options.map(option => {
+												{options.map((option) => {
 													return (
 														<SelectItem
 															key={option}
@@ -907,11 +909,11 @@ function AddVariantDialog({
 										</Select>
 										<Button
 											variant={
-												newVariantCombination[attr] ? 'ghost' : 'secondary'
+												newVariantCombination[attr] ? "ghost" : "secondary"
 											}
-											size={'sm'}
+											size={"sm"}
 											onClick={() => {
-												setNewVariantCombination(prev => {
+												setNewVariantCombination((prev) => {
 													const { [attr]: _, ...rest } = prev
 													return rest
 												})
@@ -925,7 +927,7 @@ function AddVariantDialog({
 						</div>
 						<DialogFooter>
 							<Button
-								size={'sm'}
+								size={"sm"}
 								onClick={() => {
 									if (quantityToGenerate > 99) {
 										const confirm = window.confirm(
@@ -941,7 +943,7 @@ function AddVariantDialog({
 								disabled={quantityToGenerate === 0}
 							>
 								{`Generate ${quantityToGenerate} variant${
-									quantityToGenerate > 1 ? 's' : ''
+									quantityToGenerate > 1 ? "s" : ""
 								}`}
 							</Button>
 						</DialogFooter>

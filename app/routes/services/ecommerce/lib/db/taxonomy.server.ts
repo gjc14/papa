@@ -1,7 +1,7 @@
-import { inArray, type InferInsertModel } from 'drizzle-orm'
+import { inArray, type InferInsertModel } from "drizzle-orm"
 
-import { dbEcommerce } from './db.server'
-import * as schema from './schema'
+import { dbEcommerce } from "./db.server"
+import * as schema from "./schema"
 
 export const createEcTag = async (
 	props: InferInsertModel<typeof schema.ecTag>,
@@ -17,7 +17,7 @@ export const getEcTags = async () => {
 }
 
 export const deleteEcTags = async (
-	ids: (typeof schema.ecCategory.$inferSelect)['id'][],
+	ids: (typeof schema.ecCategory.$inferSelect)["id"][],
 ) => {
 	await dbEcommerce
 		.delete(schema.ecCategory)
@@ -41,7 +41,7 @@ export const getEcCategories = async () => {
 }
 
 export const deleteEcCategories = async (
-	ids: (typeof schema.ecBrand.$inferSelect)['id'][],
+	ids: (typeof schema.ecBrand.$inferSelect)["id"][],
 ) => {
 	await dbEcommerce
 		.delete(schema.ecBrand)
@@ -65,7 +65,7 @@ export const getEcBrands = async () => {
 }
 
 export const deleteEcBrands = async (
-	ids: (typeof schema.ecBrand.$inferSelect)['id'][],
+	ids: (typeof schema.ecBrand.$inferSelect)["id"][],
 ) => {
 	await dbEcommerce
 		.delete(schema.ecBrand)
@@ -89,7 +89,7 @@ export const getEcAttributes = async () => {
 }
 
 export const deleteEcAttributes = async (
-	ids: (typeof schema.ecAttribute.$inferSelect)['id'][],
+	ids: (typeof schema.ecAttribute.$inferSelect)["id"][],
 ) => {
 	await dbEcommerce
 		.delete(schema.ecAttribute)

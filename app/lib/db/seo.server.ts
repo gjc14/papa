@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm'
+import { eq } from "drizzle-orm"
 
-import { db } from './db.server'
-import { seo as seoTable, type Seo } from './schema'
+import { db } from "./db.server"
+import { seo as seoTable, type Seo } from "./schema"
 
 export const getSeos = async (): Promise<{
 	seos: Seo[]
@@ -30,14 +30,14 @@ export const getSeo = async (route: string): Promise<typeof seo> => {
 }
 
 export const createSeo = async (
-	props: Omit<Seo, 'id' | 'createdAt' | 'updatedAt'>,
+	props: Omit<Seo, "id" | "createdAt" | "updatedAt">,
 ): Promise<typeof seo> => {
 	const [seo] = await db.insert(seoTable).values(props).returning()
 	return seo
 }
 
 export const updateSeo = async (
-	props: Partial<Seo> & Pick<Seo, 'id'>,
+	props: Partial<Seo> & Pick<Seo, "id">,
 ): Promise<typeof seo> => {
 	const [seo] = await db
 		.update(seoTable)

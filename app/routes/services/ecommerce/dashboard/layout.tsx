@@ -1,5 +1,5 @@
-import type { Route } from './+types/layout'
-import { Outlet } from 'react-router'
+import type { Route } from "./+types/layout"
+import { Outlet } from "react-router"
 
 export default function ECLayout({
 	loaderData,

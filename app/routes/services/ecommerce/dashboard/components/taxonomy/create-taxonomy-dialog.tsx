@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import { useFetcher } from 'react-router'
+import { useEffect, useRef, useState } from "react"
+import { useFetcher } from "react-router"
 
-import { CheckCircle2, Plus } from 'lucide-react'
+import { CheckCircle2, Plus } from "lucide-react"
 
-import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
-import { Button } from '~/components/ui/button'
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert"
+import { Button } from "~/components/ui/button"
 import {
 	Dialog,
 	DialogContent,
@@ -12,25 +12,25 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '~/components/ui/dialog'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
+} from "~/components/ui/dialog"
+import { Input } from "~/components/ui/input"
+import { Label } from "~/components/ui/label"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '~/components/ui/select'
-import { Spinner } from '~/components/ui/spinner'
-import { Textarea } from '~/components/ui/textarea'
-import { useFetcherNotification } from '~/hooks/use-notification'
-import type { ActionResponse } from '~/lib/utils'
+} from "~/components/ui/select"
+import { Spinner } from "~/components/ui/spinner"
+import { Textarea } from "~/components/ui/textarea"
+import { useFetcherNotification } from "~/hooks/use-notification"
+import type { ActionResponse } from "~/lib/utils"
 
-import type { Brand } from '../../02_products/03_brands/route'
-import type { Category } from '../../02_products/04_categories/route'
-import type { Tag } from '../../02_products/05_tags/route'
-import type { Attribute } from '../../02_products/06_attributes/route'
+import type { Brand } from "../../02_products/03_brands/route"
+import type { Category } from "../../02_products/04_categories/route"
+import type { Tag } from "../../02_products/05_tags/route"
+import type { Attribute } from "../../02_products/06_attributes/route"
 
 type TaxonomyItem = Brand | Category | Tag | Attribute
 
@@ -136,9 +136,9 @@ type CreateTaxonomyDialogProps = {
 export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 	data,
 	config = {
-		name: 'Item',
-		pluralName: 'Items',
-		actionEndpoint: 'resource',
+		name: "Item",
+		pluralName: "Items",
+		actionEndpoint: "resource",
 		hasDescription: false,
 		hasParent: false,
 		hasImage: false,
@@ -164,7 +164,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 
 	// Only top-level items can be parents
 	const validParentItems = config.hasParent
-		? data.filter(item => ('parentId' in item ? !item.parentId : true))
+		? data.filter((item) => ("parentId" in item ? !item.parentId : true))
 		: []
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -172,17 +172,17 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		const formData = new FormData(e.currentTarget)
 
 		const taxonomyData: Record<string, any> = {
-			name: formData.get('name') as string,
-			slug: formData.get('slug') as string,
+			name: formData.get("name") as string,
+			slug: formData.get("slug") as string,
 		}
 
 		// Add optional fields based on config
 		if (config.hasDescription) {
-			taxonomyData.description = (formData.get('description') as string) ?? null
+			taxonomyData.description = (formData.get("description") as string) ?? null
 		}
 
 		if (config.hasImage) {
-			taxonomyData.image = (formData.get('image') as string) ?? null
+			taxonomyData.image = (formData.get("image") as string) ?? null
 		}
 
 		if (config.hasParent) {
@@ -190,13 +190,13 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		}
 
 		if (config.hasValue) {
-			taxonomyData.value = (formData.get('value') as string) ?? null
+			taxonomyData.value = (formData.get("value") as string) ?? null
 		}
 
 		fetcher.submit(taxonomyData, {
-			method: 'post',
+			method: "post",
 			action: config.actionEndpoint,
-			encType: 'application/json',
+			encType: "application/json",
 		})
 	}
 
@@ -217,7 +217,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 	return (
 		<Dialog
 			open={open}
-			onOpenChange={o => {
+			onOpenChange={(o) => {
 				if (o) setShowSuccess(false)
 				setOpen(o)
 			}}
@@ -338,7 +338,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 								<Label htmlFor="parentId">Parent {config.name}</Label>
 								<Select
 									value={selectedParentId}
-									onValueChange={v => setSelectedParentId(v)}
+									onValueChange={(v) => setSelectedParentId(v)}
 									disabled={mutating}
 								>
 									<SelectTrigger className="w-full">
@@ -350,7 +350,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 										<SelectItem value={null}>
 											None (Top-level {config.name.toLowerCase()})
 										</SelectItem>
-										{validParentItems.map(item => (
+										{validParentItems.map((item) => (
 											<SelectItem key={item.id} value={item.id.toString()}>
 												{item.name}
 											</SelectItem>

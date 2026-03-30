@@ -1,10 +1,10 @@
 /**
  * @see https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt?hl=zh-tw
  */
-import type { Route } from './+types/robots.txt'
+import type { Route } from "./+types/robots.txt"
 
-import { getServiceRobotsConfigs } from '~/lib/service/system-endpoints.server'
-import { configsToRobotsTxt, type RobotsConfig } from '~/lib/service/utils'
+import { getServiceRobotsConfigs } from "~/lib/service/system-endpoints.server"
+import { configsToRobotsTxt, type RobotsConfig } from "~/lib/service/utils"
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
@@ -12,8 +12,8 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 	const DEFAULT_ROBOTS_CONFIG: RobotsConfig = {
 		groups: [
 			{
-				userAgents: ['*'],
-				disallow: ['/dashboard/'],
+				userAgents: ["*"],
+				disallow: ["/dashboard/"],
 				crawlDelay: 300,
 			},
 		],
@@ -69,9 +69,9 @@ ${plainText}`.trim(),
 		{
 			status: 200,
 			headers: {
-				'Content-Type': 'text/plain',
-				'X-Content-Type-Options': 'nosniff',
-				'Cache-Control': 'public, max-age=3600',
+				"Content-Type": "text/plain",
+				"X-Content-Type-Options": "nosniff",
+				"Cache-Control": "public, max-age=3600",
 			},
 		},
 	)

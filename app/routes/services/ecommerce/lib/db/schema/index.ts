@@ -4,5 +4,5 @@
 // export * from './logistic'
 // export * from './order'
 // export * from './payment'
-export * from './product'
-export * from './taxonomy'
+export * from "./product"
+export * from "./taxonomy"

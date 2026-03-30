@@ -1,4 +1,4 @@
-import type { Seo } from '~/lib/db/schema'
+import type { Seo } from "~/lib/db/schema"
 
 // Counter to ensure unique slugs when generating fallbacks
 let slugCounter = 0
@@ -20,11 +20,11 @@ export const generateSlug = (
 ) => {
 	const {
 		maxLength = 50,
-		fallbackPrefix = 'item',
+		fallbackPrefix = "item",
 		preserveUnicode = true,
 	} = options
 
-	if (!name || typeof name !== 'string') {
+	if (!name || typeof name !== "string") {
 		return generateFallbackSlug(fallbackPrefix)
 	}
 
@@ -36,28 +36,28 @@ export const generateSlug = (
 		slug = slug
 			.toLowerCase()
 			// Replace spaces and CJK ideographic space with hyphens
-			.replace(/[\s\u3000]+/g, '-') // \u3000 is CJK ideographic space
+			.replace(/[\s\u3000]+/g, "-") // \u3000 is CJK ideographic space
 			// Replace common CJK punctuation with hyphens for better URL readability
-			.replace(/[，。！？；：""''（）【】「」『』〈〉《》、]/g, '-')
+			.replace(/[，。！？；：""''（）【】「」『』〈〉《》、]/g, "-")
 			// Remove or replace other problematic characters but keep Unicode letters/numbers
-			.replace(/[^\p{L}\p{N}\-_.~]/gu, '-')
+			.replace(/[^\p{L}\p{N}\-_.~]/gu, "-")
 			// Handle multiple consecutive hyphens
-			.replace(/-+/g, '-')
+			.replace(/-+/g, "-")
 			// Remove leading/trailing hyphens
-			.replace(/^-+|-+$/g, '')
+			.replace(/^-+|-+$/g, "")
 	} else {
 		// Only ASCII characters
 		slug = slug
 			.toLowerCase()
-			.replace(/[^a-z0-9 -]/g, '')
-			.replace(/\s+/g, '-')
-			.replace(/-+/g, '-')
-			.replace(/^-+|-+$/g, '')
+			.replace(/[^a-z0-9 -]/g, "")
+			.replace(/\s+/g, "-")
+			.replace(/-+/g, "-")
+			.replace(/^-+|-+$/g, "")
 	}
 
 	// Truncate if too long
 	if (slug.length > maxLength) {
-		slug = slug.substring(0, maxLength).replace(/-+$/, '')
+		slug = slug.substring(0, maxLength).replace(/-+$/, "")
 	}
 
 	// If slug is empty or too short after processing, generate fallback
@@ -66,14 +66,14 @@ export const generateSlug = (
 	}
 
 	if (options.prevent && options.prevent.includes(slug)) {
-		slug = slug + '-' + getRandomAnimal()
+		slug = slug + "-" + getRandomAnimal()
 	}
 
 	return slug
 }
 
 function getRandomAnimal() {
-	const animals = ['cat', 'dog', 'elephant', 'giraffe', 'penguin']
+	const animals = ["cat", "dog", "elephant", "giraffe", "penguin"]
 	const randomIndex = Math.floor(Math.random() * animals.length)
 	return animals[randomIndex]
 }
@@ -83,7 +83,7 @@ function getRandomAnimal() {
  * @param prefix - Prefix for the fallback slug
  * @returns A unique fallback slug
  */
-const generateFallbackSlug = (prefix: string = 'item'): string => {
+const generateFallbackSlug = (prefix: string = "item"): string => {
 	const timestamp = Date.now()
 	const counter = ++slugCounter
 	return `${prefix}-${timestamp}-${counter}`
@@ -99,56 +99,56 @@ export const createMeta = (seo: Seo, url: URL) => {
 
 	// Description
 	if (seo.metaDescription) {
-		metaTags.push({ name: 'description', content: seo.metaDescription })
+		metaTags.push({ name: "description", content: seo.metaDescription })
 	}
 
 	// Keywords
 	if (seo.keywords) {
-		metaTags.push({ name: 'keywords', content: seo.keywords })
+		metaTags.push({ name: "keywords", content: seo.keywords })
 	}
 
 	// Open Graph tags
 	if (seo.metaTitle) {
-		metaTags.push({ property: 'og:title', content: seo.metaTitle })
+		metaTags.push({ property: "og:title", content: seo.metaTitle })
 	}
 
 	if (seo.metaDescription) {
 		metaTags.push({
-			property: 'og:description',
+			property: "og:description",
 			content: seo.metaDescription,
 		})
 	}
 
 	// Open Graph Image
 	if (seo.ogImage) {
-		metaTags.push({ property: 'og:image', content: seo.ogImage })
+		metaTags.push({ property: "og:image", content: seo.ogImage })
 	}
 
 	// Other Open Graph tags
-	metaTags.push({ property: 'og:type', content: 'website' })
+	metaTags.push({ property: "og:type", content: "website" })
 
 	// Current URL
 	metaTags.push({
-		property: 'og:url',
+		property: "og:url",
 		content: url.href,
 	})
 
 	// Twitter Card
-	metaTags.push({ name: 'twitter:card', content: 'summary_large_image' })
+	metaTags.push({ name: "twitter:card", content: "summary_large_image" })
 
 	if (seo.metaTitle) {
-		metaTags.push({ name: 'twitter:title', content: seo.metaTitle })
+		metaTags.push({ name: "twitter:title", content: seo.metaTitle })
 	}
 
 	if (seo.metaDescription) {
 		metaTags.push({
-			name: 'twitter:description',
+			name: "twitter:description",
 			content: seo.metaDescription,
 		})
 	}
 
 	if (seo.ogImage) {
-		metaTags.push({ name: 'twitter:image', content: seo.ogImage })
+		metaTags.push({ name: "twitter:image", content: seo.ogImage })
 	}
 
 	return { metaTags, seo }
@@ -189,23 +189,23 @@ export function generateSeoDescription(
 	}
 
 	// Remove any HTML or markdown tags
-	const cleanText = paragraph.replace(/<[^>]*>|\*\*([^*]*)\*\*/g, '$1')
+	const cleanText = paragraph.replace(/<[^>]*>|\*\*([^*]*)\*\*/g, "$1")
 
 	// Split the paragraph into sentences.
 	// Consider multiple punctuation marks, especially for CJK languages.
 	const sentences = cleanText
-		.replace(/([.!?。！？…\n])\s*/g, '$1|')
-		.split('|')
-		.filter(s => s.trim().length > 0)
+		.replace(/([.!?。！？…\n])\s*/g, "$1|")
+		.split("|")
+		.filter((s) => s.trim().length > 0)
 
 	// Construct the description by adding sentences until near the maxLength limit.
-	let description = ''
+	let description = ""
 	let i = 0
 	while (
 		i < sentences.length &&
 		description.length + sentences[i].length < settings.maxLength - 3
 	) {
-		description += sentences[i] + ' '
+		description += sentences[i] + " "
 		i++
 	}
 
@@ -221,27 +221,27 @@ export function generateSeoDescription(
 
 		// Find the last space to avoid cutting a word in half.
 		// For CJK languages, this might not always be necessary, but it's useful for mixed texts.
-		const lastSpace = description.lastIndexOf(' ')
+		const lastSpace = description.lastIndexOf(" ")
 		if (lastSpace > settings.maxLength * 0.7) {
 			description = description.substring(0, lastSpace)
 		}
 
-		description += '...'
+		description += "..."
 	}
 
 	// Clean up extra spaces and trim the description.
-	description = description.replace(/\s+/g, ' ').trim()
+	description = description.replace(/\s+/g, " ").trim()
 
 	// Extract potential keywords (nouns, named entities, etc.)
 	const keywords = extractKeywords(cleanText)
 
 	// Optionally emphasize keywords in the description.
 	if (settings.keywordEmphasis && keywords.length > 0) {
-		keywords.forEach(keyword => {
+		keywords.forEach((keyword) => {
 			// Check if the keyword exists in the description (case-insensitive)
 			if (description.toLowerCase().includes(keyword.toLowerCase())) {
 				// Use word boundary regex to ensure we're not matching a substring of a larger word.
-				const regex = new RegExp(`\\b${escapeRegExp(keyword)}\\b`, 'gi')
+				const regex = new RegExp(`\\b${escapeRegExp(keyword)}\\b`, "gi")
 				// Here, you could wrap the keyword with a tag for emphasis, e.g.,:
 				// description = description.replace(regex, `<strong>${keyword}</strong>`);
 				// For now, we'll simply reassign the keyword (this line can be modified as needed).
@@ -271,44 +271,44 @@ export function extractKeywords(text: string): string[] {
 		// Simple segmentation for CJK languages.
 		// In production, consider using a professional NLP library.
 		const segmented = text
-			.replace(/[，。！？；：""''（）【】「」『』〈〉《》、]/g, ' ')
+			.replace(/[，。！？；：""''（）【】「」『』〈〉《》、]/g, " ")
 			.split(/\s+/)
-			.filter(word => word.length >= 2)
+			.filter((word) => word.length >= 2)
 		words = segmented
 	} else {
 		// Tokenization for Western languages.
 		const smallWords = new Set([
-			'a',
-			'an',
-			'the',
-			'and',
-			'or',
-			'but',
-			'in',
-			'on',
-			'at',
-			'to',
-			'for',
-			'with',
-			'by',
-			'of',
+			"a",
+			"an",
+			"the",
+			"and",
+			"or",
+			"but",
+			"in",
+			"on",
+			"at",
+			"to",
+			"for",
+			"with",
+			"by",
+			"of",
 		])
 		words = text
 			.split(/\s+/)
-			.map(word => word.replace(/[,.()[\]{}:;'"]/g, ''))
-			.filter(word => word.length > 2 && !smallWords.has(word.toLowerCase()))
+			.map((word) => word.replace(/[,.()[\]{}:;'"]/g, ""))
+			.filter((word) => word.length > 2 && !smallWords.has(word.toLowerCase()))
 	}
 
 	// Calculate word frequency.
 	const wordCount: Record<string, number> = {}
-	words.forEach(word => {
+	words.forEach((word) => {
 		const lower = word.toLowerCase()
 		wordCount[lower] = (wordCount[lower] || 0) + 1
 	})
 
 	// Get frequent words (appearing more than once).
 	const frequentWords = Object.keys(wordCount)
-		.filter(word => wordCount[word] > 1)
+		.filter((word) => wordCount[word] > 1)
 		.sort((a, b) => wordCount[b] - wordCount[a])
 
 	// If no frequent words, return the longest few words.
@@ -326,7 +326,7 @@ export function extractKeywords(text: string): string[] {
  * @returns The escaped string.
  */
 function escapeRegExp(string: string): string {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
 /**

@@ -1,12 +1,12 @@
-import { NodemailerProvider } from './providers/nodemailer'
-import { ResendProvider } from './providers/resend'
-import { SESProvider } from './providers/ses'
+import { NodemailerProvider } from "./providers/nodemailer"
+import { ResendProvider } from "./providers/resend"
+import { SESProvider } from "./providers/ses"
 import {
 	EmailProviderType,
 	type EmailConfig,
 	type EmailOptions,
 	type EmailProvider,
-} from './types'
+} from "./types"
 
 export class EmailService {
 	private provider: EmailProvider
@@ -21,7 +21,7 @@ export class EmailService {
 		switch (config.provider) {
 			case EmailProviderType.RESEND:
 				if (!config.config.resendApiKey) {
-					throw new Error('Resend API key is required')
+					throw new Error("Resend API key is required")
 				}
 
 				return new ResendProvider(config.config.resendApiKey)
@@ -29,7 +29,7 @@ export class EmailService {
 			case EmailProviderType.NODEMAILER:
 			case EmailProviderType.SMTP:
 				if (!config.config.host || !config.config.user || !config.config.pass) {
-					throw new Error('Nodemailer configuration is incomplete')
+					throw new Error("Nodemailer configuration is incomplete")
 				}
 
 				return new NodemailerProvider({
@@ -42,7 +42,7 @@ export class EmailService {
 
 			case EmailProviderType.SES:
 				if (!config.config.region) {
-					throw new Error('AWS SES region is required')
+					throw new Error("AWS SES region is required")
 				}
 
 				return new SESProvider({
@@ -57,7 +57,7 @@ export class EmailService {
 	}
 
 	async send(
-		options: Omit<EmailOptions, 'from'> & { from?: string },
+		options: Omit<EmailOptions, "from"> & { from?: string },
 	): Promise<void> {
 		const emailOptions: EmailOptions = {
 			...options,
@@ -123,7 +123,7 @@ export function createEmailService(): EmailService | null {
 	const emailFrom = process.env.EMAIL_FROM || process.env.AUTH_EMAIL
 
 	if (!emailFrom) {
-		console.warn('EMAIL_FROM environment variable is required')
+		console.warn("EMAIL_FROM environment variable is required")
 		return null
 	}
 
@@ -133,7 +133,7 @@ export function createEmailService(): EmailService | null {
 		switch (provider) {
 			case EmailProviderType.RESEND:
 				if (!process.env.RESEND_API_KEY) {
-					console.warn('RESEND_API_KEY is required for Resend provider')
+					console.warn("RESEND_API_KEY is required for Resend provider")
 					return null
 				}
 				config = {
@@ -153,7 +153,7 @@ export function createEmailService(): EmailService | null {
 					!process.env.SMTP_PASS
 				) {
 					console.warn(
-						'SMTP_HOST, SMTP_USER, and SMTP_PASS are required for Nodemailer provider',
+						"SMTP_HOST, SMTP_USER, and SMTP_PASS are required for Nodemailer provider",
 					)
 					return null
 				}
@@ -162,7 +162,7 @@ export function createEmailService(): EmailService | null {
 					config: {
 						host: process.env.SMTP_HOST,
 						port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
-						secure: process.env.SMTP_SECURE === 'true',
+						secure: process.env.SMTP_SECURE === "true",
 						user: process.env.SMTP_USER,
 						pass: process.env.SMTP_PASS,
 					},
@@ -172,7 +172,7 @@ export function createEmailService(): EmailService | null {
 
 			case EmailProviderType.SES:
 				if (!process.env.AWS_SES_REGION) {
-					console.warn('AWS_SES_REGION is required for SES provider')
+					console.warn("AWS_SES_REGION is required for SES provider")
 					return null
 				}
 				config = {
@@ -187,13 +187,13 @@ export function createEmailService(): EmailService | null {
 				break
 
 			default:
-				console.warn(`Unsupported email provider: ${provider || 'unknown'}`)
+				console.warn(`Unsupported email provider: ${provider || "unknown"}`)
 				return null
 		}
 
 		return new EmailService(config)
 	} catch (error) {
-		console.error('Failed to create email service:', error)
+		console.error("Failed to create email service:", error)
 		return null
 	}
 }

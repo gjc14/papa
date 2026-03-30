@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
+import React, { useCallback, useState } from "react"
+import { useDropzone } from "react-dropzone"
 
-import { CloudUploadIcon, CupSoda } from 'lucide-react'
-import { toast } from 'sonner'
+import { CloudUploadIcon, CupSoda } from "lucide-react"
+import { toast } from "sonner"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	Dialog,
 	DialogContent,
@@ -12,14 +12,14 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '~/components/ui/dialog'
-import { authClient } from '~/lib/auth/auth-client'
-import type { FileMetadata } from '~/lib/db/schema'
-import { cn } from '~/lib/utils'
+} from "~/components/ui/dialog"
+import { authClient } from "~/lib/auth/auth-client"
+import type { FileMetadata } from "~/lib/db/schema"
+import { cn } from "~/lib/utils"
 
-import { useFileUpload } from '../utils'
-import { FileCard } from './file-card'
-import { ProgressCard } from './progress-card'
+import { useFileUpload } from "../utils"
+import { FileCard } from "./file-card"
+import { ProgressCard } from "./progress-card"
 
 export interface FileGridProps {
 	files: FileMetadata[]
@@ -35,7 +35,7 @@ export interface FileGridProps {
 		React.SetStateAction<FileMetadata | null>
 	>
 	/** @default "sm" */
-	cardSize?: 'sm' | 'md' | 'lg'
+	cardSize?: "sm" | "md" | "lg"
 }
 
 /**
@@ -79,13 +79,13 @@ export const FileGrid = (props: FileGridProps) => {
 
 				<FileGridMain
 					{...props}
-					onFileSelect={file => {
+					onFileSelect={(file) => {
 						setOpen(false)
 						props.onFileSelect?.(file)
 					}}
 					visuallySelected={visuallySelected}
 					setVisuallySelected={setVisuallySelected}
-					cardSize={props.cardSize || (props.dialogTrigger ? 'md' : undefined)}
+					cardSize={props.cardSize || (props.dialogTrigger ? "md" : undefined)}
 				/>
 			</DialogContent>
 		</Dialog>
@@ -105,7 +105,7 @@ const FileGridMain = ({
 	dialogTrigger,
 	visuallySelected,
 	setVisuallySelected,
-	cardSize = 'sm',
+	cardSize = "sm",
 }: FileGridProps) => {
 	const { data: userSession } = authClient.useSession()
 
@@ -121,12 +121,12 @@ const FileGridMain = ({
 
 	const getAcceptedFileTypes = useCallback(() => {
 		const types: { [type: string]: [] } = {}
-		if (acceptedTypes.images) types['image/*'] = []
-		if (acceptedTypes.videos) types['video/*'] = []
-		if (acceptedTypes.audio) types['audio/*'] = []
+		if (acceptedTypes.images) types["image/*"] = []
+		if (acceptedTypes.videos) types["video/*"] = []
+		if (acceptedTypes.audio) types["audio/*"] = []
 		if (acceptedTypes.documents) {
-			types['application/pdf'] = []
-			types['text/plain'] = []
+			types["application/pdf"] = []
+			types["text/plain"] = []
 		}
 		return types
 	}, [acceptedTypes])
@@ -134,7 +134,7 @@ const FileGridMain = ({
 	const { uploadProgress, oneStepUpload } = useFileUpload()
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
 		accept: getAcceptedFileTypes(),
-		onDrop: async acceptedFiles => {
+		onDrop: async (acceptedFiles) => {
 			if (!userSession) return
 
 			try {
@@ -144,8 +144,8 @@ const FileGridMain = ({
 				)
 				onUpload?.(filesWithPresignedUrl)
 			} catch (error) {
-				console.error('Error uploading files:', error)
-				return toast.error('Error uploading files. Please try again.')
+				console.error("Error uploading files:", error)
+				return toast.error("Error uploading files. Please try again.")
 			}
 		},
 	})
@@ -153,16 +153,16 @@ const FileGridMain = ({
 	return (
 		<div
 			className={cn(
-				'relative h-auto w-full grow overflow-scroll border-4 border-dashed p-3',
-				isDragActive ? 'border-4 border-sky-600 dark:border-sky-600' : '',
+				"relative h-auto w-full grow overflow-scroll border-4 border-dashed p-3",
+				isDragActive ? "border-4 border-sky-600 dark:border-sky-600" : "",
 			)}
 			{...getRootProps()}
 		>
 			<input {...getInputProps()} />
 			<div
 				className={cn(
-					'bg-muted absolute inset-0 z-10 flex h-full w-full items-center justify-center',
-					isDragActive ? '' : 'hidden',
+					"bg-muted absolute inset-0 z-10 flex h-full w-full items-center justify-center",
+					isDragActive ? "" : "hidden",
 				)}
 			>
 				<CloudUploadIcon className="text-foreground h-12 w-12" />
@@ -170,18 +170,18 @@ const FileGridMain = ({
 			{files.length > 0 ? (
 				<div
 					className={cn(
-						'grid gap-2',
+						"grid gap-2",
 						files.length === 1
-							? 'grid-cols-2'
-							: 'grid-cols-[repeat(auto-fit,minmax(100px,1fr))]',
-						cardSize === 'lg'
-							? 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
-							: cardSize === 'md'
-								? 'sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
-								: 'sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7', // sm
+							? "grid-cols-2"
+							: "grid-cols-[repeat(auto-fit,minmax(100px,1fr))]",
+						cardSize === "lg"
+							? "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+							: cardSize === "md"
+								? "sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+								: "sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7", // sm
 					)}
 				>
-					{files.map(file => {
+					{files.map((file) => {
 						return (
 							<FileCard
 								key={file.key}

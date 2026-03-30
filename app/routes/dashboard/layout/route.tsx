@@ -1,28 +1,28 @@
-import type { Route } from './+types/route'
-import { memo, useEffect, useMemo } from 'react'
-import { Link, redirect, Outlet as RROutlet, useNavigation } from 'react-router'
+import type { Route } from "./+types/route"
+import { memo, useEffect, useMemo } from "react"
+import { Link, redirect, Outlet as RROutlet, useNavigation } from "react-router"
 
-import { useAtom } from 'jotai'
-import { Undo2 } from 'lucide-react'
+import { useAtom } from "jotai"
+import { Undo2 } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
+import { Button } from "~/components/ui/button"
 import {
 	SIDEBAR_COOKIE_NAME,
 	SidebarInset,
 	SidebarProvider,
-} from '~/components/ui/sidebar'
-import { Spinner } from '~/components/ui/spinner'
-import { DashboardLayout } from '~/components/dashboard/dashboard-wrapper'
-import { DashboardSidebar } from '~/components/dashboard/sidebar'
+} from "~/components/ui/sidebar"
+import { Spinner } from "~/components/ui/spinner"
+import { DashboardLayout } from "~/components/dashboard/dashboard-wrapper"
+import { DashboardSidebar } from "~/components/dashboard/sidebar"
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
-} from '~/components/error-boundary-template'
-import { auth } from '~/lib/auth/auth.server'
-import { authContext } from '~/middleware/context/auth'
+} from "~/components/error-boundary-template"
+import { auth } from "~/lib/auth/auth.server"
+import { authContext } from "~/middleware/context/auth"
 
-import { HeaderWithBreadcrumbs } from './components/header-breadcrumbs'
-import { dashboardContextAtom } from './context'
+import { HeaderWithBreadcrumbs } from "./components/header-breadcrumbs"
+import { dashboardContextAtom } from "./context"
 
 const MemoDashboardSidebar = memo(DashboardSidebar)
 const MemoHeaderWithBreadcrumb = memo(HeaderWithBreadcrumbs)
@@ -35,15 +35,15 @@ const authMiddleware: Route.MiddlewareFunction = async (
 		headers: request.headers,
 		returnHeaders: true,
 	})
-	if (!session || session.user.role !== 'admin') {
-		throw redirect('/dashboard/portal')
+	if (!session || session.user.role !== "admin") {
+		throw redirect("/dashboard/portal")
 	}
 	context.set(authContext, session)
 
 	// Merge better auth set cookies with downstream
 	const res = await next()
 	const cookies = headers.getSetCookie()
-	for (const c of cookies) res.headers.append('Set-Cookie', c)
+	for (const c of cookies) res.headers.append("Set-Cookie", c)
 
 	return res
 }
@@ -54,7 +54,7 @@ export const loader = async ({ request, context }: Route.LoaderArgs) => {
 	const adminSession = context.get(authContext)
 
 	const defaultSidebarOpen = new RegExp(`${SIDEBAR_COOKIE_NAME}=true`).test(
-		request.headers.get('cookie') || '',
+		request.headers.get("cookie") || "",
 	)
 
 	return {
@@ -69,9 +69,9 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 	const memoizedUser = useMemo(
 		() => ({
 			...admin,
-			name: admin.name ?? 'User',
-			image: admin.image ?? '/placeholders/avatar.png',
-			role: admin.role ?? 'admin',
+			name: admin.name ?? "User",
+			image: admin.image ?? "/placeholders/avatar.png",
+			role: admin.role ?? "admin",
 		}),
 		[admin],
 	)
@@ -96,12 +96,12 @@ const Outlet = () => {
 
 	// Use context during 'loading', fall back to location.state after loader completes
 	const shouldShowLoader =
-		navigation.state === 'loading' &&
+		navigation.state === "loading" &&
 		dashboardContext.navigation.showGlobalLoader
 
 	useEffect(() => {
-		if (navigation.state === 'idle') {
-			setDashboardContext(prev => ({
+		if (navigation.state === "idle") {
+			setDashboardContext((prev) => ({
 				...prev,
 				navigation: { showGlobalLoader: true },
 			})) // Reset to default
@@ -122,7 +122,7 @@ const Outlet = () => {
 export function ErrorBoundary() {
 	return (
 		<ErrorBoundaryTemplate>
-			{props => <ErrorTemplate {...props} returnTo={'/dashboard'} />}
+			{(props) => <ErrorTemplate {...props} returnTo={"/dashboard"} />}
 		</ErrorBoundaryTemplate>
 	)
 }
@@ -143,12 +143,12 @@ const ErrorTemplate = ({
 						{status}
 					</h1>
 					<h2 className="text-base font-light">
-						{statusMessage.text || 'Error Page'}
+						{statusMessage.text || "Error Page"}
 					</h2>
 				</div>
 
 				<Button
-					variant={'link'}
+					variant={"link"}
 					render={
 						<Link to={returnTo} className="mt-5">
 							<span>

@@ -1,35 +1,35 @@
-import type { Route } from './+types/route'
-import { useEffect } from 'react'
-import { Link } from 'react-router'
+import type { Route } from "./+types/route"
+import { useEffect } from "react"
+import { Link } from "react-router"
 
-import { useSetAtom } from 'jotai'
-import { useHydrateAtoms } from 'jotai/utils'
-import { ArrowLeft, Store } from 'lucide-react'
+import { useSetAtom } from "jotai"
+import { useHydrateAtoms } from "jotai/utils"
+import { ArrowLeft, Store } from "lucide-react"
 
-import { Button } from '~/components/ui/button'
-import { Separator } from '~/components/ui/separator'
+import { Button } from "~/components/ui/button"
+import { Separator } from "~/components/ui/separator"
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
-} from '~/components/error-boundary-template'
-import { validateAdminSession } from '~/routes/auth/utils'
+} from "~/components/error-boundary-template"
+import { validateAdminSession } from "~/routes/auth/utils"
 
 import {
 	getCrossSellProducts,
 	getProduct,
 	getProductGallery,
-} from '../../lib/db/product.server'
+} from "../../lib/db/product.server"
 import {
 	crossSellProductsAtom,
 	isResolvingAtom,
 	productAtom,
 	productGalleryAtom,
-} from './context'
-import { StoreProductPage } from './page'
+} from "./context"
+import { StoreProductPage } from "./page"
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
-	const preview = url.searchParams.get('preview') === 'true'
+	const preview = url.searchParams.get("preview") === "true"
 	if (preview) await validateAdminSession(request)
 
 	const product = await getProduct({
@@ -39,7 +39,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
 
 	if (!product) {
 		// TODO: fetch customized "not found" text
-		throw new Response('Product Not Found', {
+		throw new Response("Product Not Found", {
 			status: 404,
 		})
 	}
@@ -67,10 +67,12 @@ export default function ProductRoute({ loaderData }: Route.ComponentProps) {
 		// Resolve promises
 		loaderData.crossSellProductsPromise
 			.then(setCrossSellProducts)
-			.finally(() => setIsResolving(r => ({ ...r, crossSellProducts: false })))
+			.finally(() =>
+				setIsResolving((r) => ({ ...r, crossSellProducts: false })),
+			)
 		loaderData.productGalleryPromise
 			.then(setProductGallery)
-			.finally(() => setIsResolving(r => ({ ...r, productGallery: false })))
+			.finally(() => setIsResolving((r) => ({ ...r, productGallery: false })))
 
 		return () => {
 			setProduct(null)
@@ -86,7 +88,7 @@ export default function ProductRoute({ loaderData }: Route.ComponentProps) {
 export function ErrorBoundary() {
 	return (
 		<ErrorBoundaryTemplate>
-			{props => <ProductErrorTemplate {...props} returnTo={'/store'} />}
+			{(props) => <ProductErrorTemplate {...props} returnTo={"/store"} />}
 		</ErrorBoundaryTemplate>
 	)
 }
@@ -111,12 +113,12 @@ const ProductErrorTemplate = ({
 				<Separator className="mt-3 mb-6 w-20 md:w-36" />
 
 				<h2 className="text-base font-light">
-					{statusMessage.text || 'Product Error Page'}
+					{statusMessage.text || "Product Error Page"}
 				</h2>
 
 				<div className="mt-12 mb-8 flex items-center gap-3">
 					<Button
-						variant={'link'}
+						variant={"link"}
 						render={
 							<Link to={returnTo}>
 								<ArrowLeft size={12} />
@@ -125,9 +127,9 @@ const ProductErrorTemplate = ({
 						}
 					/>
 					<Button
-						variant={'outline'}
+						variant={"outline"}
 						render={
-							<Link to={'/store'}>
+							<Link to={"/store"}>
 								Browse Products
 								<Store size={12} />
 							</Link>
@@ -138,20 +140,20 @@ const ProductErrorTemplate = ({
 				<div>
 					<p className="text-muted-foreground text-sm">Need assistance?</p>
 					<Button
-						variant={'link'}
-						render={<Link to={'/store/contact'}>Contact Us</Link>}
+						variant={"link"}
+						render={<Link to={"/store/contact"}>Contact Us</Link>}
 					/>
 				</div>
 			</div>
 			<div className="font-open-sans mb-8 flex items-center">
 				<p className="mr-3 inline-block border-r pr-5 text-lg font-normal">
 					{/* TODO: Store name */}
-					{'Papa E-Commerce'}
+					{"Papa E-Commerce"}
 				</p>
 				<div className="inline-block">
 					<p className="text-left text-xs font-light">
-						{/* TODO: Store Copyright */}© {new Date().getFullYear()}{' '}
-						{'CHIU YIN CHEN @Taipei'}
+						{/* TODO: Store Copyright */}© {new Date().getFullYear()}{" "}
+						{"CHIU YIN CHEN @Taipei"}
 					</p>
 				</div>
 			</div>

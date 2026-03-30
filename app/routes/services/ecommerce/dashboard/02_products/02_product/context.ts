@@ -1,4 +1,4 @@
-import { atom } from 'jotai'
+import { atom } from "jotai"
 
 export const isRestoreAlertOpenAtom = atom(false)
 export const isResetAlertOpenAtom = atom(false)

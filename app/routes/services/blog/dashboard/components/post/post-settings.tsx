@@ -1,7 +1,7 @@
-import { XIcon } from '@phosphor-icons/react'
-import { useAtom } from 'jotai'
+import { XIcon } from "@phosphor-icons/react"
+import { useAtom } from "jotai"
 
-import { Separator } from '~/components/ui/separator'
+import { Separator } from "~/components/ui/separator"
 import {
 	Sheet,
 	SheetClose,
@@ -9,14 +9,14 @@ import {
 	SheetDescription,
 	SheetHeader,
 	SheetTitle,
-} from '~/components/ui/sheet'
-import { useIsMobile } from '~/hooks/use-mobile'
+} from "~/components/ui/sheet"
+import { useIsMobile } from "~/hooks/use-mobile"
 
-import { isSettingsOpenAtom } from '../../context'
-import { DangerZone } from './danger-zone'
-import { PostMetaPart } from './post-meta-part'
-import { SeoPart } from './seo-part'
-import { TaxonomyPart } from './taxonomy-part'
+import { isSettingsOpenAtom } from "../../context"
+import { DangerZone } from "./danger-zone"
+import { PostMetaPart } from "./post-meta-part"
+import { SeoPart } from "./seo-part"
+import { TaxonomyPart } from "./taxonomy-part"
 
 export const PostSettings = () => {
 	const [open, setOpen] = useAtom(isSettingsOpenAtom)
@@ -26,8 +26,8 @@ export const PostSettings = () => {
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetContent
-				className={`overflow-y-scroll pt-0 ${isMobile ? 'max-h-9/10' : ''}`}
-				side={isMobile ? 'bottom' : 'right'}
+				className={`overflow-y-scroll pt-0 ${isMobile ? "max-h-9/10" : ""}`}
+				side={isMobile ? "bottom" : "right"}
 				showCloseButton={false}
 			>
 				<SheetHeader className="supports-[backdrop-filter]:bg-background/80 bg-background sticky top-0 flex-row items-center justify-between space-y-0 py-3 backdrop-blur-xs">

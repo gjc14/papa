@@ -1,19 +1,19 @@
-import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
-import { Highlight } from '@tiptap/extension-highlight'
-import { Image } from '@tiptap/extension-image'
-import { TaskItem, TaskList } from '@tiptap/extension-list'
-import { Subscript } from '@tiptap/extension-subscript'
-import { Superscript } from '@tiptap/extension-superscript'
-import { TextAlign } from '@tiptap/extension-text-align'
-import { TextStyleKit } from '@tiptap/extension-text-style'
-import { Typography } from '@tiptap/extension-typography'
-import { Youtube } from '@tiptap/extension-youtube'
-import { Placeholder, Selection } from '@tiptap/extensions'
-import { StarterKit } from '@tiptap/starter-kit'
-import { common, createLowlight } from 'lowlight'
+import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight"
+import { Highlight } from "@tiptap/extension-highlight"
+import { Image } from "@tiptap/extension-image"
+import { TaskItem, TaskList } from "@tiptap/extension-list"
+import { Subscript } from "@tiptap/extension-subscript"
+import { Superscript } from "@tiptap/extension-superscript"
+import { TextAlign } from "@tiptap/extension-text-align"
+import { TextStyleKit } from "@tiptap/extension-text-style"
+import { Typography } from "@tiptap/extension-typography"
+import { Youtube } from "@tiptap/extension-youtube"
+import { Placeholder, Selection } from "@tiptap/extensions"
+import { StarterKit } from "@tiptap/starter-kit"
+import { common, createLowlight } from "lowlight"
 
 // Custom Extensions
-import { SmilieReplacer } from './extensions/smilie-replacer'
+import { SmilieReplacer } from "./extensions/smilie-replacer"
 
 /**
  * ExtensionKit
@@ -33,8 +33,8 @@ export const ExtensionKit = ({
 			link: {
 				openOnClick: openOnClick,
 				autolink: true,
-				defaultProtocol: 'https',
-				protocols: ['https', 'http', 'mailto', 'tel'],
+				defaultProtocol: "https",
+				protocols: ["https", "http", "mailto", "tel"],
 			},
 		}),
 
@@ -47,7 +47,7 @@ export const ExtensionKit = ({
 		Typography, // Input rules, such as (c) -> © or >> -> »
 
 		// Nodes
-		TextAlign.configure({ types: ['heading', 'paragraph'] }),
+		TextAlign.configure({ types: ["heading", "paragraph"] }),
 		TextStyleKit.configure({}),
 		CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
 		Image,
@@ -56,7 +56,7 @@ export const ExtensionKit = ({
 			addOptions() {
 				return {
 					...this.parent?.(),
-					width: '100%',
+					width: "100%",
 					height: 360,
 				}
 			},

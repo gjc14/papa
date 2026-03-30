@@ -1,5 +1,5 @@
 /** remix-utils */
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from "react"
 
 function subscribe() {
 	// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock function

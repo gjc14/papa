@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useSetAtom } from "jotai"
 
 import {
 	Card,
@@ -6,17 +6,17 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '~/components/ui/card'
+} from "~/components/ui/card"
 
-import { productAtom } from '../../../../store/product/context'
+import { productAtom } from "../../../../store/product/context"
 import {
 	isFieldInherited,
 	OptionForm,
 	type ProductOptionType,
-} from './option-form'
+} from "./option-form"
 
-const productNameAtom = atom(get => get(productAtom)?.name ?? null)
-const productOptionAtom = atom(get => get(productAtom)?.option ?? null)
+const productNameAtom = atom((get) => get(productAtom)?.name ?? null)
+const productOptionAtom = atom((get) => get(productAtom)?.option ?? null)
 
 export function MainOption() {
 	const setProduct = useSetAtom(productAtom)
@@ -26,13 +26,13 @@ export function MainOption() {
 	if (productName === null || !productOption) return null
 
 	const handleOptionChange = (optionUpdated: Partial<ProductOptionType>) => {
-		setProduct(prev => {
+		setProduct((prev) => {
 			if (!prev) return prev
 			const prevOption = prev.option
 			const newOption = { ...prevOption, ...optionUpdated }
 
 			// Update variants that have inherited fields
-			const updatedVariants = prev.variants.map(variant => {
+			const updatedVariants = prev.variants.map((variant) => {
 				const updatedVariantOption: Partial<ProductOptionType> = {}
 
 				// Check each field in optionUpdated to see if variant inherited it

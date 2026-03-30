@@ -5,21 +5,21 @@
  *
  * Load products for Linked Products selection
  */
-import type { Route } from './+types/resource'
+import type { Route } from "./+types/resource"
 
-import type { MaybeArray } from 'date-fns'
-import { createSelectSchema } from 'drizzle-zod'
-import z from 'zod'
+import type { MaybeArray } from "date-fns"
+import { createSelectSchema } from "drizzle-zod"
+import z from "zod"
 
-import { seo } from '~/lib/db/schema'
-import type { ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
+import { seo } from "~/lib/db/schema"
+import type { ActionResponse } from "~/lib/utils"
+import { handleError } from "~/lib/utils/server"
 
 import {
 	createProduct,
 	getProducts,
 	updateProduct,
-} from '../../../lib/db/product.server'
+} from "../../../lib/db/product.server"
 import {
 	ecBrand,
 	ecCategory,
@@ -35,7 +35,7 @@ import {
 	productVariant,
 	ProductVisibility,
 	StockStatus,
-} from '../../../lib/db/schema'
+} from "../../../lib/db/schema"
 
 // --- Insert/Update Schemas
 const insertUpdateProductOptionSchema = createSelectSchema(
@@ -111,17 +111,17 @@ export const action = async ({ request }: Route.ActionArgs) => {
 	const jsonData = await request.json()
 
 	switch (request.method) {
-		case 'POST':
+		case "POST":
 			try {
-				console.time('insert:insertUpdateSchema.parse')
+				console.time("insert:insertUpdateSchema.parse")
 				const newProductData = insertUpdateSchema.parse(jsonData)
-				console.timeEnd('insert:insertUpdateSchema.parse')
+				console.timeEnd("insert:insertUpdateSchema.parse")
 
-				if (newProductData.status === ('TRASHED' as ProductStatus)) {
+				if (newProductData.status === ("TRASHED" as ProductStatus)) {
 					newProductData.deletedAt = new Date()
 				} else if (
 					newProductData.status &&
-					(['PUBLISHED', 'SCHEDULED'] as MaybeArray<ProductStatus>).includes(
+					(["PUBLISHED", "SCHEDULED"] as MaybeArray<ProductStatus>).includes(
 						newProductData.status as ProductStatus,
 					)
 				) {
@@ -140,17 +140,17 @@ export const action = async ({ request }: Route.ActionArgs) => {
 			} catch (error) {
 				return handleError(error, request)
 			}
-		case 'PUT':
+		case "PUT":
 			try {
-				console.time('update:insertUpdateSchema.parse')
+				console.time("update:insertUpdateSchema.parse")
 				const updatedProductData = insertUpdateSchema.parse(jsonData)
-				console.timeEnd('update:insertUpdateSchema.parse')
+				console.timeEnd("update:insertUpdateSchema.parse")
 
-				if (updatedProductData.status === ('TRASHED' as ProductStatus)) {
+				if (updatedProductData.status === ("TRASHED" as ProductStatus)) {
 					updatedProductData.deletedAt = new Date()
 				} else if (
 					updatedProductData.status &&
-					(['PUBLISHED', 'SCHEDULED'] as MaybeArray<ProductStatus>).includes(
+					(["PUBLISHED", "SCHEDULED"] as MaybeArray<ProductStatus>).includes(
 						updatedProductData.status as ProductStatus,
 					)
 				) {
@@ -170,18 +170,18 @@ export const action = async ({ request }: Route.ActionArgs) => {
 				return handleError(error, request)
 			}
 		default:
-			throw new Response('Method Not Allowed', { status: 405 })
+			throw new Response("Method Not Allowed", { status: 405 })
 	}
 }
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
 	const url = new URL(request.url)
 	const { searchParams } = url
-	const categories = searchParams.get('category')?.split(',')
-	const tags = searchParams.get('tag')?.split(',')
-	const brands = searchParams.get('brand')?.split(',')
-	const attributes = searchParams.get('attribute')?.split(',')
-	const title = searchParams.get('q') || undefined
+	const categories = searchParams.get("category")?.split(",")
+	const tags = searchParams.get("tag")?.split(",")
+	const brands = searchParams.get("brand")?.split(",")
+	const attributes = searchParams.get("attribute")?.split(",")
+	const title = searchParams.get("q") || undefined
 
 	const products = await getProducts({
 		categories,
@@ -189,7 +189,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 		brands,
 		attributes,
 		title,
-		status: 'ALL',
+		status: "ALL",
 	})
 
 	return { products }

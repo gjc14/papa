@@ -1,16 +1,16 @@
-import { atom } from 'jotai'
+import { atom } from "jotai"
 
 import type {
 	getCrossSellProducts,
 	getProduct,
 	getProductGallery,
 	getUpsellProducts,
-} from '../../lib/db/product.server'
+} from "../../lib/db/product.server"
 import type {
 	EcBrand as Brand,
 	EcCategory as Category,
 	EcTag as Tag,
-} from '../../lib/db/schema'
+} from "../../lib/db/schema"
 
 export type StoreConfig = {
 	id: number
@@ -42,19 +42,19 @@ export type StoreConfig = {
 
 export const storeConfigAtom = atom<StoreConfig>({
 	id: -1,
-	name: 'Store',
-	storeFrontPath: '/store',
-	language: 'en-US',
+	name: "Store",
+	storeFrontPath: "/store",
+	language: "en-US",
 	inventory: {
 		unitSettings: {
-			weight: 'g',
-			length: 'mm',
-			volume: 'l',
+			weight: "g",
+			length: "mm",
+			volume: "l",
 		},
 		lowStockThreshold: 0,
 	},
 	placeholderImage: {
-		image: '/placeholders/image.webp',
+		image: "/placeholders/image.webp",
 		imageAlt: null,
 		imageTitle: null,
 	},

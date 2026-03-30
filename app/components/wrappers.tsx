@@ -1,4 +1,4 @@
-import { cn } from '~/lib/utils'
+import { cn } from "~/lib/utils"
 
 /**
  * Wrapper for the main content of the page. Make page has minimum height of the screen and align-items: center.
@@ -14,7 +14,7 @@ export const MainWrapper = ({
 	return (
 		<main
 			className={cn(
-				'flex h-full min-h-svh w-full flex-col items-center',
+				"flex h-full min-h-svh w-full flex-col items-center",
 				className,
 			)}
 		>
