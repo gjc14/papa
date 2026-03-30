@@ -1,6 +1,8 @@
 {
-	// == tailwind settings ==
-	"tailwindCSS.experimental.classRegex": ["class:\\s*?[\"'`]([^\"'`]*).*?,"],
+	// == tailwind ==
+	"tailwindCSS.experimental.classRegex": [
+		"class:\\s*?[\"'`]([^\"'`]*).*?,"
+	],
 	"files.associations": {
 		"*.css": "tailwindcss",
 		"*.scss": "tailwindcss"
@@ -8,11 +10,24 @@
 	"editor.quickSuggestions": {
 		"strings": "on"
 	},
-	"tailwindCSS.classFunctions": ["tw", "clsx", "tw\\.[a-z-]+", "cva", "cx"],
-	// == prettier settings ==
+	"tailwindCSS.classFunctions": [
+		"tw",
+		"clsx",
+		"tw\\.[a-z-]+",
+		"cva",
+		"cx"
+	],
+	// == format ==
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	},
 	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.defaultFormatter": "biomejs.biome",
 	"[jsonc]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[markdown]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }
