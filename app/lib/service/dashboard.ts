@@ -8,7 +8,7 @@ import.meta.glob("../../routes/services/**/service.dashboard.{ts,tsx}", {
 
 /** Get dashboard configs from Service config */
 export const getServicesDashboards = () => {
-	let dashboards: ServiceDashboard[] = []
+	const dashboards: ServiceDashboard[] = []
 
 	/**
 	 * Automatically includes all service dashboards without manual imports

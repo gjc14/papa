@@ -45,7 +45,7 @@ const getServiceSitemapUrlConfigs = async (
 
 /** Get the robots txt from Service config */
 const getServiceRobotsConfigs = async (url: URL): Promise<RobotsConfig[]> => {
-	let robotsConfigs: RobotsConfig[] = []
+	const robotsConfigs: RobotsConfig[] = []
 
 	/**
 	 * Automatically includes all service robots.txt string without manual imports
@@ -65,4 +65,4 @@ const getServiceRobotsConfigs = async (url: URL): Promise<RobotsConfig[]> => {
 	return robotsConfigs
 }
 
-export { getServiceSitemapUrlConfigs, getServiceRobotsConfigs }
+export { getServiceRobotsConfigs, getServiceSitemapUrlConfigs }

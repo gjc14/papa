@@ -3,7 +3,7 @@
  */
 type ConvertToDate<T, K extends string> = T extends (infer U)[]
 	? ConvertToDate<U, K>[] // handle arrays
-	: T extends Record<string, any>
+	: T extends Record<string, unknown>
 		? {
 				[P in keyof T]: P extends K
 					? Date // if the key matches, change the type to Date
@@ -43,7 +43,7 @@ export function convertDateFields<
 		) as ConvertDateFields<T, K>
 	}
 
-	const result: Record<string, any> = {}
+	const result: Record<string, unknown> = {}
 
 	for (const [key, value] of Object.entries(obj)) {
 		if (
@@ -54,7 +54,7 @@ export function convertDateFields<
 			// Convert to Date if it's a date field and value exists
 			try {
 				result[key] = new Date(value as string | number)
-			} catch (error) {
+			} catch {
 				// If conversion fails, still create Date object (might be Invalid Date)
 				console.warn(`Failed to convert ${key} to Date:`, value)
 				result[key] = new Date(value as string | number)

@@ -1,7 +1,7 @@
-import { useEffect } from "react"
-import { type FetcherWithComponents } from "react-router"
+import { useEffect, useRef } from "react"
+import type { FetcherWithComponents } from "react-router"
 
-import { toast, type ExternalToast } from "sonner"
+import { type ExternalToast, toast } from "sonner"
 
 import type { ActionResponse } from "~/lib/utils"
 
@@ -49,24 +49,39 @@ export function useFetcherNotification<
 		...toastOptions
 	} = props
 
+	const toastOptionsRef = useRef<ExternalToast>({})
+	toastOptionsRef.current = toastOptions
+
 	useEffect(() => {
 		if (fetcher.state === "idle" && fetcher.data) {
 			const prevented = !!fetcher.data.preventNotification
 			if (fetcher.data.msg) {
 				if (!prevented || !preventSuccessAlert) {
-					toast.success(successMessage || fetcher.data.msg, toastOptions)
+					toast.success(
+						successMessage || fetcher.data.msg,
+						toastOptionsRef.current,
+					)
 				}
 
 				onSuccess?.(fetcher.data.msg)
 			} else if (fetcher.data.err) {
 				if (!prevented && !preventErrorAlert) {
-					toast.error(errorMessage || fetcher.data.err, toastOptions)
+					toast.error(errorMessage || fetcher.data.err, toastOptionsRef.current)
 				}
 
 				onError?.(fetcher.data.err)
 			}
 		}
-	}, [fetcher.state, fetcher.data])
+	}, [
+		fetcher.state,
+		fetcher.data,
+		successMessage,
+		errorMessage,
+		preventSuccessAlert,
+		preventErrorAlert,
+		onSuccess,
+		onError,
+	])
 
 	return {
 		mutating: fetcher.state !== "idle",

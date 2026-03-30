@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx"
+import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -36,7 +36,7 @@ export const defaultValidUrlProtocols = [
 	"ftp:",
 ]
 export function isValidUrl(string: string, allowedProtocols?: string[]) {
-	let url
+	let url: URL
 
 	try {
 		url = new URL(string)

@@ -1,4 +1,4 @@
-import { type InferSelectModel } from "drizzle-orm"
+import type { InferSelectModel } from "drizzle-orm"
 import { boolean, serial, varchar } from "drizzle-orm/pg-core"
 
 import { pgTable, timestampAttributes } from "./helpers"

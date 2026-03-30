@@ -81,57 +81,57 @@ AWS_SES_SECRET_ACCESS_KEY=your-secret-key  # Optional: uses default credential c
 ### Basic Usage
 
 ```tsx
-import { emailService } from '~/lib/utils/email'
+import { emailService } from "~/lib/utils/email";
 
 /** Send React Email component (commonly generated with react-email)
  * @see https://react.email/docs/introduction
  */
 await emailService?.sendReactEmail({
-	to: 'user@example.com',
-	subject: 'Welcome!',
-	react: <WelcomeEmail userName="John" />,
-})
+  to: "user@example.com",
+  subject: "Welcome!",
+  react: <WelcomeEmail userName="John" />,
+});
 
 // Send HTML email
 await emailService?.sendHtmlEmail({
-	to: 'user@example.com',
-	subject: 'HTML Email',
-	html: '<h1>Hello World</h1>',
-	text: 'Hello World', // Optional fallback text
-})
+  to: "user@example.com",
+  subject: "HTML Email",
+  html: "<h1>Hello World</h1>",
+  text: "Hello World", // Optional fallback text
+});
 
 // Send plain text email
 await emailService?.sendTextEmail({
-	to: 'user@example.com',
-	subject: 'Text Email',
-	text: 'Hello World',
-})
+  to: "user@example.com",
+  subject: "Text Email",
+  text: "Hello World",
+});
 ```
 
 ### Advanced Usage
 
 ```typescript
-import { EmailProviderType, EmailService } from '~/lib/utils/email'
+import { EmailProviderType, EmailService } from "~/lib/utils/email";
 
 // Create custom email service instance
 const customEmailService = new EmailService({
-	provider: EmailProviderType.NODEMAILER,
-	config: {
-		host: 'smtp.custom.com',
-		port: 587,
-		secure: false,
-		user: 'custom@example.com',
-		pass: 'password',
-	},
-	defaultFrom: 'noreply@example.com', // Customized from email should be validated by your provider
-})
+  provider: EmailProviderType.NODEMAILER,
+  config: {
+    host: "smtp.custom.com",
+    port: 587,
+    secure: false,
+    user: "custom@example.com",
+    pass: "password",
+  },
+  defaultFrom: "noreply@example.com", // Customized from email should be validated by your provider
+});
 
 // Use custom service
 await customEmailService.send({
-	to: 'user@example.com',
-	subject: 'Custom Email',
-	html: '<p>Custom email content</p>',
-})
+  to: "user@example.com",
+  subject: "Custom Email",
+  html: "<p>Custom email content</p>",
+});
 ```
 
 ### Multiple Recipients
@@ -139,19 +139,19 @@ await customEmailService.send({
 ```typescript
 // Send to multiple recipients (they will see each other in the To field)
 await emailService?.sendHtmlEmail({
-	to: ['user1@example.com', 'user2@example.com', 'user3@example.com'],
-	subject: 'Bulk Notification',
-	html: '<h1>Important Update</h1><p>This affects all users.</p>',
-})
+  to: ["user1@example.com", "user2@example.com", "user3@example.com"],
+  subject: "Bulk Notification",
+  html: "<h1>Important Update</h1><p>This affects all users.</p>",
+});
 
 // Send individual emails using `for loop` (recommended for privacy)
-const recipients = ['user1@example.com', 'user2@example.com']
+const recipients = ["user1@example.com", "user2@example.com"];
 for (const recipient of recipients) {
-	await emailService?.sendHtmlEmail({
-		to: recipient,
-		subject: `Personal Update for ${recipient}`,
-		html: `<h1>Hello ${recipient}</h1><p>This is your personal update.</p>`,
-	})
+  await emailService?.sendHtmlEmail({
+    to: recipient,
+    subject: `Personal Update for ${recipient}`,
+    html: `<h1>Hello ${recipient}</h1><p>This is your personal update.</p>`,
+  });
 }
 ```
 
@@ -238,18 +238,18 @@ Run `npx tsx app/lib/utils/email/scripts/test.ts` to execute the following
 script.
 
 ```typescript
-import { emailService } from '~/lib/utils/email'
+import { emailService } from "~/lib/utils/email";
 
 export async function testEmailConfiguration() {
-	try {
-		await emailService.sendTextEmail({
-			to: 'test@example.com',
-			subject: 'Email Configuration Test',
-			text: 'If you receive this email, your configuration is working correctly.',
-		})
-		console.log('✅ Email configuration test passed')
-	} catch (error) {
-		console.error('❌ Email configuration test failed:', error)
-	}
+  try {
+    await emailService.sendTextEmail({
+      to: "test@example.com",
+      subject: "Email Configuration Test",
+      text: "If you receive this email, your configuration is working correctly.",
+    });
+    console.log("✅ Email configuration test passed");
+  } catch (error) {
+    console.error("❌ Email configuration test failed:", error);
+  }
 }
 ```

@@ -65,8 +65,8 @@ export const generateSlug = (
 		return generateFallbackSlug(fallbackPrefix)
 	}
 
-	if (options.prevent && options.prevent.includes(slug)) {
-		slug = slug + "-" + getRandomAnimal()
+	if (options.prevent?.includes(slug)) {
+		slug = `${slug}-${getRandomAnimal()}`
 	}
 
 	return slug
@@ -205,7 +205,7 @@ export function generateSeoDescription(
 		i < sentences.length &&
 		description.length + sentences[i].length < settings.maxLength - 3
 	) {
-		description += sentences[i] + " "
+		description += `${sentences[i]} `
 		i++
 	}
 
@@ -328,15 +328,3 @@ export function extractKeywords(text: string): string[] {
 function escapeRegExp(string: string): string {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
-
-/**
- * Example usage
- */
-// English example
-const englishParagraph = `Donald Trump's sweeping tariffs have shaken global trade, but disruption often creates opportunity. Starting 9 April, Indian goods will face tariffs of up to 27% (Trump's tariff chart lists India's rate as 26%, but the official order says 27% - a discrepancy seen for other nations too). Before the tariff hike, US rates across trading partners averaged 3.3%, among the lowest globally, compared to India's 17%, according to the White House.`
-
-// Chinese Mandarin example
-const chineseParagraph = `頁面上的內容不能詞不達意，需要滿足訪客關鍵字想要看到的內容。如關鍵字搜尋 珍珠奶茶，你要寫的內容應該就要包括 國內各縣市珍珠奶茶的評測文章、烹煮方式、原料好壞等，訪客有可能會想知道的內容。這些主題不一定要全部都濃縮在同一個頁面內，但一定要互相連結。`
-
-// Japanese example
-const japaneseParagraph = `トランプ大統領は2日、ホワイトハウスで演説し、「まもなく世界中の国々に対して相互関税を導入する歴史的な大統領令に署名する。つまり、相手がわれわれに対して行うことはわれわれも相手に対して行うということだ。非常に単純な話だ。これほど単純なことはない」と述べ、貿易相手国の関税率や非関税障壁を踏まえて自国の関税を引き上げる「相互関税」を導入する考えを明らかにしました。`

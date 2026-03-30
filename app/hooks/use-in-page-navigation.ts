@@ -88,7 +88,7 @@ export function useInPageNavigation({
 		}
 
 		setActiveId(newActiveId)
-	}, [])
+	}, [DOWN_THRESHOLD_VH, UP_THRESHOLD_VH, SECTIONS[0], containerRef.current])
 
 	useEffect(() => {
 		const container = containerRef.current
@@ -99,7 +99,7 @@ export function useInPageNavigation({
 		// Run once on mount to set initial state
 		handleScroll()
 		return () => container.removeEventListener("scroll", onScroll)
-	}, [handleScroll])
+	}, [containerRef.current, handleScroll])
 
 	return {
 		activeId,

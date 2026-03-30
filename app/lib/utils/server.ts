@@ -13,6 +13,7 @@ const { DatabaseError } = pkg
  */
 export const handleError = (
 	error: unknown,
+	// biome-ignore lint/correctness/noUnusedFunctionParameters: reserved
 	request?: Request,
 	options: { errorMessage?: string } = {},
 ) => {

@@ -2,8 +2,8 @@ import type {
 	index,
 	layout,
 	prefix,
-	route,
 	RouteConfig,
+	route,
 } from "@react-router/dev/routes"
 
 import type { SidebarPrimaryItem } from "~/components/dashboard/sidebar/sidebar-primary"
@@ -159,4 +159,4 @@ type ServiceRobotsConfig =
 	| ((url: URL) => RobotsConfig)
 	| ((url: URL) => Promise<RobotsConfig>)
 
-export type { ServiceRoutesModule, ServiceDashboard, ServiceSystemEndpoints }
+export type { ServiceDashboard, ServiceRoutesModule, ServiceSystemEndpoints }

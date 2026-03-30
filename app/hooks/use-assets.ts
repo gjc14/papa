@@ -1,7 +1,6 @@
-import { useEffect } from "react"
-import { useFetcher } from "react-router"
-
 import { useAtom } from "jotai"
+import { useCallback, useEffect } from "react"
+import { useFetcher } from "react-router"
 
 import { assetsAtom } from "~/context/assets"
 import type { loader } from "~/routes/dashboard/assets/resource"
@@ -43,16 +42,18 @@ export const useAssets = ({
 	const [assets, setAssets] = useAtom(assetsAtom)
 
 	const fetcher = useFetcher<typeof loader>()
-	const load = () => fetcher.load(assetResourceRoute)
+	const load = useCallback(() => {
+		fetcher.load(assetResourceRoute)
+	}, [fetcher])
 
 	useEffect(() => {
 		if (assets) return
 		if (fetchOnLoad) load()
-	}, [fetchOnLoad])
+	}, [assets, fetchOnLoad, load])
 
 	useEffect(() => {
 		if (fetcher.data) setAssets(fetcher.data)
-	}, [fetcher])
+	}, [fetcher, setAssets])
 
 	return {
 		load,

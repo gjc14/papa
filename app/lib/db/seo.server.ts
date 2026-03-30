@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 
 import { db } from "./db.server"
-import { seo as seoTable, type Seo } from "./schema"
+import { type Seo, seo as seoTable } from "./schema"
 
 export const getSeos = async (): Promise<{
 	seos: Seo[]

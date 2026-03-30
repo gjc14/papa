@@ -44,12 +44,12 @@ export const auth = betterAuth({
 		 */
 		...(emailService
 			? {
-					sendVerificationEmail: async ({ user, url, token }, request) => {
+					sendVerificationEmail: async ({ user, url, token }) => {
 						await sendVerifyLink({
 							email: user.email,
 							token: token,
 							url: url,
-							emailService: emailService!,
+							emailService: emailService,
 						})
 					},
 				}
@@ -63,22 +63,17 @@ export const auth = betterAuth({
 		 */
 		changeEmail: {
 			enabled: true,
-			...(true
-				? {
-						sendChangeEmailVerification: async (
-							{ user, newEmail, url, token },
-							request,
-						) => {
-							await sendVerifyChangeEmailLink({
-								email: user.email, // verification email must be sent to the current user email to approve the change
-								newEmail,
-								url,
-								token,
-								emailService: emailService!,
-							})
-						},
-					}
-				: {}),
+			...{
+				sendChangeEmailVerification: async ({ user, newEmail, url, token }) => {
+					await sendVerifyChangeEmailLink({
+						email: user.email, // verification email must be sent to the current user email to approve the change
+						newEmail,
+						url,
+						token,
+						emailService: emailService,
+					})
+				},
+			},
 		},
 	},
 
@@ -98,7 +93,7 @@ export const auth = betterAuth({
 					// 			email,
 					// 			url,
 					// 			token,
-					// 			emailService: emailService!,
+					// 			emailService: emailService,
 					// 		})
 					// 	},
 					// 	disableSignUp: true,
@@ -113,7 +108,7 @@ export const auth = betterAuth({
 										email,
 										otp,
 										expireIn: otpExpireIn,
-										emailService: emailService!,
+										emailService: emailService,
 									})
 									break
 								case "email-verification":
@@ -128,16 +123,12 @@ export const auth = betterAuth({
 				]
 			: []),
 		organization({
-			async sendInvitationEmail({
-				email,
-				inviter: { user, role },
-				organization: { name, logo },
-			}) {
+			async sendInvitationEmail() {
 				// await sendInvitationEmail()
 			},
 			teams: {
 				enabled: true,
-				maximumTeams: async ({ organizationId, session }, request) => {
+				maximumTeams: async () => {
 					// Check plan
 					return 2
 				},

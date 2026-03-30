@@ -2,10 +2,10 @@ import { NodemailerProvider } from "./providers/nodemailer"
 import { ResendProvider } from "./providers/resend"
 import { SESProvider } from "./providers/ses"
 import {
-	EmailProviderType,
 	type EmailConfig,
 	type EmailOptions,
 	type EmailProvider,
+	EmailProviderType,
 } from "./types"
 
 export class EmailService {
