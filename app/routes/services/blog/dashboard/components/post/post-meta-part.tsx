@@ -6,7 +6,7 @@
 import { useAtom } from "jotai"
 import { CloudAlert, Loader } from "lucide-react"
 import { toast } from "sonner"
-
+import { SeparatorWithText } from "~/components/separator-with-text"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
@@ -19,10 +19,9 @@ import {
 } from "~/components/ui/select"
 import { Spinner } from "~/components/ui/spinner"
 import { Textarea } from "~/components/ui/textarea"
-import { SeparatorWithText } from "~/components/separator-with-text"
 import { useAssets } from "~/hooks/use-assets"
 import { generateSeoDescription, generateSlug } from "~/lib/utils/seo"
-import { FileGrid } from "~/routes/dashboard/assets/components/file-grid"
+import { FileGridDialog } from "~/routes/dashboard/assets/components/file-grid"
 
 import { PostStatus } from "../../../lib/db/schema"
 import { editorAtom, postAtom } from "../../context"
@@ -74,7 +73,7 @@ export const PostMetaPart = () => {
 			<div>
 				<img
 					src={post.featuredImage || "/logo.png"}
-					alt="featured image"
+					alt="featured"
 					className="mb-2 h-40 w-full object-cover"
 				/>
 				<Label htmlFor="image">Image</Label>
@@ -106,15 +105,15 @@ export const PostMetaPart = () => {
 						<Loader className="animate-spin" /> Select from Gallery
 					</Button>
 				) : hasObjectStorage ? (
-					<FileGrid
-						files={files}
-						origin={origin}
-						dialogTrigger={
+					<FileGridDialog
+						trigger={
 							<Button size={"sm"} variant={"secondary"} className="mt-2 w-full">
 								Select from Gallery
 							</Button>
 						}
-						onFileSelect={(file) => {
+						files={files}
+						origin={origin}
+						onSelect={(file) => {
 							setPost((prev) => {
 								if (!prev) return prev
 								const newPost = {

@@ -1,6 +1,3 @@
-import { forwardRef, useEffect, useState } from "react"
-import { useFetcher } from "react-router"
-
 import {
 	AudioWaveform,
 	Expand,
@@ -10,8 +7,9 @@ import {
 	Loader2,
 	Trash2,
 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useFetcher } from "react-router"
 import { toast } from "sonner"
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -36,24 +34,10 @@ import { Label } from "~/components/ui/label"
 import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
 import { useFetcherNotification } from "~/hooks/use-notification"
-import type { FileMetadata } from "~/lib/db/schema"
 import { cn } from "~/lib/utils"
 
 import { assetResourceRoute } from "../utils"
-
-export type FileCardProps = {
-	file: FileMetadata
-	origin: string
-	className?: string
-	onSelect?: (file: FileMetadata) => void
-	onUpdate?: (file: FileMetadata) => void
-	onDeleted?: (file: FileMetadata) => void
-	visuallySelected?: FileMetadata | null
-	setVisuallySelected?: React.Dispatch<
-		React.SetStateAction<FileMetadata | null>
-	>
-	selectOnDoubleClick?: boolean
-}
+import type { FileCardProps } from "./types"
 
 /**
  * onClick on a file card will set setVisuallySelected and make a dashed border around the card
@@ -65,7 +49,7 @@ export const FileCard = ({
 	className,
 	onSelect,
 	onUpdate,
-	onDeleted,
+	onDelete,
 	visuallySelected,
 	setVisuallySelected,
 	selectOnDoubleClick = false,
@@ -110,7 +94,7 @@ export const FileCard = ({
 			method: "DELETE",
 			encType: "application/json",
 		})
-		onDeleted?.(file)
+		onDelete?.(file)
 		setDeleteAlert(false)
 		setOpen(false)
 
@@ -127,7 +111,8 @@ export const FileCard = ({
 	}
 
 	return (
-		<div
+		<button
+			type="button"
 			className={cn(
 				"group relative flex aspect-square flex-col items-center justify-center overflow-hidden border",
 				className,
@@ -144,6 +129,7 @@ export const FileCard = ({
 			onDoubleClick={(e) => {
 				e.stopPropagation()
 				selectOnDoubleClick && onSelect?.(file)
+				setVisuallySelected?.(file)
 			}}
 		>
 			{fileGeneralType === "image" ? (
@@ -205,6 +191,7 @@ export const FileCard = ({
 								<video src={url} controls className="w-full">
 									Your browser does not support the
 									<code>video</code> element.
+									{/* TODO biome */}
 								</video>
 							) : fileGeneralType === "audio" ? (
 								<audio src={url} controls className="w-full">
@@ -224,8 +211,9 @@ export const FileCard = ({
 							<Label htmlFor="id" className="px-1">
 								ID
 							</Label>
-							<p
+							<button
 								id="id"
+								type="button"
 								className="min-h-0 flex-1 cursor-copy overflow-y-auto border px-1.5 py-1 text-sm shadow-xs"
 								onClick={() => {
 									navigator.clipboard.writeText(String(file.id))
@@ -233,15 +221,16 @@ export const FileCard = ({
 								}}
 							>
 								{file.id}
-							</p>
+							</button>
 						</div>
 						<div className="w-full gap-2">
 							<Label htmlFor="url" className="px-1">
 								URL
 							</Label>
 							<div className="flex items-center gap-2">
-								<p
+								<button
 									id="url"
+									type="button"
 									className="min-h-0 flex-1 cursor-copy overflow-y-auto border px-1.5 py-1 text-sm shadow-xs"
 									onClick={() => {
 										navigator.clipboard.writeText(origin + url)
@@ -249,7 +238,7 @@ export const FileCard = ({
 									}}
 								>
 									{origin + url}
-								</p>
+								</button>
 								<a href={url} target="_blank" rel="noopener noreferrer">
 									<Button variant={"ghost"} size={"icon"}>
 										<ExternalLink className="h-5 w-5" />
@@ -346,7 +335,7 @@ export const FileCard = ({
 					</div>
 				</DialogContent>
 			</Dialog>
-		</div>
+		</button>
 	)
 }
 

@@ -1,8 +1,13 @@
+import { CloudAlert } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLoaderData, useRevalidator } from "react-router"
-
-import { CloudAlert } from "lucide-react"
-
+import {
+	DashboardActions,
+	DashboardContent,
+	DashboardHeader,
+	DashboardLayout,
+	DashboardTitle,
+} from "~/components/dashboard/dashboard-wrapper"
 import { Label } from "~/components/ui/label"
 import {
 	Select,
@@ -11,13 +16,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select"
-import {
-	DashboardActions,
-	DashboardContent,
-	DashboardHeader,
-	DashboardLayout,
-	DashboardTitle,
-} from "~/components/dashboard/dashboard-wrapper"
 import { capitalize } from "~/lib/utils"
 
 import { FileGrid } from "./components/file-grid"
@@ -85,14 +83,14 @@ export default function DashboardAsset() {
 				{hasObjectStorage ? (
 					<FileGrid
 						files={filesDisplayed}
-						onFileUpdate={(fileMeta) => {
+						onUpdate={(fileMeta) => {
 							setFilesState(
 								filesState.map((file) =>
 									file.id === fileMeta.id ? fileMeta : file,
 								),
 							)
 						}}
-						onFileDeleted={(fileMeta) => {
+						onDelete={(fileMeta) => {
 							setFilesState(
 								filesState.filter((file) => file.id !== fileMeta.id),
 							)

@@ -1,9 +1,12 @@
-import React, { useCallback, useState } from "react"
-import { useDropzone } from "react-dropzone"
-
+/**
+ * This file contains 2 components:
+ * 1. {@link FileGrid} - Render files and take file upload
+ * 2. {@link FileGridDialog} - Dialog version of FileGrid
+ */
 import { CloudUploadIcon, CupSoda } from "lucide-react"
+import { useCallback, useState } from "react"
+import { useDropzone } from "react-dropzone"
 import { toast } from "sonner"
-
 import { Button } from "~/components/ui/button"
 import {
 	Dialog,
@@ -20,99 +23,22 @@ import { cn } from "~/lib/utils"
 import { useFileUpload } from "../utils"
 import { FileCard } from "./file-card"
 import { ProgressCard } from "./progress-card"
-
-export interface FileGridProps {
-	files: FileMetadata[]
-	origin: string
-	onFileSelect?: (file: FileMetadata) => void
-	onFileUpdate?: (fileMeta: FileMetadata) => void
-	onFileDeleted?: (file: FileMetadata) => void
-	dialogTrigger?: React.ReactElement
-	onUpload?: (files: FileMetadata[]) => void
-	/** Controllable state to visually show selected single file */
-	visuallySelected?: FileMetadata | null
-	setVisuallySelected?: React.Dispatch<
-		React.SetStateAction<FileMetadata | null>
-	>
-	/** @default "sm" */
-	cardSize?: "sm" | "md" | "lg"
-}
+import type { FileGridProps } from "./types"
 
 /**
- * @param dialogTrigger - Add trigger button as children to use FileGrid as Dialog
- * @param onFileSelect - Callback when file is selected
+ * 1. Rendering file grid from files.
+ * 2. File(s) upload.
+ * 3. Upload progress ui display.
  */
 export const FileGrid = (props: FileGridProps) => {
-	if (!props.dialogTrigger) {
-		return <FileGridMain {...props} />
-	}
+	const { files, onUpload, cardSize = "sm" } = props
 
-	const [open, setOpen] = useState(false)
-	const [internalVisuallySelected, setInternalVisuallySelected] =
-		useState<FileMetadata | null>(null)
-
-	const visuallySelected = props.visuallySelected ?? internalVisuallySelected
-	const setVisuallySelected =
-		props.setVisuallySelected ?? setInternalVisuallySelected
-
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger render={props.dialogTrigger} />
-			<DialogContent className="max-h-[90vh] max-w-xl min-w-[50vw] overflow-scroll">
-				<DialogHeader className="h-fit">
-					<DialogTitle>Assets</DialogTitle>
-					<DialogDescription className="flex w-full grow items-center">
-						Manage gallery, select or upload assets here.
-						<Button
-							className="ml-auto"
-							disabled={!visuallySelected}
-							onClick={() => {
-								if (!visuallySelected) return
-								props.onFileSelect?.(visuallySelected)
-								setOpen(false)
-							}}
-						>
-							Select
-						</Button>
-					</DialogDescription>
-				</DialogHeader>
-
-				<FileGridMain
-					{...props}
-					onFileSelect={(file) => {
-						setOpen(false)
-						props.onFileSelect?.(file)
-					}}
-					visuallySelected={visuallySelected}
-					setVisuallySelected={setVisuallySelected}
-					cardSize={props.cardSize || (props.dialogTrigger ? "md" : undefined)}
-				/>
-			</DialogContent>
-		</Dialog>
-	)
-}
-
-/**
- * Main component rendering the file grid with drag and drop support.
- */
-const FileGridMain = ({
-	files,
-	origin,
-	onFileSelect,
-	onFileUpdate,
-	onFileDeleted,
-	onUpload,
-	dialogTrigger,
-	visuallySelected,
-	setVisuallySelected,
-	cardSize = "sm",
-}: FileGridProps) => {
 	const { data: userSession } = authClient.useSession()
 
 	///////////////////////////////////////////
 	///        Drag, Drop and Upload        ///
 	///////////////////////////////////////////
-	const [acceptedTypes, setAcceptedTypes] = useState({
+	const [acceptedTypes] = useState({
 		images: true,
 		videos: true,
 		audio: true,
@@ -182,19 +108,7 @@ const FileGridMain = ({
 					)}
 				>
 					{files.map((file) => {
-						return (
-							<FileCard
-								key={file.key}
-								file={file}
-								origin={origin}
-								onSelect={onFileSelect}
-								onUpdate={onFileUpdate}
-								onDeleted={onFileDeleted}
-								visuallySelected={visuallySelected}
-								setVisuallySelected={setVisuallySelected}
-								selectOnDoubleClick={dialogTrigger ? true : false}
-							/>
-						)
+						return <FileCard key={file.key} file={file} {...props} />
 					})}
 				</div>
 			) : (
@@ -208,5 +122,64 @@ const FileGridMain = ({
 
 			<ProgressCard uploadProgress={uploadProgress} />
 		</div>
+	)
+}
+
+/**
+ * There's an additional button in header to trigger select when dialog mode.
+ * @default
+ * {
+ * 	selectOnDoubleClick: true // single click: visually selected
+ * 	cardSize: "md"
+ * }
+ */
+export const FileGridDialog = (
+	props: FileGridProps & {
+		trigger: React.ReactElement
+		title?: string
+	},
+) => {
+	const [open, setOpen] = useState(false)
+	const [internalVSelected, setInternalVSelected] =
+		useState<FileMetadata | null>(null)
+
+	const visuallySelected = props.visuallySelected ?? internalVSelected
+	const setVisuallySelected = props.setVisuallySelected ?? setInternalVSelected
+
+	return (
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogTrigger render={props.trigger} />
+			<DialogContent className="max-h-[90vh] max-w-xl min-w-[50vw] overflow-scroll">
+				<DialogHeader className="h-fit">
+					<DialogTitle>Assets</DialogTitle>
+					<DialogDescription className="flex w-full grow items-center">
+						Manage gallery, select or upload assets here.
+						<Button
+							className="ml-auto"
+							disabled={!visuallySelected}
+							onClick={() => {
+								if (!visuallySelected) return
+								props.onSelect?.(visuallySelected)
+								setOpen(false)
+							}}
+						>
+							{props.title ? props.title : "Select"}
+						</Button>
+					</DialogDescription>
+				</DialogHeader>
+
+				<FileGrid
+					{...props}
+					onSelect={(file) => {
+						setOpen(false)
+						props.onSelect?.(file)
+					}}
+					visuallySelected={visuallySelected}
+					setVisuallySelected={setVisuallySelected}
+					selectOnDoubleClick={props.selectOnDoubleClick || true}
+					cardSize={props.cardSize || "md"}
+				/>
+			</DialogContent>
+		</Dialog>
 	)
 }

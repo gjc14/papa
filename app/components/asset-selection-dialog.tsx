@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react"
-
 import { CloudAlert, Loader } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import { Button } from "~/components/ui/button"
 import {
@@ -139,7 +138,7 @@ export function AssetSelectionDialog({
 			setAssetError(false)
 			setCurrentLoadingSrc("")
 		}
-	}, [srcInput, currentLoadingSrc])
+	}, [validSrcInput, srcInput, currentLoadingSrc])
 
 	const handleAssetLoad = () => {
 		setAssetLoading(false)
@@ -280,7 +279,7 @@ function AssetGallery({
 			<FileGrid
 				files={assets.files || []}
 				origin={assets.origin || ""}
-				onFileSelect={(file) => {
+				onSelect={(file) => {
 					onSelect({
 						src: `/assets/${file.id}`,
 						alt: file.description,
