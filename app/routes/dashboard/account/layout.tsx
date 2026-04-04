@@ -1,18 +1,16 @@
-import { Outlet } from "react-router"
-
 import { useAtom } from "jotai"
-
-import { Spinner } from "~/components/ui/spinner"
+import { Outlet } from "react-router"
 import {
-	AnimatedNav,
+	AnimatedHorizontalNavLinkGroup,
 	type RouteButton,
-} from "~/components/animated-horizontal-nav"
+} from "~/components/animated-horizontal-nav-link-group"
 import {
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
+import { Spinner } from "~/components/ui/spinner"
 
 import { dashboardContextAtom } from "../layout/context"
 
@@ -31,8 +29,8 @@ export default function DashboardAccount() {
 		<DashboardLayout>
 			<DashboardHeader>
 				<DashboardTitle className="w-full">
-					<AnimatedNav
-						routes={DashboardAccountRoutes.map((route) => ({
+					<AnimatedHorizontalNavLinkGroup
+						links={DashboardAccountRoutes.map((route) => ({
 							...route,
 							onClick: () =>
 								setDashboardContext((prev) => ({

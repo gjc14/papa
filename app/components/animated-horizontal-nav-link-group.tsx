@@ -1,7 +1,6 @@
+import { motion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { NavLink } from "react-router"
-
-import { motion } from "motion/react"
 
 import { buttonVariants } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
@@ -11,10 +10,10 @@ export interface RouteButton {
 	title: string
 }
 
-export const AnimatedNav = ({
-	routes,
+export const AnimatedHorizontalNavLinkGroup = ({
+	links,
 }: {
-	routes: (RouteButton & React.ComponentProps<typeof NavLink>)[]
+	links: (RouteButton & React.ComponentProps<typeof NavLink>)[]
 }) => {
 	const [hoveredTab, setHoveredTab] = useState<number | null>(null)
 	const [activeTabBounds, setActiveTabBounds] = useState<{
@@ -26,8 +25,6 @@ export const AnimatedNav = ({
 		width: number
 	}>({ left: 0, width: 0 })
 	const navRef = useRef<HTMLDivElement>(null)
-
-	console.log("routes", routes)
 
 	useEffect(() => {
 		if (hoveredTab !== null && navRef.current) {
@@ -99,11 +96,11 @@ export const AnimatedNav = ({
 				}}
 			/>
 
-			{routes.map((route, i) => {
-				const { to, title, ...buttonProps } = route
+			{links.map((link, i) => {
+				const { to, title, ...buttonProps } = link
 				return (
-					<AnimatedLinkButton
-						key={i}
+					<AnimatedNavLink
+						key={Math.random()}
 						to={to}
 						title={title}
 						index={i}
@@ -125,7 +122,7 @@ interface AnimatedLinkProps extends RouteButton {
 	index: number
 }
 
-const AnimatedLinkButton = ({
+const AnimatedNavLink = ({
 	to,
 	title,
 	index,
@@ -156,12 +153,7 @@ const AnimatedLinkButton = ({
 			{...rest}
 		>
 			{({ isActive, isPending }) => {
-				// Call onActive when isActive changes
-				useEffect(() => {
-					if (isActive) {
-						onActive()
-					}
-				}, [isActive])
+				if (isActive) onActive()
 
 				return (
 					<motion.div
@@ -173,6 +165,7 @@ const AnimatedLinkButton = ({
 							stiffness: 500,
 							damping: 30,
 						}}
+						className={isPending ? "animate-pulse" : ""}
 					>
 						{title}
 					</motion.div>
