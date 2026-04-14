@@ -19,6 +19,7 @@
 		"add:website": "tsx scripts/add-website.ts",
 		"add:route": "tsx scripts/add-route.ts",
 		"add:system-endpoints": "tsx scripts/add-system-endpoints.ts",
+		"env:example": "tsx scripts/generate-env-example.ts",
 		"db:studio": "drizzle-kit studio",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",
