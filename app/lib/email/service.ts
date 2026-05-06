@@ -1,3 +1,4 @@
+import { getEnv } from "env"
 import { NodemailerProvider } from "./providers/nodemailer"
 import { ResendProvider } from "./providers/resend"
 import { SESProvider } from "./providers/ses"
@@ -6,6 +7,7 @@ import {
 	type EmailOptions,
 	type EmailProvider,
 	EmailProviderType,
+	isEmailProviderType,
 } from "./types"
 
 export class EmailService {
@@ -113,18 +115,17 @@ export class EmailService {
 	}
 }
 
-export function createEmailService(): EmailService | null {
+export function createEmailService(): EmailService {
 	// Determine the email provider from environment variables
-	const provider =
-		(process.env.EMAIL_PROVIDER as EmailProviderType) ||
-		EmailProviderType.RESEND
+	const providerEnv = getEnv("EMAIL_PROVIDER")
+	const provider = isEmailProviderType(providerEnv)
+		? providerEnv
+		: EmailProviderType.SMTP // default to SMTP (Nodemailer)
 
-	// TODO: deprecate AUTH_EMAIL in favor of EMAIL_FROM
-	const emailFrom = process.env.EMAIL_FROM || process.env.AUTH_EMAIL
+	const emailFrom = getEnv("EMAIL_FROM")
 
 	if (!emailFrom) {
-		console.warn("EMAIL_FROM environment variable is required")
-		return null
+		throw new Error("EMAIL_FROM environment variable is required")
 	}
 
 	try {
@@ -132,14 +133,13 @@ export function createEmailService(): EmailService | null {
 
 		switch (provider) {
 			case EmailProviderType.RESEND:
-				if (!process.env.RESEND_API_KEY) {
-					console.warn("RESEND_API_KEY is required for Resend provider")
-					return null
+				if (!getEnv("RESEND_API_KEY")) {
+					throw new Error("RESEND_API_KEY is required for Resend provider")
 				}
 				config = {
 					provider: EmailProviderType.RESEND,
 					config: {
-						resendApiKey: process.env.RESEND_API_KEY,
+						resendApiKey: getEnv("RESEND_API_KEY"),
 					},
 					defaultFrom: emailFrom,
 				}
@@ -148,53 +148,59 @@ export function createEmailService(): EmailService | null {
 			case EmailProviderType.NODEMAILER:
 			case EmailProviderType.SMTP:
 				if (
-					!process.env.SMTP_HOST ||
-					!process.env.SMTP_USER ||
-					!process.env.SMTP_PASS
+					!getEnv("SMTP_HOST") ||
+					!getEnv("SMTP_USER") ||
+					!getEnv("SMTP_PASS")
 				) {
-					console.warn(
+					throw new Error(
 						"SMTP_HOST, SMTP_USER, and SMTP_PASS are required for Nodemailer provider",
 					)
-					return null
 				}
 				config = {
 					provider: EmailProviderType.NODEMAILER,
 					config: {
-						host: process.env.SMTP_HOST,
-						port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
-						secure: process.env.SMTP_SECURE === "true",
-						user: process.env.SMTP_USER,
-						pass: process.env.SMTP_PASS,
+						host: getEnv("SMTP_HOST"),
+						port: parseInt(getEnv("SMTP_PORT"), 10) || 587,
+						secure: getEnv("SMTP_SECURE") === "true" || true,
+						user: getEnv("SMTP_USER"),
+						pass: getEnv("SMTP_PASS"),
 					},
 					defaultFrom: emailFrom,
 				}
 				break
 
 			case EmailProviderType.SES:
-				if (!process.env.AWS_SES_REGION) {
-					console.warn("AWS_SES_REGION is required for SES provider")
-					return null
+				if (
+					!getEnv("AWS_SES_REGION") ||
+					!getEnv("AWS_SES_ACCESS_KEY_ID") ||
+					!getEnv("AWS_SES_SECRET_ACCESS_KEY")
+				) {
+					throw new Error(
+						"AWS_SES_REGION, AWS_SES_ACCESS_KEY_ID, and AWS_SES_SECRET_ACCESS_KEY are required for SES provider",
+					)
 				}
 				config = {
 					provider: EmailProviderType.SES,
 					config: {
-						region: process.env.AWS_SES_REGION,
-						accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,
-						secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
+						region: getEnv("AWS_SES_REGION"),
+						accessKeyId: getEnv("AWS_SES_ACCESS_KEY_ID"),
+						secretAccessKey: getEnv("AWS_SES_SECRET_ACCESS_KEY"),
 					},
 					defaultFrom: emailFrom,
 				}
 				break
 
 			default:
-				console.warn(`Unsupported email provider: ${provider || "unknown"}`)
-				return null
+				throw new Error(`Unsupported email provider: ${provider || "unknown"}`)
 		}
 
 		return new EmailService(config)
-	} catch (error) {
-		console.error("Failed to create email service:", error)
-		return null
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			throw error
+		} else {
+			throw new Error("Unknown error occurred while creating EmailService")
+		}
 	}
 }
 

@@ -41,3 +41,8 @@ export interface EmailConfig {
 	}
 	defaultFrom: string
 }
+
+export const isEmailProviderType = (
+	value: string,
+): value is EmailProviderType =>
+	Object.values(EmailProviderType).includes(value as EmailProviderType)
