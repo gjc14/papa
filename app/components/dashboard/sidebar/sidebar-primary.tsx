@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { NavLink } from "react-router"
-import { ChevronRight } from "lucide-react"
+import { CaretRightIcon } from "@phosphor-icons/react"
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -77,7 +77,7 @@ function SidebarPrimaryItem({ item }: { item: SidebarPrimaryItem }) {
 							<CollapsibleTrigger
 								render={
 									<SidebarMenuAction className="cursor-pointer data-[state=open]:rotate-90">
-										<ChevronRight />
+										<CaretRightIcon />
 										<span className="sr-only">Toggle</span>
 									</SidebarMenuAction>
 								}

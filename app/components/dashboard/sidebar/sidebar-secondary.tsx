@@ -1,6 +1,6 @@
 import type * as React from "react"
 import { Link } from "react-router"
-import type { LucideIcon } from "lucide-react"
+import type { Icon } from "@phosphor-icons/react"
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -13,13 +13,13 @@ export type SidebarSecondaryItem =
 	| {
 			title: string
 			url: string
-			icon: LucideIcon
+			icon: Icon
 			action?: never
 	  }
 	| {
 			title: string
 			action: () => void
-			icon: LucideIcon
+			icon: Icon
 			url?: never
 	  }
 

@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router"
+import type { Icon } from "@phosphor-icons/react"
 import {
-	Bell,
-	ChevronRight,
-	CreditCard,
-	LogOut,
-	type LucideIcon,
-	Shield,
-	Sparkles,
-	User2,
-} from "lucide-react"
+	BellIcon,
+	CaretRightIcon,
+	CreditCardIcon,
+	ShieldIcon,
+	SignOutIcon,
+	SparkleIcon,
+	UserIcon,
+} from "@phosphor-icons/react"
 import { toast } from "sonner"
 import {
 	CurrentThemeIcon,
@@ -76,7 +76,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 									<span className="truncate font-semibold">{user.name}</span>
 									<span className="truncate text-xs">{user.email}</span>
 								</div>
-								<ChevronRight className="ml-auto size-4" />
+								<CaretRightIcon className="ml-auto size-4" />
 							</SidebarMenuButton>
 						}
 					/>
@@ -108,7 +108,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 							<DropdownMenuSeparator />
 							<DropdownMenuGroup>
 								<ActionButton
-									icon={Sparkles}
+									icon={SparkleIcon}
 									title="Upgrade to Pro"
 									route="/dashboard/account/upgrade"
 								/>
@@ -130,7 +130,7 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 								className="group flex items-center gap-2"
 								onClick={handleSignOut}
 							>
-								<LogOut
+								<SignOutIcon
 									size={16}
 									className="transition-transform group-hover:translate-x-0.5"
 								/>
@@ -147,28 +147,28 @@ export const SidebarUser = ({ user }: SidebarUserProps) => {
 const DefaultUserOptions: ActionButtonProps[] = [
 	{
 		title: "My Profile",
-		icon: User2,
+		icon: UserIcon,
 		route: "/dashboard/account",
 	},
 	{
 		title: "Billing",
-		icon: CreditCard,
+		icon: CreditCardIcon,
 		route: "/dashboard/account/billing",
 	},
 	{
 		title: "Notification",
-		icon: Bell,
+		icon: BellIcon,
 		route: "/dashboard/account/notification",
 	},
 	{
 		title: "Security",
-		icon: Shield,
+		icon: ShieldIcon,
 		route: "/dashboard/account/security",
 	},
 ]
 
 interface ActionButtonProps {
-	icon: LucideIcon
+	icon: Icon
 	title: string
 	route?: string
 }
