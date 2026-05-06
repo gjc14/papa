@@ -1,8 +1,6 @@
 import { forwardRef } from "react"
-
 import { Moon, Sun, SunMoon } from "lucide-react"
 import { useTheme } from "next-themes"
-
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -17,7 +15,6 @@ import {
 import { useIsMounted } from "~/hooks/use-is-mounted"
 import { useViewTransition } from "~/hooks/use-view-transition"
 import { cn } from "~/lib/utils"
-
 import { Button } from "./ui/button"
 
 type ThemeToggleProps = {

@@ -1,5 +1,4 @@
 import { index, layout, prefix, route } from "@react-router/dev/routes"
-
 import { getServiceRouteModules } from "./routes-registry"
 
 // Eagerly import service routes to ensure that they are registered in build time
@@ -62,7 +61,6 @@ const getWebRoutes = () => {
 			} else {
 				console.log(`= [${k}]: ${matches[0]}`)
 			}
-			continue
 		} else {
 			console.log(`+ [${k}]: ${v.file}`)
 			routes.push(v)

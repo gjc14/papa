@@ -1,4 +1,4 @@
-import { sql, type InferSelectModel } from "drizzle-orm"
+import { type InferSelectModel, sql } from "drizzle-orm"
 import {
 	check,
 	foreignKey,
@@ -6,7 +6,6 @@ import {
 	serial,
 	varchar,
 } from "drizzle-orm/pg-core"
-
 import { pgTable } from "~/lib/db/schema/helpers"
 
 export type EcTag = InferSelectModel<typeof ecTag>

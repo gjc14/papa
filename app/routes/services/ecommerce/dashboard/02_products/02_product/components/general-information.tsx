@@ -1,5 +1,4 @@
 import { atom, useAtomValue, useSetAtom } from "jotai"
-
 import {
 	Card,
 	CardContent,
@@ -10,7 +9,6 @@ import {
 import { Field, FieldDescription, FieldLabel } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
-
 import { productAtom } from "../../../../store/product/context"
 
 const productNameAtom = atom((get) => get(productAtom)?.name)

@@ -1,6 +1,5 @@
 import { Button } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
-
 import { useProductContext } from "../../hooks/use-product-context"
 
 export const ProductInformation = () => {

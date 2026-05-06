@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { Form } from "react-router"
-
 import { Loader2, Save } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import { Checkbox } from "~/components/ui/checkbox"
 import {
@@ -22,7 +20,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select"
-import { user } from "~/lib/db/schema"
+import type { user } from "~/lib/db/schema"
 import { capitalize } from "~/lib/utils"
 
 type User = typeof user.$inferSelect

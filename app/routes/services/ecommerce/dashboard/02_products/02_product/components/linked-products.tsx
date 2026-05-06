@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useFetcher } from "react-router"
-
 import { useAtom, useAtomValue } from "jotai"
 import { ExternalLink, Plus, X } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	Card,
@@ -32,12 +30,11 @@ import type {
 } from "~/routes/services/ecommerce/lib/db/product.server"
 import {
 	crossSellProductsAtom,
+	type StoreConfig,
 	storeConfigAtom,
 	upsellProductsAtom,
-	type StoreConfig,
 } from "~/routes/services/ecommerce/store/product/context"
 import { renderPrice } from "~/routes/services/ecommerce/store/product/utils/price"
-
 import type { loader } from "../resource"
 
 export function LinkedProducts() {

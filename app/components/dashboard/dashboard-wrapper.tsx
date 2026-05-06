@@ -109,8 +109,8 @@ const DashboardContent = ({
 
 export {
 	DashboardActions,
+	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
-	DashboardContent,
 }

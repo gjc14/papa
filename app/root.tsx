@@ -8,14 +8,11 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "react-router"
-
 import { AlertCircle, ArrowLeft } from "lucide-react"
-import { motion, MotionConfig } from "motion/react"
+import { MotionConfig, motion } from "motion/react"
 import { ThemeProvider } from "next-themes"
-
-import { Button } from "~/components/ui/button"
 import { fade } from "~/components/motions"
-
+import { Button } from "~/components/ui/button"
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,

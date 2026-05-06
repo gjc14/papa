@@ -1,6 +1,6 @@
-import { CloudAlert } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useLoaderData, useRevalidator } from "react-router"
+import { CloudAlert } from "lucide-react"
 import {
 	DashboardActions,
 	DashboardContent,
@@ -17,7 +17,6 @@ import {
 	SelectValue,
 } from "~/components/ui/select"
 import { capitalize } from "~/lib/utils"
-
 import { FileGrid } from "./components/file-grid"
 import type { loader } from "./resource"
 import { MIMETypes } from "./utils"

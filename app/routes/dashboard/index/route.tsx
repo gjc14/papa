@@ -1,21 +1,18 @@
 import { Link } from "react-router"
-
 import { StackIcon } from "@phosphor-icons/react"
-
-import { Button } from "~/components/ui/button"
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "~/components/ui/tooltip"
 import {
 	DashboardContent,
 	DashboardHeader,
 	DashboardLayout,
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
+import { Button } from "~/components/ui/button"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "~/components/ui/tooltip"
 import { getServicesDashboards } from "~/lib/service/dashboard"
-
 import { renderServiceLogo } from "../../../lib/utils/render-service-logo"
 
 export default function DashboardIndex() {

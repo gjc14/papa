@@ -1,7 +1,5 @@
 import { Link } from "react-router"
-
 import { ChevronsUpDown } from "lucide-react"
-
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -16,7 +14,6 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "~/components/ui/sidebar"
-
 import { renderServiceLogo } from "../../../lib/utils/render-service-logo"
 
 export interface ServiceDashboardConfig {

@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { Form, useFetcher, useSubmit } from "react-router"
-
 import { CircleX, PlusCircle } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	Dialog,
@@ -18,7 +16,6 @@ import { ScrollArea } from "~/components/ui/scroll-area"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import { cn } from "~/lib/utils"
 import { generateSlug } from "~/lib/utils/seo"
-
 import { actionRoute } from ".."
 import type { CategoryType } from "../type"
 

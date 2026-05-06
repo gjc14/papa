@@ -1,9 +1,7 @@
 import type { Route } from "./+types"
-
 import { z } from "zod"
-
 import { createSeo, deleteSeo, getSeos, updateSeo } from "~/lib/db/seo.server"
-import { type ActionResponse } from "~/lib/utils"
+import type { ActionResponse } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
 
 const insertSchmea = z.object({

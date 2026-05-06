@@ -3,11 +3,9 @@
  */
 
 import { useAtom } from "jotai"
-
+import { MultiSelect } from "~/components/multi-select"
 import { Label } from "~/components/ui/label"
 import { Spinner } from "~/components/ui/spinner"
-import { MultiSelect } from "~/components/multi-select"
-
 import { categoriesAtom, editorAtom, postAtom, tagsAtom } from "../../context"
 import { generateNewCategory } from "../../taxonomy/components/category"
 import { generateNewTag } from "../../taxonomy/components/tag"

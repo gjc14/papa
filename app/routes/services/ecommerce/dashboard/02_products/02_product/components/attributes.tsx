@@ -1,8 +1,6 @@
 import { useState } from "react"
-
 import { atom, useAtomValue, useSetAtom } from "jotai"
 import { Eye, EyeOff, ListChecksIcon, MoreVertical, Plus } from "lucide-react"
-
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import {
@@ -48,7 +46,6 @@ import {
 	SelectValue,
 } from "~/components/ui/select"
 import { ProductAttributeSelectType } from "~/routes/services/ecommerce/lib/db/schema"
-
 import { productAtom } from "../../../../store/product/context"
 
 const productAttributesAtom = atom(
@@ -283,7 +280,7 @@ export function updateAttribute(
 
 				// Update key in combination
 				const newCombination = { ...variant.combination }
-				if (newCombination.hasOwnProperty(oldAttr.name)) {
+				if (Object.hasOwn(newCombination, oldAttr.name)) {
 					newCombination[newAttrName] = newCombination[oldAttr.name]
 					delete newCombination[oldAttr.name]
 				}

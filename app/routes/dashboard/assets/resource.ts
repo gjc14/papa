@@ -1,18 +1,15 @@
-import { type ActionFunctionArgs, type LoaderFunctionArgs } from "react-router"
-
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router"
 import { and, eq } from "drizzle-orm"
 import { createInsertSchema } from "drizzle-zod"
 import { z } from "zod"
-
 import { deleteFile, getUploadPresignedURL } from "~/lib/db/asset.server"
 import { db, S3 } from "~/lib/db/db.server"
 import type { FileMetadata } from "~/lib/db/schema"
 import { file as fileTable } from "~/lib/db/schema"
-import { type ActionResponse } from "~/lib/utils"
+import type { ActionResponse } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
 import { authContext } from "~/middleware/context/auth"
-
-import { presignUrlRequestSchema, type PresignResponse } from "./schema"
+import { type PresignResponse, presignUrlRequestSchema } from "./schema"
 
 const fileMetadataInsertUpdateSchema = createInsertSchema(fileTable)
 	.required({

@@ -1,5 +1,4 @@
-import { inArray, type InferInsertModel } from "drizzle-orm"
-
+import { type InferInsertModel, inArray } from "drizzle-orm"
 import { dbEcommerce } from "./db.server"
 import * as schema from "./schema"
 

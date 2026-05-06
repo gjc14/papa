@@ -1,7 +1,6 @@
 "use client"
 
 import { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card"
-
 import { cn } from "~/lib/utils/index"
 
 function HoverCard({ ...props }: PreviewCardPrimitive.Root.Props) {
@@ -48,4 +47,4 @@ function HoverCardContent({
 	)
 }
 
-export { HoverCard, HoverCardTrigger, HoverCardContent }
+export { HoverCard, HoverCardContent, HoverCardTrigger }

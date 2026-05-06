@@ -1,11 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router"
-
 import { ChevronLeft } from "lucide-react"
-
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Separator } from "~/components/ui/separator"
-
 import type { PostWithRelations } from "../../../lib/db/post.server"
 
 export const PostFooter = ({

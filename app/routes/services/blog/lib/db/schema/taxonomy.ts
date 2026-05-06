@@ -1,4 +1,4 @@
-import { relations, sql, type InferSelectModel } from "drizzle-orm"
+import { type InferSelectModel, relations, sql } from "drizzle-orm"
 import {
 	check,
 	foreignKey,
@@ -8,9 +8,7 @@ import {
 	serial,
 	varchar,
 } from "drizzle-orm/pg-core"
-
 import { pgTable } from "~/lib/db/schema/helpers"
-
 import { post } from "./post"
 
 export type Tag = InferSelectModel<typeof tag>

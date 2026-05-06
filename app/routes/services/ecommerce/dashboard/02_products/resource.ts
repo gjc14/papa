@@ -14,11 +14,8 @@
  */
 
 import type { Route } from "./+types/resource"
-
 import z from "zod"
-
 import type { ActionResponse } from "~/lib/utils"
-
 import { moveProductsToTrash } from "../../lib/db/product.server"
 
 const mTTSchema = z.array(
@@ -32,7 +29,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 	const jsonData = await request.json()
 
 	switch (request.method) {
-		case "DELETE":
+		case "DELETE": {
 			const mTTData = mTTSchema.parse(jsonData)
 			const result = await moveProductsToTrash(mTTData.map((d) => d.id))
 
@@ -40,6 +37,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 				msg: `${mTTData.length} ${mTTData.length > 1 ? "Products" : "Product"}: ${mTTData.map((d) => d.name).join(", ")} moved to trash`,
 				data: result,
 			} satisfies ActionResponse
+		}
 
 		default:
 			throw new Response("Method Not Allowed", { status: 405 })

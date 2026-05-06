@@ -1,6 +1,5 @@
 import { getSeo } from "~/lib/db/seo.server"
 import { createMeta } from "~/lib/utils/seo"
-
 import { getPosts } from "../../lib/db/post.server"
 
 type PostPromise = ReturnType<typeof fetchPosts> // Promise<{ meta, post, ... }>

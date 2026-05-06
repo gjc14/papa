@@ -1,5 +1,5 @@
-import { useAtom } from "jotai"
 import { Outlet } from "react-router"
+import { useAtom } from "jotai"
 import {
 	AnimatedHorizontalNavLinkGroup,
 	type RouteButton,
@@ -11,7 +11,6 @@ import {
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
 import { Spinner } from "~/components/ui/spinner"
-
 import { dashboardContextAtom } from "../layout/context"
 
 const DashboardAccountRoutes: RouteButton[] = [

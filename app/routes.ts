@@ -1,10 +1,9 @@
 import {
 	index,
 	prefix,
-	route,
 	type RouteConfig,
+	route,
 } from "@react-router/dev/routes"
-
 import { getServicesDashboardRoutes, getWebRoutes } from "./lib/service/routes"
 
 export default [

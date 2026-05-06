@@ -7,7 +7,6 @@ import {
 	UserCog2,
 	UserRound,
 } from "lucide-react"
-
 import type { ServiceDashboard } from "~/lib/service/type"
 
 // Default services and navigation items

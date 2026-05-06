@@ -1,8 +1,6 @@
 import type { Route } from "./+types/route"
 import { data } from "react-router"
-
 import { Badge } from "~/components/ui/badge"
-
 import { PostCollection } from "../components/posts"
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from "./cache"
 
@@ -75,7 +73,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 		</span>
 	) : undefined
 
-	let description: React.ReactNode = undefined
+	let description: React.ReactNode
 
 	if (categoryFilters && tagFilters) {
 		description = (

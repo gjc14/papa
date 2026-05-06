@@ -1,12 +1,10 @@
 import { useState } from "react"
 import { useFetcher } from "react-router"
-
 import { ZodError } from "zod"
-
 import { useFetcherNotification } from "~/hooks/use-notification"
 import type { FileMetadata } from "~/lib/db/schema"
 import { isActionSuccess } from "~/lib/utils"
-import { presignUrlResponseSchema, type PresignRequest } from "./schema"
+import { type PresignRequest, presignUrlResponseSchema } from "./schema"
 
 export type FileWithFileMetadata = FileMetadata & { file: File }
 

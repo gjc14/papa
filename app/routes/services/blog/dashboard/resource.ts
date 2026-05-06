@@ -1,9 +1,7 @@
-import { type ActionFunctionArgs } from "react-router"
-
+import type { ActionFunctionArgs } from "react-router"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-
-import { type ActionResponse } from "~/lib/utils"
+import type { ActionResponse } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
 import {
 	createPost,
@@ -11,7 +9,6 @@ import {
 	deletePosts,
 	updatePost,
 } from "~/routes/services/blog/lib/db/post.server"
-
 import { category, post, tag } from "../lib/db/schema"
 import { postsServerMemoryCache } from "./index/cache"
 

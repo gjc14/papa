@@ -6,15 +6,12 @@
  * Load products for Linked Products selection
  */
 import type { Route } from "./+types/resource"
-
 import type { MaybeArray } from "date-fns"
 import { createSelectSchema } from "drizzle-zod"
 import z from "zod"
-
 import { seo } from "~/lib/db/schema"
 import type { ActionResponse } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
-
 import {
 	createProduct,
 	getProducts,
@@ -24,16 +21,16 @@ import {
 	ecBrand,
 	ecCategory,
 	ecTag,
+	ProductAttributeSelectType,
+	ProductStatus,
+	ProductVisibility,
 	product,
 	productAttribute,
-	ProductAttributeSelectType,
 	productCrossSell,
 	productGallery,
 	productOption,
-	ProductStatus,
 	productUpsell,
 	productVariant,
-	ProductVisibility,
 	StockStatus,
 } from "../../../lib/db/schema"
 

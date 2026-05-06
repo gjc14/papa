@@ -3,14 +3,13 @@
  */
 import { useState } from "react"
 import { Link } from "react-router"
-
 import {
 	ArrowSquareOutIcon,
 	DotsThreeVerticalIcon,
 	ImageIcon,
 	QuestionIcon,
 } from "@phosphor-icons/react"
-
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
 import { Button } from "~/components/ui/button"
 import { DialogTrigger } from "~/components/ui/dialog"
 import {
@@ -33,7 +32,6 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/ui/tooltip"
-import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
 import { useAssets } from "~/hooks/use-assets"
 import type { Seo } from "~/lib/db/schema"
 

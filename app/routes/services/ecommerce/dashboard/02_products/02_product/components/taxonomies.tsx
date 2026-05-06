@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useFetcher } from "react-router"
-
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai"
-
+import { CheckboxTree, type TreeNode } from "~/components/checkbox-tree"
+import { MultiSelect } from "~/components/multi-select"
 import {
 	Card,
 	CardContent,
@@ -13,8 +13,6 @@ import {
 } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Spinner } from "~/components/ui/spinner"
-import { CheckboxTree, type TreeNode } from "~/components/checkbox-tree"
-import { MultiSelect } from "~/components/multi-select"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import { generateSlug } from "~/lib/utils/seo"
 import {
@@ -23,7 +21,6 @@ import {
 	productAtom,
 	tagsAtom,
 } from "~/routes/services/ecommerce/store/product/context"
-
 import type { action as bAction } from "../../03_brands/resource"
 import type { loader as bLoader } from "../../03_brands/route"
 import type { action as cAction } from "../../04_categories/resource"

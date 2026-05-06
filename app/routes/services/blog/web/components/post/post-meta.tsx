@@ -1,16 +1,13 @@
 import { Link } from "react-router"
-import { Fragment } from "react/jsx-runtime"
-
 import { generateHTML } from "@tiptap/html"
 import { format } from "date-fns/format"
 import { LibraryBig } from "lucide-react"
-
+import { Fragment } from "react/jsx-runtime"
+import ExtensionKit from "~/components/editor/extension-kit"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
 import { Separator } from "~/components/ui/separator"
-import ExtensionKit from "~/components/editor/extension-kit"
 import { useHydrated } from "~/hooks/use-hydrated"
-
 import type { PostWithRelations } from "../../../lib/db/post.server"
 import { estimateReadingTime } from "../../utils"
 

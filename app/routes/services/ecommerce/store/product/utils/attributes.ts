@@ -13,7 +13,7 @@ const getVariantAttributes = (
 ) => {
 	const options: Record<string, Set<string>> = {}
 
-	let availableCombinations: Record<string, Set<string>> | undefined = undefined
+	let availableCombinations: Record<string, Set<string>> | undefined
 	if (variants) {
 		availableCombinations = variants.reduce(
 			(acc, variant) => {
@@ -134,8 +134,8 @@ const getAttributeValueImage = (props: {
 }
 
 export {
-	getVariantAttributes,
-	getIsAttributeValueAvailable,
-	getVariantsFromAttributeValue,
 	getAttributeValueImage,
+	getIsAttributeValueAvailable,
+	getVariantAttributes,
+	getVariantsFromAttributeValue,
 }

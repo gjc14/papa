@@ -1,12 +1,10 @@
+import type { ActionFunctionArgs } from "react-router"
 import assert from "node:assert/strict"
-import { type ActionFunctionArgs } from "react-router"
-
 import { createUpdateSchema } from "drizzle-zod"
-
 import { auth } from "~/lib/auth/auth.server"
 import { user } from "~/lib/db/schema"
 import { deleteUser, updateUser } from "~/lib/db/user.server"
-import { isValidEmail, type ActionResponse } from "~/lib/utils"
+import { type ActionResponse, isValidEmail } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
 import { authContext } from "~/middleware/context/auth"
 
@@ -93,7 +91,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 			}
 		case "PUT":
 			try {
-				let user = userUpdateSchema.parse(userData)
+				const user = userUpdateSchema.parse(userData)
 				const userIds = userData.id
 
 				console.log("userData", userData)

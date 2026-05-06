@@ -1,7 +1,6 @@
-import { useAtom } from "jotai"
 import { useCallback, useEffect } from "react"
 import { useFetcher } from "react-router"
-
+import { useAtom } from "jotai"
 import { assetsAtom } from "~/context/assets"
 import type { loader } from "~/routes/dashboard/assets/resource"
 import { assetResourceRoute } from "~/routes/dashboard/assets/utils"

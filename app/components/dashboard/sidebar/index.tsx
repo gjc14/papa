@@ -1,18 +1,15 @@
 import { useMatches } from "react-router"
-
 import { useAtomValue } from "jotai"
-
+import { SidebarService } from "~/components/dashboard/sidebar/sidebar-service"
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
 } from "~/components/ui/sidebar"
-import { SidebarService } from "~/components/dashboard/sidebar/sidebar-service"
 import type { Session } from "~/lib/auth/auth.server"
 import { DEFAULT_SERVICE } from "~/lib/service/data"
 import { dashboardContextAtom } from "~/routes/dashboard/layout/context"
-
 import { SidebarUser } from "./sidebar-footer"
 import { SidebarPrimary } from "./sidebar-primary"
 import { SidebarSecondary } from "./sidebar-secondary"

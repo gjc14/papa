@@ -1,6 +1,5 @@
-import { Editor } from "@tiptap/core"
+import type { Editor } from "@tiptap/core"
 import { atom } from "jotai"
-
 import type { PostWithRelations } from "../lib/db/post.server"
 import type { Category, Tag } from "../lib/db/schema"
 import { defaultContent } from "./post-slug/utils"

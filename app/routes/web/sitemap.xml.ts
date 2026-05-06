@@ -3,11 +3,8 @@
  * @see https://www.sitemaps.org/protocol.html
  */
 import type { Route } from "./+types/sitemap.xml"
-
 import * as serverBuild from "virtual:react-router/server-build"
-
 import { getServiceSitemapUrlConfigs } from "~/lib/service/system-endpoints.server"
-
 import {
 	configsToSitemapXml,
 	type SitemapUrlConfig,

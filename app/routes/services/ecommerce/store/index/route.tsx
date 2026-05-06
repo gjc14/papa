@@ -1,6 +1,5 @@
 import type { Route } from "./+types/route"
 import { data } from "react-router"
-
 import { getProducts } from "../../lib/db/product.server"
 import { StorePage } from "./page"
 

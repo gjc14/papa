@@ -1,17 +1,19 @@
 import { Link, useNavigate } from "react-router"
-
 import {
 	Bell,
 	ChevronRight,
 	CreditCard,
 	LogOut,
+	type LucideIcon,
 	Shield,
 	Sparkles,
 	User2,
-	type LucideIcon,
 } from "lucide-react"
 import { toast } from "sonner"
-
+import {
+	CurrentThemeIcon,
+	ThemeDropdownMenuSubTrigger,
+} from "~/components/theme-toggle"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import {
 	DropdownMenu,
@@ -27,12 +29,8 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "~/components/ui/sidebar"
-import {
-	CurrentThemeIcon,
-	ThemeDropdownMenuSubTrigger,
-} from "~/components/theme-toggle"
-import { authClient } from "~/lib/auth/auth-client"
 import type { Session } from "~/lib/auth/auth.server"
+import { authClient } from "~/lib/auth/auth-client"
 
 interface SidebarUserProps {
 	user: Session["user"]

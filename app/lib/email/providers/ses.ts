@@ -1,6 +1,5 @@
-import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses"
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses"
 import { render } from "@react-email/render"
-
 import type { EmailOptions, EmailProvider } from "../types"
 
 export class SESProvider implements EmailProvider {

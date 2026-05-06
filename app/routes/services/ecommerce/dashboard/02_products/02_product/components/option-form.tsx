@@ -1,5 +1,4 @@
 import { useState } from "react"
-
 import { useAtomValue } from "jotai"
 import {
 	DownloadCloud,
@@ -14,7 +13,8 @@ import {
 	TruckIcon,
 	X,
 } from "lucide-react"
-
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
+import { SeparatorWithText } from "~/components/separator-with-text"
 import { Button } from "~/components/ui/button"
 import { CardTitle } from "~/components/ui/card"
 import { DialogTrigger } from "~/components/ui/dialog"
@@ -43,16 +43,16 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/ui/tooltip"
-import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
-import { SeparatorWithText } from "~/components/separator-with-text"
 import { useAssets } from "~/hooks/use-assets"
 import {
-	StockStatus,
 	type DownloadFile,
+	StockStatus,
 } from "~/routes/services/ecommerce/lib/db/schema/product"
 import { renderPrice } from "~/routes/services/ecommerce/store/product/utils/price"
-
-import { productAtom, storeConfigAtom } from "../../../../store/product/context"
+import {
+	type productAtom,
+	storeConfigAtom,
+} from "../../../../store/product/context"
 
 export type ProductOptionType = NonNullable<
 	ReturnType<typeof productAtom.read>

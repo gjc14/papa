@@ -1,7 +1,5 @@
 import React from "react"
-
 import { useInPageNavigation } from "~/hooks/use-in-page-navigation"
-
 import { ProductAlerts } from "./components/alerts"
 import { Attributes } from "./components/attributes"
 import { Gallery } from "./components/gallery"

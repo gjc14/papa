@@ -1,21 +1,19 @@
 import React from "react"
-
 import {
+	type ColumnDef,
+	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getExpandedRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	useReactTable,
-	type ColumnDef,
-	type ColumnFiltersState,
 	type PaginationState,
 	type RowData,
 	type SortingState,
+	useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUp, ChevronLeft, ChevronsLeft, Maximize } from "lucide-react"
-
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Checkbox } from "~/components/ui/checkbox"
@@ -33,7 +31,6 @@ import {
 	SelectValue,
 } from "~/components/ui/select"
 import { cn } from "~/lib/utils"
-
 import { EditableCell } from "./components/editable-cell"
 import { useSkipper } from "./hooks"
 import type { DashboardDataTableProps } from "./types"

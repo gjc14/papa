@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react"
 import { useNavigate } from "react-router"
-
 import {
 	ChevronUp,
 	HelpCircle,
@@ -9,7 +8,10 @@ import {
 	PanelTop,
 	PencilLine,
 } from "lucide-react"
-
+import {
+	CurrentThemeIcon,
+	ThemeDropdownMenuSubTrigger,
+} from "~/components/theme-toggle"
 import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
@@ -20,10 +22,6 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-import {
-	CurrentThemeIcon,
-	ThemeDropdownMenuSubTrigger,
-} from "~/components/theme-toggle"
 import { authClient } from "~/lib/auth/auth-client"
 
 type ToolkitPosition = "right" | "left" | "center"

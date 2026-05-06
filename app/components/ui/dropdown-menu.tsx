@@ -1,8 +1,6 @@
+import type * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
-import * as React from "react"
-
 import { CaretRightIcon, CheckIcon } from "@phosphor-icons/react"
-
 import { cn } from "~/lib/utils/index"
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
@@ -246,18 +244,18 @@ function DropdownMenuShortcut({
 
 export {
 	DropdownMenu,
-	DropdownMenuPortal,
-	DropdownMenuTrigger,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuGroup,
-	DropdownMenuLabel,
 	DropdownMenuItem,
-	DropdownMenuCheckboxItem,
+	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuRadioGroup,
 	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
 	DropdownMenuShortcut,
 	DropdownMenuSub,
-	DropdownMenuSubTrigger,
 	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger,
 }

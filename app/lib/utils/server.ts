@@ -1,6 +1,5 @@
 import pkg from "pg"
 import { z } from "zod"
-
 import { capitalize } from "~/lib/utils"
 
 const { DatabaseError } = pkg

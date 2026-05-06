@@ -3,7 +3,6 @@ import OtpEmail from "~/components/email/otp-email"
 import VerifyChangeEmail from "~/components/email/verify-change-email"
 import WelcomeEmail from "~/components/email/welcome-email"
 import type { EmailService } from "~/lib/email/service"
-
 import { getEmailAddressFromENV } from "../email/utils"
 
 export const sendMagicLink = async ({

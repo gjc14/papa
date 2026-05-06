@@ -1,5 +1,4 @@
 import { redirect } from "react-router"
-
 import { auth } from "~/lib/auth/auth.server"
 
 export async function validateAdminSession(

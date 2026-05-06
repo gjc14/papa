@@ -1,5 +1,4 @@
 import readline from "node:readline"
-
 import { generateSlug } from "~/lib/utils/seo"
 
 /** Prompt input and return a sanitized slug */

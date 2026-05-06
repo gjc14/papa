@@ -1,12 +1,10 @@
 /**
  * Proxy requests to the presigned URL of the asset
  */
-import { type LoaderFunctionArgs } from "react-router"
-
+import type { LoaderFunctionArgs } from "react-router"
 import { auth } from "~/lib/auth/auth.server"
 import { db } from "~/lib/db/db.server"
-
-import { metadataCache, type MetadataCache } from "./cache"
+import { type MetadataCache, metadataCache } from "./cache"
 import { isValidUUID, presignedUrlRes } from "./helpers"
 
 // Usage: example.com/assets/{assetId}

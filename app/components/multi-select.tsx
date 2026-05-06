@@ -1,12 +1,9 @@
-import { Autocomplete } from "@base-ui/react/autocomplete"
 import * as React from "react"
-
+import { Autocomplete } from "@base-ui/react/autocomplete"
 import { PlusCircleIcon, WarningIcon, XIcon } from "@phosphor-icons/react"
-
 import { Badge } from "~/components/ui/badge"
 import { Spinner } from "~/components/ui/spinner"
 import { cn } from "~/lib/utils"
-
 import { Kbd } from "./ui/kbd"
 
 type Option = Record<"value" | "label", string>
@@ -366,4 +363,4 @@ export const MultiSelect = (props: MultiSelectProps) => {
 	)
 }
 
-export type { Option, DisplayOption, BadgeProps, MultiSelectProps }
+export type { BadgeProps, DisplayOption, MultiSelectProps, Option }

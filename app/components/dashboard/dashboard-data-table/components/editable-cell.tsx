@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react"
-
 import type { CellContext } from "@tanstack/react-table"
-
 import { Input } from "~/components/ui/input"
 
 export function EditableCell<TData>({

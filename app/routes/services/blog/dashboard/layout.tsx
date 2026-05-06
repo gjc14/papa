@@ -1,9 +1,7 @@
 import type { Route } from "./+types/layout"
 import { useEffect } from "react"
 import { Outlet } from "react-router"
-
 import { useAtom } from "jotai"
-
 import type { Category, Tag } from "../lib/db/schema"
 import { getCategories, getTags } from "../lib/db/taxonomy.server"
 import { categoriesAtom, tagsAtom } from "./context"

@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useFetcher } from "react-router"
-
 import { CheckCircle2, Plus } from "lucide-react"
-
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert"
 import { Button } from "~/components/ui/button"
 import {
@@ -26,7 +24,6 @@ import { Spinner } from "~/components/ui/spinner"
 import { Textarea } from "~/components/ui/textarea"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import type { ActionResponse } from "~/lib/utils"
-
 import type { Brand } from "../../02_products/03_brands/route"
 import type { Category } from "../../02_products/04_categories/route"
 import type { Tag } from "../../02_products/05_tags/route"

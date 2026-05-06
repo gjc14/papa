@@ -22,7 +22,6 @@ import { Textarea } from "~/components/ui/textarea"
 import { useAssets } from "~/hooks/use-assets"
 import { generateSeoDescription, generateSlug } from "~/lib/utils/seo"
 import { FileGridDialog } from "~/routes/dashboard/assets/components/file-grid"
-
 import { PostStatus } from "../../../lib/db/schema"
 import { editorAtom, postAtom } from "../../context"
 

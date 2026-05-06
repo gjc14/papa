@@ -4,7 +4,6 @@ import {
 	RssIcon,
 	TreeStructureIcon,
 } from "@phosphor-icons/react"
-
 import { registerServiceDashboard } from "~/lib/service/dashboard-registry"
 
 registerServiceDashboard({

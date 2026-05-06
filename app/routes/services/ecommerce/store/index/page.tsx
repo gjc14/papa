@@ -1,10 +1,7 @@
 import { Suspense, useEffect, useMemo } from "react"
 import { Await, Form, useNavigation, useSubmit } from "react-router"
-
 import debounce from "lodash/debounce"
-
 import { InputSearch } from "~/components/ui/xui/input-search"
-
 import type { ProductListing } from "../../lib/db/product.server"
 import {
 	ProductCard,

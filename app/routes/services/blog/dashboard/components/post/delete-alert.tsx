@@ -1,10 +1,8 @@
 import { useEffect } from "react"
 import { useFetcher, useNavigate } from "react-router"
-
 import { useAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
 import { Loader2 } from "lucide-react"
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,7 +14,6 @@ import {
 	AlertDialogTitle,
 } from "~/components/ui/alert-dialog"
 import { useFetcherNotification } from "~/hooks/use-notification"
-
 import { isDeleteAlertOpenAtom, isDeletingAtom, postAtom } from "../../context"
 
 export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {

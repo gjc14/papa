@@ -2,9 +2,7 @@
  * Display progress cards for file uploads. Tracking upload progress.
  */
 import { useState } from "react"
-
 import { Check, ChevronsUpDown, X } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	Collapsible,
@@ -12,7 +10,6 @@ import {
 	CollapsibleTrigger,
 } from "~/components/ui/collapsible"
 import { AnimatedCircularProgressBar } from "~/components/ui/xui/animated-circular-progress-bar"
-
 import type { UploadState } from "../utils"
 
 export const ProgressCard = ({

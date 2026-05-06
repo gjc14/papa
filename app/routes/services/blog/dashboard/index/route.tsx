@@ -1,11 +1,8 @@
 import type { Route } from "./+types/route"
 import { useEffect, useRef, useState } from "react"
 import { data, Link, useFetcher } from "react-router"
-
 import type { Table } from "@tanstack/react-table"
 import { PlusCircle } from "lucide-react"
-
-import { Button } from "~/components/ui/button"
 import {
 	DashboardActions,
 	DashboardContent,
@@ -13,8 +10,8 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
+import { Button } from "~/components/ui/button"
 import { useFetcherNotification } from "~/hooks/use-notification"
-
 import { DashboardDataTable } from "../../../../../components/dashboard/dashboard-data-table"
 import { useSkipper } from "../../../../../components/dashboard/dashboard-data-table/hooks"
 import type { action } from "../resource"

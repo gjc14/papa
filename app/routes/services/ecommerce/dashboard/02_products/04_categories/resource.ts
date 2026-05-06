@@ -1,11 +1,8 @@
 import type { Route } from "./+types/route"
-
 import { createInsertSchema } from "drizzle-zod"
 import z from "zod"
-
 import type { ActionResponse } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
-
 import { ecCategory } from "../../../lib/db/schema"
 import {
 	createEcCategory,
@@ -19,16 +16,17 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 	try {
 		switch (request.method) {
-			case "POST":
+			case "POST": {
 				const categoryData = categoryInsertUpdateSchema.parse(jsonData)
 				const category = await createEcCategory(categoryData)
 				return {
 					msg: `Category ${category.name} created successfully`,
 					data: category,
 				} satisfies ActionResponse
+			}
 			case "PUT":
 				return {} satisfies ActionResponse
-			case "DELETE":
+			case "DELETE": {
 				const deleteData = z
 					.object({ id: z.number(), name: z.string() })
 					.parse(jsonData)
@@ -38,6 +36,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 				return {
 					msg: `Category ${deleteData.name} deleted successfully`,
 				} satisfies ActionResponse
+			}
 		}
 	} catch (error) {
 		return handleError(error, request)

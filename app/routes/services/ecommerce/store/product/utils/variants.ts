@@ -60,4 +60,4 @@ const getSelectedVariant = (props: {
 const getHasVariants = (product: NonNullable<Product>) =>
 	product.variants.length > 0
 
-export { getFilteredVariants, getSelectedVariant, getHasVariants }
+export { getFilteredVariants, getHasVariants, getSelectedVariant }

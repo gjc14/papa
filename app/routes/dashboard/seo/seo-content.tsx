@@ -1,7 +1,6 @@
 import { useState } from "react"
-
 import { SpinnerIcon } from "@phosphor-icons/react"
-
+import { SeoFieldSet } from "~/components/seo-field-set"
 import { Button } from "~/components/ui/button"
 import {
 	Dialog,
@@ -13,7 +12,6 @@ import {
 } from "~/components/ui/dialog"
 import { Field, FieldDescription, FieldLabel } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
-import { SeoFieldSet } from "~/components/seo-field-set"
 import { defaultSeo, type Seo } from "~/lib/db/schema"
 
 export const SeoDialog = ({

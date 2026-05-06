@@ -1,10 +1,7 @@
-import { redirect, type ActionFunctionArgs } from "react-router"
-
+import { type ActionFunctionArgs, redirect } from "react-router"
 import { z } from "zod"
-
-import { type ActionResponse } from "~/lib/utils"
+import type { ActionResponse } from "~/lib/utils"
 import { handleError } from "~/lib/utils/server"
-
 import {
 	createCategory,
 	createChildCategory,

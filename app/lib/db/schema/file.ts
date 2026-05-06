@@ -1,6 +1,5 @@
 import { type InferSelectModel, relations } from "drizzle-orm"
 import { index, integer, text, uuid, varchar } from "drizzle-orm/pg-core"
-
 import { user } from "./auth"
 import { deletedAtAttribute, pgTable, timestampAttributes } from "./helpers"
 

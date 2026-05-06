@@ -4,11 +4,9 @@
  */
 import { useAtom } from "jotai"
 import { toast } from "sonner"
-
-import { Spinner } from "~/components/ui/spinner"
 import { SeoFieldSet } from "~/components/seo-field-set"
+import { Spinner } from "~/components/ui/spinner"
 import { generateSeoDescription } from "~/lib/utils/seo"
-
 import { editorAtom, postAtom } from "../../context"
 
 export const SeoPart = () => {

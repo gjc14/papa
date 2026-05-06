@@ -1,7 +1,5 @@
 import { useEffect } from "react"
-
 import { useAtom, useAtomValue } from "jotai"
-
 import {
 	crossSellProductsAtom,
 	hoveredAttributeImageAtom,

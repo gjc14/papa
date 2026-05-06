@@ -2,7 +2,6 @@
  * @see https://developers.google.com/search/docs/crawling-indexing/robots/create-robots-txt?hl=zh-tw
  */
 import type { Route } from "./+types/robots.txt"
-
 import { getServiceRobotsConfigs } from "~/lib/service/system-endpoints.server"
 import { configsToRobotsTxt, type RobotsConfig } from "~/lib/service/utils"
 

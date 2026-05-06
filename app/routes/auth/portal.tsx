@@ -1,12 +1,9 @@
 import type { Route } from "./+types/portal"
 import { useEffect } from "react"
 import { redirect } from "react-router"
-
 import { toast } from "sonner"
-
 import { MainWrapper } from "~/components/wrappers"
 import { auth } from "~/lib/auth/auth.server"
-
 import { SignInForm } from "./signin-form"
 
 export const loader = async ({ request }: Route.LoaderArgs) => {

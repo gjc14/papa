@@ -1,9 +1,8 @@
 import { useAtomValue } from "jotai"
-
 import {
-	storeConfigAtom,
 	type Product,
 	type selectedVariantAttributesAtom,
+	storeConfigAtom,
 } from "../context"
 import {
 	getFilteredVariants,

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import { Form, useNavigate } from "react-router"
-
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { toast } from "sonner"
-
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
 import {

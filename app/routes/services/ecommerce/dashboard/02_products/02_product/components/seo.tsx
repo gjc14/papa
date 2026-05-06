@@ -1,5 +1,5 @@
 import { atom, useAtomValue, useSetAtom } from "jotai"
-
+import { SeoFieldSet } from "~/components/seo-field-set"
 import {
 	Card,
 	CardContent,
@@ -7,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card"
-import { SeoFieldSet } from "~/components/seo-field-set"
 import {
 	productAtom,
 	storeConfigAtom,

@@ -1,10 +1,8 @@
 "use client"
 
+import type * as React from "react"
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu"
-import * as React from "react"
-
 import { CaretRightIcon, CheckIcon } from "@phosphor-icons/react"
-
 import { cn } from "~/lib/utils/index"
 
 function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
@@ -248,18 +246,18 @@ function ContextMenuShortcut({
 
 export {
 	ContextMenu,
-	ContextMenuTrigger,
-	ContextMenuContent,
-	ContextMenuItem,
 	ContextMenuCheckboxItem,
-	ContextMenuRadioItem,
+	ContextMenuContent,
+	ContextMenuGroup,
+	ContextMenuItem,
 	ContextMenuLabel,
+	ContextMenuPortal,
+	ContextMenuRadioGroup,
+	ContextMenuRadioItem,
 	ContextMenuSeparator,
 	ContextMenuShortcut,
-	ContextMenuGroup,
-	ContextMenuPortal,
 	ContextMenuSub,
 	ContextMenuSubContent,
 	ContextMenuSubTrigger,
-	ContextMenuRadioGroup,
+	ContextMenuTrigger,
 }

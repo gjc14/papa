@@ -1,5 +1,4 @@
 import { atom, useAtomValue, useSetAtom } from "jotai"
-
 import {
 	Card,
 	CardContent,
@@ -17,7 +16,6 @@ import {
 	SelectValue,
 } from "~/components/ui/select"
 import { Separator } from "~/components/ui/separator"
-
 import { ProductStatus, ProductVisibility } from "../../../../lib/db/schema"
 import { productAtom } from "../../../../store/product/context"
 

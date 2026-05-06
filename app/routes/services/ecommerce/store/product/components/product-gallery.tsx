@@ -1,11 +1,8 @@
 import { useState } from "react"
-
 import { ChevronLeft, ChevronRight } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import { Skeleton } from "~/components/ui/skeleton"
-
-import { productGallery as productGalleryTable } from "../../../lib/db/schema"
+import type { productGallery as productGalleryTable } from "../../../lib/db/schema"
 import { useProductContext } from "../hooks/use-product-context"
 
 const ProductGalleryWrapper = ({

@@ -1,13 +1,13 @@
-import {
-	type ColumnDef,
-	type ColumnFiltersState,
-	type GlobalFilterTableState,
-	type OnChangeFn,
-	type PaginationState,
-	type Row,
-	type SortingState,
-	type TableOptions,
-	type Table as TableType,
+import type {
+	ColumnDef,
+	ColumnFiltersState,
+	GlobalFilterTableState,
+	OnChangeFn,
+	PaginationState,
+	Row,
+	SortingState,
+	TableOptions,
+	Table as TableType,
 } from "@tanstack/react-table"
 
 export interface DashboardDataTableProps<TData, TValue> {

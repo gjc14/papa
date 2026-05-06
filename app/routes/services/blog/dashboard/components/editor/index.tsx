@@ -8,19 +8,16 @@ import "./styles/image-node.css"
 import "./styles/youtube-node.css"
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-
 import { EditorContent, useEditor } from "@tiptap/react"
 import { useAtom } from "jotai"
 import debounce from "lodash/debounce"
 import { toast } from "sonner"
-
 import { ExtensionKit } from "~/components/editor/extension-kit"
 import { authClient } from "~/lib/auth/auth-client"
 import {
-	useFileUpload,
 	type FileWithFileMetadata,
+	useFileUpload,
 } from "~/routes/dashboard/assets/utils"
-
 import { editorAtom, editorContentAtom, serverPostAtom } from "../../context"
 import { defaultContent } from "../../post-slug/utils"
 
@@ -80,7 +77,7 @@ export function ContentEditor() {
 					top: event.clientY,
 				})
 
-				let filesArray = Array.from(event.dataTransfer.files)
+				const filesArray = Array.from(event.dataTransfer.files)
 
 				event.preventDefault()
 				event.stopPropagation()
@@ -205,7 +202,7 @@ export function ContentEditor() {
 							})
 							.run()
 						break
-					case "completed":
+					case "completed": {
 						const url = `/assets/${file.id}`
 
 						// Prefetch the image before replacing
@@ -225,6 +222,7 @@ export function ContentEditor() {
 						}
 						img.src = url
 						break
+					}
 				}
 
 				tmpImage.delete(key)

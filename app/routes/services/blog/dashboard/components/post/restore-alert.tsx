@@ -1,6 +1,5 @@
 import { useAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -12,7 +11,6 @@ import {
 	AlertDialogTitle,
 } from "~/components/ui/alert-dialog"
 import { convertDateFields } from "~/lib/db/utils"
-
 import type { PostWithRelations } from "../../../lib/db/post.server"
 import {
 	editorAtom,

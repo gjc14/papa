@@ -1,13 +1,12 @@
 import { Fragment, memo, useEffect, useMemo, useState } from "react"
-
 import {
+	type ColumnDef,
+	type ExpandedState,
 	flexRender,
 	getCoreRowModel,
 	getExpandedRowModel,
-	useReactTable,
-	type ColumnDef,
-	type ExpandedState,
 	type Row,
+	useReactTable,
 } from "@tanstack/react-table"
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai"
 import { atomFamily } from "jotai/utils"
@@ -20,7 +19,6 @@ import {
 	Grid,
 	Plus,
 } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	Card,
@@ -55,7 +53,6 @@ import { cn } from "~/lib/utils"
 import { productAtom } from "~/routes/services/ecommerce/store/product/context"
 import { getVariantAttributes } from "~/routes/services/ecommerce/store/product/utils/attributes"
 import { renderPrice } from "~/routes/services/ecommerce/store/product/utils/price"
-
 import {
 	AttributeEditDialog,
 	createNewAttribute,
@@ -478,7 +475,7 @@ function VariantManagementDialog({
 												.map((a) => a.name || a.id.toString())
 										: []
 
-									let combination: Record<string, string> = {}
+									const combination: Record<string, string> = {}
 									for (const a of attributeNameInOrder) {
 										combination[a] = a === attr ? value : variant.combination[a]
 									}

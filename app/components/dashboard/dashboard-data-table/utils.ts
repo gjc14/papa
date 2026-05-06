@@ -4,7 +4,6 @@ import type {
 	PaginationState,
 	SortingState,
 } from "@tanstack/react-table"
-
 import {
 	DEFAULT_TABLE_SEARCH_PARAMS_CONFIG,
 	type TableSearchParamsConfig,

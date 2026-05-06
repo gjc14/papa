@@ -1,6 +1,5 @@
 import { render } from "@react-email/render"
 import * as nodemailer from "nodemailer"
-
 import type { EmailOptions, EmailProvider } from "../types"
 
 export class NodemailerProvider implements EmailProvider {

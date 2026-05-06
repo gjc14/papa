@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm"
-
 import { db } from "./db.server"
 import { type Seo, seo as seoTable } from "./schema"
 

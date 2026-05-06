@@ -44,7 +44,6 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm/sql/sql"
-
 import { seo } from "~/lib/db/schema"
 import { user } from "~/lib/db/schema/auth"
 import {
@@ -52,7 +51,6 @@ import {
 	pgTable,
 	timestampAttributes,
 } from "~/lib/db/schema/helpers"
-
 import { ecAttribute, ecBrand, ecCategory, ecTag } from "./taxonomy"
 
 export const ProductStatus = [

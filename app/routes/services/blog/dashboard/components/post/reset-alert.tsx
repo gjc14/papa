@@ -1,5 +1,4 @@
 import { useAtom } from "jotai"
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -10,7 +9,6 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "~/components/ui/alert-dialog"
-
 import {
 	editorAtom,
 	isResetAlertOpenAtom,

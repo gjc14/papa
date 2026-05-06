@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react"
 import type { FetcherWithComponents } from "react-router"
-
 import { type ExternalToast, toast } from "sonner"
-
 import type { ActionResponse } from "~/lib/utils"
 
 /**

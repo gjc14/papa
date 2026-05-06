@@ -1,12 +1,11 @@
 import camelcaseKeys from "camelcase-keys"
 import { eq, inArray, sql } from "drizzle-orm"
-
-import { seo, type Seo } from "~/lib/db/schema"
+import { type Seo, seo } from "~/lib/db/schema"
 import { convertDateFields } from "~/lib/db/utils"
 import { handleError } from "~/lib/utils/server"
-
 import { dbEcommerce } from "./db.server"
 import {
+	type ProductStatus,
 	product,
 	productAttribute,
 	productCrossSell,
@@ -17,7 +16,6 @@ import {
 	productToTag,
 	productUpsell,
 	productVariant,
-	type ProductStatus,
 } from "./schema/product"
 import { ecAttribute, ecBrand, ecCategory, ecTag } from "./schema/taxonomy"
 

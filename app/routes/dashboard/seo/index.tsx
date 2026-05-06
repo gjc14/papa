@@ -1,12 +1,8 @@
 import type { Route } from "./+types"
 import { useEffect, useRef, useState } from "react"
 import { useFetcher } from "react-router"
-
 import { PlusCircleIcon } from "@phosphor-icons/react"
-import { type ColumnDef, type Table } from "@tanstack/react-table"
-
-import { Button } from "~/components/ui/button"
-import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
+import type { ColumnDef, Table } from "@tanstack/react-table"
 import {
 	DashboardDataTable,
 	DashboardDataTableMoreMenu,
@@ -19,6 +15,8 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
+import { Button } from "~/components/ui/button"
+import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import type { Seo } from "~/lib/db/schema"
 import { SeoDialog } from "~/routes/dashboard/seo/seo-content"

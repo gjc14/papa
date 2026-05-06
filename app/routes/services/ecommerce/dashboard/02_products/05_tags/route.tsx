@@ -1,8 +1,6 @@
 import type { Route } from "./+types/route"
 import { useEffect, useMemo, useRef, useState } from "react"
-
 import type { ColumnDef, Table } from "@tanstack/react-table"
-
 import { DashboardDataTable } from "~/components/dashboard/dashboard-data-table"
 import { useSkipper } from "~/components/dashboard/dashboard-data-table/hooks"
 import {
@@ -12,7 +10,6 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
-
 import { getEcTags } from "../../../lib/db/taxonomy.server"
 import { CreateTaxonomyDialog } from "../../components/taxonomy/create-taxonomy-dialog"
 

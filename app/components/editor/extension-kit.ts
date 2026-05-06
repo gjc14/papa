@@ -11,7 +11,6 @@ import { Youtube } from "@tiptap/extension-youtube"
 import { Placeholder, Selection } from "@tiptap/extensions"
 import { StarterKit } from "@tiptap/starter-kit"
 import { common, createLowlight } from "lowlight"
-
 // Custom Extensions
 import { SmilieReplacer } from "./extensions/smilie-replacer"
 

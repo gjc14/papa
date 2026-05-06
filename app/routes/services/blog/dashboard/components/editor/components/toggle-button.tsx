@@ -1,10 +1,8 @@
-import { Editor, useEditorState } from "@tiptap/react"
+import { type Editor, useEditorState } from "@tiptap/react"
 import { useAtom } from "jotai"
-
 import { Button } from "~/components/ui/button"
 import { Skeleton } from "~/components/ui/skeleton"
 import { cn } from "~/lib/utils"
-
 import { editorAtom } from "../../../context"
 import { TooltipWrapper } from "./tooltip-wrapper"
 

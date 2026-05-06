@@ -5,14 +5,11 @@
 import "highlight.js/styles/base16/framer.min.css"
 
 import { useEffect, useState } from "react"
-
 import { generateHTML } from "@tiptap/html"
 import hljs from "highlight.js"
-
-import { Spinner } from "~/components/ui/spinner"
 import { ExtensionKit } from "~/components/editor/extension-kit"
+import { Spinner } from "~/components/ui/spinner"
 import { useHydrated } from "~/hooks/use-hydrated"
-
 import type { PostWithRelations } from "../../../lib/db/post.server"
 import { PostFooter } from "./post-footer"
 import { PostMeta } from "./post-meta"
@@ -40,7 +37,7 @@ export const Post = ({
 		const prepareHtml = async () => {
 			if (!post.content || !isHydrated) return
 
-			let generatedHtml = generateHTML(JSON.parse(post.content), [
+			const generatedHtml = generateHTML(JSON.parse(post.content), [
 				...ExtensionKit({ openOnClick: true }),
 			])
 

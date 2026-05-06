@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react"
-
 import { atom, useAtomValue, useSetAtom } from "jotai"
 import { MoreVertical, Plus, XIcon } from "lucide-react"
 import { nanoid } from "nanoid"
-
 import { Button } from "~/components/ui/button"
 import {
 	Card,
@@ -32,7 +30,6 @@ import {
 	ItemDescription,
 	ItemTitle,
 } from "~/components/ui/item"
-
 import { productAtom } from "../../../../store/product/context"
 
 const productInstructionsAtom = atom(

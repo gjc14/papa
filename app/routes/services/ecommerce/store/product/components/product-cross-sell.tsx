@@ -1,5 +1,4 @@
 import { useAtom } from "jotai"
-
 import { crossSellProductsAtom } from "../context"
 import { ProductCard, ProductCardSkeleton } from "./product-card"
 

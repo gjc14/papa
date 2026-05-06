@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
 import { Link, useFetcher, useNavigate } from "react-router"
-
 import { atom, useAtom, useAtomValue, useSetAtom, useStore } from "jotai"
 import {
 	Check,
@@ -11,7 +10,6 @@ import {
 	Trash,
 	X,
 } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
@@ -36,7 +34,6 @@ import type {
 	ConnectCrossSellProducts,
 	ConnectUpsellProducts,
 } from "~/routes/services/ecommerce/lib/db/product.server"
-
 import {
 	crossSellProductsAtom,
 	productAtom,

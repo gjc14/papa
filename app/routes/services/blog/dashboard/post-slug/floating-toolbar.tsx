@@ -1,15 +1,12 @@
 import { useEffect } from "react"
 import { useFetcher, useNavigate } from "react-router"
-
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
 import { ExternalLink, Loader2, RotateCcw, Settings } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import { useIsMobile } from "~/hooks/use-mobile"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import { generateSlug } from "~/lib/utils/seo"
-
 import {
 	editorAtom,
 	hasChangesAtom,

@@ -1,7 +1,6 @@
-import { motion } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import { NavLink } from "react-router"
-
+import { motion } from "motion/react"
 import { buttonVariants } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
 

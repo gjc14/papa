@@ -1,6 +1,5 @@
 import { Baseline, Paintbrush } from "lucide-react"
 import tailwindColors from "tailwindcss/colors.js"
-
 import { ColorDropdownMenu } from "./components/color-dropdown"
 import { ImageButton } from "./components/image-button"
 import { LinkUnlinkButtons } from "./components/link-unlink-button"

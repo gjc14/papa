@@ -1,10 +1,10 @@
+import { parseShortcutKeys } from "~/components/editor/utils"
 import { Kbd } from "~/components/ui/kbd"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/ui/tooltip"
-import { parseShortcutKeys } from "~/components/editor/utils"
 
 /**
  * Tooltip wrapper to render tooltip with shortcut keys.

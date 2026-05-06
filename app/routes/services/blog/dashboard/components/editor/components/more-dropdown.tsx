@@ -1,9 +1,7 @@
 import { useState } from "react"
-
 import { useEditorState } from "@tiptap/react"
 import { useAtom } from "jotai"
 import { MoreVertical } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	DropdownMenu,
@@ -13,9 +11,8 @@ import {
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { Skeleton } from "~/components/ui/skeleton"
-
 import { editorAtom } from "../../../context"
-import { type EditOptionProps } from "../edit-options"
+import type { EditOptionProps } from "../edit-options"
 import { TooltipWrapper } from "./tooltip-wrapper"
 
 export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {

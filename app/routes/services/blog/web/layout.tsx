@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { Outlet, useNavigation } from "react-router"
-
 import { BlogLoading } from "./components/blog-loading"
 import { CTA } from "./components/cta"
 import { Footer } from "./components/footer"

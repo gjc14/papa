@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { Form, useFetcher, useSubmit } from "react-router"
-
 import { CircleX, PlusCircle } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	Dialog,
@@ -17,7 +15,6 @@ import { Input } from "~/components/ui/input"
 import { ScrollArea } from "~/components/ui/scroll-area"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import { generateSlug } from "~/lib/utils/seo"
-
 import { actionRoute } from ".."
 import type { TagType } from "../type"
 

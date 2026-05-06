@@ -8,7 +8,6 @@ import "dotenv/config"
  */
 import { ListBucketsCommand, S3Client } from "@aws-sdk/client-s3"
 import { drizzle } from "drizzle-orm/node-postgres"
-
 import * as schema from "./schema"
 
 export function createDB<T extends Record<string, unknown>>(serviceSchema?: T) {

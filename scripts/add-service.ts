@@ -1,6 +1,5 @@
 import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
-
 import { askInput } from "./utils"
 
 const createPaths = (serviceName: string, frontendRouteName: string) => {

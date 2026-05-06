@@ -1,7 +1,5 @@
 import { eq, inArray } from "drizzle-orm"
-
 import { user as userTable } from "~/lib/db/schema"
-
 import { db } from "./db.server"
 
 type User = typeof userTable.$inferSelect

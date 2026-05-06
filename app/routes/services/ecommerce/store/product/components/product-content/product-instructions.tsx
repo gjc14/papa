@@ -1,8 +1,6 @@
 import { useState } from "react"
-
 import { Button } from "~/components/ui/button"
 import { Separator } from "~/components/ui/separator"
-
 import { useProductContext } from "../../hooks/use-product-context"
 
 export const ProductInstructions = () => {

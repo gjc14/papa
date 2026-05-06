@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+import { useFetcher } from "react-router"
 import {
 	AudioWaveform,
 	Expand,
@@ -7,8 +9,6 @@ import {
 	Loader2,
 	Trash2,
 } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useFetcher } from "react-router"
 import { toast } from "sonner"
 import {
 	AlertDialog,
@@ -35,7 +35,6 @@ import { Separator } from "~/components/ui/separator"
 import { Textarea } from "~/components/ui/textarea"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import { cn } from "~/lib/utils"
-
 import { assetResourceRoute } from "../utils"
 import type { FileCardProps } from "./types"
 

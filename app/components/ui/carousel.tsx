@@ -1,10 +1,8 @@
 import * as React from "react"
-
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react"
 import useEmblaCarousel, {
 	type UseEmblaCarouselType,
 } from "embla-carousel-react"
-
 import { Button } from "~/components/ui/button"
 import { cn } from "~/lib/utils/index"
 
@@ -231,11 +229,11 @@ function CarouselNext({
 }
 
 export {
-	type CarouselApi,
 	Carousel,
+	type CarouselApi,
 	CarouselContent,
 	CarouselItem,
-	CarouselPrevious,
 	CarouselNext,
+	CarouselPrevious,
 	useCarousel,
 }

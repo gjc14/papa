@@ -1,11 +1,9 @@
 import { useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-
 import { useEditorState } from "@tiptap/react"
 import { atom, useAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
 import { Circle, ExternalLink, Link, Trash } from "lucide-react"
-
+import { useHotkeys } from "react-hotkeys-hook"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import {
@@ -14,7 +12,6 @@ import {
 	PopoverTrigger,
 } from "~/components/ui/popover"
 import { Skeleton } from "~/components/ui/skeleton"
-
 import { editorAtom } from "../../../context"
 import { createLinkUnlinkOption } from "../edit-options"
 import { TooltipWrapper } from "./tooltip-wrapper"

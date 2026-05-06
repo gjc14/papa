@@ -1,9 +1,7 @@
-import React, { useId } from "react"
-
+import type React from "react"
+import { useId } from "react"
 import { LoaderCircle, Search } from "lucide-react"
-
 import { cn } from "~/lib/utils"
-
 import { Input } from "../input"
 
 export function InputSearch(

@@ -1,8 +1,6 @@
 import type { Route } from "./+types/users"
-
-import { getUsers } from "~/lib/db/user.server"
-
 import { UserManagementRoute } from "~/components/dashboard/user-management/route-component"
+import { getUsers } from "~/lib/db/user.server"
 
 export const loader = async () => {
 	return await getUsers({

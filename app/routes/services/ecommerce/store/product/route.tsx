@@ -1,19 +1,16 @@
 import type { Route } from "./+types/route"
 import { useEffect } from "react"
 import { Link } from "react-router"
-
 import { useSetAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
 import { ArrowLeft, Store } from "lucide-react"
-
-import { Button } from "~/components/ui/button"
-import { Separator } from "~/components/ui/separator"
 import {
 	ErrorBoundaryTemplate,
 	type ErrorBoundaryTemplateProps,
 } from "~/components/error-boundary-template"
+import { Button } from "~/components/ui/button"
+import { Separator } from "~/components/ui/separator"
 import { validateAdminSession } from "~/routes/auth/utils"
-
 import {
 	getCrossSellProducts,
 	getProduct,

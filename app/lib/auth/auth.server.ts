@@ -8,9 +8,7 @@ import {
 	emailOTP,
 	organization,
 } from "better-auth/plugins"
-
 import { db } from "~/lib/db/db.server"
-
 import { emailService } from "../email"
 import { ac, admin, user } from "./permissions"
 import {

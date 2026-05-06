@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { NavLink } from "react-router"
-
 import { ChevronRight } from "lucide-react"
-
 import {
 	Collapsible,
 	CollapsibleContent,

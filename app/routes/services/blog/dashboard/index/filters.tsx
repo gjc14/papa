@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router"
-
 import { useAtom } from "jotai"
 import { Check, ChevronDown, Loader2 } from "lucide-react"
-
 import { Button } from "~/components/ui/button"
 import {
 	Command,
@@ -21,7 +19,6 @@ import {
 } from "~/components/ui/popover"
 import { cn } from "~/lib/utils"
 import { dashboardContextAtom } from "~/routes/dashboard/layout/context"
-
 import type { Category, Tag } from "../../lib/db/schema"
 import { categoriesAtom, tagsAtom } from "../context"
 

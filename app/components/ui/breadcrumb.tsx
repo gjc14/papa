@@ -1,9 +1,7 @@
+import type * as React from "react"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
-import * as React from "react"
-
 import { CaretRightIcon, DotsThreeIcon } from "@phosphor-icons/react"
-
 import { cn } from "~/lib/utils/index"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
@@ -114,10 +112,10 @@ function BreadcrumbEllipsis({
 
 export {
 	Breadcrumb,
-	BreadcrumbList,
+	BreadcrumbEllipsis,
 	BreadcrumbItem,
 	BreadcrumbLink,
+	BreadcrumbList,
 	BreadcrumbPage,
 	BreadcrumbSeparator,
-	BreadcrumbEllipsis,
 }

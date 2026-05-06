@@ -1,6 +1,5 @@
 import type { Route } from "./+types/route"
 import { Outlet } from "react-router"
-
 import {
 	DashboardHeader,
 	DashboardLayout,

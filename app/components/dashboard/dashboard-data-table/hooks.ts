@@ -1,6 +1,5 @@
 import React from "react"
 import { useSearchParams } from "react-router"
-
 import type {
 	ColumnFiltersState,
 	GlobalFilterTableState,
@@ -9,9 +8,7 @@ import type {
 	Updater,
 } from "@tanstack/react-table"
 import { useSetAtom } from "jotai"
-
 import { dashboardContextAtom } from "~/routes/dashboard/layout/context"
-
 import type { DashboardDataTableProps } from "./types"
 import { getNumber, parseTableSearchParams, safeJsonParse } from "./utils"
 

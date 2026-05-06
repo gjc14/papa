@@ -1,8 +1,6 @@
 import { useEffect } from "react"
 import { useFetcher, useNavigate } from "react-router"
-
 import { atom, useAtom, useAtomValue } from "jotai"
-
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,7 +14,6 @@ import {
 } from "~/components/ui/alert-dialog"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import { productAtom } from "~/routes/services/ecommerce/store/product/context"
-
 import type { action } from "../../resource"
 import {
 	isMovingToTrashAtom,

@@ -1,6 +1,5 @@
 import { registerSystemEndpoints } from "~/lib/service/system-endpoints-registry"
 import type { SitemapUrlConfig } from "~/lib/service/utils"
-
 import { dbBlog as db } from "./lib/db/db.server"
 
 registerSystemEndpoints({

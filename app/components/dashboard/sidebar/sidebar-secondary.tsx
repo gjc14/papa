@@ -1,8 +1,6 @@
-import * as React from "react"
+import type * as React from "react"
 import { Link } from "react-router"
-
-import { type LucideIcon } from "lucide-react"
-
+import type { LucideIcon } from "lucide-react"
 import {
 	SidebarGroup,
 	SidebarGroupContent,

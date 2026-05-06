@@ -1,4 +1,4 @@
-import { Editor } from "@tiptap/react"
+import type { Editor } from "@tiptap/react"
 import {
 	AlignCenter,
 	AlignJustify,
@@ -20,6 +20,7 @@ import {
 	List,
 	ListOrdered,
 	ListTodoIcon,
+	type LucideIcon,
 	Minus,
 	Pilcrow,
 	Quote,
@@ -30,9 +31,7 @@ import {
 	Superscript,
 	Underline as UnderlineIcon,
 	Undo,
-	type LucideIcon,
 } from "lucide-react"
-
 import { Youtube } from "~/components/icons/youtube"
 
 export interface EditOptionProps {
@@ -380,6 +379,9 @@ export {
 	createColorOption,
 	createFontFamilyOption,
 	createHighlightOption,
+	createImageOption,
+	createLinkUnlinkOption,
+	createYoutubeOption,
 	ListOptions,
 	MarkOptions,
 	MiscOptions,
@@ -387,7 +389,4 @@ export {
 	RemoveFormattingOption,
 	SubSuperScriptOptions,
 	UndoRedoOptions,
-	createLinkUnlinkOption,
-	createImageOption,
-	createYoutubeOption,
 }

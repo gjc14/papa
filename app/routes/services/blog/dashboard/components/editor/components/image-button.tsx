@@ -1,17 +1,14 @@
 import { useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-
 import { useEditorState } from "@tiptap/react"
 import { atom, useAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
 import { Image } from "lucide-react"
-
+import { useHotkeys } from "react-hotkeys-hook"
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
 import { Button } from "~/components/ui/button"
 import { DialogTrigger } from "~/components/ui/dialog"
 import { Skeleton } from "~/components/ui/skeleton"
-import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
 import { useAssets } from "~/hooks/use-assets"
-
 import { editorAtom } from "../../../context"
 import { createImageOption } from "../edit-options"
 import { TooltipWrapper } from "./tooltip-wrapper"

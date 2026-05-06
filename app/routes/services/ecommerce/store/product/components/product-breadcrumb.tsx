@@ -1,7 +1,5 @@
 import { Link } from "react-router"
-
 import { ChevronDownIcon, Slash } from "lucide-react"
-
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -17,7 +15,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-
 import { useProductContext } from "../hooks/use-product-context"
 
 export function ProductBreadcrumb() {

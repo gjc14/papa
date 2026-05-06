@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react"
 import { useFetcher } from "react-router"
-
-import { type ColumnDef } from "@tanstack/react-table"
-
+import type { ColumnDef } from "@tanstack/react-table"
+import { DashboardDataTableMoreMenu } from "~/components/dashboard/dashboard-data-table"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Badge } from "~/components/ui/badge"
 import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
-import { DashboardDataTableMoreMenu } from "~/components/dashboard/dashboard-data-table"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import type { user as userTable } from "~/lib/db/schema"
-
 import { UserContent } from "../user-content"
 
 type User = typeof userTable.$inferSelect

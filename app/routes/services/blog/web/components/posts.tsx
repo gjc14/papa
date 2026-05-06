@@ -8,15 +8,12 @@ import {
 	useNavigation,
 	useSubmit,
 } from "react-router"
-
 import debounce from "lodash/debounce"
 import { CircleCheckIcon, XCircle } from "lucide-react"
 import { motion } from "motion/react"
-
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Badge } from "~/components/ui/badge"
 import { InputSearch } from "~/components/ui/xui/input-search"
-
 import type { PostWithRelations } from "../..//lib/db/post.server"
 
 export const PostCollection = ({

@@ -1,8 +1,6 @@
 import { useEffect } from "react"
-
 import { useAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
-
 import {
 	isDraftCheckCompleteAtom,
 	isRestoreAlertOpenAtom,

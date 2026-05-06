@@ -1,14 +1,11 @@
 import { useState } from "react"
-
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai"
 import { Image, Plus, X } from "lucide-react"
-
+import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
 import { Card, CardContent } from "~/components/ui/card"
 import { DialogTrigger } from "~/components/ui/dialog"
 import { Skeleton } from "~/components/ui/skeleton"
-import { AssetSelectionDialog } from "~/components/asset-selection-dialog"
 import { useAssets } from "~/hooks/use-assets"
-
 import {
 	productAtom,
 	productGalleryAtom,

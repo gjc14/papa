@@ -1,14 +1,9 @@
 import type { Route } from "./+types/route"
 import { useEffect, useRef, useState } from "react"
 import { Link, useFetcher } from "react-router"
-
-import { type ColumnDef, type Table } from "@tanstack/react-table"
+import type { ColumnDef, Table } from "@tanstack/react-table"
 import { useAtomValue } from "jotai"
 import { PlusCircle } from "lucide-react"
-
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
-import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
 import {
 	DashboardDataTable,
 	DashboardDataTableMoreMenu,
@@ -21,8 +16,10 @@ import {
 	DashboardLayout,
 	DashboardTitle,
 } from "~/components/dashboard/dashboard-wrapper"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { DropdownMenuItem } from "~/components/ui/dropdown-menu"
 import { useFetcherNotification } from "~/hooks/use-notification"
-
 import { getProducts } from "../../../lib/db/product.server"
 import { storeConfigAtom } from "../../../store/product/context"
 import {

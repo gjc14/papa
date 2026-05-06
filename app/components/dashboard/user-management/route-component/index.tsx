@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useFetcher } from "react-router"
-
-import { type RowSelectionState, type Table } from "@tanstack/react-table"
+import type { RowSelectionState, Table } from "@tanstack/react-table"
 import { ChevronDown, Loader2, PlusCircle } from "lucide-react"
-
+import {
+	DashboardActions,
+	DashboardContent,
+	DashboardHeader,
+	DashboardLayout,
+	DashboardTitle,
+} from "~/components/dashboard/dashboard-wrapper"
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -33,16 +38,8 @@ import {
 } from "~/components/ui/dropdown-menu"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import {
-	DashboardActions,
-	DashboardContent,
-	DashboardHeader,
-	DashboardLayout,
-	DashboardTitle,
-} from "~/components/dashboard/dashboard-wrapper"
 import { useFetcherNotification } from "~/hooks/use-notification"
 import type { user as userTable } from "~/lib/db/schema"
-
 import { DashboardDataTable } from "../../dashboard-data-table"
 import { useSkipper } from "../../dashboard-data-table/hooks"
 import { UserBulkEditDialog } from "../user-content"

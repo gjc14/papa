@@ -1,5 +1,4 @@
 import { atom } from "jotai"
-
 import { getServicesDashboards } from "~/lib/service/dashboard"
 import { DEFAULT_SERVICE } from "~/lib/service/data"
 import type { ServiceDashboard } from "~/lib/service/type"

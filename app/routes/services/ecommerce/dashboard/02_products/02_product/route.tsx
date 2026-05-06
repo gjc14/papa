@@ -1,10 +1,8 @@
 import type { Route } from "./+types/route"
 import { useEffect } from "react"
-import { type ShouldRevalidateFunctionArgs } from "react-router"
-
+import type { ShouldRevalidateFunctionArgs } from "react-router"
 import { useSetAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
-
 import {
 	getCrossSellProducts,
 	getProduct,
@@ -14,10 +12,10 @@ import {
 import {
 	crossSellProductsAtom,
 	isResolvingAtom,
+	type Product,
 	productAtom,
 	productGalleryAtom,
 	upsellProductsAtom,
-	type Product,
 } from "../../../store/product/context"
 import { ProductEditPage } from "./page"
 

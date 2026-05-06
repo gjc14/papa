@@ -1,6 +1,5 @@
 import { XIcon } from "@phosphor-icons/react"
 import { useAtom } from "jotai"
-
 import { Separator } from "~/components/ui/separator"
 import {
 	Sheet,
@@ -11,7 +10,6 @@ import {
 	SheetTitle,
 } from "~/components/ui/sheet"
 import { useIsMobile } from "~/hooks/use-mobile"
-
 import { isSettingsOpenAtom } from "../../context"
 import { DangerZone } from "./danger-zone"
 import { PostMetaPart } from "./post-meta-part"

@@ -1,8 +1,7 @@
 "use client"
 
-import * as React from "react"
+import type * as React from "react"
 import * as ResizablePrimitive from "react-resizable-panels"
-
 import { cn } from "~/lib/utils/index"
 
 function ResizablePanelGroup({
@@ -50,4 +49,4 @@ function ResizableHandle({
 	)
 }
 
-export { ResizablePanelGroup, ResizablePanel, ResizableHandle }
+export { ResizableHandle, ResizablePanel, ResizablePanelGroup }

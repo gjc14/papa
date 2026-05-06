@@ -1,10 +1,14 @@
 import type { Route } from "./+types/route"
 import { memo, useEffect, useMemo } from "react"
-import { Link, redirect, Outlet as RROutlet, useNavigation } from "react-router"
-
+import { Link, Outlet as RROutlet, redirect, useNavigation } from "react-router"
 import { useAtom } from "jotai"
 import { Undo2 } from "lucide-react"
-
+import { DashboardLayout } from "~/components/dashboard/dashboard-wrapper"
+import { DashboardSidebar } from "~/components/dashboard/sidebar"
+import {
+	ErrorBoundaryTemplate,
+	type ErrorBoundaryTemplateProps,
+} from "~/components/error-boundary-template"
 import { Button } from "~/components/ui/button"
 import {
 	SIDEBAR_COOKIE_NAME,
@@ -12,15 +16,8 @@ import {
 	SidebarProvider,
 } from "~/components/ui/sidebar"
 import { Spinner } from "~/components/ui/spinner"
-import { DashboardLayout } from "~/components/dashboard/dashboard-wrapper"
-import { DashboardSidebar } from "~/components/dashboard/sidebar"
-import {
-	ErrorBoundaryTemplate,
-	type ErrorBoundaryTemplateProps,
-} from "~/components/error-boundary-template"
 import { auth } from "~/lib/auth/auth.server"
 import { authContext } from "~/middleware/context/auth"
-
 import { HeaderWithBreadcrumbs } from "./components/header-breadcrumbs"
 import { dashboardContextAtom } from "./context"
 

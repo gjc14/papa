@@ -1,5 +1,4 @@
 import { Separator } from "~/components/ui/separator"
-
 import { useProductContext } from "../../hooks/use-product-context"
 
 export const ProductAttributes = () => {

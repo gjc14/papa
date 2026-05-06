@@ -1,12 +1,9 @@
 import type { Route } from "./+types/route"
 import { useEffect } from "react"
-
 import { useAtom } from "jotai"
 import { useHydrateAtoms } from "jotai/utils"
 import { HeartCrack } from "lucide-react"
-
 import { useIsMobile } from "~/hooks/use-mobile"
-
 import { getPostBySlug } from "../../lib/db/post.server"
 import { Post } from "../../web/components/post"
 import { ContentEditor } from "../components/editor"

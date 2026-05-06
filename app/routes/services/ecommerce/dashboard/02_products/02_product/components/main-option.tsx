@@ -1,5 +1,4 @@
 import { atom, useAtomValue, useSetAtom } from "jotai"
-
 import {
 	Card,
 	CardContent,
@@ -7,7 +6,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card"
-
 import { productAtom } from "../../../../store/product/context"
 import {
 	isFieldInherited,

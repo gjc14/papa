@@ -3,8 +3,9 @@
  * 1. {@link FileGrid} - Render files and take file upload
  * 2. {@link FileGridDialog} - Dialog version of FileGrid
  */
-import { CloudUploadIcon, CupSoda } from "lucide-react"
+
 import { useCallback, useState } from "react"
+import { CloudUploadIcon, CupSoda } from "lucide-react"
 import { useDropzone } from "react-dropzone"
 import { toast } from "sonner"
 import { Button } from "~/components/ui/button"
@@ -19,7 +20,6 @@ import {
 import { authClient } from "~/lib/auth/auth-client"
 import type { FileMetadata } from "~/lib/db/schema"
 import { cn } from "~/lib/utils"
-
 import { useFileUpload } from "../utils"
 import { FileCard } from "./file-card"
 import { ProgressCard } from "./progress-card"

@@ -2,9 +2,7 @@
  * Store Product Page is a component that could be dynamically rendered from database.
  */
 import { useAtomValue } from "jotai"
-
 import { Separator } from "~/components/ui/separator"
-
 import { ProductBreadcrumb } from "./components/product-breadcrumb"
 import { ProductContent } from "./components/product-content"
 import {
