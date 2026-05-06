@@ -1,5 +1,4 @@
 import { isRouteErrorResponse, useRouteError } from "react-router"
-
 import { statusCodeMap } from "~/lib/utils/status-code"
 
 export type ErrorBoundaryTemplateProps = {
@@ -46,28 +45,31 @@ export function ErrorBoundaryTemplate({
 }) {
 	const error = useRouteError()
 
-	let statusMessage = statusCodeMap[500]
+	const internalError = 500
+	const internalErrorMessage = statusCodeMap[internalError]
 
-	// Route throw new Response (404, etc.)
 	if (isRouteErrorResponse(error)) {
-		statusMessage = statusCodeMap[error.status]
-		console.error("Route Error Response:", error)
+		// Route throw new Response (404, etc.)
+		const statusMessage = statusCodeMap[error.status]
 
-		const errorMessage = error.data || "Error Response"
+		console.error("Route Error Response:", error)
 
 		return children({
 			status: error.status,
-			statusMessage,
-			errorMessage,
+			statusMessage: {
+				text: error.statusText || statusMessage.text,
+				description: statusMessage.description,
+			},
+			errorMessage: error.data || "Route Error Response",
 		})
 	} else if (error instanceof Error) {
 		// throw new Error('message')
-		console.error("Error:", error)
+		console.error(error)
 
 		return children({
-			status: 500,
-			statusMessage,
-			errorMessage: "Internal Error",
+			status: internalError,
+			statusMessage: internalErrorMessage,
+			errorMessage: error.message,
 		})
 	}
 
@@ -75,8 +77,8 @@ export function ErrorBoundaryTemplate({
 
 	// Unknown error
 	return children({
-		status: 500,
-		statusMessage,
+		status: internalError,
+		statusMessage: internalErrorMessage,
 		errorMessage: "Unknown Error",
 	})
 }
