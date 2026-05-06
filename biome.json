@@ -6,7 +6,11 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!app/components/ui"
+		]
 	},
 	"formatter": {
 		"enabled": true
@@ -14,7 +18,13 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"style": {
+				"useTemplate": "off"
+			},
+			"complexity": {
+				"useOptionalChain": "off"
+			}
 		}
 	},
 	"javascript": {
@@ -36,7 +46,22 @@
 		"enabled": true,
 		"actions": {
 			"source": {
-				"organizeImports": "on"
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							[
+								"./+types",
+								"./+types/**"
+							],
+							"react",
+							[
+								"react-router",
+								"react-router/**"
+							]
+						]
+					}
+				}
 			}
 		}
 	}
