@@ -92,7 +92,7 @@ export const ENV_DEFINITIONS = {
 	BUCKET_NAME: {
 		exampleValue: "",
 		comment:
-			"Object Storage; Please set up a bucket and provide its name here. Default to 'papa' if null (which means your bucket should also be named 'papa')",
+			"Object Storage; Init script will create bucket with this name if not exists.",
 	},
 	OBJECT_STORAGE_ACCESS_KEY_ID: { exampleValue: "", comment: "Object Storage" },
 	OBJECT_STORAGE_SECRET_ACCESS_KEY: {

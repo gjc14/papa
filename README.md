@@ -70,7 +70,7 @@
 4. As for `OBJECT_STORAGE_ACCOUNT_ID`, you will find it by opening
    `{} API > Use R2 with APIs`.
 5. In `.env` please configure your desired `BUCKET_NAME`, papa will create a
-   bucket with this given name, default to `papa`.
+   bucket with this given name.
 
 ### Set up [AWS S3](https://aws.amazon.com/s3/)
 
@@ -98,7 +98,6 @@ cd ./papa && cp .env.example .env
 
 1.  `DATABASE_URL`: We connect to PostgreSQL using node-postgres (pg), so both
     direct and pooled connections are supported.
-
     - Direct connections provide a one-to-one connection from your app to the
       database. They are ideal for long-lived environments like VMs or
       containers.
@@ -131,9 +130,7 @@ cd ./papa && cp .env.example .env
 8.  `EMAIL_FROM`: This email must be verified, with format:
     `Your Name <verified@email.com>`
 9.  Email provider credentials:
-
     1.  **SMTP**
-
         - `SMTP_HOST`: smtp.provider.com
         - `SMTP_PORT`: Email servers are using `587` as default TLS. Default
           `587`
@@ -150,21 +147,20 @@ cd ./papa && cp .env.example .env
         [Sending email through Amazon SES using an AWS SDK](https://docs.aws.amazon.com/ses/latest/dg/send-an-email-using-sdk-programmatically.html)
         and
         [Types of Amazon SES credentials](https://docs.aws.amazon.com/ses/latest/dg/send-email-concepts-credentials.html)
-
         - `AWS_SES_REGION`: e.g., `ap-northeast-1`
         - `AWS_SES_ACCESS_KEY_ID`: Get this from `IAM`
         - `AWS_SES_SECRET_ACCESS_KEY`: Get this from `IAM`, you should set
           Permissions policies of the user to:
           ```json
           {
-          	"Version": "2012-10-17",
-          	"Statement": [
-          		{
-          			"Effect": "Allow",
-          			"Action": ["ses:*"], // Allow all ses services
-          			"Resource": "*"
-          		}
-          	]
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": ["ses:*"], // Allow all ses services
+                "Resource": "*"
+              }
+            ]
           }
           ```
 
@@ -309,29 +305,29 @@ rrv7.
 
 // Please do not use alias "~", use relative path instead
 // Because service registration runs at the same level as \`vite.config.ts\`, and not as part of the bundled code.
-import { registerServiceRoutes } from '../../../lib/service/routes-registry'
+import { registerServiceRoutes } from "../../../lib/service/routes-registry";
 
 registerServiceRoutes({
-	dashboardRoutes: ({ route, index }) => [
-		route('my-route', './routes/services/my-route/dashboard/layout.tsx', [
-			index('./routes/services/my-route/dashboard/index.tsx'),
-			route(
-				':productId',
-				'./routes/services/my-route/dashboard/product/route.tsx',
-			),
-		]),
-	],
+  dashboardRoutes: ({ route, index }) => [
+    route("my-route", "./routes/services/my-route/dashboard/layout.tsx", [
+      index("./routes/services/my-route/dashboard/index.tsx"),
+      route(
+        ":productId",
+        "./routes/services/my-route/dashboard/product/route.tsx",
+      ),
+    ]),
+  ],
 
-	routes: ({ route, index }) => [
-		route('/frontend', './routes/services/my-route/frontend/layout.tsx', [
-			index('./routes/services/my-route/frontend/index.tsx'),
-			route(
-				':productId',
-				'./routes/services/my-route/frontend/product/route.tsx',
-			),
-		]),
-	],
-})
+  routes: ({ route, index }) => [
+    route("/frontend", "./routes/services/my-route/frontend/layout.tsx", [
+      index("./routes/services/my-route/frontend/index.tsx"),
+      route(
+        ":productId",
+        "./routes/services/my-route/frontend/product/route.tsx",
+      ),
+    ]),
+  ],
+});
 ```
 
 #### Dashboard configuration
@@ -345,34 +341,34 @@ configure it in the runtime using dashboard context, please refer to
 
 ```tsx
 // /app/routes/services/my-service/service.dashboard.ts
-import { Apple, Command } from 'lucide-react'
+import { Apple, Command } from "lucide-react";
 
-import { registerServiceDashboard } from '~/lib/service/dashboard-registry'
+import { registerServiceDashboard } from "~/lib/service/dashboard-registry";
 
 registerServiceDashboard({
-	name: 'my-service',
-	description: 'This is an example service for demonstration purposes.',
-	logo: Command,
-	pathname: '/dashboard/my-service',
-	// sidebar config is how you set sidebar in /dashboard, if you're not using /dashboard, this could be omitted.
-	sidebar: {
-		primary: [
-			{
-				icon: Apple,
-				title: 'Products',
-				pathname: 'my-service',
-				sub: [
-					{
-						title: 'たいわんラーメン',
-						pathname: 'たいわんラーメン',
-					},
-				],
-			},
-		],
-		// Secondary sidebar will appears under primary and stick to the bottom.
-		// secondary: []
-	},
-})
+  name: "my-service",
+  description: "This is an example service for demonstration purposes.",
+  logo: Command,
+  pathname: "/dashboard/my-service",
+  // sidebar config is how you set sidebar in /dashboard, if you're not using /dashboard, this could be omitted.
+  sidebar: {
+    primary: [
+      {
+        icon: Apple,
+        title: "Products",
+        pathname: "my-service",
+        sub: [
+          {
+            title: "たいわんラーメン",
+            pathname: "たいわんラーメン",
+          },
+        ],
+      },
+    ],
+    // Secondary sidebar will appears under primary and stick to the bottom.
+    // secondary: []
+  },
+});
 ```
 
 #### System Endpoints configuration
@@ -384,36 +380,36 @@ sitemap.
 
 ```tsx
 // /app/routes/services/my-service/service.system-endpoints.ts
-import { registerSystemEndpoints } from '~/lib/service/system-endpoints-registry'
+import { registerSystemEndpoints } from "~/lib/service/system-endpoints-registry";
 
-import { products } from './data'
+import { products } from "./data";
 
 // Simulate async data fetching
-const getProducts = async () => products
+const getProducts = async () => products;
 
 registerSystemEndpoints({
-	sitemap: async url => {
-		const products = await getProducts()
+  sitemap: async (url) => {
+    const products = await getProducts();
 
-		return products.map(product => ({
-			loc: `/${frontendRouteName}/${product.id}`,
-			lastmod: new Date(),
-			changefreq: 'weekly',
-			priority: 0.5,
-		}))
-	},
-	robots: url => ({
-		groups: [
-			{
-				userAgents: ['*'],
-				allow: ['/store/'],
-				disallow: ['/dashboard/', '/api/', '/auth/'],
-				crawlDelay: 30,
-			},
-		],
-		sitemaps: [`${url.origin}/sitemap.xml`],
-	}),
-})
+    return products.map((product) => ({
+      loc: `/${frontendRouteName}/${product.id}`,
+      lastmod: new Date(),
+      changefreq: "weekly",
+      priority: 0.5,
+    }));
+  },
+  robots: (url) => ({
+    groups: [
+      {
+        userAgents: ["*"],
+        allow: ["/store/"],
+        disallow: ["/dashboard/", "/api/", "/auth/"],
+        crawlDelay: 30,
+      },
+    ],
+    sitemaps: [`${url.origin}/sitemap.xml`],
+  }),
+});
 ```
 
 ### Construct `ErrorBoundary`
@@ -426,31 +422,31 @@ ErrorBoundary catches route errors and display to user. You could export
 
 ```tsx
 import {
-	ErrorBoundaryTemplate,
-	type ErrorBoundaryTemplateProps,
-} from '~/components/error-boundary-template'
+  ErrorBoundaryTemplate,
+  type ErrorBoundaryTemplateProps,
+} from "~/components/error-boundary-template";
 
 export function ErrorBoundary() {
-	return (
-		<ErrorBoundaryTemplate>
-			{props => <ErrorTemplate {...props} />}
-		</ErrorBoundaryTemplate>
-	)
+  return (
+    <ErrorBoundaryTemplate>
+      {(props) => <ErrorTemplate {...props} />}
+    </ErrorBoundaryTemplate>
+  );
 }
 
 const ErrorTemplate = ({
-	status,
-	statusMessage,
+  status,
+  statusMessage,
 }: ErrorBoundaryTemplateProps) => {
-	return (
-		<main className="flex h-svh w-screen flex-col items-center justify-center">
-			<p>
-				{status} {statusMessage.text}
-			</p>
-			<p className="text-muted-foreground">{statusMessage.description}</p>
-		</main>
-	)
-}
+  return (
+    <main className="flex h-svh w-screen flex-col items-center justify-center">
+      <p>
+        {status} {statusMessage.text}
+      </p>
+      <p className="text-muted-foreground">{statusMessage.description}</p>
+    </main>
+  );
+};
 ```
 
 ### Create Database Schema
@@ -479,10 +475,10 @@ under `/app/routes/rebellious-route/lib/db/schema` as well will be read.
    own schema by:
 
    ```tsx
-   const mySchema = pgSchema('my-schema-name')
-   const myPgTable = mySchema.table
-   const myPgEnum = mySchema.enum
-   const myView = mySchema.view
+   const mySchema = pgSchema("my-schema-name");
+   const myPgTable = mySchema.table;
+   const myPgEnum = mySchema.enum;
+   const myView = mySchema.view;
    ```
 
    For more information about schema definition, refer to
@@ -491,31 +487,31 @@ under `/app/routes/rebellious-route/lib/db/schema` as well will be read.
    An example for table declaration:
 
    ```tsx
-   import { check, pgTable, serial, text, varchar } from 'drizzle-orm/pg-core'
-   import { sql } from 'drizzle-orm/sql/sql'
+   import { check, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+   import { sql } from "drizzle-orm/sql/sql";
 
-   import { user } from '~/lib/db/schema/auth'
-   import { timestampAttributes } from '~/lib/db/schema/helpers'
+   import { user } from "~/lib/db/schema/auth";
+   import { timestampAttributes } from "~/lib/db/schema/helpers";
 
    export const post = pgTable(
-   	'post',
-   	{
-   		id: serial('id').primaryKey(),
-   		slug: varchar('slug').notNull().unique(),
-   		title: varchar('title').notNull(),
-   		content: text('content'),
-   		excerpt: varchar('excerpt'),
-   		featuredImage: varchar('featured_image'),
-   		status: varchar('status', { length: 50 }).notNull(),
+     "post",
+     {
+       id: serial("id").primaryKey(),
+       slug: varchar("slug").notNull().unique(),
+       title: varchar("title").notNull(),
+       content: text("content"),
+       excerpt: varchar("excerpt"),
+       featuredImage: varchar("featured_image"),
+       status: varchar("status", { length: 50 }).notNull(),
 
-   		authorId: text('author_id').references(() => user.id, {
-   			onDelete: 'set null',
-   		}),
+       authorId: text("author_id").references(() => user.id, {
+         onDelete: "set null",
+       }),
 
-   		...timestampAttributes,
-   	},
-   	t => [check('prevent_system_slug', sql`${t.slug} != 'new'`)],
-   )
+       ...timestampAttributes,
+     },
+     (t) => [check("prevent_system_slug", sql`${t.slug} != 'new'`)],
+   );
    ```
 
 4. Push the schema to your PostgreSQL by `pnpm run db:push`, then follow the
@@ -530,48 +526,48 @@ Refer to: [Definitions in lib/utils](./app/lib/utils/index.tsx)
 ```ts
 // These will trigger toast automatically when fetcher.state === "loading"
 // Success
-return { msg: 'Action success 🎉' } satisfies ActionResponse
+return { msg: "Action success 🎉" } satisfies ActionResponse;
 // Error
-return { err: 'Something went wrong 🚨' } satisfies ActionResponse
+return { err: "Something went wrong 🚨" } satisfies ActionResponse;
 
 // To prevent notification, send `preventNotification` to true
-return { msg: "I don't want you to be seen", preventNotification: true }
+return { msg: "I don't want you to be seen", preventNotification: true };
 ```
 
 ### Typed Fetcher Data
 
 ```ts
-import { type ActionResponse } from '~/lib/utils'
-import { handleError } from '~/lib/utils/server'
+import { type ActionResponse } from "~/lib/utils";
+import { handleError } from "~/lib/utils/server";
 
 type UserData = {
-	id: number
-	name: string
-}
+  id: number;
+  name: string;
+};
 
 export const action = async ({ request }: Route.ActionArgs) => {
-	try {
-		const user = validateUser()
-		return {
-			msg: `Welcome to PAPA!`,
-			data: { id, name },
-		} satisfies ActionResponse
-	} catch (error) {
-		return handleError(error, request)
-	}
-}
+  try {
+    const user = validateUser();
+    return {
+      msg: `Welcome to PAPA!`,
+      data: { id, name },
+    } satisfies ActionResponse;
+  } catch (error) {
+    return handleError(error, request);
+  }
+};
 
 export default function Component() {
-	// This fetcher will be typed
-	const fetcher = useFetcher<typeof action>()
+  // This fetcher will be typed
+  const fetcher = useFetcher<typeof action>();
 
-	useEffect(() => {
-		if (fetcher.data && 'data' in fetcher.data) {
-			const {
-				data: { id, name },
-			} = fetcher.data
-		}
-	}, [fetcher.data])
+  useEffect(() => {
+    if (fetcher.data && "data" in fetcher.data) {
+      const {
+        data: { id, name },
+      } = fetcher.data;
+    }
+  }, [fetcher.data]);
 }
 ```
 
@@ -599,18 +595,18 @@ Organization
 
 ```tsx
 export default function DashboardExample() {
-	return (
-		<DashboardLayout>
-			<DashboardHeader>
-				<DashboardTitle title="Your dashboard title"></DashboardTitle>
-				<DashboardActions>
-					{/* You may put some buttons here */}
-				</DashboardActions>
-			</DashboardHeader>
-			{/* Your main content goes here */}
-			<DashboardContent>Main content</DashboardContent>
-		</DashboardLayout>
-	)
+  return (
+    <DashboardLayout>
+      <DashboardHeader>
+        <DashboardTitle title="Your dashboard title"></DashboardTitle>
+        <DashboardActions>
+          {/* You may put some buttons here */}
+        </DashboardActions>
+      </DashboardHeader>
+      {/* Your main content goes here */}
+      <DashboardContent>Main content</DashboardContent>
+    </DashboardLayout>
+  );
 }
 ```
 
@@ -623,23 +619,23 @@ please refer to [Service Dashboard Configuration](#dashboard-configuration).
 
 ```tsx
 export default function Component() {
-	const setDashboardContext = useSetAtom(dashboardContextAtom)
+  const setDashboardContext = useSetAtom(dashboardContextAtom);
 
-	return (
-		<button
-			onClick={() =>
-				setDashboardContext(prev => ({
-					...prev,
-					services: prev.services.map(s => {
-						if (s.name === 'Blog') return DEFAULT_SERVICE
-						return s
-					}),
-				}))
-			}
-		>
-			Click me
-		</button>
-	)
+  return (
+    <button
+      onClick={() =>
+        setDashboardContext((prev) => ({
+          ...prev,
+          services: prev.services.map((s) => {
+            if (s.name === "Blog") return DEFAULT_SERVICE;
+            return s;
+          }),
+        }))
+      }
+    >
+      Click me
+    </button>
+  );
 }
 ```
 
@@ -665,26 +661,26 @@ To prevent indicator from display, utilize `dashboardContextAtom`. By default
 
 ```tsx
 const Component = () => {
-	const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom)
-	const navigating = dashboardContext.navigation.showGlobalLoader === false // when it set to false by the function below
+  const [dashboardContext, setDashboardContext] = useAtom(dashboardContextAtom);
+  const navigating = dashboardContext.navigation.showGlobalLoader === false; // when it set to false by the function below
 
-	const navigate = useNavigate()
-	const [, setSearchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
 
-	const navigateToSomewhere = () => {
-		// Set showGlobalLoader to false first
-		setDashboardContext(prev => ({
-			...prev,
-			navigation: { showGlobalLoader: false },
-		}))
+  const navigateToSomewhere = () => {
+    // Set showGlobalLoader to false first
+    setDashboardContext((prev) => ({
+      ...prev,
+      navigation: { showGlobalLoader: false },
+    }));
 
-		// a. navigate to destination
-		navigate('/path/to/destination')
+    // a. navigate to destination
+    navigate("/path/to/destination");
 
-		// or b. Update search params
-		setSearchParams(params, { replace: true })
-	}
+    // or b. Update search params
+    setSearchParams(params, { replace: true });
+  };
 
-	return <button onClick={navigateToSomewhere}>Go to Somewhere</button>
-}
+  return <button onClick={navigateToSomewhere}>Go to Somewhere</button>;
+};
 ```

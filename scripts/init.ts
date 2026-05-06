@@ -1,10 +1,11 @@
 import { spawn } from "node:child_process"
 
 const scripts = [
-	"tsx scripts/init-env.ts",
-	"pnpm run db:push",
-	"tsx scripts/init-object-storage.ts",
-	"tsx scripts/init-user.ts",
+	"pnpm run init:1", // env
+	"pnpm run init:2", // database
+	"pnpm run init:3", // object storage
+	"pnpm run db:push", // schema
+	"pnpm run init:4", // user
 	"pnpm run dev",
 ]
 
@@ -25,7 +26,6 @@ async function runScript(command: string): Promise<void> {
 
 		currentProcess = spawn(cmd, args, {
 			stdio: "inherit",
-			shell: true,
 		})
 
 		currentProcess.on("exit", (code) => {
@@ -49,8 +49,13 @@ async function main() {
 		console.log(`\n▶️  Running: ${script}`)
 		try {
 			await runScript(script)
-		} catch (error) {
-			console.error(`\n❌ Failed: ${script}`)
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error(`\n❌ Error: ${error.message}`)
+			} else {
+				console.error(`\n❌ Failed: ${script}`)
+			}
+
 			process.exit(1)
 		}
 	}
