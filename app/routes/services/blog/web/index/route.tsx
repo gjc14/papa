@@ -83,9 +83,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 			</>
 		)
 	} else if (categoryFilters) {
-		description = <>{categoryFilters}</>
+		description = categoryFilters
 	} else if (tagFilters) {
-		description = <>{tagFilters}</>
+		description = tagFilters
 	}
 
 	return (

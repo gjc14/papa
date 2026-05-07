@@ -71,12 +71,11 @@ export const columns: ColumnDef<User>[] = [
 	},
 	{
 		id: "_actions",
-		cell: ({ row, table }) => {
+		cell: ({ row }) => {
 			const fetcher = useFetcher()
 			const { mutating, isSubmitting } = useFetcherNotification(fetcher)
 			const [open, setOpen] = useState(false)
 
-			const rowId = row.id
 			const id = row.original.id
 			const userEmail = row.original.email
 

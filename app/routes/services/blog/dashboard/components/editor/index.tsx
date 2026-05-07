@@ -66,7 +66,7 @@ export function ContentEditor() {
 				class: "mt-6 prose-article focus:outline-hidden",
 			},
 			// https://github.com/ueberdosis/tiptap/blob/develop/packages/extension-file-handler/src/FileHandlePlugin.ts
-			handleDrop(view, event, slice, moved) {
+			handleDrop(view, event, _, moved) {
 				if (moved) return false // don't handle if it's a move event (e.g., dragging selected text)
 				if (!event.dataTransfer?.files.length) {
 					return false

@@ -23,7 +23,7 @@ export function PostMeta({ post }: { post: PostWithRelations }) {
 						ExtensionKit({ openOnClick: true }),
 					),
 				)
-			: 0) + ` min read`
+			: 0) + " min read"
 
 	return (
 		<div className="mx-auto w-full py-2">

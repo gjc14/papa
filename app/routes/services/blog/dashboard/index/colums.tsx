@@ -93,7 +93,6 @@ export const columns: ColumnDef<PostWithRelations>[] = [
 			const fetcher = useFetcher()
 			const { mutating } = useFetcherNotification(fetcher)
 
-			const rowId = row.id
 			const id = row.original.id
 			const slug = row.original.slug
 			const title = row.original.title

@@ -23,8 +23,8 @@ import {
 
 const getColors = () =>
 	Object.entries(tailwindColors)
-		.filter(([name, value]) => typeof value !== "string")
-		.map(([name, value]) => name)
+		.filter(([_, value]) => typeof value !== "string")
+		.map(([name]) => name)
 
 const colors = getColors()
 
