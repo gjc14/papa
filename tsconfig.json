@@ -23,10 +23,12 @@
 			".",
 			"./.react-router/types"
 		],
-		"baseUrl": ".",
 		"paths": {
 			"~/*": [
 				"./app/*"
+			],
+			"*": [
+				"./*"
 			]
 		},
 		"esModuleInterop": true,

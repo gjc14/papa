@@ -32,8 +32,7 @@ function getPositionClass(position: ToolkitPosition) {
 			return "fixed left-6 bottom-6"
 		case "center":
 			return "fixed left-1/2 bottom-6 -translate-x-1/2"
-		case "right":
-		default:
+		default: // right
 			return "fixed right-6 bottom-6"
 	}
 }
@@ -67,7 +66,12 @@ export function FloatingToolkit() {
 
 			setPosition(next)
 
-			document.cookie = `${TOOLKIT_POSITION_COOKIE}=${next}; path=/; max-age=${TOOLKIT_POSITION_COOKIE_MAX_AGE}`
+			cookieStore.set({
+				name: TOOLKIT_POSITION_COOKIE,
+				value: next,
+				path: "/",
+				expires: Date.now() + TOOLKIT_POSITION_COOKIE_MAX_AGE * 1000,
+			})
 		},
 		[position],
 	)
