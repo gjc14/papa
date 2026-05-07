@@ -1,5 +1,6 @@
 import { Baseline, Paintbrush } from "lucide-react"
 import tailwindColors from "tailwindcss/colors.js"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { ColorDropdownMenu } from "./components/color-dropdown"
 import { ImageButton } from "./components/image-button"
 import { LinkUnlinkButtons } from "./components/link-unlink-button"
@@ -45,6 +46,18 @@ export function Toolbar({
 	hidden?: boolean
 	isMobile?: boolean
 }) {
+	const undoRedoKeys = useStableKeyMap(UndoRedoOptions, (o) => o.name)
+	const advancedParagraphKeys = useStableKeyMap(
+		AdvancedParagraphOptions,
+		(o) => o.name,
+	)
+	const markKeys = useStableKeyMap(MarkOptions, (o) => o.name)
+	const subSuperScriptKeys = useStableKeyMap(
+		SubSuperScriptOptions,
+		(o) => o.name,
+	)
+	const alignKeys = useStableKeyMap(AlignOptions, (o) => o.name)
+
 	if (hidden) return null
 
 	return (
@@ -57,10 +70,13 @@ export function Toolbar({
 				className="mx-auto flex h-fit w-fit flex-1 items-center justify-start gap-0.25 px-3 py-1"
 			>
 				{/* Undo/Redo */}
-				{UndoRedoOptions.map(
-					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+				{undoRedoKeys.map(
+					({
+						item: { name, shortcut, icon: Icon, run, canRun, isActive },
+						key,
+					}) => (
 						<ToggleButton
-							key={index}
+							key={key}
 							tooltip={name}
 							shortcut={shortcut}
 							run={run}
@@ -77,10 +93,13 @@ export function Toolbar({
 				<SelectDropdownMenu options={ParagraphOptions} tooltip="Hierarchy" />
 				<SelectDropdownMenu options={ListOptions} tooltip="List styles" />
 
-				{AdvancedParagraphOptions.map(
-					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+				{advancedParagraphKeys.map(
+					({
+						item: { name, shortcut, icon: Icon, run, canRun, isActive },
+						key,
+					}) => (
 						<ToggleButton
-							key={index}
+							key={key}
 							tooltip={name}
 							shortcut={shortcut}
 							run={run}
@@ -95,10 +114,13 @@ export function Toolbar({
 				<Separator />
 
 				{/* Marks */}
-				{MarkOptions.map(
-					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+				{markKeys.map(
+					({
+						item: { name, shortcut, icon: Icon, run, canRun, isActive },
+						key,
+					}) => (
 						<ToggleButton
-							key={index}
+							key={key}
 							tooltip={name}
 							shortcut={shortcut}
 							run={run}
@@ -141,10 +163,13 @@ export function Toolbar({
 				<Separator />
 
 				{/* SubSuperScript */}
-				{SubSuperScriptOptions.map(
-					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+				{subSuperScriptKeys.map(
+					({
+						item: { name, shortcut, icon: Icon, run, canRun, isActive },
+						key,
+					}) => (
 						<ToggleButton
-							key={index}
+							key={key}
 							tooltip={name}
 							shortcut={shortcut}
 							run={run}
@@ -159,10 +184,13 @@ export function Toolbar({
 				<Separator />
 
 				{/* Align */}
-				{AlignOptions.map(
-					({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+				{alignKeys.map(
+					({
+						item: { name, shortcut, icon: Icon, run, canRun, isActive },
+						key,
+					}) => (
 						<ToggleButton
-							key={index}
+							key={key}
 							tooltip={name}
 							shortcut={shortcut}
 							run={run}

@@ -12,6 +12,7 @@ import {
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { Skeleton } from "~/components/ui/skeleton"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { editorAtom } from "../../../context"
 import type { EditOptionProps } from "../edit-options"
 import { TooltipWrapper } from "./tooltip-wrapper"
@@ -52,6 +53,7 @@ export function ColorDropdownMenu({
 }) {
 	const [editor] = useAtom(editorAtom)
 	const [open, setOpen] = useState(false)
+	const optionsWithKeys = useStableKeyMap(options, (option) => option.name)
 
 	const activeColor = useEditorState({
 		editor,
@@ -113,35 +115,37 @@ export function ColorDropdownMenu({
 			<DropdownMenuContent className="bg-background w-auto">
 				<DropdownMenuGroup>
 					<DropdownMenuRadioGroup className="grid grid-cols-[repeat(5,1fr)] justify-center gap-0.5 p-1">
-						{options.map(({ name, run, canRun, isActive, color }, index) => (
-							<TooltipWrapper
-								key={index}
-								tooltip={name}
-								side="top"
-								render={
-									<DropdownMenuRadioItem
-										value={name}
-										disabled={isActive?.(editor) || !canRun(editor)}
-										onClick={() => run(editor)}
-										className="hover:bg-primary/20 m-0.5 w-fit cursor-pointer overflow-hidden rounded-full border p-0.75 disabled:cursor-not-allowed"
-									>
-										{displayText ? (
-											<div
-												className="grid size-5 place-items-center rounded-full text-xs"
-												style={{ backgroundColor: color }}
-											>
-												A
-											</div>
-										) : (
-											<div
-												className="size-5 rounded-full"
-												style={{ backgroundColor: color }}
-											/>
-										)}
-									</DropdownMenuRadioItem>
-								}
-							/>
-						))}
+						{optionsWithKeys.map(
+							({ item: { name, run, canRun, isActive, color }, key }) => (
+								<TooltipWrapper
+									key={key}
+									tooltip={name}
+									side="top"
+									render={
+										<DropdownMenuRadioItem
+											value={name}
+											disabled={isActive?.(editor) || !canRun(editor)}
+											onClick={() => run(editor)}
+											className="hover:bg-primary/20 m-0.5 w-fit cursor-pointer overflow-hidden rounded-full border p-0.75 disabled:cursor-not-allowed"
+										>
+											{displayText ? (
+												<div
+													className="grid size-5 place-items-center rounded-full text-xs"
+													style={{ backgroundColor: color }}
+												>
+													A
+												</div>
+											) : (
+												<div
+													className="size-5 rounded-full"
+													style={{ backgroundColor: color }}
+												/>
+											)}
+										</DropdownMenuRadioItem>
+									}
+								/>
+							),
+						)}
 
 						{/* Remove color */}
 						<TooltipWrapper

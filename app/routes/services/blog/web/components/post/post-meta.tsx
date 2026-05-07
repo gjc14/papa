@@ -1,5 +1,6 @@
 import { Link } from "react-router"
 import { generateHTML } from "@tiptap/html"
+import { useStableKeyMap } from "app/hooks/use-stable-key-map"
 import { format } from "date-fns/format"
 import { LibraryBig } from "lucide-react"
 import { Fragment } from "react/jsx-runtime"
@@ -13,6 +14,8 @@ import { estimateReadingTime } from "../../utils"
 
 export function PostMeta({ post }: { post: PostWithRelations }) {
 	const isHydrated = useHydrated()
+
+	const categoriesWithKeys = useStableKeyMap(post.categories, (c) => c.slug)
 
 	const readTime =
 		isHydrated &&
@@ -59,8 +62,8 @@ export function PostMeta({ post }: { post: PostWithRelations }) {
 					<div className="my-3 flex items-center px-2 text-base">
 						<LibraryBig size={16} className="mr-2 shrink-0" />
 						<div className="mr-auto">
-							{post.categories.map((c, i) => (
-								<Fragment key={i}>
+							{categoriesWithKeys.map(({ item: c, key }, i) => (
+								<Fragment key={key}>
 									<Button
 										variant={"link"}
 										className="h-fit p-0"

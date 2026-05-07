@@ -51,15 +51,29 @@ function createDefaultColumn<TData>(
 			const initialValue = ctx.getValue()
 
 			if (!editable) {
-				const displayValue =
-					typeof initialValue === "object" && initialValue !== null ? (
-						Array.isArray(initialValue) ? (
+				let displayValue = initialValue as React.ReactNode
+
+				if (typeof initialValue === "object" && initialValue !== null) {
+					if (Array.isArray(initialValue)) {
+						// refer to ~/hooks/use-stable-key-map
+						const seen = new Map<string, number>()
+
+						displayValue = (
 							<div className="flex items-center gap-1">
-								{initialValue.map((v, i) => (
-									<Badge key={i}>{v}</Badge>
-								))}
+								{initialValue.map((v) => {
+									const baseKey = JSON.stringify(v)
+
+									const occurrence = seen.get(baseKey) ?? 0
+									seen.set(baseKey, occurrence + 1)
+
+									return (
+										<Badge key={`${baseKey}:${occurrence}`}>{String(v)}</Badge>
+									)
+								})}
 							</div>
-						) : (
+						)
+					} else {
+						displayValue = (
 							<Popover>
 								<PopoverTrigger
 									render={
@@ -79,9 +93,9 @@ function createDefaultColumn<TData>(
 								</PopoverContent>
 							</Popover>
 						)
-					) : (
-						(initialValue as React.ReactNode)
-					)
+					}
+				}
+
 				return (
 					<div className="flex h-12 items-center text-sm">{displayValue}</div>
 				)

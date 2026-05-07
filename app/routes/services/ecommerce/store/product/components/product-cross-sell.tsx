@@ -32,8 +32,8 @@ export function ProductCrossSellSkeleton() {
 		<>
 			<h2 className="mt-16 mb-8 text-2xl font-light">You may also like</h2>
 			<ProductCrossSellWrapper>
-				{Array.from({ length: 3 }).map((_, i) => (
-					<ProductCardSkeleton key={i} />
+				{[...Array(3)].map((_) => (
+					<ProductCardSkeleton key={_} />
 				))}
 			</ProductCrossSellWrapper>
 		</>

@@ -11,9 +11,9 @@ import { SidebarTrigger } from "~/components/ui/sidebar"
 import {
 	Tooltip,
 	TooltipContent,
-	TooltipProvider,
 	TooltipTrigger,
 } from "~/components/ui/tooltip"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { capitalize } from "~/lib/utils"
 
 export const HeaderWithBreadcrumbs = () => {
@@ -34,6 +34,7 @@ export const HeaderWithBreadcrumbs = () => {
 const DashboardBreadcrumbs = () => {
 	const { pathname } = useLocation()
 	const paths = pathname.split("/").filter(Boolean)
+	const pathsWithKeys = useStableKeyMap(paths, (path) => path)
 
 	const getPathName = (path: string) => {
 		return decodeURIComponent(path)
@@ -46,12 +47,12 @@ const DashboardBreadcrumbs = () => {
 	return (
 		<Breadcrumb>
 			<BreadcrumbList className="flex w-full flex-nowrap">
-				{paths.map((path, i) => {
+				{pathsWithKeys.map(({ item: path, key }, i) => {
 					const link = `/${paths.slice(0, i + 1).join("/")}`
 					const name = getPathName(path)
 
 					return (
-						<React.Fragment key={i}>
+						<React.Fragment key={key}>
 							<Tooltip>
 								<TooltipTrigger
 									render={

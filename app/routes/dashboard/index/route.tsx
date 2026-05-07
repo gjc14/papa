@@ -12,11 +12,13 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/ui/tooltip"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { getServicesDashboards } from "~/lib/service/dashboard"
 import { renderServiceLogo } from "../../../lib/utils/render-service-logo"
 
 export default function DashboardIndex() {
 	const services = getServicesDashboards()
+	const servicesWithKeys = useStableKeyMap(services, (s) => s.pathname)
 
 	return (
 		<DashboardLayout>
@@ -58,8 +60,8 @@ export default function DashboardIndex() {
 					</div>
 				) : (
 					<div className="grid h-fit w-full grid-cols-2 gap-3 overflow-auto md:grid-cols-3 xl:grid-cols-4">
-						{services.map((service, index) => (
-							<Tooltip key={index}>
+						{servicesWithKeys.map(({ item: service, key }) => (
+							<Tooltip key={key}>
 								<TooltipTrigger
 									render={
 										<Link

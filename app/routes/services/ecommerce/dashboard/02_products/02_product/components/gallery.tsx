@@ -6,6 +6,7 @@ import { Card, CardContent } from "~/components/ui/card"
 import { DialogTrigger } from "~/components/ui/dialog"
 import { Skeleton } from "~/components/ui/skeleton"
 import { useAssets } from "~/hooks/use-assets"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import {
 	productAtom,
 	productGalleryAtom,
@@ -37,6 +38,8 @@ export function Gallery() {
 	const [srcInput, setSrcInput] = useState("")
 	const [altInput, setAltInput] = useState("")
 	const [titleInput, setTitleInput] = useState("")
+
+	const galleryWithKey = useStableKeyMap(gallery, (i) => i.image)
 
 	if (!productId || productName === null) return null
 
@@ -167,10 +170,10 @@ export function Gallery() {
 
 					<div className="grid grid-cols-3 gap-2">
 						{!galleryPending ? (
-							gallery
-								.sort((a, b) => a.order - b.order)
-								.map((item, i) => (
-									<div key={i} className="relative">
+							galleryWithKey
+								.sort((a, b) => a.item.order - b.item.order)
+								.map(({ item, key }, i) => (
+									<div key={key} className="relative">
 										<img
 											src={item.image}
 											alt={item.alt || productName}

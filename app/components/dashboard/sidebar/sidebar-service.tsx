@@ -14,6 +14,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "~/components/ui/sidebar"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { renderServiceLogo } from "../../../lib/utils/render-service-logo"
 
 export interface ServiceDashboardConfig {
@@ -63,6 +64,7 @@ export function SidebarService({
 	currentService?: ServiceDashboardConfig
 }) {
 	const { isMobile } = useSidebar()
+	const servicesWithKey = useStableKeyMap(services, (s) => s.name)
 
 	return (
 		<SidebarMenu>
@@ -104,8 +106,9 @@ export function SidebarService({
 							<DropdownMenuLabel className="text-muted-foreground text-xs">
 								Services
 							</DropdownMenuLabel>
-							{services.map((service) => (
+							{servicesWithKey.map(({ item: service, key }) => (
 								<DropdownMenuItem
+									key={key}
 									className="[& gap-2 p-2"
 									render={
 										<Link key={service.name} to={service.pathname}>

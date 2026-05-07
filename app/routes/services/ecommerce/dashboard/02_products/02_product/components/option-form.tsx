@@ -44,6 +44,7 @@ import {
 	TooltipTrigger,
 } from "~/components/ui/tooltip"
 import { useAssets } from "~/hooks/use-assets"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import {
 	type DownloadFile,
 	StockStatus,
@@ -183,6 +184,11 @@ export function OptionForm({
 
 	const { hasDiscount, formattedPrice, formattedOriginalPrice } =
 		renderPrice(option)
+
+	const optionDownloadFilesWithKey = useStableKeyMap(
+		option.downloadFiles,
+		(f) => f.name,
+	)
 
 	return (
 		<FieldSet className="h-full w-full">
@@ -1048,57 +1054,63 @@ export function OptionForm({
 
 									{option.downloadFiles && option.downloadFiles.length > 0 ? (
 										<FieldGroup>
-											{option.downloadFiles.map((file, index) => (
-												<Field orientation={"horizontal"} key={index}>
-													<Input
-														value={file.name}
-														onChange={(e) => {
-															const newFiles = [...(option.downloadFiles || [])]
-															newFiles[index] = {
-																...newFiles[index],
-																name: e.target.value,
-															}
-															onChange({ downloadFiles: newFiles })
-														}}
-														placeholder="File name"
-													/>
-													<Input
-														value={file.url}
-														onChange={(e) => {
-															const newFiles = [...(option.downloadFiles || [])]
-															newFiles[index] = {
-																...newFiles[index],
-																url: e.target.value,
-															}
-															onChange({ downloadFiles: newFiles })
-														}}
-														placeholder="File URL"
-													/>
-													<Button
-														type="button"
-														size="icon"
-														variant="outline"
-														className="size-8"
-														onClick={() => window.open(file.url, "_blank")}
-													>
-														<DownloadCloud size={16} />
-													</Button>
-													<Button
-														type="button"
-														size="icon"
-														variant="destructive"
-														className="size-8"
-														onClick={() => {
-															const newFiles = option.downloadFiles?.filter(
-																(_, i) => i !== index,
-															)
-															onChange({ downloadFiles: newFiles || [] })
-														}}
-													>
-														<X />
-													</Button>
-												</Field>
-											))}
+											{optionDownloadFilesWithKey.map(
+												({ item: file, key }, index) => (
+													<Field orientation={"horizontal"} key={key}>
+														<Input
+															value={file.name}
+															onChange={(e) => {
+																const newFiles = [
+																	...(option.downloadFiles || []),
+																]
+																newFiles[index] = {
+																	...newFiles[index],
+																	name: e.target.value,
+																}
+																onChange({ downloadFiles: newFiles })
+															}}
+															placeholder="File name"
+														/>
+														<Input
+															value={file.url}
+															onChange={(e) => {
+																const newFiles = [
+																	...(option.downloadFiles || []),
+																]
+																newFiles[index] = {
+																	...newFiles[index],
+																	url: e.target.value,
+																}
+																onChange({ downloadFiles: newFiles })
+															}}
+															placeholder="File URL"
+														/>
+														<Button
+															type="button"
+															size="icon"
+															variant="outline"
+															className="size-8"
+															onClick={() => window.open(file.url, "_blank")}
+														>
+															<DownloadCloud size={16} />
+														</Button>
+														<Button
+															type="button"
+															size="icon"
+															variant="destructive"
+															className="size-8"
+															onClick={() => {
+																const newFiles = option.downloadFiles?.filter(
+																	(_, i) => i !== index,
+																)
+																onChange({ downloadFiles: newFiles || [] })
+															}}
+														>
+															<X />
+														</Button>
+													</Field>
+												),
+											)}
 										</FieldGroup>
 									) : (
 										<Field className="text-muted-foreground bg-muted items-center justify-center border border-dashed p-3 text-xs">

@@ -11,6 +11,7 @@ import {
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { Skeleton } from "~/components/ui/skeleton"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { editorAtom } from "../../../context"
 import type { EditOptionProps } from "../edit-options"
 import { TooltipWrapper } from "./tooltip-wrapper"
@@ -18,6 +19,7 @@ import { TooltipWrapper } from "./tooltip-wrapper"
 export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 	const [editor] = useAtom(editorAtom)
 	const [open, setOpen] = useState(false)
+	const optionsWithKeys = useStableKeyMap(options, (option) => option.name)
 
 	/**
 	 * The selector function allows you to specify which parts of the editor state you want to subscribe to.
@@ -58,10 +60,13 @@ export function MoreDropdownMenu({ options }: { options: EditOptionProps[] }) {
 			/>
 			<DropdownMenuContent className="bg-background">
 				<DropdownMenuGroup>
-					{options.map(
-						({ name, shortcut, icon: Icon, run, canRun, isActive }, index) => (
+					{optionsWithKeys.map(
+						({
+							item: { name, shortcut, icon: Icon, run, canRun, isActive },
+							key,
+						}) => (
 							<TooltipWrapper
-								key={index}
+								key={key}
 								tooltip={name}
 								shortcut={shortcut}
 								side="right"

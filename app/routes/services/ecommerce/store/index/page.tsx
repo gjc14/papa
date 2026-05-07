@@ -23,13 +23,7 @@ export function StorePage(props: StorePageProps) {
 
 			<div className="grid flex-1 grid-cols-2 gap-2 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
 				<Suspense
-					fallback={
-						<>
-							{Array.from({ length: 8 }).map((_, index) => (
-								<ProductCardSkeleton key={index} />
-							))}
-						</>
-					}
+					fallback={[...Array(8)].map((_) => <ProductCardSkeleton key={_} />)}
 				>
 					<Await resolve={productsPromise}>
 						{(products) =>

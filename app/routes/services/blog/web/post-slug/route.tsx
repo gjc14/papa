@@ -1,6 +1,7 @@
 import type { Route } from "./+types/route"
 import { data, Link, useLocation } from "react-router"
 import { ArrowLeft, HeartCrack } from "lucide-react"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { createMeta } from "~/lib/utils/seo"
 import { getPostBySlug } from "../../lib/db/post.server"
 import { Post } from "../components/post"
@@ -58,6 +59,7 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
 	const { search } = useLocation()
 
 	const { post, nextPost, prevPost, meta } = loaderData
+	const metaTagsWithKeys = useStableKeyMap(meta?.metaTags, (t) => t.title)
 
 	if (!post) {
 		return (
@@ -72,9 +74,13 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<div className="mx-auto w-full max-w-prose px-3">
-			{meta?.metaTags.map((t, i) =>
-				t.title ? <title key={i}>{t.title}</title> : <meta key={i} {...t} />,
-			)}
+			{metaTagsWithKeys.map(({ item, key }) => {
+				return item.title ? (
+					<title key={key}>{item.title}</title>
+				) : (
+					<meta key={key} {...item} />
+				)
+			})}
 
 			<Link
 				to={".." + search}

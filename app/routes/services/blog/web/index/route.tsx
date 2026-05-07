@@ -1,6 +1,7 @@
 import type { Route } from "./+types/route"
 import { data } from "react-router"
 import { Badge } from "~/components/ui/badge"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import { PostCollection } from "../components/posts"
 import { fetchPosts, headers, postsServerMemoryCache, TTL } from "./cache"
 
@@ -41,6 +42,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
 export default function Index({ loaderData }: Route.ComponentProps) {
 	const { meta, posts, categoryFilter, tagFilter, q } = loaderData
+	const metaTagsWithKeys = useStableKeyMap(meta?.metaTags, (t) => t.title)
 
 	const isCategoryFiltering = categoryFilter && categoryFilter.length > 0
 	const isTagFiltering = tagFilter && tagFilter.length > 0
@@ -90,9 +92,13 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<>
-			{meta?.metaTags.map((t, i) =>
-				t.title ? <title key={i}>{t.title}</title> : <meta key={i} {...t} />,
-			)}
+			{metaTagsWithKeys.map(({ item, key }) => {
+				return item.title ? (
+					<title key={key}>{item.title}</title>
+				) : (
+					<meta key={key} {...item} />
+				)
+			})}
 			<h1 className="visually-hidden">{meta?.seo.metaTitle}</h1>
 
 			<PostCollection

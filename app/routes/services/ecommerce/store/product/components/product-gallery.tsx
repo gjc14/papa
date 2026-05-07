@@ -2,6 +2,7 @@ import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Skeleton } from "~/components/ui/skeleton"
+import { useStableKeyMap } from "~/hooks/use-stable-key-map"
 import type { productGallery as productGalleryTable } from "../../../lib/db/schema"
 import { useProductContext } from "../hooks/use-product-context"
 
@@ -27,11 +28,9 @@ export const ProductGallery = () => {
 
 	const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-	if (!product) return null
-
 	const gallery = [
 		// Put the feature image first if exists, then the gallery images
-		...(product.option.image
+		...(product?.option.image
 			? [
 					{
 						image: product.option.image,
@@ -42,6 +41,10 @@ export const ProductGallery = () => {
 			: []),
 		...(productGallery || []),
 	]
+
+	const galleryWithKey = useStableKeyMap(gallery, (i) => i.image)
+
+	if (!product) return null
 
 	const nextImage = () => {
 		setCurrentImageIndex((prev) => (prev + 1) % gallery.length)
@@ -92,9 +95,9 @@ export const ProductGallery = () => {
 				)}
 			</div>
 			<div className="mt-4 flex gap-2">
-				{gallery.map((img, idx) => (
+				{galleryWithKey.map(({ item: img, key }, idx) => (
 					<button
-						key={idx}
+						key={key}
 						type="button"
 						onClick={() => setCurrentImageIndex(idx)}
 						className={`h-20 w-20 cursor-pointer border-2 transition-colors ${
@@ -128,8 +131,8 @@ export const ProductGallerySkeleton = ({
 
 			{/* Thumbnail gallery skeleton */}
 			<div className="mt-4 flex gap-2">
-				{[...Array(3)].map((_, idx) => (
-					<Skeleton key={idx} className="h-20 w-20" />
+				{[...Array(3)].map((_) => (
+					<Skeleton key={_} className="h-20 w-20" />
 				))}
 			</div>
 		</ProductGalleryWrapper>
