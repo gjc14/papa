@@ -168,18 +168,31 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		e.preventDefault()
 		const formData = new FormData(e.currentTarget)
 
-		const taxonomyData: Record<string, any> = {
-			name: formData.get("name") as string,
-			slug: formData.get("slug") as string,
+		const getRequiredText = (field: string): string => {
+			const value = formData.get(field)
+			if (typeof value !== "string") return ""
+			return value.trim()
+		}
+
+		const getOptionalTextOrNull = (field: string): string | null => {
+			const value = formData.get(field)
+			if (typeof value !== "string") return null
+			const trimmed = value.trim()
+			return trimmed === "" ? null : trimmed
+		}
+
+		const taxonomyData: Record<string, unknown> = {
+			name: getRequiredText("name"),
+			slug: getRequiredText("slug"),
 		}
 
 		// Add optional fields based on config
 		if (config.hasDescription) {
-			taxonomyData.description = (formData.get("description") as string) ?? null
+			taxonomyData.description = getOptionalTextOrNull("description")
 		}
 
 		if (config.hasImage) {
-			taxonomyData.image = (formData.get("image") as string) ?? null
+			taxonomyData.image = getOptionalTextOrNull("image")
 		}
 
 		if (config.hasParent) {
@@ -187,10 +200,10 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		}
 
 		if (config.hasValue) {
-			taxonomyData.value = (formData.get("value") as string) ?? null
+			taxonomyData.value = getOptionalTextOrNull("value")
 		}
 
-		fetcher.submit(taxonomyData, {
+		fetcher.submit(JSON.stringify(taxonomyData), {
 			method: "post",
 			action: config.actionEndpoint,
 			encType: "application/json",

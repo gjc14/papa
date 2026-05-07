@@ -40,7 +40,9 @@ function useSkipper() {
 	return [shouldSkip, skip] as const
 }
 
-type ServerModeProps = NonNullable<DashboardDataTableProps<any, any>["server"]>
+type ServerModeProps = NonNullable<
+	DashboardDataTableProps<unknown, unknown>["server"]
+>
 type StateKeys = "pagination" | "sorting" | "columnFilters" | "globalFilter"
 
 /** Discriminated union — each member pairs a key with its correct Updater */

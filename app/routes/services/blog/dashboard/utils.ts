@@ -2,7 +2,7 @@ import { generateHTML, generateText } from "@tiptap/react"
 import ExtensionKit from "~/components/editor/extension-kit"
 import type { PostWithRelations } from "../lib/db/post.server"
 
-const areValuesDiff = (v1: any, v2: any) => {
+const areValuesDiff = (v1: unknown, v2: unknown) => {
 	if (
 		(v1 === null || v1 === undefined || v1 === "") &&
 		(v2 === null || v2 === undefined || v2 === "")

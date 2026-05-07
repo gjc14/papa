@@ -42,13 +42,13 @@ export const generateNewPost = (user: Session["user"]): PostWithRelations => {
 function normalizeUndefinedToNull(
 	user: Session["user"],
 ): typeof userTable.$inferSelect {
-	const normalized: any = { ...user }
+	const normalized: Record<string, unknown> = { ...user }
 
-	for (const key in normalized) {
+	for (const key of Object.keys(normalized)) {
 		if (normalized[key] === undefined) {
 			normalized[key] = null
 		}
 	}
 
-	return normalized
+	return normalized as typeof userTable.$inferSelect
 }

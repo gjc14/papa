@@ -16,6 +16,18 @@ import {
 const productNameAtom = atom((get) => get(productAtom)?.name ?? null)
 const productOptionAtom = atom((get) => get(productAtom)?.option ?? null)
 
+function assignIfInherited<K extends keyof ProductOptionType>(
+	target: Partial<ProductOptionType>,
+	variantOption: ProductOptionType,
+	prevOption: ProductOptionType,
+	newOption: ProductOptionType,
+	key: K,
+): void {
+	if (isFieldInherited(variantOption, prevOption, key)) {
+		target[key] = newOption[key]
+	}
+}
+
 export function MainOption() {
 	const setProduct = useSetAtom(productAtom)
 	const productName = useAtomValue(productNameAtom)
@@ -37,9 +49,13 @@ export function MainOption() {
 				for (const key of Object.keys(
 					optionUpdated,
 				) as (keyof ProductOptionType)[]) {
-					if (isFieldInherited(variant.option, prevOption, key)) {
-						updatedVariantOption[key] = newOption[key] as any
-					}
+					assignIfInherited(
+						updatedVariantOption,
+						variant.option,
+						prevOption,
+						newOption,
+						key,
+					)
 				}
 
 				// Only update if there are inherited fields to update

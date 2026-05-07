@@ -133,7 +133,7 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[],
 	)
-	const [globalFilter, setGlobalFilter] = React.useState<any>("")
+	const [globalFilter, setGlobalFilter] = React.useState<unknown>("")
 
 	const [rowSelection, setRowSelection] = React.useState({})
 
