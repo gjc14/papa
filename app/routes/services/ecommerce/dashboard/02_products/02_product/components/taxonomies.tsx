@@ -133,7 +133,17 @@ export function Taxonomies() {
 			setTags(tData.tags)
 			setDataInitialized((prev) => ({ ...prev, tags: true }))
 		}
-	}, [bFetcher.data, cFetcher.data, tFetcher.data])
+	}, [
+		bFetcher.data,
+		cFetcher.data,
+		tFetcher.data,
+		bFetcher.load,
+		cFetcher.load,
+		dataInitialized,
+		setBrands,
+		setCategories,
+		setTags,
+	])
 
 	// Sync selected categories/brands with product
 	useEffect(() => {
@@ -145,7 +155,7 @@ export function Taxonomies() {
 				categories: categories.filter((c) => selectedCIds.has(String(c.id))),
 			}
 		})
-	}, [selectedBIds, selectedCIds])
+	}, [selectedBIds, selectedCIds, setProduct, brands, categories])
 
 	const tSelected = productTags
 		? productTags.map((t) => {
@@ -206,7 +216,7 @@ export function Taxonomies() {
 			}, 600)
 			return () => clearTimeout(timer)
 		}
-	}, [tPending, tIsIdle, tags])
+	}, [tPending, tIsIdle, tags, setProduct, tCreateFetcher])
 
 	return (
 		<div id="taxonomies" className="space-y-6">

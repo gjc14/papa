@@ -35,7 +35,7 @@ export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 
 	useEffect(() => {
 		setIsDeleting(isDeleting)
-	}, [isDeleting])
+	}, [setIsDeleting, isDeleting])
 
 	useEffect(() => {
 		if (
@@ -46,7 +46,7 @@ export const PostDeleteAlert = ({ isCreate }: { isCreate: boolean }) => {
 		) {
 			navigate("/dashboard/blog")
 		}
-	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
+	}, [fetcher.state, fetcher.formMethod, fetcher.data, navigate])
 
 	if (!post) return null
 

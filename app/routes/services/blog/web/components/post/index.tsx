@@ -56,7 +56,7 @@ export const Post = ({
 		prepareHtml()
 
 		setPlaceholder(getRandomTitlePlaceholder())
-	}, [isHydrated])
+	}, [post.content, isHydrated])
 
 	return (
 		<>
@@ -84,6 +84,7 @@ export const Post = ({
 			) : html ? (
 				<article
 					className="prose-article"
+					// TODO biome
 					dangerouslySetInnerHTML={{
 						__html: html,
 					}}

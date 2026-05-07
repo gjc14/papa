@@ -157,7 +157,7 @@ export function CreateTaxonomyDialog<T extends ActionResponse | undefined>({
 		if (!mutating && fetcher.data?.msg) {
 			setShowSuccess(true)
 		}
-	}, [fetcher.state, fetcher.data])
+	}, [mutating, fetcher.data])
 
 	// Only top-level items can be parents
 	const validParentItems = config.hasParent

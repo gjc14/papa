@@ -43,7 +43,7 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 	useHydrateAtoms([[isSavingAtom, isSaving]])
 
 	// When saving state changes, update atoms
-	useEffect(() => setIsSaving(isSaving), [isSaving])
+	useEffect(() => setIsSaving(isSaving), [isSaving, setIsSaving])
 
 	useEffect(() => {
 		if (!post || !serverPost) return
@@ -62,10 +62,19 @@ export const FloatingToolbar = ({ isCreate }: { isCreate: boolean }) => {
 				setServerPost(data)
 				setPost(data)
 
-				shouldNavigate && navigate("/dashboard/blog/" + data.slug)
+				shouldNavigate && navigate(`/dashboard/blog/${data.slug}`)
 			}
 		}
-	}, [fetcher.state, fetcher.formMethod, fetcher.data, isSubmitting])
+	}, [
+		fetcher.state,
+		fetcher.data,
+		fetcher.formMethod,
+		serverPost,
+		post,
+		setServerPost,
+		setPost,
+		navigate,
+	])
 
 	if (!post || !editor) return null
 

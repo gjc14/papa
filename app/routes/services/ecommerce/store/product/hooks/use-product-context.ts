@@ -41,7 +41,7 @@ export const useProductContext = () => {
 			setSelectedVariantAttributes({})
 			setHoveredAttributeImage(undefined)
 		}
-	}, [])
+	}, [setSelectedVariantAttributes, setHoveredAttributeImage])
 
 	// ========================================
 	// Derived Data

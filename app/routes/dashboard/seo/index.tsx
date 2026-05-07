@@ -36,7 +36,7 @@ export default function SEO({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.seos)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	return (
 		<DashboardLayout>

@@ -28,7 +28,7 @@ export default function ECCategories({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.categories)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	const columns = useMemo(() => createCategoryColumns(), [])
 

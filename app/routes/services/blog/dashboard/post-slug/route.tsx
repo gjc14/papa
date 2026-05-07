@@ -73,11 +73,17 @@ export default function DashboardSlugPost({
 	useEffect(() => {
 		setServerPost(currentPost)
 		setPost(currentPost)
-
 		setIsSettingsOpen(false)
 		setIsResetAlertOpen(false)
 		setIsDeleteAlertOpen(false)
-	}, [params.postSlug])
+	}, [
+		currentPost,
+		setServerPost,
+		setPost,
+		setIsSettingsOpen,
+		setIsResetAlertOpen,
+		setIsDeleteAlertOpen,
+	])
 
 	if (!post) {
 		return (

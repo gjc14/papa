@@ -64,7 +64,7 @@ export const UserManagementRoute = ({
 	useEffect(() => {
 		skip()
 		setState(users)
-	}, [users])
+	}, [skip, users])
 
 	const [openInviteDialog, setOpenInviteDialog] = useState(false)
 	const [openBulkEdit, setOpenBulkEdit] = useState(false)
@@ -106,7 +106,7 @@ export const UserManagementRoute = ({
 					break
 			}
 		}
-	}, [fetcher.state, fetcher.formMethod])
+	}, [isLoading, fetcher.formMethod])
 
 	return (
 		<DashboardLayout>

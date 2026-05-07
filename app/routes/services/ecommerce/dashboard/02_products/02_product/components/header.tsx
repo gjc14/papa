@@ -80,7 +80,7 @@ export function ProductEditPageHeader() {
 		},
 	})
 
-	useEffect(() => setIsSaving(isSubmitting), [fetcher.state])
+	useEffect(() => setIsSaving(isSubmitting), [isSubmitting, setIsSaving])
 
 	const handleSave = useCallback(() => {
 		const product = store.get(productAtom)

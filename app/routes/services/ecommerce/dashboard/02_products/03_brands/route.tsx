@@ -28,7 +28,7 @@ export default function ECBrands({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.brands)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	const columns = useMemo(() => createBrandColumns(), [])
 

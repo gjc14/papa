@@ -40,5 +40,10 @@ export const useCheckDraft = () => {
 		} else {
 			setIsDraftCheckComplete(true)
 		}
-	}, [isDraftCheckComplete, serverPost])
+	}, [
+		isDraftCheckComplete,
+		serverPost,
+		setIsRestoreAlertOpen,
+		setIsDraftCheckComplete,
+	])
 }

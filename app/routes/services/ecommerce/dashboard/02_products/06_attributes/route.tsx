@@ -28,7 +28,7 @@ export default function ECAttributes({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.attrs)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	const columns = useMemo(() => createAttributeColumns(), [])
 

@@ -28,7 +28,7 @@ export default function ECTags({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.tags)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	const columns = useMemo(() => createTagColumns(), [])
 

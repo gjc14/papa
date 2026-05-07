@@ -105,7 +105,14 @@ export default function ECProduct({ loaderData }: Route.ComponentProps) {
 			setCrossSellProducts([])
 			setProductGallery([])
 		}
-	}, [loaderData])
+	}, [
+		loaderData,
+		setProduct,
+		setIsResolving,
+		setCrossSellProducts,
+		setProductGallery,
+		setUpsellProducts,
+	])
 
 	return <ProductEditPage />
 }

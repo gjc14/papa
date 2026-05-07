@@ -70,7 +70,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.posts)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	useEffect(() => {
 		if (!mutating && fetcher.data && "msg" in fetcher.data) {
@@ -83,7 +83,7 @@ export default function DashboardPost({ loaderData }: Route.ComponentProps) {
 			// 	return newSet
 			// })
 		}
-	}, [fetcher.state])
+	}, [mutating, fetcher.data])
 
 	const handleBulkDelete = async () => {
 		// // Display deleting state

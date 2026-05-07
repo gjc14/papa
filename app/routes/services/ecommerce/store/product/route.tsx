@@ -77,7 +77,13 @@ export default function ProductRoute({ loaderData }: Route.ComponentProps) {
 			setCrossSellProducts([])
 			setProductGallery([])
 		}
-	}, [loaderData])
+	}, [
+		loaderData,
+		setProduct,
+		setIsResolving,
+		setCrossSellProducts,
+		setProductGallery,
+	])
 
 	return <StoreProductPage />
 }

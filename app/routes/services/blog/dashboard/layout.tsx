@@ -53,7 +53,7 @@ function TaxonomiesLoader({
 		}
 
 		loadTaxonomies()
-	}, [tagsPromise, categoriesPromise])
+	}, [tagsPromise, categoriesPromise, setTags, setCategories])
 
 	return null
 }

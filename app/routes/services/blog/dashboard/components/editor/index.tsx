@@ -133,7 +133,7 @@ export function ContentEditor() {
 			)
 			setEditorContent(serverPost.content || defaultContent)
 		}
-	}, [editor, serverPost])
+	}, [editor, serverPost, postId, setEditorContent])
 
 	// Handle shortcut keys
 	const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -229,7 +229,7 @@ export function ContentEditor() {
 				URL.revokeObjectURL(file.previewURL) // free memory
 			}
 		})
-	}, [tmpImage, uploadProgress])
+	}, [editor, tmpImage, uploadProgress])
 
 	return <EditorContent editor={editor} onKeyDown={handleKeyDown} />
 }

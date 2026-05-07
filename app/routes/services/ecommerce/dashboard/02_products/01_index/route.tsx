@@ -42,7 +42,7 @@ export default function ECProductsIndex({ loaderData }: Route.ComponentProps) {
 	useEffect(() => {
 		skip()
 		setState(loaderData.products)
-	}, [loaderData])
+	}, [skip, loaderData])
 
 	return (
 		<DashboardLayout>

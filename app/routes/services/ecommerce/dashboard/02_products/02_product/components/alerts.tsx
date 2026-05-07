@@ -39,13 +39,13 @@ export function ProductAlerts() {
 
 	useEffect(
 		() => setIsMovingToTrash(fetcher.state === "submitting"),
-		[fetcher.state],
+		[setIsMovingToTrash, fetcher.state],
 	)
 
 	useEffect(() => {
 		if (!fetcher.data || "err" in fetcher.data) return
 		navigate("..")
-	}, [fetcher.data])
+	}, [fetcher.data, navigate])
 
 	if (!productId || productName === null) return null
 
