@@ -86,7 +86,8 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 	const url = `/blog/${post.slug}${search}`
 
 	return (
-		<div
+		<button
+			type="button"
 			onClick={() => navigate(url)}
 			onMouseEnter={() => fetcher.load(url)}
 			className="group hover:bg-accent cursor-pointer py-4 md:py-5"
@@ -134,7 +135,7 @@ const Post = ({ post }: { post: PostWithRelations }) => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</button>
 	)
 }
 

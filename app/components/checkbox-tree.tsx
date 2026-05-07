@@ -35,7 +35,11 @@ function CheckboxTreeItem({
 }: CheckboxTreeItemProps) {
 	const [isExpanded, setIsExpanded] = React.useState(false)
 	const checkboxRef = React.useRef<HTMLButtonElement>(null)
-	const hasChildren = node.children && node.children.length > 0
+	const hasChildren = (
+		node: TreeNode,
+	): node is TreeNode & { children: TreeNode[] } => {
+		return !!node.children && node.children.length > 0
+	}
 	const state = getNodeState(node)
 
 	React.useEffect(() => {
@@ -63,8 +67,9 @@ function CheckboxTreeItem({
 					paddingMap[level],
 				)}
 			>
-				{hasChildren ? (
+				{hasChildren(node) ? (
 					<button
+						type="button"
 						onClick={() => setIsExpanded(!isExpanded)}
 						className="flex h-4 w-4 items-center justify-center transition-colors"
 						aria-label={isExpanded ? "Collapse" : "Expand"}
@@ -97,9 +102,9 @@ function CheckboxTreeItem({
 				</div>
 			</div>
 
-			{hasChildren && isExpanded && (
+			{hasChildren(node) && isExpanded && (
 				<div className="ml-0">
-					{node.children!.map((child) => (
+					{node.children.map((child) => (
 						<CheckboxTreeItem
 							key={child.id}
 							node={child}

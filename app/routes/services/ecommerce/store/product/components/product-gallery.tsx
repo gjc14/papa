@@ -95,6 +95,7 @@ export const ProductGallery = () => {
 				{gallery.map((img, idx) => (
 					<button
 						key={idx}
+						type="button"
 						onClick={() => setCurrentImageIndex(idx)}
 						className={`h-20 w-20 cursor-pointer border-2 transition-colors ${
 							idx === currentImageIndex

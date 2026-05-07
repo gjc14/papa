@@ -86,6 +86,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 					errorMessage,
 				})
 			}
+			break
 		}
 
 		case "child-category": {
@@ -124,6 +125,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 					errorMessage,
 				})
 			}
+			break
 		}
 
 		case "tag": {
@@ -157,6 +159,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 					errorMessage,
 				})
 			}
+			break
 		}
 
 		default: {

@@ -1,6 +1,7 @@
 import "dotenv/config"
 
 import { defineConfig } from "drizzle-kit"
+import { getEnv } from "env"
 
 export default defineConfig({
 	dialect: "postgresql",
@@ -11,7 +12,7 @@ export default defineConfig({
 	],
 	schemaFilter: ["public", "papa"],
 	dbCredentials: {
-		url: process.env.DATABASE_URL!,
+		url: getEnv("DATABASE_URL"),
 	},
 	out: "./database",
 })

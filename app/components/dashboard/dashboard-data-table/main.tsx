@@ -190,11 +190,12 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 			updateData: (rowIndex, columnId, value) => {
 				/** Skip page index reset until after next rerender @see https://tanstack.com/table/v8/docs/framework/react/examples/editable-data */
 				;(skipAutoResetPageIndex ?? internalSkipAutoResetPageIndex)()
-				setData((prev) =>
-					prev.map((row, index) => {
-						if (index === rowIndex) {
+				setData((prevRows) =>
+					prevRows.map((row, index) => {
+						// make sure if row exists
+						if (index === rowIndex && row) {
 							return {
-								...prev[rowIndex]!,
+								...row,
 								[columnId]: value,
 							}
 						}
@@ -231,41 +232,39 @@ export function DashboardDataTable<TData extends RowData, TValue>({
 												)}
 											>
 												{header.isPlaceholder ? null : (
-													<>
-														<div
-															className={`flex h-full items-center justify-between ${
-																header.column.getCanSort()
-																	? "cursor-pointer select-none"
-																	: ""
-															}`}
-															onClick={header.column.getToggleSortingHandler()}
-															title={
-																header.column.getCanSort()
-																	? header.column.getNextSortingOrder() ===
-																		"asc"
-																		? "Sort ascending"
-																		: header.column.getNextSortingOrder() ===
-																				"desc"
-																			? "Sort descending"
-																			: "Clear sort"
-																	: undefined
-															}
-														>
-															<div className="flex items-center gap-1">
-																{header.column.getIsSorted() === "asc" ? (
-																	<ArrowUp className="size-4" />
-																) : header.column.getIsSorted() === "desc" ? (
-																	<ArrowUp className="size-4 rotate-180" />
-																) : null}
-																{flexRender(
-																	header.column.columnDef.header,
-																	header.getContext(),
-																)}
-															</div>
-
-															{/* TODO: DropdownMenu */}
+													<button
+														type="button"
+														className={`flex h-full items-center justify-between ${
+															header.column.getCanSort()
+																? "cursor-pointer select-none"
+																: ""
+														}`}
+														onClick={header.column.getToggleSortingHandler()}
+														title={
+															header.column.getCanSort()
+																? header.column.getNextSortingOrder() === "asc"
+																	? "Sort ascending"
+																	: header.column.getNextSortingOrder() ===
+																			"desc"
+																		? "Sort descending"
+																		: "Clear sort"
+																: undefined
+														}
+													>
+														<div className="flex items-center gap-1">
+															{header.column.getIsSorted() === "asc" ? (
+																<ArrowUp className="size-4" />
+															) : header.column.getIsSorted() === "desc" ? (
+																<ArrowUp className="size-4 rotate-180" />
+															) : null}
+															{flexRender(
+																header.column.columnDef.header,
+																header.getContext(),
+															)}
 														</div>
-													</>
+
+														{/* TODO: DropdownMenu */}
+													</button>
 												)}
 											</th>
 										)

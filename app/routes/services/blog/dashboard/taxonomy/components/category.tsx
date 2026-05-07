@@ -35,7 +35,8 @@ const CategoryComponent = ({
 	const selected = selectedCategoryId === cat.id
 
 	return (
-		<div
+		<button
+			type="button"
 			className={cn(
 				`bg-muted flex items-center justify-between p-3 transition-colors`,
 				mutating ? "opacity-50" : "",
@@ -75,7 +76,7 @@ const CategoryComponent = ({
 					)
 				}}
 			/>
-		</div>
+		</button>
 	)
 }
 

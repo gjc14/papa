@@ -25,6 +25,7 @@ const DefaultBadge = ({ option, handleUnselect }: BadgeProps) => (
 	>
 		{option.label}
 		<button
+			type="button"
 			className="ring-offset-background focus:ring-ring ml-1.5 cursor-pointer outline-hidden focus:ring-2"
 			onClick={() => handleUnselect(option)}
 		>
@@ -99,7 +100,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 
 	const init = React.useRef(false)
 	const inputRef = React.useRef<HTMLInputElement>(null)
-	const anchorRef = React.useRef<HTMLDivElement>(null)
+	const anchorRef = React.useRef<HTMLButtonElement>(null)
 	const portalContainerRef = React.useRef<HTMLDivElement>(null)
 
 	// Flags to distinguish item-selection from normal typing inside onValueChange
@@ -255,8 +256,9 @@ export const MultiSelect = (props: MultiSelectProps) => {
 			filter={onSearch ? null : undefined}
 		>
 			{/* ── Input area with badges ─────────────────────────────────── */}
-			<div
+			<button
 				ref={anchorRef}
+				type="button"
 				className={cn(
 					"group border-input ring-offset-background focus-within:ring-ring focus-within:ring-offset cursor-text border px-2 py-2 text-sm focus-within:ring-1",
 					className,
@@ -265,9 +267,13 @@ export const MultiSelect = (props: MultiSelectProps) => {
 			>
 				<div className="flex flex-wrap items-center gap-1">
 					{selected.map((option) => (
-						<div key={option.value} onClick={(e) => e.stopPropagation()}>
+						<button
+							type="button"
+							key={option.value}
+							onClick={(e) => e.stopPropagation()}
+						>
 							<BadgeComponent option={option} handleUnselect={handleUnselect} />
-						</div>
+						</button>
 					))}
 
 					<Autocomplete.Input
@@ -285,7 +291,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 						className="placeholder:text-muted-foreground ml-1 flex-1 bg-transparent outline-hidden"
 					/>
 				</div>
-			</div>
+			</button>
 
 			{/* Portal container – renders locally so it stays inside Dialog / Sheet */}
 			<div ref={portalContainerRef} />
@@ -319,6 +325,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
 								{/* "Create new" – always first when no perfect match */}
 								{showCreateNew && (
 									<button
+										type="button"
 										onMouseDown={(e) => {
 											e.preventDefault()
 											e.stopPropagation()
